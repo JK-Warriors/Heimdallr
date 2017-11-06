@@ -75,9 +75,11 @@ INSERT INTO `admin_menu` VALUES ('54', 'Replication Monitor', '2', '48', 'lp_red
 INSERT INTO `admin_menu` VALUES ('56', 'Oracle Monitor', '1', '0', 'lp_oracle', 'icon-dashboard', '0', '1', '4', '2014-10-24 15:34:50');
 INSERT INTO `admin_menu` VALUES ('57', 'Health Montior', '2', '56', 'lp_oracle/index', 'icon-list', '0', '1', '1', '2014-10-24 15:35:47');
 INSERT INTO `admin_menu` VALUES ('58', 'Tablespace Monitor', '2', '56', 'lp_oracle/tablespace', 'icon-list', '0', '1', '2', '2014-10-24 15:37:19');
-INSERT INTO `admin_menu` VALUES ('59', 'SQLServer', '2', '16', 'servers_sqlserver/index', 'icon-list', '0', '1', '6', '2015-12-31 11:06:53');
-INSERT INTO `admin_menu` VALUES ('60', 'SQLServer Monitor', '1', '0', 'lp_sqlserver', 'icon-dashboard', '0', '1', '5', '2016-01-26 17:22:09');
-INSERT INTO `admin_menu` VALUES ('61', 'Health Monitor', '2', '60', 'lp_sqlserver/index', 'icon-list', '0', '1', '1', '2016-01-26 17:24:20');
+INSERT INTO `admin_menu` VALUES ('59', 'DataGuard Monitor', '2', '56', 'lp_oracle/dataguard', 'icon-list', '0', '1', '3', '2014-10-24 15:37:19');
+
+INSERT INTO `admin_menu` VALUES ('70', 'SQLServer', '2', '16', 'servers_sqlserver/index', 'icon-list', '0', '1', '6', '2015-12-31 11:06:53');
+INSERT INTO `admin_menu` VALUES ('71', 'SQLServer Monitor', '1', '0', 'lp_sqlserver', 'icon-dashboard', '0', '1', '5', '2016-01-26 17:22:09');
+INSERT INTO `admin_menu` VALUES ('72', 'Health Monitor', '2', '71', 'lp_sqlserver/index', 'icon-list', '0', '1', '1', '2016-01-26 17:24:20');
 
 -- ----------------------------
 -- Table structure for admin_privilege
@@ -175,6 +177,7 @@ INSERT INTO `admin_privilege` VALUES ('105', 'Redis Replication Chart View', '54
 INSERT INTO `admin_privilege` VALUES ('110', 'Oracle Health Monitor', '57', 'lp_oracle/index', '25');
 INSERT INTO `admin_privilege` VALUES ('111', 'Oracle Health Chart', '57', 'lp_oracle/chart', '26');
 INSERT INTO `admin_privilege` VALUES ('112', 'Oracle Tablespace Monitor', '58', 'lp_oracle/tablespace', '27');
+INSERT INTO `admin_privilege` VALUES ('125', 'Oracle DataGuard Monitor', '59', 'lp_oracle/dataguard', '28');
 INSERT INTO `admin_privilege` VALUES ('113', 'Settings Save', '46', 'settings/save', '31');
 INSERT INTO `admin_privilege` VALUES ('114', 'Oracle Servers Trash', '40', 'servers_oracle/trash', '48');
 INSERT INTO `admin_privilege` VALUES ('115', 'Oracle Servers Delete', '40', 'servers_oracle/delete', '48');
@@ -311,6 +314,7 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '121');
 INSERT INTO `admin_role_privilege` VALUES ('1', '122');
 INSERT INTO `admin_role_privilege` VALUES ('1', '123');
 INSERT INTO `admin_role_privilege` VALUES ('1', '124');
+INSERT INTO `admin_role_privilege` VALUES ('1', '125');
 INSERT INTO `admin_role_privilege` VALUES ('2', '4');
 INSERT INTO `admin_role_privilege` VALUES ('3', '1');
 INSERT INTO `admin_role_privilege` VALUES ('3', '2');

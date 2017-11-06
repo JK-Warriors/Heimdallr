@@ -29,6 +29,7 @@ $lang['_Resource Monitor'] = '资源监控';
 $lang['_Performance Advisor'] = '性能顾问';
 
 $lang['_Oracle Monitor'] = 'Oracle监控';
+$lang['_DataGuard Monitor'] = 'DataGuard监控';
 $lang['_Tablespace Monitor'] = '表空间监控';
 
 $lang['_SQLServer Monitor'] = 'SQLServer监控';

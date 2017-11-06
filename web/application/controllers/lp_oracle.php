@@ -45,6 +45,23 @@ class Lp_oracle extends Front_Controller {
         $this->layout->view("oracle/tablespace",$data);
 	}
     
+
+    public function dataguard()
+	{
+        parent::check_privilege();
+        $data["datalist"]=$this->oracle->get_tablespace_total_record();
+
+        $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
+        $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        
+        $setval["order"]=isset($_GET["order"]) ? $_GET["order"] : "";
+        $setval["order_type"]=isset($_GET["order_type"]) ? $_GET["order_type"] : "";
+        $data["setval"]=$setval;
+
+        $this->layout->view("oracle/dataguard",$data);
+    }
+    
+
     public function chart()
     {
         parent::check_privilege('');

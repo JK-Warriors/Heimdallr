@@ -48,6 +48,13 @@ $lang['replication'] = 'Replication';
 $lang['process'] = 'process';
 $lang['slowquery'] = 'slowquery';
 
+$lang['group_id'] = 'Group ID';
+$lang['dg_group'] = 'DG Group';
+$lang['primary_db'] = 'Primary DB';
+$lang['standby_db'] = 'Standby DB';
+$lang['dg_management'] = 'DG Management';
+
+
 $lang['connections_usage'] = 'Connections Usage';
 $lang['open_files_usage'] = 'Open Files Usage';
 $lang['tables_cache_usage'] = 'Tables Cache Usage';

@@ -79,6 +79,7 @@ $lang['prev'] = 'Prev';
 $lang['next'] = 'Next';
 $lang['add'] = 'Add';
 $lang['batch_add'] = 'Batch Add';
+$lang['add_dg'] = 'Add DataGuard';
 $lang['edit'] = 'Edit';
 $lang['save'] = 'Save';
 $lang['tags'] = 'Tags';
@@ -117,7 +118,8 @@ $lang['chart'] = 'Chart';
 $lang['total_record'] = 'The number of rows in the query : ';
 $lang['no_record']='No query to the data.';
 $lang['add_to_trash_confirm']='Are you sure you want to add the content to trash?';
-$lang['forever_delete_confirm']='Are you sure you want to forever delete the content?';
+$lang['forever_delete_confirm']='Are you sure you want to delete the content forever?';
+$lang['delete_confirm']='Are you sure you want to delete the content?';
 $lang['edit_user_password_help'] = 'If you don not change your password, please do not fill in';
 $lang['choose_menu_error_msg'] = 'The parent menu cannot choose the menu';
 

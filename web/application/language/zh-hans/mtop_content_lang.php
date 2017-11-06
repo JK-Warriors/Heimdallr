@@ -48,6 +48,12 @@ $lang['replication'] = '复制';
 $lang['process'] = '进程';
 $lang['slowquery'] = '慢查询';
 
+$lang['group_id'] = '组号';
+$lang['dg_group'] = 'DG 组';
+$lang['primary_db'] = '主库';
+$lang['standby_db'] = '备库';
+$lang['dg_management'] = 'DG 管理';
+
 $lang['connections_usage'] = '连接池使用';
 $lang['open_files_usage'] = '打开文件数';
 $lang['tables_cache_usage'] = '表缓存使用';

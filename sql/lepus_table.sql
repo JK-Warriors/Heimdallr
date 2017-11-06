@@ -286,6 +286,23 @@ CREATE TABLE `db_servers_oracle` (
   KEY `idx_host` (`host`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+-- ----------------------------
+-- Table structure for db_servers_oracle_dg
+-- ----------------------------
+DROP TABLE IF EXISTS `db_servers_oracle_dg`;
+CREATE TABLE `db_servers_oracle_dg` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `primary_db_id` int(10) DEFAULT NULL,
+  `standby_db_id` int(10) DEFAULT NULL,
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+  `display_order` smallint(4) NOT NULL DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `primary_db_id` (`primary_db_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 -- ----------------------------
 -- Table structure for db_servers_os
 -- ----------------------------

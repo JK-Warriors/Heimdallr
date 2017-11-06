@@ -4,6 +4,7 @@ class Servers_oracle extends Front_Controller {
     function __construct(){
 		parent::__construct();
         $this->load->model('servers_oracle_model','servers');
+        $this->load->model('servers_oracle_dg_model','oracle_dgs');
         $this->load->model('servers_os_model','servers_os');
 		$this->load->library('form_validation');
 	
@@ -209,6 +210,8 @@ class Servers_oracle extends Front_Controller {
             redirect(site_url('servers_oracle/index'));
         }
     }
+
+
     
     /**
      * 恢复
@@ -289,6 +292,77 @@ class Servers_oracle extends Front_Controller {
      }
     
     
+     /**
+     * 添加 DG
+     */
+    public function add_dg(){
+        #parent::check_privilege();
+        $sql="select * from db_servers_oracle   where is_delete=0 $ext_where order by id asc";
+        $result=$this->servers->get_total_record_sql($sql);
+        $data["datalist"]=$result['datalist'];
+        $data["datacount"]=$result['datacount'];
+        
+        $sql="select t.id,
+                    p.id   as pri_id,
+                    p.host as pri_host,
+                    p.port as pri_port,
+                    p.dsn as pri_dsn,
+                    p.tags as pri_tags,
+                    s.id   as sta_id,
+                    s.host as sta_host,
+                    s.port as sta_port,
+                    s.dsn as sta_dsn,
+                    s.tags as sta_tags
+            from db_servers_oracle_dg t, db_servers_oracle p, db_servers_oracle s
+            where t.primary_db_id = p.id
+                and t.standby_db_id = s.id
+                and p.is_delete = 0
+                and s.is_delete = 0
+            order by id asc";
+        $result=$this->oracle_dgs->get_total_record_sql($sql);
+        $data["dglist"]=$result['datalist'];
+        $data["dgcount"]=$result['datacount'];
+		
+        /*
+		 * 提交添加后处理
+		 */
+		$data['error_code']=0;
+		if(isset($_POST['submit']) && $_POST['submit']=='add_dg')
+        {
+			$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
+			$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
+           
+			if ($this->form_validation->run() == FALSE)
+			{
+				$data['error_code']='validation_error';
+			}
+			else
+			{
+					$data['error_code']=0;
+					$data = array(
+						'primary_db_id'=>$this->input->post('primary_db'),
+						'standby_db_id'=>$this->input->post('standby_db'),
+					);
+					$this->oracle_dgs->insert($data);
+                    redirect(site_url('servers_oracle/add_dg'));
+            }
+        }
+         
+        $this->layout->view("servers_oracle/add_dg",$data);
+    }
+
+    
+    /**
+    * 删除 DG 链路
+    */
+    function dg_delete($id){
+        #parent::check_privilege();
+        if($id){
+		    $this->oracle_dgs->delete($id);
+            redirect(site_url('servers_oracle/add_dg'));
+        }
+    }
+
 }
 
 /* End of file servers_oracle.php */

@@ -79,6 +79,7 @@ $lang['prev'] = '上一项';
 $lang['next'] = '下一项';
 $lang['add'] = '新增';
 $lang['batch_add'] = '批量新增';
+$lang['add_dg'] = '新增 DG';
 $lang['edit'] = '编辑';
 $lang['save'] = '保存';
 $lang['tags'] = '标签';
@@ -118,6 +119,7 @@ $lang['total_record'] = '查询记录行数 : ';
 $lang['no_record']='没有查询到数据.';
 $lang['add_to_trash_confirm']='您确定要将该内容添加到回收站?';
 $lang['forever_delete_confirm']='您确定要彻底删除该内容?';
+$lang['delete_confirm']='您确定要删除该内容?';
 $lang['edit_user_password_help'] = '如果不修改密码，请不要填写';
 $lang['choose_menu_error_msg'] = '父菜单不能选择当前菜单';
 
