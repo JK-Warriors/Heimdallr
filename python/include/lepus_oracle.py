@@ -183,6 +183,60 @@ def get_dg_delay(conn):
     finally:
         curs.close()
 
+
+
+def get_dg_p_info(conn, dest_id):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select dest_id,
+                        thread#,
+                        max(sequence#) sequence#,
+                        min(archived) archived,
+                        min(applied) applied,
+                        min(current_scn) current_scn,
+                        min(to_char(scn_to_timestamp(current_scn), 'yyyy-mm-dd hh24:mi:ss')) curr_db_time
+                    from v$archived_log t, v$database d
+                    where t.dest_id = %s
+                    group by dest_id, thread# """ %(dest_id));
+        result = curs.fetchone()
+        
+        return result
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+
+
+def get_dg_s_info(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select ms.thread#,
+                                ms.sequence#,
+                                ms.block#,
+                                ms.delay_mins,
+                                rp1.sofar avg_apply_rate,
+                                rp2.sofar current_scn,
+                                to_char(rp2.timestamp, 'yyyy-mm-dd hh24:mi:ss') curr_db_time
+                            from v$managed_standby  ms,
+                                v$recovery_progress rp1,
+                                v$recovery_progress rp2
+                            where ms.process in ('MRP0')
+                            and ms.sequence# <> 0
+                            and rp1.item = 'Average Apply Rate'
+                            and rp2.item = 'Last Applied Redo' """);
+        result = curs.fetchone()
+
+        return result
+    except Exception,e:
+        return null
+        print e
+
+    finally:
+        curs.close()
+
+
 def get_tablespace(conn):
     try:
         curs=conn.cursor()

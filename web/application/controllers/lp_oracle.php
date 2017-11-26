@@ -49,13 +49,20 @@ class Lp_oracle extends Front_Controller {
     public function dataguard()
 	{
         parent::check_privilege();
-        $data["datalist"]=$this->oracle->get_tablespace_total_record();
+        $data["dg_group"]=$this->oracle->get_dataguard_group();
 
-        $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
-        $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
-        
-        $setval["order"]=isset($_GET["order"]) ? $_GET["order"] : "";
-        $setval["order_type"]=isset($_GET["order_type"]) ? $_GET["order_type"] : "";
+        $setval["id"]=isset($_GET["dg_group_id"]) ? $_GET["dg_group_id"] : "";
+
+        if(isset($_GET["dg_group_id"])){
+            $id = $_GET["dg_group_id"];
+        }
+        else{
+            $id = $data["dg_group"][0]["id"];
+        }
+
+        $data["primary_db"] = $this->oracle->get_primary_db_by_group_id($id);
+        $data["standby_db"] = $this->oracle->get_standby_db_by_group_id($id);
+
         $data["setval"]=$setval;
 
         $this->layout->view("oracle/dataguard",$data);

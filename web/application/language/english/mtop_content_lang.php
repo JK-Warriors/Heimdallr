@@ -49,10 +49,21 @@ $lang['process'] = 'process';
 $lang['slowquery'] = 'slowquery';
 
 $lang['group_id'] = 'Group ID';
+$lang['group_name'] = 'Group Name';
 $lang['dg_group'] = 'DG Group';
 $lang['primary_db'] = 'Primary DB';
 $lang['standby_db'] = 'Standby DB';
+$lang['primary_dest_id'] = 'Primary Dest ID';
+$lang['standby_dest_id'] = 'Standby Dest ID';
+$lang['dest_id'] = 'Dest ID';
 $lang['dg_management'] = 'DG Management';
+$lang['db_name'] = 'DB Name';
+$lang['db_status'] = 'DB Status';
+$lang['db_port'] = 'Listener Port';
+$lang['db_time'] = 'DB Time';
+$lang['recovery_rate'] = 'Recovery Rate';
+$lang['curr_recover'] = 'Current Recover';
+
 
 
 $lang['connections_usage'] = 'Connections Usage';

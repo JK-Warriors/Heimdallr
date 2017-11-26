@@ -116,7 +116,48 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               sql="insert into oracle_tablespace(server_id,host,port,tags,tablespace_name,total_size,used_size,avail_size,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
               param=(server_id,host,port,tags,line[0],line[1],line[2],line[3],line[4])
               func.mysql_exec(sql,param)
-           
+
+
+        #check dataguard status
+        result = func.mysql_query("select count(1) from db_servers_oracle_dg where primary_db_id = '%s' or standby_db_id = '%s'" %(server_id, server_id))
+        if result:
+            is_dg = result[0][0]
+
+        if is_dg > 0:
+            if database_role == 'PRIMARY':  
+                dg_p_info = oracle.get_dg_p_info(conn, 2)
+
+                if dg_p_info:
+                    dest_id=dg_p_info[0]
+                    thread=dg_p_info[1]
+                    sequence=dg_p_info[2]
+                    archived=dg_p_info[3]
+                    applied=dg_p_info[4]
+                    current_scn=dg_p_info[5]
+                    curr_db_time=dg_p_info[6]
+
+                
+                ##################### insert data to mysql server#############################
+                #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
+                sql = "insert into oracle_dg_p_status(server_id, dest_id, `thread#`, `sequence#`, archived, applied, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s,%s);"
+                param = (server_id, dest_id, thread, sequence, archived, applied, current_scn, curr_db_time)
+                func.mysql_exec(sql,param) 
+            else:  
+                dg_s_info = oracle.get_dg_s_info(conn)
+                
+                if dg_s_info:
+                    thread=dg_s_info[0]
+                    sequence=dg_s_info[1]
+                    block=dg_s_info[2]
+                    delay_mins=dg_s_info[3]
+                    avg_apply_rate=dg_s_info[4]
+                    current_scn=dg_s_info[5]
+                    curr_db_time=dg_s_info[6]
+
+                ##################### insert data to mysql server#############################
+                sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s,%s);"
+                param = (server_id, thread, sequence, block, delay_mins, avg_apply_rate, current_scn, curr_db_time)
+                func.mysql_exec(sql,param)  
 
     except Exception, e:
         logger.error(e)
@@ -136,6 +177,12 @@ def main():
 
     func.mysql_exec("insert into oracle_tablespace_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_tablespace;",'')
     func.mysql_exec('delete from oracle_tablespace;','')
+
+    func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_dg_p_status;",'')
+    func.mysql_exec('delete from oracle_dg_p_status;','')
+
+    func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_dg_s_status;",'')
+    func.mysql_exec('delete from oracle_dg_s_status;','')
 
     #get oracle servers list
     servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_servers_oracle where is_delete=0 and monitor=1;")

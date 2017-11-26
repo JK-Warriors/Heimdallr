@@ -49,10 +49,20 @@ $lang['process'] = '进程';
 $lang['slowquery'] = '慢查询';
 
 $lang['group_id'] = '组号';
+$lang['group_name'] = '组名';
 $lang['dg_group'] = 'DG 组';
 $lang['primary_db'] = '主库';
 $lang['standby_db'] = '备库';
+$lang['primary_dest_id'] = '主库归档传输编号';
+$lang['standby_dest_id'] = '备库归档传输编号';
+$lang['dest_id'] = '传输编号';
 $lang['dg_management'] = 'DG 管理';
+$lang['db_name'] = '数据库名';
+$lang['db_status'] = '数据库状态';
+$lang['db_port'] = '监听端口';
+$lang['db_time'] = '数据库时间';
+$lang['recovery_rate'] = '恢复速度';
+$lang['curr_recover'] = '当前恢复';
 
 $lang['connections_usage'] = '连接池使用';
 $lang['open_files_usage'] = '打开文件数';

@@ -27,6 +27,13 @@
 <?php } ?>
 
 <div class="well">
+  <div class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('group_name'); ?></label>
+    <div class="controls">
+      <input type="text" id="group_name"  name="group_name" style="width: 200px;">
+    </div>
+   </div>
+
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('primary_db'); ?></label>
     <div class="controls">
@@ -41,6 +48,20 @@
    </div>
 
    <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('primary_dest_id'); ?></label>
+    <div class="controls">
+      <select name="primary_dest_id" id="primary_dest_id" class="input-large">
+        <?php 
+        $arr_dest_id = range(2, 31);
+        foreach ($arr_dest_id as $dest_id):?>
+        <option value="<?php echo $dest_id;?>" ><?php echo $dest_id;?></option>
+        <?php endforeach;?>
+        </select>
+        <span class="help-inline"></span>
+    </div>
+   </div>
+   
+   <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('standby_db'); ?></label>
     <div class="controls">
       <select name="standby_db" id="standby_db" class="input-large"  >
@@ -53,6 +74,22 @@
     </div>
    </div>
 
+
+
+   <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('standby_dest_id'); ?></label>
+    <div class="controls">
+      <select name="standby_dest_id" id="standby_dest_id" class="input-large">
+      <?php 
+      $arr_dest_id = range(2, 31);
+      foreach ($arr_dest_id as $dest_id):?>
+      <option value="<?php echo $dest_id;?>" ><?php echo $dest_id;?></option>
+      <?php endforeach;?>
+      </select>
+      <span class="help-inline"></span>
+    </div>
+   </div>
+
    <div class="controls">
     <button type="submit" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('add'); ?></button>
    <div class="btn-group"></div>
@@ -62,22 +99,23 @@
    
    <table class="table table-hover table-bordered">
       <thead>
-        <th colspan="1"><center><?php echo $this->lang->line('dg_group'); ?></center></th>
+        <th colspan="2"><center><?php echo $this->lang->line('dg_group'); ?></center></th>
         <th colspan="5"><center><?php echo $this->lang->line('primary_db'); ?></center></th>
         <th colspan="5"><center><?php echo $this->lang->line('standby_db'); ?></center></th>
         <th colspan="1"></th>
         <tr style="font-size: 12px;">
         <th><?php echo $this->lang->line('group_id'); ?></th>
-        <th><?php echo $this->lang->line('id'); ?></th>
+        <th><?php echo $this->lang->line('group_name'); ?></th>
         <th><?php echo $this->lang->line('host'); ?></th>
         <th><?php echo $this->lang->line('port'); ?></th>
         <th><?php echo $this->lang->line('dsn'); ?></th>
         <th><?php echo $this->lang->line('tags'); ?></th>
-        <th><?php echo $this->lang->line('id'); ?></th>
+        <th><?php echo $this->lang->line('dest_id'); ?></th>
         <th><?php echo $this->lang->line('host'); ?></th>
         <th><?php echo $this->lang->line('port'); ?></th>
         <th><?php echo $this->lang->line('dsn'); ?></th>
         <th><?php echo $this->lang->line('tags'); ?></th>
+        <th><?php echo $this->lang->line('dest_id'); ?></th>
         <th></th>
 	</tr>
       </thead>
@@ -86,16 +124,17 @@
  <?php foreach ($dglist  as $item):?>
     <tr style="font-size: 12px;">
         <td><?php echo $item['id'] ?></td>
-        <td><?php echo $item['pri_id'] ?></td>
-	    <td><?php echo $item['pri_host'] ?></td>
+        <td><?php echo $item['group_name'] ?></td>
+	      <td><?php echo $item['pri_host'] ?></td>
         <td><?php echo $item['pri_port'] ?></td>
         <td><?php echo $item['pri_dsn'] ?></td>
         <td><?php echo $item['pri_tags'] ?></td>
-        <td><?php echo $item['sta_id'] ?></td>
-	    <td><?php echo $item['sta_host'] ?></td>
+        <td><?php echo $item['pri_dest_id'] ?></td>
+	      <td><?php echo $item['sta_host'] ?></td>
         <td><?php echo $item['sta_port'] ?></td>
         <td><?php echo $item['sta_dsn'] ?></td>
         <td><?php echo $item['sta_tags'] ?></td>
+        <td><?php echo $item['sta_dest_id'] ?></td>
         <td>
         <a href="<?php echo site_url('servers_oracle/dg_delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('delete'); ?>" ><i class="icon-remove"></i></a>
         </td>
