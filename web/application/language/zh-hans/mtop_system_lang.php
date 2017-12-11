@@ -1,7 +1,7 @@
 <?php
-$lang['lepus'] = '天兔';
+$lang['lepus'] = '西子';
 $lang['database_monitor_system'] = '数据库监控系统';
-$lang['lepus_database_monitor'] = '天兔数据库监控系统';
+$lang['lepus_database_monitor'] = '西子数据库监控系统';
 $lang['login'] = '登录';
 $lang['username'] = "用户名";
 $lang['password'] = '密码';
@@ -67,7 +67,7 @@ $lang['you_need_renew_license'] = 'License已达到使用期限.您需要续费�
 $lang['you_need_upgrade_license'] = '服务器已达到License限制.您需要升级您的License才能继续使用.';
 
 $lang['home'] = '主页';
-$lang['dashboard'] = '仪表盘';
+$lang['dashboard'] = '首页';
 $lang['help'] = '帮助';
 $lang['profile'] = '个人面板';
 $lang['language'] = '语言';
@@ -123,8 +123,8 @@ $lang['delete_confirm']='您确定要删除该内容?';
 $lang['edit_user_password_help'] = '如果不修改密码，请不要填写';
 $lang['choose_menu_error_msg'] = '父菜单不能选择当前菜单';
 
-$lang['lepus_version'] = '天兔版本';
-$lang['lepus_status'] = '天兔状态';
+$lang['lepus_version'] = '西子版本';
+$lang['lepus_status'] = '西子状态';
 $lang['last_check_time'] = '最新监测时间';
 $lang['lepus_running'] = '正在运行';
 $lang['lepus_not_run'] = '没有运行';

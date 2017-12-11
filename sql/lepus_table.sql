@@ -296,8 +296,7 @@ CREATE TABLE `db_servers_oracle_dg` (
   `group_name` varchar(200),
   `primary_db_id` int(10),
   `standby_db_id` int(10),
-  `primary_dest_id` tinyint(2) DEFAULT 2,
-  `standby_dest_id` tinyint(2) DEFAULT 2,
+  `is_switch` tinyint(1) DEFAULT 0,
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
   `display_order` smallint(4) NOT NULL DEFAULT '1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -464,8 +463,6 @@ CREATE TABLE `oracle_dg_p_status` (
   `dest_id` smallint(4) NOT NULL DEFAULT '0',
   `thread#` smallint(4) NOT NULL DEFAULT '0',
   `sequence#` int(10) DEFAULT NULL,
-  `archived` varchar(5) DEFAULT NULL,
-  `applied` varchar(5) DEFAULT NULL,
   `curr_scn` int(20) DEFAULT NULL,
   `curr_db_time` varchar(20) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -480,8 +477,6 @@ CREATE TABLE `oracle_dg_p_status_his` (
   `dest_id` smallint(4) NOT NULL DEFAULT '0',
   `thread#` smallint(4) NOT NULL DEFAULT '0',
   `sequence#` int(10) DEFAULT NULL,
-  `archived` varchar(5) DEFAULT NULL,
-  `applied` varchar(5) DEFAULT NULL,
   `curr_scn` int(20) DEFAULT NULL,
   `curr_db_time` varchar(20) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -524,6 +519,32 @@ CREATE TABLE `oracle_dg_s_status_his` (
   KEY `idx_server_id` (`server_id`) USING BTREE,
   KEY `idx_ymdhi` (`ymdhi`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `oracle_dg_s_seq`;
+CREATE TABLE `oracle_dg_s_seq` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` int(10) NOT NULL,
+  `thread#` smallint(4) NOT NULL,
+  `archived` int(20) DEFAULT NULL,
+  `applied` int(20) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `oracle_dg_s_seq_his`;
+CREATE TABLE `oracle_dg_s_seq_his` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` int(10) NOT NULL,
+  `thread#` smallint(4) NOT NULL,
+  `archived` int(20) DEFAULT NULL,
+  `applied` int(20) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ymdhi` bigint(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`) USING BTREE,
+  KEY `idx_ymdhi` (`ymdhi`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for lepus_status

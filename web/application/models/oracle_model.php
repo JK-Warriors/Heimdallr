@@ -130,8 +130,39 @@ class Oracle_model extends CI_Model{
         }
     }
 
-    function get_primary_db_by_group_id($id){
-        $query=$this->db->query("select d.host         as p_host,
+
+    function get_pri_id_by_group_id($id){
+        $query=$this->db->query("select CASE is_switch
+                                            WHEN 0 THEN primary_db_id
+                                            ELSE standby_db_id
+                                        END as pri_id
+                                   from db_servers_oracle_dg
+                                  where id = $id ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->pri_id;
+        }
+    }
+
+
+    function get_sta_id_by_group_id($id){
+        $query=$this->db->query("select CASE is_switch
+                                            WHEN 0 THEN standby_db_id 
+                                            ELSE primary_db_id
+                                        END as sta_id
+                                   from db_servers_oracle_dg
+                                  where id = $id ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->sta_id;
+        }
+    }
+
+
+    function get_primary_info($pri_id){
+        $query=$this->db->query("select d.id, d.host         as p_host,
                                         d.port         as p_port,
                                         d.dsn          as db_name,
                                         s.open_mode    as open_mode,
@@ -139,21 +170,18 @@ class Oracle_model extends CI_Model{
                                         p.`sequence#` as p_sequence,
                                         p.curr_scn     as p_scn,
                                         p.curr_db_time as p_db_time
-                                from db_servers_oracle_dg g
-                                join db_servers_oracle d
-                                    on g.primary_db_id = d.id
-                                    and g.id = $id
+                                from (select * from db_servers_oracle where id = $pri_id) d
                                 left join oracle_status s
-                                    on g.primary_db_id = s.server_id
+                                    on d.id = s.server_id
                                 left JOIN oracle_dg_p_status p
-                                    on g.primary_db_id = p.server_id; ");
+                                    on d.id = p.server_id; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 
         }
     }
 
-    function get_standby_db_by_group_id($id){
+    function get_standby_info($sta_id){
         $query=$this->db->query("select d.host as s_host,
                                         d.port as s_port,
                                         d.dsn  as db_name,
@@ -165,14 +193,11 @@ class Oracle_model extends CI_Model{
                                         s.avg_apply_rate,
                                         s.curr_scn       as s_scn,
                                         s.curr_db_time   as s_db_time
-                                from db_servers_oracle_dg g
-                                join db_servers_oracle d
-                                    on g.id = $id
-                                    and g.standby_db_id = d.id
+                                  from (select * from db_servers_oracle where id = $sta_id) d
                                 left join oracle_status os
-                                    on g.standby_db_id = os.server_id
-                                left join oracle_dg_s_status s
-                                    on g.standby_db_id = s.server_id; ");
+                                    on d.id = os.server_id
+                                left JOIN oracle_dg_s_status s
+                                    on d.id = s.server_id; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

@@ -309,13 +309,11 @@ class Servers_oracle extends Front_Controller {
                     p.port as pri_port,
                     p.dsn as pri_dsn,
                     p.tags as pri_tags,
-                    t.primary_dest_id as pri_dest_id,
                     s.id   as sta_id,
                     s.host as sta_host,
                     s.port as sta_port,
                     s.dsn as sta_dsn,
-                    s.tags as sta_tags,
-                    t.standby_dest_id as sta_dest_id
+                    s.tags as sta_tags
             from db_servers_oracle_dg t, db_servers_oracle p, db_servers_oracle s
             where t.primary_db_id = p.id
                 and t.standby_db_id = s.id
@@ -346,9 +344,7 @@ class Servers_oracle extends Front_Controller {
 					$data = array(
 						'group_name'=>$this->input->post('group_name'),
 						'primary_db_id'=>$this->input->post('primary_db'),
-						'primary_dest_id'=>$this->input->post('primary_dest_id'),
 						'standby_db_id'=>$this->input->post('standby_db'),
-						'standby_dest_id'=>$this->input->post('standby_dest_id'),
 					);
 					$this->oracle_dgs->insert($data);
                     redirect(site_url('servers_oracle/add_dg'));

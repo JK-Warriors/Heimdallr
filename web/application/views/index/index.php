@@ -4,22 +4,24 @@
 <div class="header">
     <div class="stats">
     
-    <p class="stat"><span class="number"><?php echo $servers_os_count; ?></span>OS</p>
+    <!-- <p class="stat"><span class="number"><?php echo $servers_os_count; ?></span>OS</p>
     <p class="stat"><span class="number"><?php echo $servers_redis_count; ?></span>Redis</p>
     <p class="stat"><span class="number"><?php echo $servers_mongodb_count; ?></span>MongoDB</p>
-        <p class="stat"><span class="number"><?php echo $servers_sqlserver_count; ?></span>SQLServer</p>
+    <p class="stat"><span class="number"><?php echo $servers_sqlserver_count; ?></span>SQLServer</p>
     <p class="stat"><span class="number"><?php echo $servers_oracle_count; ?></span>Oracle</p>
-    <p class="stat"><span class="number"><?php echo $servers_mysql_count; ?></span>MySQL</p>
+    <p class="stat"><span class="number"><?php echo $servers_mysql_count; ?></span>MySQL</p> -->
     
     </div>
-<h1 class="page-title"><?php echo $this->lang->line('dashboard'); ?></h1>
+    <!-- <h1 class="page-title"><?php echo $this->lang->line('dashboard'); ?></h1> -->
+
+
 </div>
         
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('dashboard'); ?></li><span class="divider">/</span></li>
             <span class="right"><?php echo $this->lang->line('lepus_version'); ?>:<?php echo $lepus_status['lepus_version']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('lepus_status'); ?>:<?php if($lepus_status['lepus_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('lepus_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('lepus_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $lepus_status['lepus_checktime']; ?></span>
-</ul>
+    </ul>
 
  
 
@@ -38,9 +40,9 @@
   <option value="" <?php if($setval['db_type']=='') echo "selected"; ?> ><?php echo $this->lang->line('db_type'); ?></option>
   <option value="mysql" <?php if($setval['db_type']=='mysql') echo "selected"; ?> ><?php echo $this->lang->line('mysql'); ?></option>
   <option value="oracle" <?php if($setval['db_type']=='oracle') echo "selected"; ?> ><?php echo $this->lang->line('oracle'); ?></option>
-      <option value="sqlserver" <?php if($setval['db_type']=='sqlserver') echo "selected"; ?> ><?php echo $this->lang->line('sqlserver'); ?></option>
+  <!-- <option value="sqlserver" <?php if($setval['db_type']=='sqlserver') echo "selected"; ?> ><?php echo $this->lang->line('sqlserver'); ?></option>
   <option value="mongodb" <?php if($setval['db_type']=='mongodb') echo "selected"; ?> ><?php echo $this->lang->line('mongodb'); ?></option>
-  <option value="redis" <?php if($setval['db_type']=='redis') echo "selected"; ?> ><?php echo $this->lang->line('redis'); ?></option>
+  <option value="redis" <?php if($setval['db_type']=='redis') echo "selected"; ?> ><?php echo $this->lang->line('redis'); ?></option> -->
   
   </select>
   

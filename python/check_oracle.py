@@ -22,7 +22,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
     url=host+':'+port+'/'+dsn
 
     try:
-        conn=cx_Oracle.connect(username,password,url) #获取connection对象
+        conn=cx_Oracle.connect(username,password,url, mode=cx_Oracle.SYSDBA) #获取connection对象
 
     except Exception, e:
         logger_msg="check oracle %s : %s" %(url,str(e).strip('\n'))
@@ -125,7 +125,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
         if is_dg > 0:
             if database_role == 'PRIMARY':  
-                dg_p_info = oracle.get_dg_p_info(conn, 2)
+                dg_p_info = oracle.get_dg_p_info(conn, 1)
 
                 if dg_p_info:
                     dest_id=dg_p_info[0]
@@ -143,16 +143,27 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
                 param = (server_id, dest_id, thread, sequence, archived, applied, current_scn, curr_db_time)
                 func.mysql_exec(sql,param) 
             else:  
-                dg_s_info = oracle.get_dg_s_info(conn)
+                dg_s_ms = oracle.get_dg_s_ms(conn)
+                dg_s_al = oracle.get_dg_s_al(conn)
+                dg_s_rate = oracle.get_dg_s_rate(conn)
+                dg_s_lar = oracle.get_dg_s_lar(conn)
                 
-                if dg_s_info:
-                    thread=dg_s_info[0]
-                    sequence=dg_s_info[1]
-                    block=dg_s_info[2]
-                    delay_mins=dg_s_info[3]
-                    avg_apply_rate=dg_s_info[4]
-                    current_scn=dg_s_info[5]
-                    curr_db_time=dg_s_info[6]
+                if dg_s_ms:
+                    thread=dg_s_ms[0]
+                    sequence=dg_s_ms[1]
+                    block=dg_s_ms[2]
+                    delay_mins=dg_s_ms[3]
+                else:
+                    thread=dg_s_al[0]
+                    sequence=dg_s_al[1]
+                    block=0
+                    delay_mins=0
+
+
+                if dg_s_rp:
+                    avg_apply_rate=dg_s_rate[0]
+                    current_scn=dg_s_lar[0]
+                    curr_db_time=dg_s_lar[1]
 
                 ##################### insert data to mysql server#############################
                 sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s,%s);"

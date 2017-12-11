@@ -105,7 +105,7 @@
                 </form>
             </div>
         </div>
-        <p class="pull-right" style=""><a href="http://www.lepus.cc" target="blank"><?php echo $this->lang->line('get_support'); ?></a></p>
+        <!-- <p class="pull-right" style=""><a href="http://www.lepus.cc" target="blank"><?php echo $this->lang->line('get_support'); ?></a></p> -->
         <p>&nbsp;<?php echo $this->lang->line('version'); ?>:<?php echo $lepus_status['lepus_version']; ?></p>
     </div>
 </div>

@@ -188,16 +188,18 @@ def get_dg_delay(conn):
 def get_dg_p_info(conn, dest_id):
     try:
         curs=conn.cursor()
-        curs.execute("""select dest_id,
-                        thread#,
-                        max(sequence#) sequence#,
-                        min(archived) archived,
-                        min(applied) applied,
-                        min(current_scn) current_scn,
-                        min(to_char(scn_to_timestamp(current_scn), 'yyyy-mm-dd hh24:mi:ss')) curr_db_time
-                    from v$archived_log t, v$database d
-                    where t.dest_id = %s
-                    group by dest_id, thread# """ %(dest_id));
+        curs.execute("""select *
+                            from (select dest_id,
+                                        thread#,
+                                        sequence#,
+                                        archived,
+                                        applied,
+                                        current_scn,
+                                        to_char(scn_to_timestamp(current_scn), 'yyyy-mm-dd hh24:mi:ss') curr_db_time,
+                                        row_number() over(partition by thread# order by sequence# desc) rn
+                                    from v$archived_log t, v$database d
+                                    where t.dest_id = %s)
+                            where rn = 1; """ %(dest_id));
         result = curs.fetchone()
         
         return result
@@ -209,23 +211,71 @@ def get_dg_p_info(conn, dest_id):
 
 
 
-def get_dg_s_info(conn):
+def get_dg_s_ms(conn):
     try:
         curs=conn.cursor()
         curs.execute("""select ms.thread#,
-                                ms.sequence#,
-                                ms.block#,
-                                ms.delay_mins,
-                                rp1.sofar avg_apply_rate,
-                                rp2.sofar current_scn,
-                                to_char(rp2.timestamp, 'yyyy-mm-dd hh24:mi:ss') curr_db_time
-                            from v$managed_standby  ms,
-                                v$recovery_progress rp1,
-                                v$recovery_progress rp2
-                            where ms.process in ('MRP0')
-                            and ms.sequence# <> 0
-                            and rp1.item = 'Average Apply Rate'
-                            and rp2.item = 'Last Applied Redo' """);
+                               ms.sequence#,
+                               ms.block#,
+                               ms.delay_mins
+                          from v$managed_standby  ms
+                         where ms.process in ('MRP0')
+                           and ms.sequence# <> 0 """);
+        result = curs.fetchone()
+
+        return result
+    except Exception,e:
+        return null
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_dg_s_al(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute(""" select thread#,
+                                max(sequence#) sequence#
+                           from v$archived_log t
+                          where t.dest_id = 1
+                            and t.applied = 'YES'
+                          group by thread# """);
+        result = curs.fetchone()
+
+        return result
+    except Exception,e:
+        return null
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_dg_s_rate(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select rp.sofar avg_apply_rate
+                          from v$recovery_progress rp
+                         where rp1.item = 'Average Apply Rate' """);
+        result = curs.fetchone()
+
+        return result
+    except Exception,e:
+        return null
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_dg_s_lar(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select replace(rp.comments, 'SCN: ', '') current_scn,
+                               to_char(rp.timestamp, 'yyyy-mm-dd hh24:mi:ss') curr_db_time
+                          from v$recovery_progress rp
+                         where rp.item = 'Last Applied Redo' """);
         result = curs.fetchone()
 
         return result

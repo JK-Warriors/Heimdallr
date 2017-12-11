@@ -47,7 +47,7 @@
     </div>
    </div>
 
-   <div class="control-group">
+   <!-- <div class="control-group">
     <label class="control-label" for=""><?php echo $this->lang->line('primary_dest_id'); ?></label>
     <div class="controls">
       <select name="primary_dest_id" id="primary_dest_id" class="input-large">
@@ -59,7 +59,7 @@
         </select>
         <span class="help-inline"></span>
     </div>
-   </div>
+   </div> -->
    
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('standby_db'); ?></label>
@@ -76,7 +76,7 @@
 
 
 
-   <div class="control-group">
+   <!-- <div class="control-group">
     <label class="control-label" for=""><?php echo $this->lang->line('standby_dest_id'); ?></label>
     <div class="controls">
       <select name="standby_dest_id" id="standby_dest_id" class="input-large">
@@ -88,7 +88,7 @@
       </select>
       <span class="help-inline"></span>
     </div>
-   </div>
+   </div> -->
 
    <div class="controls">
     <button type="submit" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('add'); ?></button>
@@ -100,8 +100,8 @@
    <table class="table table-hover table-bordered">
       <thead>
         <th colspan="2"><center><?php echo $this->lang->line('dg_group'); ?></center></th>
-        <th colspan="5"><center><?php echo $this->lang->line('primary_db'); ?></center></th>
-        <th colspan="5"><center><?php echo $this->lang->line('standby_db'); ?></center></th>
+        <th colspan="4"><center><?php echo $this->lang->line('primary_db'); ?></center></th>
+        <th colspan="4"><center><?php echo $this->lang->line('standby_db'); ?></center></th>
         <th colspan="1"></th>
         <tr style="font-size: 12px;">
         <th><?php echo $this->lang->line('group_id'); ?></th>
@@ -110,12 +110,10 @@
         <th><?php echo $this->lang->line('port'); ?></th>
         <th><?php echo $this->lang->line('dsn'); ?></th>
         <th><?php echo $this->lang->line('tags'); ?></th>
-        <th><?php echo $this->lang->line('dest_id'); ?></th>
         <th><?php echo $this->lang->line('host'); ?></th>
         <th><?php echo $this->lang->line('port'); ?></th>
         <th><?php echo $this->lang->line('dsn'); ?></th>
         <th><?php echo $this->lang->line('tags'); ?></th>
-        <th><?php echo $this->lang->line('dest_id'); ?></th>
         <th></th>
 	</tr>
       </thead>
@@ -129,12 +127,10 @@
         <td><?php echo $item['pri_port'] ?></td>
         <td><?php echo $item['pri_dsn'] ?></td>
         <td><?php echo $item['pri_tags'] ?></td>
-        <td><?php echo $item['pri_dest_id'] ?></td>
 	      <td><?php echo $item['sta_host'] ?></td>
         <td><?php echo $item['sta_port'] ?></td>
         <td><?php echo $item['sta_dsn'] ?></td>
         <td><?php echo $item['sta_tags'] ?></td>
-        <td><?php echo $item['sta_dest_id'] ?></td>
         <td>
         <a href="<?php echo site_url('servers_oracle/dg_delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('delete'); ?>" ><i class="icon-remove"></i></a>
         </td>

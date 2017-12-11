@@ -95,37 +95,7 @@ def check_oracle_dg(host,port,dsn,username,password,server_id,tags):
 
 
 def main():
-
-
-
-    #get oracle servers list
-    servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_servers_oracle where is_delete=0 and monitor=1;")
-
-    logger.info("check oracle dataguard start.")
-    if servers:
-        plist = []
-        for row in servers:
-            server_id=row[0]
-            host=row[1]
-            port=row[2]
-            dsn=row[3]
-            username=row[4]
-            password=row[5]
-            tags=row[6]
-            p = Process(target = check_oracle, args = (host,port,dsn,username,password,server_id,tags))
-            plist.append(p)
-            p.start()
-        #time.sleep(10)
-        #for p in plist:
-        #    p.terminate()
-        for p in plist:
-            p.join()
-
-    else:
-        logger.warning("check oracle: not found any servers")
-
-    logger.info("check oracle controller finished.")
-                     
+    #get oracle dg list
 
 
 if __name__=='__main__':

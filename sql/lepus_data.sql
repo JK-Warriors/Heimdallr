@@ -57,29 +57,29 @@ INSERT INTO `admin_menu` VALUES ('28', 'BigTable Analysis', '2', '3', 'lp_mysql/
 INSERT INTO `admin_menu` VALUES ('29', 'Key Cache Monitor', '2', '3', 'lp_mysql/key_cache', 'icon-list', '0', '1', '3', '2014-04-09 15:52:12');
 INSERT INTO `admin_menu` VALUES ('30', 'InnoDB Monitor', '2', '3', 'lp_mysql/innodb', 'icon-list', '0', '1', '4', '2014-04-09 15:54:47');
 INSERT INTO `admin_menu` VALUES ('31', 'Resource Monitor', '2', '3', 'lp_mysql/resource', 'icon-list', '0', '1', '2', '2014-04-10 13:23:06');
-INSERT INTO `admin_menu` VALUES ('32', 'MongoDB', '2', '16', 'servers_mongodb/index', 'icon-list', '0', '1', '5', '2014-04-14 12:26:35');
-INSERT INTO `admin_menu` VALUES ('33', 'MongoDB Monitor', '1', '0', 'lp_mongodb', 'icon-dashboard', '0', '1', '5', '2014-04-14 14:15:52');
-INSERT INTO `admin_menu` VALUES ('34', 'Health Montior', '2', '33', 'lp_mongodb/index', 'icon-list', '0', '1', '1', '2014-04-14 14:17:23');
-INSERT INTO `admin_menu` VALUES ('35', 'Indexes Monitor', '2', '33', 'lp_mongodb/indexes', 'icon-list', '0', '0', '2', '2014-04-14 16:25:48');
-INSERT INTO `admin_menu` VALUES ('36', 'Memory Monitor', '2', '33', 'lp_mongodb/memory', 'icon-list', '0', '1', '3', '2014-04-14 16:26:50');
+-- INSERT INTO `admin_menu` VALUES ('32', 'MongoDB', '2', '16', 'servers_mongodb/index', 'icon-list', '0', '1', '5', '2014-04-14 12:26:35');
+-- INSERT INTO `admin_menu` VALUES ('33', 'MongoDB Monitor', '1', '0', 'lp_mongodb', 'icon-dashboard', '0', '1', '5', '2014-04-14 14:15:52');
+-- INSERT INTO `admin_menu` VALUES ('34', 'Health Montior', '2', '33', 'lp_mongodb/index', 'icon-list', '0', '1', '1', '2014-04-14 14:17:23');
+-- INSERT INTO `admin_menu` VALUES ('35', 'Indexes Monitor', '2', '33', 'lp_mongodb/indexes', 'icon-list', '0', '0', '2', '2014-04-14 16:25:48');
+-- INSERT INTO `admin_menu` VALUES ('36', 'Memory Monitor', '2', '33', 'lp_mongodb/memory', 'icon-list', '0', '1', '3', '2014-04-14 16:26:50');
 INSERT INTO `admin_menu` VALUES ('40', 'Oracle', '2', '16', 'servers_oracle/index', 'icon-list', '0', '1', '4', '2014-05-27 13:21:49');
 INSERT INTO `admin_menu` VALUES ('43', 'Health Monitor', '2', '22', 'lp_os/index', 'icon-list', '0', '1', '0', '2014-07-08 09:19:11');
 INSERT INTO `admin_menu` VALUES ('44', 'Disk IO', '2', '22', 'lp_os/disk_io', 'icon-list', '0', '1', '5', '2014-07-15 15:35:56');
 INSERT INTO `admin_menu` VALUES ('45', 'OS', '2', '16', 'servers_os/index', 'icon-list', '0', '1', '8', '2014-07-16 10:32:13');
 INSERT INTO `admin_menu` VALUES ('46', 'Settings', '2', '16', 'settings/index', 'icon-list', '0', '1', '0', '2014-08-12 15:30:54');
-INSERT INTO `admin_menu` VALUES ('48', 'Redis Monitor', '1', '0', 'lp_redis', 'icon-dashboard', '0', '1', '6', '2014-09-02 12:36:41');
-INSERT INTO `admin_menu` VALUES ('50', 'Health Monitor', '2', '48', 'lp_redis/index', 'icon-list', '0', '1', '2', '2014-09-02 12:39:58');
-INSERT INTO `admin_menu` VALUES ('51', 'Redis', '2', '16', 'servers_redis/index', 'icon-list', '0', '1', '7', '2014-09-09 17:15:41');
-INSERT INTO `admin_menu` VALUES ('52', 'Memory Monitor', '2', '48', 'lp_redis/memory', 'icon-list', '0', '1', '3', '2014-09-11 14:34:13');
-INSERT INTO `admin_menu` VALUES ('54', 'Replication Monitor', '2', '48', 'lp_redis/replication', 'icon-list', '0', '0', '5', '2014-09-11 14:37:12');
+-- INSERT INTO `admin_menu` VALUES ('48', 'Redis Monitor', '1', '0', 'lp_redis', 'icon-dashboard', '0', '1', '6', '2014-09-02 12:36:41');
+-- INSERT INTO `admin_menu` VALUES ('50', 'Health Monitor', '2', '48', 'lp_redis/index', 'icon-list', '0', '1', '2', '2014-09-02 12:39:58');
+-- INSERT INTO `admin_menu` VALUES ('51', 'Redis', '2', '16', 'servers_redis/index', 'icon-list', '0', '1', '7', '2014-09-09 17:15:41');
+-- INSERT INTO `admin_menu` VALUES ('52', 'Memory Monitor', '2', '48', 'lp_redis/memory', 'icon-list', '0', '1', '3', '2014-09-11 14:34:13');
+-- INSERT INTO `admin_menu` VALUES ('54', 'Replication Monitor', '2', '48', 'lp_redis/replication', 'icon-list', '0', '0', '5', '2014-09-11 14:37:12');
 INSERT INTO `admin_menu` VALUES ('56', 'Oracle Monitor', '1', '0', 'lp_oracle', 'icon-dashboard', '0', '1', '4', '2014-10-24 15:34:50');
 INSERT INTO `admin_menu` VALUES ('57', 'Health Montior', '2', '56', 'lp_oracle/index', 'icon-list', '0', '1', '1', '2014-10-24 15:35:47');
 INSERT INTO `admin_menu` VALUES ('58', 'Tablespace Monitor', '2', '56', 'lp_oracle/tablespace', 'icon-list', '0', '1', '2', '2014-10-24 15:37:19');
 INSERT INTO `admin_menu` VALUES ('59', 'DataGuard Monitor', '2', '56', 'lp_oracle/dataguard', 'icon-list', '0', '1', '3', '2014-10-24 15:37:19');
 
-INSERT INTO `admin_menu` VALUES ('70', 'SQLServer', '2', '16', 'servers_sqlserver/index', 'icon-list', '0', '1', '6', '2015-12-31 11:06:53');
-INSERT INTO `admin_menu` VALUES ('71', 'SQLServer Monitor', '1', '0', 'lp_sqlserver', 'icon-dashboard', '0', '1', '5', '2016-01-26 17:22:09');
-INSERT INTO `admin_menu` VALUES ('72', 'Health Monitor', '2', '71', 'lp_sqlserver/index', 'icon-list', '0', '1', '1', '2016-01-26 17:24:20');
+-- INSERT INTO `admin_menu` VALUES ('70', 'SQLServer', '2', '16', 'servers_sqlserver/index', 'icon-list', '0', '1', '6', '2015-12-31 11:06:53');
+-- INSERT INTO `admin_menu` VALUES ('72', 'Health Monitor', '2', '71', 'lp_sqlserver/index', 'icon-list', '0', '1', '1', '2016-01-26 17:24:20');
+-- INSERT INTO `admin_menu` VALUES ('71', 'SQLServer Monitor', '1', '0', 'lp_sqlserver', 'icon-dashboard', '0', '1', '5', '2016-01-26 17:22:09');
 
 -- ----------------------------
 -- Table structure for admin_privilege
@@ -524,7 +524,7 @@ CREATE TABLE `lepus_status` (
 -- Records of lepus_status
 -- ----------------------------
 INSERT INTO `lepus_status` VALUES ('lepus_running', '1');
-INSERT INTO `lepus_status` VALUES ('lepus_version', '3.8 Beta');
+INSERT INTO `lepus_status` VALUES ('lepus_version', '1.0.0 Beta');
 INSERT INTO `lepus_status` VALUES ('lepus_checktime', '2016-05-01 09:56:10');
 
 -- ----------------------------
