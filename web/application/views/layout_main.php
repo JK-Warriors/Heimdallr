@@ -65,7 +65,7 @@
 					<?php 
 						$model = $this->uri->segment(1);
 					?>
-                    <li <?php if($model=='index'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('dashboard'); ?></a></li>
+                    <li <?php if($model=='index'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('home'); ?></a></li>
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-th-large"></i><?php echo $this->lang->line('database'); ?>
@@ -127,7 +127,7 @@
     <?php $this->load->model("user_model");?>
     <?php $menus = $this->user_model->get_user_menus(); //print_r($menus);?>
     <div class="sidebar-nav" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  "style='font-family: 微软雅黑;'" ?> >
-        <a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-comment"></i><?php echo $this->lang->line('dashboard'); ?></a>
+        <a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-comment"></i><?php echo $this->lang->line('home'); ?></a>
         <?php if (isset($menus)):?>
           	<?php foreach($menus as $menu):?>
             <a href="#<?php echo $menu['parent_url'];?>" class="nav-header collapsed" data-toggle="collapse"><i class="<?php echo $menu['parent_icon'];?>"></i><?php echo $this->lang->line('_'.$menu['parent_title']); ?><i class="icon-chevron-up" ></i></a>

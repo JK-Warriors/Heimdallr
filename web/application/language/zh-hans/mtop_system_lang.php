@@ -101,6 +101,7 @@ $lang['display_order'] = '显示顺序';
 $lang['time'] = '时间';
 $lang['level'] = '级别';
 $lang['search'] = '搜索';
+$lang['detail'] = '详细';
 $lang['filter'] = '过滤';
 $lang['reset'] = '重置';
 $lang['refresh'] = '刷新';

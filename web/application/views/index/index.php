@@ -1,25 +1,10 @@
 <script src="lib/bootstrap/js/jquery.pin.js"></script>
 
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<div class="header">
-    <div class="stats">
-    
-    <!-- <p class="stat"><span class="number"><?php echo $servers_os_count; ?></span>OS</p>
-    <p class="stat"><span class="number"><?php echo $servers_redis_count; ?></span>Redis</p>
-    <p class="stat"><span class="number"><?php echo $servers_mongodb_count; ?></span>MongoDB</p>
-    <p class="stat"><span class="number"><?php echo $servers_sqlserver_count; ?></span>SQLServer</p>
-    <p class="stat"><span class="number"><?php echo $servers_oracle_count; ?></span>Oracle</p>
-    <p class="stat"><span class="number"><?php echo $servers_mysql_count; ?></span>MySQL</p> -->
-    
-    </div>
-    <!-- <h1 class="page-title"><?php echo $this->lang->line('dashboard'); ?></h1> -->
 
-
-</div>
         
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
-            <li class="active"><?php echo $this->lang->line('dashboard'); ?></li><span class="divider">/</span></li>
             <span class="right"><?php echo $this->lang->line('lepus_version'); ?>:<?php echo $lepus_status['lepus_version']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('lepus_status'); ?>:<?php if($lepus_status['lepus_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('lepus_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('lepus_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $lepus_status['lepus_checktime']; ?></span>
     </ul>
 

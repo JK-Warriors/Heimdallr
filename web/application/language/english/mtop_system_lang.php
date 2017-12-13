@@ -101,6 +101,7 @@ $lang['display_order'] = 'Display Order';
 $lang['time'] = 'Time';
 $lang['level'] = 'Level';
 $lang['search'] = 'Search';
+$lang['detail'] = 'Detail';
 $lang['filter'] = 'Filter';
 $lang['reset'] = 'Reset';
 $lang['refresh'] = 'Refresh';
