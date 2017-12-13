@@ -1,8 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<div class="header">
+<!-- <div class="header">
             
             <h1 class="page-title"><?php echo $this->lang->line('_Oracle'); ?> <?php echo $this->lang->line('_DataGuard Monitor'); ?></h1>
-</div>
+</div> -->
         
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
@@ -32,7 +32,12 @@
         </select>
         <!-- <span class="help-inline"></span> -->
     </div>
-    <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
+    <button type="submit" class="btn btn-success"> <?php echo $this->lang->line('detail'); ?></button>
+
+    <input name="trans_type" type="submit" value="Failover" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
+    <input name="trans_type" type="submit" value="Switchover" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
+
+
 </form>
 </div>
 </div>
@@ -43,55 +48,55 @@
 
 
 <div style="padding: 19px;" >
-<div style='padding: 20px 120px 0px 60px; height:100px; overflow:hidden'>
-<div style='float:left; height:100px; width:280px;'>
-<label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
-<label name="pri_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $primary_db[0]['db_name'] ?></label>
-<label name="pri_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $primary_db[0]['open_mode'] ?></label>
-<label name="pri_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $primary_db[0]['p_port'] ?></label>
-</div>
-<div style='float:right; height:100px; width:280px;'>
-<label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>
-<label name="sta_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $standby_db[0]['db_name'] ?></label>
-<label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $standby_db[0]['open_mode'] ?></label>
-<label name="sta_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $standby_db[0]['s_port'] ?></label>
-</div>
-</div>
+    <div style='padding: 20px 120px 0px 60px; height:100px; overflow:hidden'>
+        <div style='float:left; height:100px; width:280px;'>
+        <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
+        <label name="pri_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $primary_db[0]['db_name'] ?></label>
+        <label name="pri_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $primary_db[0]['open_mode'] ?></label>
+        <label name="pri_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $primary_db[0]['p_port'] ?></label>
+        </div>
+        <div style='float:right; height:100px; width:280px;'>
+        <label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>
+        <label name="sta_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $standby_db[0]['db_name'] ?></label>
+        <label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $standby_db[0]['open_mode'] ?></label>
+        <label name="sta_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $standby_db[0]['s_port'] ?></label>
+        </div>
+    </div>
 
 
 <div style='padding: 5px 0px 0px 200px; height:150px;'>
-<div style="float:left;"><img src="./images/primary_db.png"/></div> 
+    <div style="float:left;"><img src="./images/primary_db.png"/></div> 
 
-<div style="float:left;">
-<label style='padding: 0px 0px 0px 120px;' class="control-label" for="">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
-<img src="./images/left_arrow.png"/>
-<img src="./images/health_status.png"/>
-<img src="./images/right_arrow.png"/>
+        <div style="float:left;">
+        <label style='padding: 0px 0px 0px 120px;' class="control-label" for="">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+        <img src="./images/left_arrow.png"/>
+        <img src="./images/health_status.png"/>
+        <img src="./images/right_arrow.png"/>
+        </div> 
+        
+        <div style="float:left;"><img src="./images/standby_db.png"/></div> 
+    </div>
 
-</div> 
-<div style="float:left;"><img src="./images/standby_db.png"/></div> 
-</div>
+    <div style='padding: 5px 200px 0px 60px; height:150px;'>
+        <div style="float:left; width:350px; height:100px; border:1px solid blue; color:blue"> 
+            <div style='padding: 5px 0px 0px 10px;'>
+            <label name="pri_thread" class="control-label" for=""><?php echo $this->lang->line('primary_db'); ?>: </label>
+            <?php foreach ($primary_db as $item):?>
+                    <label class="control-label" for="">Thread <?php echo $item['p_thread'] ?>: sequence: <?php echo $item['p_sequence'] ?></label>
+            <?php endforeach;?>
+            <label name="pri_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $primary_db[0]['p_db_time'] ?></label>
+            </div>
+        </div>
 
-<div style='padding: 5px 200px 0px 60px; height:150px;'>
-<div style="float:left; width:350px; height:100px; border:1px solid blue; color:blue"> 
-<div style='padding: 5px 0px 0px 10px;'>
-<label name="pri_thread" class="control-label" for=""><?php echo $this->lang->line('primary_db'); ?>: </label>
-<?php foreach ($primary_db as $item):?>
-        <label class="control-label" for="">Thread <?php echo $item['p_thread'] ?>: sequence: <?php echo $item['p_sequence'] ?></label>
-<?php endforeach;?>
-<label name="pri_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $primary_db[0]['p_db_time'] ?></label>
-</div>
-</div>
-
-<div style="float:right; width:350px; height:100px; border:1px solid blue; color:blue"> 
-<div style='padding: 5px 0px 0px 10px;'>
-<label name="sta_thread" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
-<label name="sta_thread1" class="control-label" for=""><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
-<label name="sta_thread2" class="control-label" for=""><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
-<label name="sta_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
-</div>
-</div>
-</div>
+        <div style="float:right; width:350px; height:100px; border:1px solid blue; color:blue"> 
+            <div style='padding: 5px 0px 0px 10px;'>
+            <label name="sta_thread" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
+            <label name="sta_thread1" class="control-label" for=""><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
+            <label name="sta_thread2" class="control-label" for=""><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+            <label name="sta_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
+            </div>
+        </div>
+    </div>
 </div>  
 
 
