@@ -23,7 +23,6 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
     try:
         conn=cx_Oracle.connect(username,password,url, mode=cx_Oracle.SYSDBA) #获取connection对象
-
     except Exception, e:
         logger_msg="check oracle %s : %s" %(url,str(e).strip('\n'))
         logger.warning(logger_msg)
@@ -60,7 +59,6 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
             #dg_delay = oracle.get_delay(conn)
             dg_stats = '1'
             dg_delay = '1'
-
         instance_status = oracle.get_instance(conn,'status')
         startup_time = oracle.get_instance(conn,'startup_time')
         #print startup_time
@@ -92,7 +90,11 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         physical_read_io_requests_persecond = sysstat_1['physical write total IO requests']-sysstat_0['physical write total IO requests']
         physical_write_io_requests_persecond = sysstat_1['physical read IO requests']-sysstat_0['physical read IO requests']
         db_block_changes_persecond = sysstat_1['db block changes']-sysstat_0['db block changes']
-        os_cpu_wait_time = sysstat_0['OS CPU Qt wait time']
+        
+        os_cpu_wait_time = -1
+        if version >= "11":
+            os_cpu_wait_time = sysstat_0['OS CPU Qt wait time']
+        
         logons_persecond = sysstat_1['logons cumulative']-sysstat_0['logons cumulative']
         logons_current = sysstat_0['logons current']
         opened_cursors_persecond = sysstat_1['opened cursors cumulative']-sysstat_0['opened cursors cumulative']
@@ -116,8 +118,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               sql="insert into oracle_tablespace(server_id,host,port,tags,tablespace_name,total_size,used_size,avail_size,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
               param=(server_id,host,port,tags,line[0],line[1],line[2],line[3],line[4])
               func.mysql_exec(sql,param)
-
-
+              
         #check dataguard status
         result = func.mysql_query("select count(1) from db_servers_oracle_dg where primary_db_id = '%s' or standby_db_id = '%s'" %(server_id, server_id))
         if result:
@@ -126,28 +127,47 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         if is_dg > 0:
             if database_role == 'PRIMARY':  
                 dg_p_info = oracle.get_dg_p_info(conn, 1)
-
+                
+                dest_id = -1
+                thread = -1
+                sequence = -1
+                archived = -1
+                applied = -1
+                current_scn = -1
+                curr_db_time = ""
                 if dg_p_info:
-                    dest_id=dg_p_info[0]
-                    thread=dg_p_info[1]
-                    sequence=dg_p_info[2]
-                    archived=dg_p_info[3]
-                    applied=dg_p_info[4]
-                    current_scn=dg_p_info[5]
-                    curr_db_time=dg_p_info[6]
+                    for line in dg_p_info:
+                        dest_id=line[0]
+                        thread=line[1]
+                        sequence=line[2]
+                        archived=line[3]
+                        applied=line[4]
+                        current_scn=line[5]
+                        curr_db_time=line[6]
+                        
+                        ##################### insert data to mysql server#############################
+                        #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
+                        sql = "insert into oracle_dg_p_status(server_id, dest_id, `thread#`, `sequence#`, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s);"
+                        param = (server_id, dest_id, thread, sequence, current_scn, curr_db_time)
+                        func.mysql_exec(sql,param) 
+                        
+                    logger.info("Gather primary database infomation for server:" + str(server_id))
+                else:
+                    logger.warning("Get no data from primary server: "+ str(server_id))
 
                 
-                ##################### insert data to mysql server#############################
-                #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
-                sql = "insert into oracle_dg_p_status(server_id, dest_id, `thread#`, `sequence#`, archived, applied, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s,%s);"
-                param = (server_id, dest_id, thread, sequence, archived, applied, current_scn, curr_db_time)
-                func.mysql_exec(sql,param) 
-            else:  
+            else:
                 dg_s_ms = oracle.get_dg_s_ms(conn)
                 dg_s_al = oracle.get_dg_s_al(conn)
                 dg_s_rate = oracle.get_dg_s_rate(conn)
-                dg_s_lar = oracle.get_dg_s_lar(conn)
                 
+                dg_s_lar=""
+                if version >= "11":
+                    dg_s_lar = oracle.get_dg_s_lar_11g(conn)
+                else:
+                    dg_s_lar = oracle.get_dg_s_lar_10g(conn)
+                
+               
                 if dg_s_ms:
                     thread=dg_s_ms[0]
                     sequence=dg_s_ms[1]
@@ -159,9 +179,13 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
                     block=0
                     delay_mins=0
 
-
-                if dg_s_rp:
+                avg_apply_rate = -1
+                current_scn = -1
+                curr_db_time = -1
+                if dg_s_rate:
                     avg_apply_rate=dg_s_rate[0]
+
+                if dg_s_lar:
                     current_scn=dg_s_lar[0]
                     curr_db_time=dg_s_lar[1]
 
@@ -169,9 +193,12 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
                 sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s,%s);"
                 param = (server_id, thread, sequence, block, delay_mins, avg_apply_rate, current_scn, curr_db_time)
                 func.mysql_exec(sql,param)  
+                
+                logger.info("Gather standby database infomation for server:" + str(server_id))
 
     except Exception, e:
         logger.error(e)
+        logger.error("zzz")
         sys.exit(1)
 
     finally:

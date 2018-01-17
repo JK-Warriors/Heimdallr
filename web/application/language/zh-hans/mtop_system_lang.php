@@ -80,6 +80,7 @@ $lang['next'] = '下一项';
 $lang['add'] = '新增';
 $lang['batch_add'] = '批量新增';
 $lang['add_dg'] = '新增 DG';
+$lang['switch_dg'] = '切换 DG';
 $lang['edit'] = '编辑';
 $lang['save'] = '保存';
 $lang['tags'] = '标签';

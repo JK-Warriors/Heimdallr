@@ -30,6 +30,7 @@ $lang['_Performance Advisor'] = 'Performance Advisor';
 
 $lang['_Oracle Monitor'] = 'Oracle Monitor';
 $lang['_DataGuard Monitor'] = 'DataGuard Monitor';
+$lang['_DataGuard Switch'] = 'DataGuard Switch';
 $lang['_Tablespace Monitor'] = 'Tablespace Monitor';
 
 $lang['_SQLServer Monitor'] = 'SQLServer Monitor';

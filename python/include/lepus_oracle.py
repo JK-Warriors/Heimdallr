@@ -191,7 +191,7 @@ def get_dg_p_info(conn, dest_id):
         curs.execute("""select *
                             from (select dest_id,
                                         thread#,
-                                        sequence#,
+                                        sequence#+1,
                                         archived,
                                         applied,
                                         current_scn,
@@ -199,11 +199,12 @@ def get_dg_p_info(conn, dest_id):
                                         row_number() over(partition by thread# order by sequence# desc) rn
                                     from v$archived_log t, v$database d
                                     where t.dest_id = %s)
-                            where rn = 1; """ %(dest_id));
-        result = curs.fetchone()
+                            where rn = 1 """ %(dest_id));
+        result = curs.fetchall()
         
         return result
     except Exception,e:
+        return None
         print e
 
     finally:
@@ -225,7 +226,7 @@ def get_dg_s_ms(conn):
 
         return result
     except Exception,e:
-        return null
+        return None
         print e
 
     finally:
@@ -245,7 +246,7 @@ def get_dg_s_al(conn):
 
         return result
     except Exception,e:
-        return null
+        return None
         print e
 
     finally:
@@ -257,19 +258,19 @@ def get_dg_s_rate(conn):
         curs=conn.cursor()
         curs.execute("""select rp.sofar avg_apply_rate
                           from v$recovery_progress rp
-                         where rp1.item = 'Average Apply Rate' """);
+                         where rp.item = 'Average Apply Rate' """);
         result = curs.fetchone()
 
         return result
     except Exception,e:
-        return null
+        return None
         print e
 
     finally:
         curs.close()
 
 
-def get_dg_s_lar(conn):
+def get_dg_s_lar_11g(conn):
     try:
         curs=conn.cursor()
         curs.execute("""select replace(rp.comments, 'SCN: ', '') current_scn,
@@ -280,12 +281,33 @@ def get_dg_s_lar(conn):
 
         return result
     except Exception,e:
-        return null
+        return None
         print e
 
     finally:
         curs.close()
 
+
+def get_dg_s_lar_10g(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select sofar current_scn,
+                               to_char(rp.timestamp, 'yyyy-mm-dd hh24:mi:ss') curr_db_time
+                          from v$recovery_progress rp
+                         where rp.item = 'Last Applied Redo' 
+                         order by start_time desc """);
+        result = curs.fetchone()
+
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+        
+
+        
 
 def get_tablespace(conn):
     try:
@@ -295,7 +317,7 @@ def get_tablespace(conn):
         return list
 
     except Exception,e:
-        return null
+        return None
         print e
 
     finally:

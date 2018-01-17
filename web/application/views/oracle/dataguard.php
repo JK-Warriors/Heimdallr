@@ -21,7 +21,7 @@
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 
 <div class="control-group">
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_oracle/dataguard') ?>" >
+<form name="form" class="form-inline" method="get" >
     <label class="control-label" for="">*<?php echo $this->lang->line('dg_group'); ?></label>
     
     <div class="controls" style="display:inline-block;" >
@@ -32,14 +32,13 @@
         </select>
         <!-- <span class="help-inline"></span> -->
     </div>
-    <button type="submit" class="btn btn-success"> <?php echo $this->lang->line('detail'); ?></button>
-
-    <input name="trans_type" type="submit" value="Failover" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
-    <input name="trans_type" type="submit" value="Switchover" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
-
+    <button type="submit" class="btn btn-success" action="<?php site_url('lp_oracle/dataguard') ?>" > <?php echo $this->lang->line('detail'); ?></button>
+    
+    <a class="btn btn-success" href="<?php echo site_url('lp_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('switch_dg'); ?></a>
 
 </form>
 </div>
+    
 </div>
 
 
@@ -65,16 +64,24 @@
 
 
 <div style='padding: 5px 0px 0px 200px; height:150px;'>
-    <div style="float:left;"><img src="./images/primary_db.png"/></div> 
+    <div style="float:left;"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
 
         <div style="float:left;">
         <label style='padding: 0px 0px 0px 120px;' class="control-label" for="">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
         <img src="./images/left_arrow.png"/>
-        <img src="./images/health_status.png"/>
+        <img src="
+        <?php
+        $second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);
+        if($second_dif > 3600 ){echo "./images/trans_alarm.png";}   #时间差超过1小时，显示trans_error图片
+        elseif($primary_db[0]['open_mode']==-1 or $standby_db[0]['open_mode']==-1){echo "./images/trans_error.png";}
+        else{echo "./images/health_status.png";}  ?> 
+        "/>
         <img src="./images/right_arrow.png"/>
         </div> 
         
-        <div style="float:left;"><img src="./images/standby_db.png"/></div> 
+        <!-- <div style="float:left;"><img src="./images/standby_db.png"/></div>  -->
+        
+        <div style="float:left;"><img src="<?php if($standby_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/standby_db.png";}  ?> "/></div> 
     </div>
 
     <div style='padding: 5px 200px 0px 60px; height:150px;'>
@@ -98,8 +105,6 @@
         </div>
     </div>
 </div>  
-
-
 
 
 <script type="text/javascript">

@@ -80,6 +80,7 @@ $lang['next'] = 'Next';
 $lang['add'] = 'Add';
 $lang['batch_add'] = 'Batch Add';
 $lang['add_dg'] = 'Add DataGuard';
+$lang['switch_dg'] = 'Switch DataGuard';
 $lang['edit'] = 'Edit';
 $lang['save'] = 'Save';
 $lang['tags'] = 'Tags';

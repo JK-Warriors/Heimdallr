@@ -51,14 +51,63 @@ class Lp_oracle extends Front_Controller {
         parent::check_privilege();
         $data["dg_group"]=$this->oracle->get_dataguard_group();
 
-        $setval["id"]=isset($_GET["dg_group_id"]) ? $_GET["dg_group_id"] : "";
         $setval["trans_type"]=isset($_GET["trans_type"]) ? $_GET["trans_type"] : "";
-
+        
         if(isset($_GET["dg_group_id"])){
             $id = $_GET["dg_group_id"];
         }
         else{
             $id = $data["dg_group"][0]["id"];
+        }
+        $setval["id"] = $id;
+
+        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
+        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
+
+
+
+        $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
+        $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
+        $data["setval"]=$setval;
+
+
+        $this->layout->view("oracle/dataguard",$data);
+    }
+    
+
+    public function dg_switch()
+	{
+        parent::check_privilege();
+        $base_path=$_SERVER['DOCUMENT_ROOT'];
+
+        $data["dg_group"]=$this->oracle->get_dataguard_group();
+        
+        $setval["trans_type"]=isset($_GET["trans_type"]) ? $_GET["trans_type"] : "";
+                
+        if(isset($_GET["dg_group_id"])){
+            $id = $_GET["dg_group_id"];
+        }
+        else{
+            $id = $data["dg_group"][0]["id"];
+        }
+        $setval["id"] = $id;
+
+
+        if(isset($_GET["trans_type"])){
+            $trans_type = $_GET["trans_type"];
+
+            if($trans_type == "Switchover"){
+
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id;    
+                $result = shell_exec($order);
+                
+            }
+            elseif($trans_type == "Failover"){
+
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id; 
+                $result = shell_exec($order);  
+
+            }
         }
 
         $pri_id = $this->oracle->get_pri_id_by_group_id($id);
@@ -66,41 +115,12 @@ class Lp_oracle extends Front_Controller {
 
         $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
         $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
-
+        $setval["python"]=$order;
+        $setval["test"]=$result;
+        
         $data["setval"]=$setval;
 
-        $base_path=$_SERVER['DOCUMENT_ROOT'];
-
-        if(isset($_GET["trans_type"])){
-            $trans_type = $_GET["trans_type"];
-
-            if($trans_type == "Switchover"){
-
-                $order = 'python.exe  ' . $base_path . '/application/scripts/test1.py';    
-                $test = shell_exec($order);  
-            }
-            elseif($trans_type == "Failover"){
-
-                $order = 'python.exe  ' . $base_path . '/application/scripts/test2.py';  
-                $test = shell_exec($order);  
-            }
-        }
-
-
-
-        $this->layout->view("oracle/dataguard",$data);
-    }
-    
-
-    public function switchover()
-	{
-        parent::check_privilege();
-        
-        // $order = 'python.exe  D:\workspace\github\repository\Heimdallr\web\application\scripts\test.py';  
-        // $data = shell_exec($order);  
-
-        $data["datalist"]=$this->oracle->get_tablespace_total_record();
-        $this->layout->view("oracle/tablespace",$data);
+        $this->layout->view("oracle/dg_switch",$data);
     }
 
     public function chart()
