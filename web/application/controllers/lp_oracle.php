@@ -64,8 +64,6 @@ class Lp_oracle extends Front_Controller {
         $pri_id = $this->oracle->get_pri_id_by_group_id($id);
         $sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
-
-
         $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
         $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
         $data["setval"]=$setval;
@@ -79,7 +77,7 @@ class Lp_oracle extends Front_Controller {
 	{
         parent::check_privilege();
         $base_path=$_SERVER['DOCUMENT_ROOT'];
-
+        
         $data["dg_group"]=$this->oracle->get_dataguard_group();
         
         $setval["trans_type"]=isset($_GET["trans_type"]) ? $_GET["trans_type"] : "";
@@ -91,20 +89,23 @@ class Lp_oracle extends Front_Controller {
             $id = $data["dg_group"][0]["id"];
         }
         $setval["id"] = $id;
-
+        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
+        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
         if(isset($_GET["trans_type"])){
             $trans_type = $_GET["trans_type"];
 
             if($trans_type == "Switchover"){
 
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id;    
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
+                #$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'sudo python test1_linux.py';    
+                
                 $result = shell_exec($order);
                 
             }
             elseif($trans_type == "Failover"){
 
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id; 
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
                 $result = shell_exec($order);  
 
             }
@@ -117,7 +118,6 @@ class Lp_oracle extends Front_Controller {
         $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
         $setval["python"]=$order;
         $setval["test"]=$result;
-        
         $data["setval"]=$setval;
 
         $this->layout->view("oracle/dg_switch",$data);
