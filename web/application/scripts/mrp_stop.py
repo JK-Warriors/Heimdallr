@@ -82,7 +82,7 @@ def update_mrp_status(mysql_conn, sta_id):
     
     if mrp_status == '1':
         logger.info("The current MRP status is active.")
-        str="""update oracle_dg_s_status set mrp_status = 0 where server_id = %s """%(sta_id)
+        str="""update oracle_dg_s_status s set s.mrp_status = 0 where s.id in (select * from (select max(t.id) from oracle_dg_s_status t where t.server_id = %s) m) """%(sta_id)
         is_succ = mysql.ExecuteSQL(mysql_conn, str)
         
         if is_succ==1:
