@@ -34,7 +34,7 @@
     </div>
     <button type="submit" class="btn btn-success" action="<?php site_url('lp_oracle/dataguard') ?>" > <?php echo $this->lang->line('detail'); ?></button>
     
-    <a class="btn btn-success" href="<?php echo site_url('lp_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('switch_dg'); ?></a>
+    <a class="btn btn-success" href="<?php echo site_url('lp_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('dg_management'); ?></a>
 
 </form>
 </div>
@@ -67,7 +67,7 @@
     <div style="float:left;"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
 
         <div style="float:left;">
-        <label style='padding: 0px 0px 0px 120px;' class="control-label" for="">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+        <label style='padding: 0px 0px 0px 120px;' class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
         <img src="./images/left_arrow.png"/>
         <img src="
         <?php
@@ -97,12 +97,15 @@
 
         <div style="float:right; width:350px; height:100px; border:1px solid blue; color:blue"> 
             <div style='padding: 5px 0px 0px 10px;'>
-            <label name="sta_thread" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
-            <label name="sta_thread1" class="control-label" for=""><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
-            <label name="sta_thread2" class="control-label" for=""><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
-            <label name="sta_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
+            <label name="sta_status" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
+            <label name="sta_thread1" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
+            <label name="sta_thread2" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+            <label name="sta_time" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
+            <label name="sta_mrp" class="control-label" style="color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>" for=""> Warning: The MRP process is not running!!!</label>
             </div>
         </div>
+        
+
     </div>
 </div>  
 

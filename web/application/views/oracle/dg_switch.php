@@ -13,6 +13,8 @@
 <div class="row-fluid"> -->
  
 <script src="lib/bootstrap/js/bootstrap-switch.js"></script>
+<script src="lib/bootstrap/js/bootbox.js"></script>
+<script src="lib/bootstrap/js/md5.js"></script>
 <link href="lib/bootstrap/css/bootstrap-switch.css" rel="stylesheet"/>
 
 
@@ -23,12 +25,16 @@
 
 
 <div>
-<form id="form_switch" name="form" class="form-inline" method="get" action="" onsubmit="return checkUser();>
+<form id="form_switch" name="form" class="form-inline" method="post" action="<?php echo site_url('lp_oracle/dg_switch') ?>" >
     <a class="btn btn " href="<?php echo site_url('lp_oracle/dataguard') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
 
-    <input name="trans_type" type="submit" value="Failover" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
-    <input name="trans_type" type="submit" value="Switchover" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
+    
+    <input name="trans_type" type="submit" value="Failover" onclick="return checkUser()" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
+    <input name="trans_type" type="submit" value="Switchover"  class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
 
+		<input name="mrp_action" type="submit" value="MRPStop"  class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
+		<input name="mrp_action" type="submit" value="MRPStart"  class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
+    
 
 </form>
 </div>
@@ -77,16 +83,88 @@
         <div style="float:left;"><img src="<?php if($standby_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/standby_db.png";}  ?> "/></div> 
     </div>
 
+
+		<div style="float:left; width:265px; height:30px; border:0px solid red;">
+		</div>
+		<div style="float:left; width:400px; height:30px; border:1px solid red; color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>">
+			<label name="sta_mrp" class="control-label" style="font-size:18px;color:red; padding: 5px 0px 0px 20px;"> Warning: The MRP process is not running!!!</label>
+		</div>
+		
 </div>  
 
-<label name="test1" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $setval['python'] ?></label>
-<label name="test2" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $setval['test'] ?></label>
+<label name="test1" class="control-label" >调试信息1：<?php echo $setval['python'] ?></label>
+<label name="test2" class="control-label" style="display:none;">调试信息2：<?php echo $setval['test'] ?></label>
 
 
 <script type="text/javascript">
 function checkUser(){
-alert("xxxx"); 
-document.getElementByName('test1').innerText="Switch datase !!!";
+var base_url = "<?php echo site_url('lp_oracle/dg_switch?dg_group_id=') ?>";
+var group_id = "<?php echo $setval['id'] ?>";
+var target_url = base_url.toString() + group_id.toString();
 
+var user_pwd = "<?php echo $userdata['password'] ?>" ;
+
+
+bootbox.prompt({
+    title: "请输入管理员密码!",
+    inputType: 'password',
+    callback: function (result) {
+    	alert(result.length);
+    	if (result == ''){
+    			bootbox.alert({
+        		message: "您输入的密码为空!",
+        		buttons: {
+					        ok: {
+					            label: '确定',
+					            className: 'btn-success'
+					        }
+					    }
+        	});
+    		}
+    	else if(result)
+    	{ alert('111');
+    		
+        if (md5(result) == user_pwd)
+        {
+					bootbox.confirm({
+					    message: "确认要开始切换吗？",
+					    buttons: {
+					        confirm: {
+					            label: '是',
+					            className: 'btn-success'
+					        },
+					        cancel: {
+					            label: '否',
+					            className: 'btn-danger'
+					        }
+					    },
+					    callback: function (result) {
+					        if(result)
+					        { 
+					        	//window.location.href=target_url;
+					        	//document.getElementById("form_switch").submit();
+					        	//alert(result);
+					        	return true;
+					        }
+					    }
+					});
+        }
+        else
+        {
+        	bootbox.alert({
+        		message: "密码不对，请确认后重新尝试!",
+        		buttons: {
+					        ok: {
+					            label: '确定',
+					            className: 'btn-success'
+					        }
+					    }
+        	});
+        }
+      }
+    }
 });
+alert("xxxxx");
+return false;
+}
 </script>

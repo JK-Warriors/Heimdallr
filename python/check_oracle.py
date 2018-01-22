@@ -160,6 +160,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
                 dg_s_ms = oracle.get_dg_s_ms(conn)
                 dg_s_al = oracle.get_dg_s_al(conn)
                 dg_s_rate = oracle.get_dg_s_rate(conn)
+                dg_s_mrp = oracle.get_dg_s_mrp(conn)
                 
                 dg_s_lar=""
                 if version >= "11":
@@ -190,8 +191,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
                     curr_db_time=dg_s_lar[1]
 
                 ##################### insert data to mysql server#############################
-                sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s,%s);"
-                param = (server_id, thread, sequence, block, delay_mins, avg_apply_rate, current_scn, curr_db_time)
+                sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time, mrp_status) values(%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+                param = (server_id, thread, sequence, block, delay_mins, avg_apply_rate, current_scn, curr_db_time, dg_s_mrp)
                 func.mysql_exec(sql,param)  
                 
                 logger.info("Gather standby database infomation for server:" + str(server_id))
@@ -217,10 +218,12 @@ def main():
     func.mysql_exec('delete from oracle_tablespace;','')
 
     func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_dg_p_status;",'')
-    func.mysql_exec('delete from oracle_dg_p_status;','')
+    func.mysql_exec('delete from oracle_dg_p_status_tmp;','')
+    func.mysql_exec('insert into oracle_dg_p_status_tmp select * from oracle_dg_p_status;','')
 
     func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_dg_s_status;",'')
-    func.mysql_exec('delete from oracle_dg_s_status;','')
+    func.mysql_exec('delete from oracle_dg_s_status_tmp;','')
+    func.mysql_exec('insert into oracle_dg_s_status_tmp select * from oracle_dg_s_status;','')
 
     #get oracle servers list
     servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_servers_oracle where is_delete=0 and monitor=1;")
@@ -247,6 +250,11 @@ def main():
 
     else:
         logger.warning("check oracle: not found any servers")
+
+
+    func.mysql_exec('DELETE FROM oracle_dg_p_status WHERE id IN (select id from oracle_dg_p_status_tmp);','')
+    func.mysql_exec('DELETE FROM oracle_dg_s_status WHERE id IN (select id from oracle_dg_s_status_tmp);','')
+
 
     logger.info("check oracle controller finished.")
                      

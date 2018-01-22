@@ -162,19 +162,25 @@ class Oracle_model extends CI_Model{
 
 
     function get_primary_info($pri_id){
-        $query=$this->db->query("select d.id, d.host         as p_host,
-                                        d.port         as p_port,
-                                        d.dsn          as db_name,
-                                        s.open_mode    as open_mode,
-                                        p.`thread#` as p_thread,
-                                        p.`sequence#` as p_sequence,
-                                        p.curr_scn     as p_scn,
-                                        p.curr_db_time as p_db_time
-                                from (select * from db_servers_oracle where id = $pri_id) d
-                                left join oracle_status s
-                                    on d.id = s.server_id
-                                left JOIN oracle_dg_p_status p
-                                    on d.id = p.server_id; ");
+        $query=$this->db->query("select d.id,
+                                    d.host         as p_host,
+                                    d.port         as p_port,
+                                    d.dsn          as db_name,
+                                    s.open_mode    as open_mode,
+                                    p.`thread#`    as p_thread,
+                                    p.`sequence#`  as p_sequence,
+                                    p.curr_scn     as p_scn,
+                                    p.curr_db_time as p_db_time
+                            from (select * from db_servers_oracle where id = $pri_id) d
+                            left join oracle_status s
+                                on d.id = s.server_id
+                            left join (select *
+                                    from oracle_dg_p_status
+                                    where id in (select max(id)
+                                                    from oracle_dg_p_status t
+                                                    where server_id = $pri_id
+                                                    group by `thread#`)) p
+                                on d.id = p.server_id; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 
@@ -192,12 +198,15 @@ class Oracle_model extends CI_Model{
                                         s.delay_mins,
                                         s.avg_apply_rate,
                                         s.curr_scn       as s_scn,
-                                        s.curr_db_time   as s_db_time
+                                        s.curr_db_time   as s_db_time,
+                                        s.mrp_status     as s_mrp_status
                                   from (select * from db_servers_oracle where id = $sta_id) d
                                 left join oracle_status os
                                     on d.id = os.server_id
                                 left JOIN oracle_dg_s_status s
-                                    on d.id = s.server_id; ");
+                                    on d.id = s.server_id
+                                    order by s.id desc 
+                                    limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

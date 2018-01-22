@@ -152,22 +152,50 @@ def check_db_status(server_id,db_host,db_port,tags,db_type):
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)
         curs = conn.cursor()
-        sql="select id from db_status where host=+'"+db_host+"'  and port='"+db_port+"' "
+        sql=""
+        sort=0
+
+        if db_type=='mysql':
+             sort=1
+             sql="""delete s from db_status s, db_servers_mysql o 
+                    where s.host= o.host
+                    and s.tags != o.tags
+                    and s.db_type_sort = 1 """
+        elif db_type=='oracle':
+             sort=2
+             sql="""delete s from db_status s, db_servers_oracle o 
+                    where s.host= o.host
+                    and s.tags != o.tags
+                    and s.db_type_sort = 2 """
+        elif db_type=='mongodb':            
+             sort=3
+             sql="""delete s from db_status s, db_servers_mongodb o 
+                    where s.host= o.host
+                    and s.tags != o.tags
+                    and s.db_type_sort = 2 """
+        elif db_type=='redis':
+             sort=4
+             sql="""delete s from db_status s, db_servers_redis o 
+                    where s.host= o.host
+                    and s.tags != o.tags
+                    and s.db_type_sort = 2 """
+        elif db_type=='sqlserver':
+             sort=5
+             sql="""delete s from db_status s, db_servers_sqlserver o 
+                    where s.host= o.host
+                    and s.tags != o.tags
+                    and s.db_type_sort = 2 """
+        else:
+             sort=0
+
+
+        curs.execute(sql)
+        conn.commit()
+
+
+        sql="select id from db_status where host=+'"+db_host+"'  and tags='"+tags+"' "
         count=curs.execute(sql) 
         if count ==0:
-             if db_type=='mysql':
-                sort=1
-             elif db_type=='oracle':
-                sort=2
-             elif db_type=='mongodb':            
-                sort=3
-             elif db_type=='redis':
-                sort=4
-             elif db_type=='sqlserver':
-                sort=5
-             else:
-                sort=0
-
              sql="insert into db_status(server_id,host,port,tags,db_type,db_type_sort) values(%s,%s,%s,%s,%s,%s);"
              param=(server_id,db_host,db_port,tags,db_type,sort)
              curs.execute(sql,param)
@@ -185,7 +213,7 @@ def update_db_status_init(role,version,db_host,db_port,tags):
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)
         curs = conn.cursor()
-        curs.execute("update db_status set role='%s',version='%s',tags='%s' where host='%s' and port='%s';" %(role,version,tags,db_host,db_port))
+        curs.execute("update db_status set role='%s',version='%s',tags='%s' where host='%s' and tags='%s';" %(role,version,tags,db_host,tags))
         conn.commit()
     except Exception, e:
         print "update db status init: " + str(e)

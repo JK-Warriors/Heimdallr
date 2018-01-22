@@ -8,6 +8,7 @@ class Lp_oracle extends Front_Controller {
         $this->load->model("option_model","option");
 		$this->load->model("oracle_model","oracle");
         $this->load->model("os_model","os");  
+        $this->load->model("user_model","user");
 	}
     
    
@@ -50,8 +51,6 @@ class Lp_oracle extends Front_Controller {
 	{
         parent::check_privilege();
         $data["dg_group"]=$this->oracle->get_dataguard_group();
-
-        $setval["trans_type"]=isset($_GET["trans_type"]) ? $_GET["trans_type"] : "";
         
         if(isset($_GET["dg_group_id"])){
             $id = $_GET["dg_group_id"];
@@ -80,7 +79,7 @@ class Lp_oracle extends Front_Controller {
         
         $data["dg_group"]=$this->oracle->get_dataguard_group();
         
-        $setval["trans_type"]=isset($_GET["trans_type"]) ? $_GET["trans_type"] : "";
+        $setval["trans_type"]=isset($_POST["trans_type"]) ? $_POST["trans_type"] : "";
                 
         if(isset($_GET["dg_group_id"])){
             $id = $_GET["dg_group_id"];
@@ -92,15 +91,15 @@ class Lp_oracle extends Front_Controller {
         $pri_id = $this->oracle->get_pri_id_by_group_id($id);
         $sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
-        if(isset($_GET["trans_type"])){
-            $trans_type = $_GET["trans_type"];
+        if(isset($_POST["trans_type"])){
+            $trans_type = $_POST["trans_type"];
 
             if($trans_type == "Switchover"){
 
                 $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
-                #$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'sudo python test1_linux.py';    
                 
                 $result = shell_exec($order);
+                $result = "Succes";
                 
             }
             elseif($trans_type == "Failover"){
@@ -110,15 +109,38 @@ class Lp_oracle extends Front_Controller {
 
             }
         }
+        
+        if(isset($_POST["mrp_action"])){
+            $mrp_action = $_POST["mrp_action"];
 
+            if($mrp_action == "MRPStart"){
+
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1';    
+                
+                $result = shell_exec($order);
+                #$result = "Succes";
+                
+            }
+            elseif($mrp_action == "MRPStop"){
+
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1';   
+                $result = shell_exec($order);  
+
+            }
+        }
+        
         $pri_id = $this->oracle->get_pri_id_by_group_id($id);
         $sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
         $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
         $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
-        $setval["python"]=$order;
+        $setval["python"]=isset($_POST["trans_type"]) ? $_POST["trans_type"] : "xxx";
         $setval["test"]=$result;
         $data["setval"]=$setval;
+        
+        sleep(1);
+        
+        $data["userdata"] = $this->user->get_user_by_username('admin');
 
         $this->layout->view("oracle/dg_switch",$data);
     }

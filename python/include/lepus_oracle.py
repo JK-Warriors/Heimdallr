@@ -270,6 +270,26 @@ def get_dg_s_rate(conn):
         curs.close()
 
 
+def get_dg_s_mrp(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select status from gv$session where program like '%(MRP0)' """);
+        list = curs.fetchone()
+        
+        if list:
+            result = 1
+        else:
+            result = 0
+
+        return result
+    except Exception,e:
+        return 0
+        print e
+
+    finally:
+        curs.close()
+        
+        
 def get_dg_s_lar_11g(conn):
     try:
         curs=conn.cursor()

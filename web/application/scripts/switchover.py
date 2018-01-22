@@ -59,10 +59,10 @@ def switch2standby(p_conn, p_conn_str, pri_id):
             sqlplus.stdin.write(bytes("alter database commit to switchover to physical standby with session shutdown;"+os.linesep))
             sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
             sqlplus.stdin.write(bytes("startup mount"+os.linesep))
-            sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep))
+            sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            logger.error(err)
+            #logger.error(err)
 			
             if err is None:
                 logger.info("Switchover to physical standby successfully.")
@@ -76,7 +76,7 @@ def switch2standby(p_conn, p_conn_str, pri_id):
                 sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
                 out, err = sqlplus.communicate()
                 logger.info(out)
-                logger.error(err)
+                #logger.error(err)
 				
                 if err is None:
                     logger.info("Alter standby database to open successfully.")
@@ -116,7 +116,7 @@ def standby2primary(s_conn, s_conn_str, sta_id):
             sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            logger.error(err)
+            #logger.error(err)
 			
             if err is None:
                 logger.info("Restart the MRP process successfully.")
@@ -125,10 +125,12 @@ def standby2primary(s_conn, s_conn_str, sta_id):
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("alter database commit to switchover to primary with session shutdown;"+os.linesep))
             sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
-            sqlplus.stdin.write(bytes("startup"+os.linesep))
+            sqlplus.stdin.write(bytes("startup mount"+os.linesep))
+            sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
+            sqlplus.stdin.write(bytes("alter system archive log current;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            logger.error(err)
+            #logger.error(err)
 			
             if err is None:
                 logger.info("Switchover standby database to primary successfully.")
@@ -139,10 +141,14 @@ def standby2primary(s_conn, s_conn_str, sta_id):
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("alter database commit to switchover to primary with session shutdown;"+os.linesep))
             sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
+            sqlplus.stdin.write(bytes("startup mount"+os.linesep))
+            sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
+            sqlplus.stdin.write(bytes("alter system archive log current;"+os.linesep))
+            sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
             sqlplus.stdin.write(bytes("startup"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            logger.error(err)
+            #logger.error(err)
 			
             if err is None:
                 logger.info("Switchover standby database to primary successfully.")

@@ -206,7 +206,7 @@ CREATE TABLE `db_servers_mongodb` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_host` (`host`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for db_servers_mysql
@@ -248,7 +248,7 @@ CREATE TABLE `db_servers_mysql` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_host` (`host`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=274 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=274 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for db_servers_oracle
@@ -284,7 +284,7 @@ CREATE TABLE `db_servers_oracle` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_host` (`host`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8;
 
 
 -- ----------------------------
@@ -297,12 +297,13 @@ CREATE TABLE `db_servers_oracle_dg` (
   `primary_db_id` int(10),
   `standby_db_id` int(10),
   `is_switch` tinyint(1) DEFAULT 0,
+  `on_switching` tinyint(1) DEFAULT 0,
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
   `display_order` smallint(4) NOT NULL DEFAULT '1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `primary_db_id` (`primary_db_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 
 -- ----------------------------
@@ -375,7 +376,7 @@ CREATE TABLE `db_servers_redis` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_host` (`host`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for db_servers_sqlserver
@@ -407,7 +408,7 @@ CREATE TABLE `db_servers_sqlserver` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_host` (`host`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for db_status
@@ -469,6 +470,8 @@ CREATE TABLE `oracle_dg_p_status` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `oracle_dg_p_status_tmp`;
+CREATE TABLE `oracle_dg_p_status_tmp` as select * from `oracle_dg_p_status` where 1=2;
 
 DROP TABLE IF EXISTS `oracle_dg_p_status_his`;
 CREATE TABLE `oracle_dg_p_status_his` (
@@ -498,9 +501,13 @@ CREATE TABLE `oracle_dg_s_status` (
   `avg_apply_rate` int(10) DEFAULT NULL,
   `curr_scn` int(20) DEFAULT NULL,
   `curr_db_time` varchar(20) DEFAULT NULL,
+  `mrp_status` varchar(20) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `oracle_dg_s_status_tmp`;
+CREATE TABLE `oracle_dg_s_status_tmp` as select * from `oracle_dg_s_status` where 1=2;
 
 DROP TABLE IF EXISTS `oracle_dg_s_status_his`;
 CREATE TABLE `oracle_dg_s_status_his` (
@@ -513,6 +520,7 @@ CREATE TABLE `oracle_dg_s_status_his` (
   `avg_apply_rate` int(10) DEFAULT NULL,
   `curr_scn` int(20) DEFAULT NULL,
   `curr_db_time` varchar(20) DEFAULT NULL,
+  `mrp_status` varchar(20) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ymdhi` bigint(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -521,30 +529,6 @@ CREATE TABLE `oracle_dg_s_status_his` (
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `oracle_dg_s_seq`;
-CREATE TABLE `oracle_dg_s_seq` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `server_id` int(10) NOT NULL,
-  `thread#` smallint(4) NOT NULL,
-  `archived` int(20) DEFAULT NULL,
-  `applied` int(20) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `oracle_dg_s_seq_his`;
-CREATE TABLE `oracle_dg_s_seq_his` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `server_id` int(10) NOT NULL,
-  `thread#` smallint(4) NOT NULL,
-  `archived` int(20) DEFAULT NULL,
-  `applied` int(20) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ymdhi` bigint(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `idx_server_id` (`server_id`) USING BTREE,
-  KEY `idx_ymdhi` (`ymdhi`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for lepus_status
