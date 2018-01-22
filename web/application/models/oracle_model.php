@@ -165,7 +165,7 @@ class Oracle_model extends CI_Model{
         $query=$this->db->query("select d.id,
                                     d.host         as p_host,
                                     d.port         as p_port,
-                                    d.dsn          as db_name,
+                                    s.db_name      as db_name,
                                     s.open_mode    as open_mode,
                                     p.`thread#`    as p_thread,
                                     p.`sequence#`  as p_sequence,
@@ -190,7 +190,7 @@ class Oracle_model extends CI_Model{
     function get_standby_info($sta_id){
         $query=$this->db->query("select d.host as s_host,
                                         d.port as s_port,
-                                        d.dsn  as db_name,
+                                        os.db_name  as db_name,
                                         os.open_mode  as open_mode,
                                         s.`thread#` as s_thread,
                                         s.`sequence#` as s_sequence,
