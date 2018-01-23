@@ -470,7 +470,7 @@ CREATE TABLE `admin_user` (
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
-INSERT INTO `admin_user` VALUES ('1', 'admin', '6f493fbddf9107797f5044bb229ac6ee', 'Administrator', 'admin@mail.com', '', '48', '42.196.163.128', '2016-05-01 09:53:36', '1', '2013-12-25 15:58:34');
+INSERT INTO `admin_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'admin@mail.com', '', '48', '42.196.163.128', '2016-05-01 09:53:36', '1', '2013-12-25 15:58:34');
 INSERT INTO `admin_user` VALUES ('8', 'guest', 'e10adc3949ba59abbe56e057f20f883e', 'Guest', '', '', '5664', '42.196.163.128', '2016-05-01 09:28:46', '1', '2014-03-12 17:06:36');
 
 -- ----------------------------
