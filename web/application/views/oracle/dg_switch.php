@@ -88,7 +88,7 @@
 
 		<div style="float:left; width:265px; height:30px; border:0px solid red;">
 		</div>
-		<div style="float:left; width:400px; height:30px; border:1px solid red; color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>">
+		<div id="mrp_warning" style="float:left; width:400px; height:30px; border:1px solid red; color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>">
 			<label name="sta_mrp" class="control-label" style="font-size:18px;color:red; padding: 5px 0px 0px 20px;"> Warning: The MRP process is not running!!!</label>
 		</div>
 		
@@ -195,8 +195,7 @@ function checkUser(e){
 
 var oTimer = null; 
 var myBar = null;
-var myBar_count = 0; 
-var myBar_desc = null;
+var warningDiv = document.getElementById("mrp_warning");
 var query_url="<?php echo site_url('lp_oracle/dg_progress') ?>";
 var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
 var on_switchover="<?php echo $dg_group[0]['on_switchover'] ?>" ;
@@ -226,8 +225,15 @@ jQuery(document).ready(function(){
   
 function queryHandle(url){
     $.post(url, {group_id:group_id}, function(json){ 
-    		//alert(json.on_startmrp); 
         //var status = 1;
+        if(json.mrp_status=='1'){
+						warningDiv.style.display="none";
+        }
+        else{
+						warningDiv.style.display="block";
+        }
+        
+        
         if(json.on_process==='0'){ 
         		if(myBar!=null){
         				myBar.destroy(); 

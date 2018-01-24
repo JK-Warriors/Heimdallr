@@ -167,12 +167,14 @@ class Lp_oracle extends Front_Controller {
         else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopmrp'] == '1'){
         		$type="MRP_STOP";
         }
-
-				
         $data["dg_process"]=$this->oracle->get_dg_process_info($group_id, $type);
 				
-				$setval["test"] = $type;
-        $data["test"] = $setval;
+				# get mrp status by group id
+				$sta_id = $this->oracle->get_sta_id_by_group_id($group_id);
+				$mrp_status=$this->oracle->get_mrp_status_by_id($sta_id);
+				
+				$setval["mrp_status"] = $mrp_status;
+        $data["mrp_status"] = $setval;
 
 				$this->layout->setLayout("layout_blank");
         $this->layout->view("oracle/dg_progress",$data);

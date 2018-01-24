@@ -10,9 +10,10 @@ $arr = array('on_process' => $dg_group[0]['on_process'],
 						 'group_id' => $dg_process[0]['group_id'],
 						 'process_type' => $dg_process[0]['process_type'],
 						 'process_desc' => $dg_process[0]['process_desc'],
-						 'rate' => $dg_process[0]['rate'],);
+						 'rate' => $dg_process[0]['rate'],
+						 'mrp_status' => $mrp_status['mrp_status']);
 
-$test = array('test' => $test['test']);
+$test = array('mrp_status' => $test['mrp_status']);
 						  		 
 echo json_encode($arr);
 #echo json_encode($test);

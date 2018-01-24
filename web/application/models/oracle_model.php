@@ -146,6 +146,15 @@ class Oracle_model extends CI_Model{
            return $query->result_array(); 
         }
     }
+    
+    function get_mrp_status_by_id($id){
+        $query=$this->db->query("select mrp_status from oracle_dg_s_status where server_id = $id order by id desc limit 1; ");
+        if ($query->num_rows() > 0)
+        {
+        	 $result=$query->row();
+           return $result->mrp_status; 
+        }
+    }
 
     function get_pri_id_by_group_id($id){
         $query=$this->db->query("select CASE is_switch
