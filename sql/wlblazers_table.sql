@@ -297,12 +297,37 @@ CREATE TABLE `db_servers_oracle_dg` (
   `primary_db_id` int(10),
   `standby_db_id` int(10),
   `is_switch` tinyint(1) DEFAULT 0,
-  `on_switching` tinyint(1) DEFAULT 0,
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+  `on_process` tinyint(1) DEFAULT 0,
+  `on_switchover` tinyint(1) DEFAULT 0,
+  `on_failover` tinyint(1) DEFAULT 0,
+  `on_startmrp` tinyint(1) DEFAULT 0,
+  `on_stopmrp` tinyint(1) DEFAULT 0,
   `display_order` smallint(4) NOT NULL DEFAULT '1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `primary_db_id` (`primary_db_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+alter table db_servers_oracle_dg modify column on_process tinyint(1) DEFAULT 0 comment '值为1时，表明正在进行Switchover，或者Failover，或者开启停止MRP进程'; 
+alter table db_servers_oracle_dg modify column on_switchover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Switchover切换'; 
+alter table db_servers_oracle_dg modify column on_failover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Failover切换'; 
+alter table db_servers_oracle_dg modify column on_startmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在开启MRP进程'; 
+alter table db_servers_oracle_dg modify column on_stopmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在停止MRP进程'; 
+
+-- ----------------------------
+-- Table structure for db_oracle_dg_process
+-- ----------------------------
+DROP TABLE IF EXISTS `db_oracle_dg_process`;
+CREATE TABLE `db_oracle_dg_process` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `group_id` int(10) NOT NULL,
+  `process_type` varchar(20) COMMENT '4个类型：SWITCHOVER;FAILOVER;MRP_START;MRP_STOP',
+  `process_desc` varchar(1000),
+  `rate` tinyint(1) DEFAULT 0,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_type` (`group_id`, `process_type`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 

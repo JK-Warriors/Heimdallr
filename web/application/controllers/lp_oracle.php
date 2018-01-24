@@ -96,16 +96,17 @@ class Lp_oracle extends Front_Controller {
 
             if($trans_type == "Switchover"){
 
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
+                #$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
                 
-                $result = shell_exec($order);
+                #$result = shell_exec($order);
                 $result = "Succes";
                 
             }
             elseif($trans_type == "Failover"){
 
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
-                $result = shell_exec($order);  
+                #$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
+                #$result = shell_exec($order);  
+                $result = "Succes";
 
             }
         }
@@ -145,6 +146,39 @@ class Lp_oracle extends Front_Controller {
         $this->layout->view("oracle/dg_switch",$data);
     }
 
+
+    public function dg_progress()
+	{
+        $group_id=isset($_POST["group_id"]) ? $_POST["group_id"] : "-1";
+        $dg_group=$this->oracle->get_dg_group_by_id($group_id);
+        $data["dg_group"]=$dg_group;
+        
+        #get log from db_oracle_dg_process
+        $type="";
+        if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_switchover'] == '1'){
+        		$type="SWITCHOVER";
+        }
+        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_failover'] == '1'){
+        		$type="FAILOVER";
+        }
+        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_startmrp'] == '1'){
+        		$type="MRP_START";
+        }
+        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopmrp'] == '1'){
+        		$type="MRP_STOP";
+        }
+
+				
+        $data["dg_process"]=$this->oracle->get_dg_process_info($group_id, $type);
+				
+				$setval["test"] = $type;
+        $data["test"] = $setval;
+
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("oracle/dg_progress",$data);
+    }
+    
+    
     public function chart()
     {
         parent::check_privilege('');

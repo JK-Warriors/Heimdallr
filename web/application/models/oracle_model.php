@@ -129,7 +129,23 @@ class Oracle_model extends CI_Model{
            return $query->result_array(); 
         }
     }
+    
+    function get_dg_group_by_id($id){
+        $query=$this->db->query("select * from db_servers_oracle_dg where is_delete = 0 and id = $id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
 
+    
+    function get_dg_process_info($group_id,$type){
+        $query=$this->db->query("select * from db_oracle_dg_process where group_id = $group_id and process_type = '$type' order by id desc limit 1; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
 
     function get_pri_id_by_group_id($id){
         $query=$this->db->query("select CASE is_switch

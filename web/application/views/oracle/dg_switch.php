@@ -15,7 +15,9 @@
 <script src="lib/bootstrap/js/bootstrap-switch.js"></script>
 <script src="lib/bootstrap/js/bootbox.js"></script>
 <script src="lib/bootstrap/js/md5.js"></script>
+<script src="lib/bootstrap/js/yprogressbar.js"></script>
 <link href="lib/bootstrap/css/bootstrap-switch.css" rel="stylesheet"/>
+<link href="lib/bootstrap/css/yprogressbar.css" rel="stylesheet"/>
 
 
 
@@ -25,15 +27,15 @@
 
 
 <div>
-<form id="form_switch" name="form" class="form-inline" method="post" action="<?php echo site_url('lp_oracle/dg_switch') ?>" >
+<form id="form_switch" class="form-inline" method="post" action="" >
     <a class="btn btn " href="<?php echo site_url('lp_oracle/dataguard') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
 
     
-    <input name="trans_type" type="submit" value="Failover" onclick="return checkUser()" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
-    <input name="trans_type" type="submit" value="Switchover"  class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
+    <button name="trans_type" type="button" value="Failover" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('failover'); ?></button>
+    <button name="trans_type" type="button" value="Switchover" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('switchover'); ?></button>
 
-		<input name="mrp_action" type="submit" value="MRPStop"  class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"></button>
-		<input name="mrp_action" type="submit" value="MRPStart"  class="btn btn-success" style="width:100px; float:right; margin-right:5px;"></button>
+		<button name="mrp_action" type="button" value="MRPStop" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('stop_mrp'); ?></button>
+		<button name="mrp_action" type="button" value="MRPStart" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('start_mrp'); ?></button>
     
 
 </form>
@@ -92,79 +94,169 @@
 		
 </div>  
 
-<label name="test1" class="control-label" >调试信息1：<?php echo $setval['python'] ?></label>
+<label name="test1" class="control-label" style="display:none;">调试信息1：<?php echo $setval['python'] ?></label>
 <label name="test2" class="control-label" style="display:none;">调试信息2：<?php echo $setval['test'] ?></label>
 
 
 <script type="text/javascript">
-function checkUser(){
 var base_url = "<?php echo site_url('lp_oracle/dg_switch?dg_group_id=') ?>";
 var group_id = "<?php echo $setval['id'] ?>";
 var target_url = base_url.toString() + group_id.toString();
-
 var user_pwd = "<?php echo $userdata['password'] ?>" ;
 
+function checkUser(e){
 
-bootbox.prompt({
-    title: "请输入管理员密码!",
-    inputType: 'password',
-    callback: function (result) {
-    	alert(result.length);
-    	if (result == ''){
-    			bootbox.alert({
-        		message: "您输入的密码为空!",
-        		buttons: {
-					        ok: {
-					            label: '确定',
-					            className: 'btn-success'
-					        }
-					    }
-        	});
-    		}
-    	else if(result)
-    	{ alert('111');
-    		
-        if (md5(result) == user_pwd)
-        {
-					bootbox.confirm({
-					    message: "确认要开始切换吗？",
-					    buttons: {
-					        confirm: {
-					            label: '是',
-					            className: 'btn-success'
-					        },
-					        cancel: {
-					            label: '否',
-					            className: 'btn-danger'
-					        }
-					    },
-					    callback: function (result) {
-					        if(result)
-					        { 
-					        	//window.location.href=target_url;
-					        	//document.getElementById("form_switch").submit();
-					        	//alert(result);
-					        	return true;
-					        }
-					    }
-					});
-        }
-        else
-        {
-        	bootbox.alert({
-        		message: "密码不对，请确认后重新尝试!",
-        		buttons: {
-					        ok: {
-					            label: '确定',
-					            className: 'btn-success'
-					        }
-					    }
-        	});
-        }
-      }
-    }
-});
-alert("xxxxx");
-return false;
+		if(e.value == "MRPStart"){
+			_message = "确认要开启MRP进程吗？";
+		}
+		else if(e.value == "MRPStop"){
+			_message = "确认要停止MRP进程吗？";
+		}
+		else if(e.value == "Switchover"){
+			_message = "确认要开始主备切换吗？";
+		}
+		else if(e.value == "Failover"){
+			_message = "确认要开始灾难切换吗？";
+		}
+		else{
+			_message = "";
+		}
+
+
+		bootbox.prompt({
+		    title: "请输入管理员密码!",
+		    inputType: 'password',
+		    callback: function (result) {
+		    	if(result)
+		    	{ 
+		        if (md5(result) == user_pwd)
+		        {
+							bootbox.dialog({
+							    message: _message,
+							    buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-danger',
+													callback: function(){
+		                            $.ajax({
+											                    url: target_url,
+											                    data: $("#form_switch").serializeArray(),
+											                    data: "mrp_action=" + e.value,
+											                    type: "POST",
+											                    success: function (data) {
+											              			//回调函数，判断提交返回的数据执行相应逻辑
+											                        if (data.Success) {
+											                        }
+											                        else {
+											                        }
+											                    }
+		                										});
+		                							myBar = new YprogressBar({
+																											    title: "后台正在处理中...",
+																											    des: "{{y:progress}}",
+																											    closeable: false,
+																											    cancelCallback: function(rate, vars){
+																											  	console.log(rate);
+																											  	console.log(vars);
+																											    }
+																											  }); 
+																	myBar.update(0,{progress: ""});  
+																	myBar.show();
+		                        }
+							        },
+							        cancel: {
+							            label: '取消',
+							            className: 'btn-default',
+							            callback: function () {
+		                      }
+							        }
+							    }
+							});
+		        }
+		        else
+		        {
+		        	bootbox.alert({
+		        		message: "密码不对，请确认后重新尝试!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+		        }
+		      }
+		
+		    }
+		});
+
 }
+
+
+var oTimer = null; 
+var myBar = null;
+var myBar_count = 0; 
+var myBar_desc = null;
+var query_url="<?php echo site_url('lp_oracle/dg_progress') ?>";
+var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
+var on_switchover="<?php echo $dg_group[0]['on_switchover'] ?>" ;
+var on_failover="<?php echo $dg_group[0]['on_failover'] ?>" ;
+var on_startmrp="<?php echo $dg_group[0]['on_startmrp'] ?>" ;
+var on_stopmrp="<?php echo $dg_group[0]['on_stopmrp'] ?>" ;
+  
+jQuery(document).ready(function(){ 
+		oTimer = setInterval("queryHandle(query_url)",2000);
+		
+		if(on_process=='1'){
+			myBar = new YprogressBar({
+														    title: "后台正在处理中...",
+														    des: "{{y:progress}}",
+														    closeable: false,
+														    cancelCallback: function(rate, vars){
+														  	console.log(rate);
+														  	console.log(vars);
+														    }
+														  }); 
+			myBar.update(0,{progress: ""});  
+			myBar.show();
+			
+		}
+		    
+});  
+  
+function queryHandle(url){
+    $.post(url, {group_id:group_id}, function(json){ 
+    		//alert(json.on_startmrp); 
+        //var status = 1;
+        if(json.on_process==='0'){ 
+        		if(myBar!=null){
+        				myBar.destroy(); 
+        				myBar=null; 
+        		}
+            
+        }else{ 
+        		if(myBar==null){
+  							myBar = new YprogressBar({
+											    title: "后台正在处理中...",
+											    des: "{{y:progress}}",
+											    closeable: false,
+											    cancelCallback: function(rate, vars){
+											  	console.log(rate);
+											  	console.log(vars);
+											    }
+											  }); 
+								myBar.update(0,{progress: ""});  
+								myBar.show();
+        		}
+        		else{
+        				myBar.update(json.rate,{progress: json.process_desc}); 
+        				
+        		}
+            
+        }  
+    },'json');  
+}  
+
 </script>
+
+

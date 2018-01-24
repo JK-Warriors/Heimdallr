@@ -1,0 +1,19 @@
+<?php 
+header('Content-type:text/json');
+
+$arr = array('on_process' => $dg_group[0]['on_process'], 
+						 'on_switchover' => $dg_group[0]['on_switchover'], 
+						 'on_failover' => $dg_group[0]['on_failover'], 
+						 'on_startmrp' => $dg_group[0]['on_startmrp'], 
+						 'on_stopmrp' => $dg_group[0]['on_stopmrp'],
+						 
+						 'group_id' => $dg_process[0]['group_id'],
+						 'process_type' => $dg_process[0]['process_type'],
+						 'process_desc' => $dg_process[0]['process_desc'],
+						 'rate' => $dg_process[0]['rate'],);
+
+$test = array('test' => $test['test']);
+						  		 
+echo json_encode($arr);
+#echo json_encode($test);
+?> 
