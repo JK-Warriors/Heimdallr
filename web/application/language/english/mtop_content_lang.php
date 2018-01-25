@@ -48,6 +48,13 @@ $lang['replication'] = 'Replication';
 $lang['process'] = 'process';
 $lang['slowquery'] = 'slowquery';
 
+$lang['db_user'] = 'DB User';
+$lang['db_pwd'] = 'DB Password';
+$lang['host_type'] = 'Host Type';
+$lang['host_user'] = 'Host User';
+$lang['host_pwd'] = 'Host Password';
+$lang['host_protocol'] = 'Host Protocol';
+
 $lang['group_id'] = 'Group ID';
 $lang['group_name'] = 'Group Name';
 $lang['dg_group'] = 'DG Group';

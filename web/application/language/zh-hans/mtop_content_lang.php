@@ -48,6 +48,13 @@ $lang['replication'] = '复制';
 $lang['process'] = '进程';
 $lang['slowquery'] = '慢查询';
 
+$lang['db_user'] = '数据库用户名';
+$lang['db_pwd'] = '数据库密码';
+$lang['host_type'] = '主机类型';
+$lang['host_user'] = '主机用户名';
+$lang['host_pwd'] = '主机密码';
+$lang['host_protocol'] = '主机协议';
+
 $lang['group_id'] = '组号';
 $lang['group_name'] = '组名';
 $lang['dg_group'] = 'DG 组';

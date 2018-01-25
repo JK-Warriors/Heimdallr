@@ -11,10 +11,10 @@
  
 <div class="btn-toolbar">
     <a class="btn btn-primary " href="<?php echo site_url('servers_oracle/add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('add'); ?></a>
-    <a class="btn btn-primary " href="<?php echo site_url('servers_oracle/batch_add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('batch_add'); ?></a>
-    <a class="btn btn " href="<?php echo site_url('servers_oracle/trash') ?>"><i class="icon-trash"></i> <?php echo $this->lang->line('trash'); ?></a>
+    <!-- <a class="btn btn-primary " href="<?php echo site_url('servers_oracle/batch_add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('batch_add'); ?></a> -->
     <a class="btn btn-primary " href="<?php echo site_url('servers_oracle/add_dg') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('add_dg'); ?></a>
-  <div class="btn-group"></div>
+  	<a class="btn btn " href="<?php echo site_url('servers_oracle/trash') ?>"><i class="icon-trash"></i> <?php echo $this->lang->line('trash'); ?></a>
+<div class="btn-group"></div>
 </div>
 
 <div class="well">

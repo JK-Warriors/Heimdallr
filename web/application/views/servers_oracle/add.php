@@ -51,7 +51,7 @@
    </div>
    
    <div class="control-group">
-    <label class="control-label" for="">*<?php echo $this->lang->line('username'); ?></label>
+    <label class="control-label" for="">*<?php echo $this->lang->line('db_user'); ?></label>
     <div class="controls">
       <input type="text" id=""  name="username" value="<?php echo set_value('username',''); ?>" >
       <span class="help-inline"></span>
@@ -59,7 +59,7 @@
    </div>
    
    <div class="control-group">
-    <label class="control-label" for="">*<?php echo $this->lang->line('password'); ?></label>
+    <label class="control-label" for="">*<?php echo $this->lang->line('db_pwd'); ?></label>
     <div class="controls">
       <input type="password" id=""  name="password" value="<?php echo set_value('password',''); ?>" >
       <span class="help-inline"></span>
@@ -73,13 +73,54 @@
       <span class="help-inline"></span>
     </div>
    </div>
+
    
+    <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('host_type'); ?></label>
+    <div class="controls">
+        <select name="host_type" id="host_type" class="input-medium">
+         <option value="0"  >Linux</option>
+         <option value="1"  >AIX</option>
+         <option value="2"  >HP-UX</option>
+         <option value="3"  >Solaris</option>
+         <option value="4"  >Windows</option>
+        </select>
+    </div>
+    </div>
+    
+   <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('host_user'); ?></label>
+    <div class="controls">
+      <input type="text" id="host_user"  name="host_user" value="<?php echo set_value('host_user',''); ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+
+   <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('host_pwd'); ?></label>
+    <div class="controls">
+      <input type="password" id="host_pwd"  name="host_pwd" value="<?php echo set_value('host_pwd',''); ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+
+    <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('host_protocol'); ?></label>
+    <div class="controls">
+        <select name="host_protocol" id="host_protocol" class="input-medium">
+         <option value="0"  >ssh2</option>
+         <option value="1"  >telnet</option>
+        </select>
+    </div>
+    </div>
+    
+    
    <hr />
    
     <div class="control-group">
     <label class="control-label" for=""><?php echo $this->lang->line('monitor'); ?></label>
     <div class="controls">
-        <select name="status" id="status" class="input-small">
+        <select name="monitor" id="status" class="input-small">
          <option value="1"  ><?php echo $this->lang->line('on'); ?></option>
          <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
         </select>

@@ -62,19 +62,19 @@ class Servers_oracle extends Front_Controller {
 		$data['error_code']=0;
 		if(isset($_POST['submit']) && $_POST['submit']=='add')
         {
-			$this->form_validation->set_rules('host',  'lang:host', 'trim|required');
+            $this->form_validation->set_rules('host',  'lang:host', 'trim|required');
             $this->form_validation->set_rules('port',  'lang:port', 'trim|required|min_length[4]|max_length[6]|integer');
             $this->form_validation->set_rules('username',  'lang:username', 'trim|required');
-			$this->form_validation->set_rules('password',  'lang:password', 'trim|required');
-			$this->form_validation->set_rules('dsn',  'lang:dsn', 'trim|required');
-			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
+            $this->form_validation->set_rules('password',  'lang:password', 'trim|required');
+            $this->form_validation->set_rules('dsn',  'lang:dsn', 'trim|required');
+            $this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
             $this->form_validation->set_rules('threshold_warning_session_total',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_session_total',  'lang:alarm_threshold', 'trim|required|integer');
-			$this->form_validation->set_rules('threshold_warning_session_actives',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_session_actives',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_session_actives',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_session_waits',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_session_waits',  'lang:alarm_threshold', 'trim|required|integer');
-			$this->form_validation->set_rules('threshold_warning_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
            
 			if ($this->form_validation->run() == FALSE)
@@ -89,10 +89,14 @@ class Servers_oracle extends Front_Controller {
 						'port'=>$this->input->post('port'),
 						'username'=>$this->input->post('username'),
 						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
+						'tags'=>$this->input->post('tags'),
 						'dsn'=>$this->input->post('dsn'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+						'host_type'=>$this->input->post('host_type'),
+						'host_user'=>$this->input->post('host_user'),
+						'host_pwd'=>$this->input->post('host_pwd'),
+						'host_protocol'=>$this->input->post('host_protocol'),
+						'monitor'=>$this->input->post('monitor'),
+						'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
 						'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
@@ -132,16 +136,16 @@ class Servers_oracle extends Front_Controller {
             $this->form_validation->set_rules('host',  'lang:host', 'trim|required');
             $this->form_validation->set_rules('port',  'lang:port', 'trim|required|min_length[4]|max_length[6]|integer');
             $this->form_validation->set_rules('username',  'lang:username', 'trim|required');
-			$this->form_validation->set_rules('password',  'lang:password', 'trim|required');
-			$this->form_validation->set_rules('dsn',  'lang:dsn', 'trim|required');
-			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
+            $this->form_validation->set_rules('password',  'lang:password', 'trim|required');
+            $this->form_validation->set_rules('dsn',  'lang:dsn', 'trim|required');
+            $this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
             $this->form_validation->set_rules('threshold_warning_session_total',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_session_total',  'lang:alarm_threshold', 'trim|required|integer');
-			$this->form_validation->set_rules('threshold_warning_session_actives',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_session_actives',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_session_actives',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_session_waits',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_session_waits',  'lang:alarm_threshold', 'trim|required|integer');
-			$this->form_validation->set_rules('threshold_warning_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
 			if ($this->form_validation->run() == FALSE)
 			{
@@ -155,10 +159,14 @@ class Servers_oracle extends Front_Controller {
 						'port'=>$this->input->post('port'),
 						'username'=>$this->input->post('username'),
 						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
+						'tags'=>$this->input->post('tags'),
 						'dsn'=>$this->input->post('dsn'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+						'host_type'=>$this->input->post('host_type'),
+						'host_user'=>$this->input->post('host_user'),
+						'host_pwd'=>$this->input->post('host_pwd'),
+						'host_protocol'=>$this->input->post('host_protocol'),
+						'monitor'=>$this->input->post('monitor'),
+						'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
 						'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
