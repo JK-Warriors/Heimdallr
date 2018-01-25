@@ -50,6 +50,7 @@ class Lp_oracle extends Front_Controller {
     public function dataguard()
 	{
         parent::check_privilege();
+        $data["datalist"]=$this->oracle->get_status_total_record();
         $data["dg_group"]=$this->oracle->get_dataguard_group();
         
         if(isset($_GET["dg_group_id"])){
@@ -75,6 +76,7 @@ class Lp_oracle extends Front_Controller {
     public function dg_switch()
 	{
         parent::check_privilege();
+        $data["datalist"]=$this->oracle->get_status_total_record();
         $base_path=$_SERVER['DOCUMENT_ROOT'];
         
         $data["dg_group"]=$this->oracle->get_dataguard_group();
