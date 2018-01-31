@@ -68,15 +68,13 @@
 
         <div style="float:left;">
         <label style='padding: 0px 0px 0px 120px;' class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
-        <img src="./images/left_arrow.png"/>
         <img src="
         <?php
         $second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);
         if($second_dif > 3600 ){echo "./images/trans_alarm.png";}   #时间差超过1小时，显示trans_error图片
         elseif($primary_db[0]['open_mode']==-1 or $standby_db[0]['open_mode']==-1){echo "./images/trans_error.png";}
-        else{echo "./images/health_status.png";}  ?> 
+        else{echo "./images/health_transfer.gif";}  ?> 
         "/>
-        <img src="./images/right_arrow.png"/>
         </div> 
         
         <!-- <div style="float:left;"><img src="./images/standby_db.png"/></div>  -->
