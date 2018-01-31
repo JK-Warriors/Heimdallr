@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+﻿#-*- coding: utf-8 -*-
 
 ######################################################################
 # Copyright (c)  2017 by WLBlazers Corporation
@@ -11,7 +11,7 @@
 ######################################################################
 ##     Date        File            Changes
 ######################################################################
-##  12/28/2017                      Baseline version 1.0.0
+##  01/29/2018                      Baseline version 1.0.0
 ##
 ######################################################################
 
@@ -22,6 +22,7 @@ import sys, getopt
 
 import mysql_handle as mysql
 import oracle_handle as oracle
+import common
 
 import logging
 import logging.config
@@ -33,50 +34,107 @@ logger = logging.getLogger('WLBlazers')
 ###############################################################################
 # function failover2primary
 ###############################################################################
-def failover2primary(s_conn, s_conn_str, sta_id):
+def failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     logger.info("Failover database to primary in progress...")
 	# get database role
     str='select database_role from v$database'
     role=oracle.GetSingleValue(s_conn, str)
+    common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '获取数据库角色成功。', 20, 2)
     logger.info("The current database role is: " + role)
 	
-	# get switchover status
-    str='select switchover_status from v$database'
-    switch_status=oracle.GetSingleValue(s_conn, str)
-    logger.info("The current database switchover status is: " + switch_status)
 	
 
     if role=="PHYSICAL STANDBY":
-        logger.info("Now we are going to switch database %s to primary." %(sta_id))
-		
+        common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '验证数据库角色成功。', 40, 2)
+        
+        logger.info("Now we are going to failover standby database %s to primary." %(sta_id))
         logger.info("Restart the standby database MRP process...")
-        sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
-        sqlplus.stdin.write(bytes("alter database recover managed standby database cancel;"+os.linesep,encoding="utf-8"))
-        sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep,encoding="utf-8"))
-        out, err = sqlplus.communicate()
-        logger.info(out)
+        
+        # 判断是否有已经传输过来的归档没有应用
+        str="select count(1) from v$archived_log where dest_id = 1 and archived='YES' and applied='NO' "
+        left_arch=oracle.GetSingleValue(s_conn, str)
+        if left_arch > 1:
+            show_str="还有 %s 个归档等待应用。" %(left_arch)
+            common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', show_str, 50, 2)
+            
+            sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+            sqlplus.stdin.write(bytes("alter database recover managed standby database cancel;"+os.linesep))
+            sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep))
+            out, err = sqlplus.communicate()
+            logger.info(out)
 		
-        if err=="":
-            logger.info("Restart the MRP process successfully.")
-			
-        logger.info("Failover standby database to primary... ")
-        sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
-        sqlplus.stdin.write(bytes("alter database recover managed standby database finish;"+os.linesep,encoding="utf-8"))
-        sqlplus.stdin.write(bytes("alter database activate standby database;"+os.linesep,encoding="utf-8"))
-        sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep,encoding="utf-8"))
-        sqlplus.stdin.write(bytes("startup"+os.linesep,encoding="utf-8"))
-        out, err = sqlplus.communicate()
-        logger.info(out)
 		
-        if err=="":
-            logger.info("Failover standby database to primary successfully.")
+            # check MRP status
+            str="select count(1) from gv$session where program like '%(MRP0)' "
+            mrp_status=oracle.GetSingleValue(s_conn, str)
+            if mrp_status > 0:
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '重启数据库MRP进程成功。', 60, 2)
+                logger.info("Restart the MRP process successfully.")
+                
+            else:
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '重启数据库MRP进程失败。', 60, 2)
+                logger.info("Restart the MRP process failed.")
 
+
+            timeout=0
+            while left_arch > 1:
+                if timeout > 60:
+                    break
+                	
+                str="select count(1) from v$archived_log where dest_id = 1 and archived='YES' and applied='NO' "
+                left_arch=oracle.GetSingleValue(s_conn, str)
+                    
+                show_str="还有 %s 个归档等待应用。" %(left_arch)
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', show_str, 65, 2)
+                timeout=timeout + 2
+                
+                
+            if timeout > 300:
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '归档应用超时，灾难切换失败！', 90, 2)
+                logger.info("Failover standby database to primary failed.")
+                return -1							#超时退出
+                
+                     
+            # 归档应用完毕，开始切换
+            failover(mysql_conn, group_id, s_conn_str)
+        else:	
+            failover(mysql_conn, group_id, s_conn_str)
+
+
+				# 重新验证切换后数据库角色
+        s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
+        str='select database_role from v$database'
+        db_role=oracle.GetSingleValue(s_conn, str)
+        logger.info("Now the database role is: %s" %(db_role))
+    
+        if db_role=="PRIMARY":
+            common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '数据库灾难切换成功。', 90, 2)
+            logger.info("Failover standby database to primary successfully.")
+        else:
+            common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '数据库灾难切换失败，请根据相关日志查看原因。', 90, 2)
+            logger.info("Failover standby database to primary failed.")
 
     else:
+        common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP。', 90)
         logger.error("You can not failover primary database to primary!")
-        sys.exit(2)	
+        return 2
 
-		
+
+###############################################################################
+# function failover2primary
+###############################################################################
+def failover(mysql_conn, group_id, s_conn_str):
+    logger.info("Failover standby database to primary... ")
+    common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '正在进行灾难切换...', 75, 2)
+    sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+    sqlplus.stdin.write(bytes("alter database recover managed standby database finish;"+os.linesep))
+    sqlplus.stdin.write(bytes("alter database activate standby database;"+os.linesep))
+    sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
+    sqlplus.stdin.write(bytes("startup"+os.linesep))
+    out, err = sqlplus.communicate()
+    logger.info(out)
+    
+    		
 ###############################################################################
 # function update_switch_flag
 ###############################################################################
@@ -142,15 +200,51 @@ if __name__=="__main__":
 	
     logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 	
+    try:
+        common.operation_lock(mysql_conn, group_id, 'FAILOVER')
+        s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
+        if s_conn is None:
+            common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '连接备库失败，请根据相应日志查看原因。', 5, 5)
+            logger.error("Connect to standby database error, exit!!!")
+            sys.exit(2)
+        str='select count(1) from gv$instance'
+        s_count=oracle.GetSingleValue(s_conn, str)
 
-    s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
-		
-    if s_conn is None:
-        logger.error("Connect to standby database error, exit!!!")
-        sys.exit(2)
-		
-    failover2primary(s_conn, s_conn_str, sta_id)
-	
-	
-    update_switch_flag(mysql_conn, group_id)
+        # try to kill all "(LOCAL=NO)" connections in database
+        try:
+            if s_count > 1:
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '正在尝试杀掉"(LOCAL=NO)"的会话，并关闭集群的其他节点。可能需要一段时间，请耐心等待...', 5, 0)
+            else:
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '正在尝试杀掉"(LOCAL=NO)"的会话。可能需要一段时间，请耐心等待...', 5, 0)
+    	  		
+            common.kill_sessions(mysql_conn, s_conn, sta_id)
+        except Exception,e:
+            logger.error("kill sessions error!!!")
+            logger.error("traceback.format_exc(): \n%s" %(traceback.format_exc()))
+            pass
+            
+        	
+        
+        # 验证其他实例是否关闭
+        str='select count(1) from gv$instance'
+        s_count=oracle.GetSingleValue(s_conn, str)
+        logger.error("Instance count is : %s" %(s_count))
+        if s_count > 1:
+            show_msg="关闭实例失败，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换。"
+            common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', show_msg, 10, 2)
+            logger.error(show_msg)
+            sys.exit(2)
+        
+           
+        try:
+            common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '准备执行灾难切换。', 10, 2)
+            res = failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
+            if res ==0:
+                update_switch_flag(mysql_conn, group_id)
+        except Exception,e:
+            pass
+    except Exception,e:
+        pass
+    finally:
+        common.operation_unlock(mysql_conn, group_id, 'FAILOVER')
 	

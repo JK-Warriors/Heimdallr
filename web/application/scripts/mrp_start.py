@@ -60,6 +60,7 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证MRP进程，已经是激活状态。', 70, 2)
         else:
             logger.info("Now we are going to start the mrp process... ")
+            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '正在开启MRP进程...', 70, 2)
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
             out, err = sqlplus.communicate()

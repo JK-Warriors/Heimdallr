@@ -237,7 +237,8 @@ function queryHandle(url){
         if(json.on_process==='0'){ 
         		if(myBar!=null){
         				myBar.destroy(); 
-        				myBar=null; 
+        				myBar=null;
+						window.location.reload(); 
         		}
             
         }else{ 
@@ -255,7 +256,12 @@ function queryHandle(url){
 								myBar.show();
         		}
         		else{
-        				myBar.update(json.rate,{progress: json.process_desc}); 
+					if(json.process_desc==null){
+						show_str="";
+					}else{
+						show_str=json.process_desc;
+					}
+					myBar.update(json.rate,{progress: show_str}); 
         				
         		}
             

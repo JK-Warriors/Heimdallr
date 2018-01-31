@@ -80,8 +80,6 @@ class Lp_oracle extends Front_Controller {
         $base_path=$_SERVER['DOCUMENT_ROOT'];
         
         $data["dg_group"]=$this->oracle->get_dataguard_group();
-        
-        $setval["trans_type"]=isset($_POST["trans_type"]) ? $_POST["trans_type"] : "";
                 
         if(isset($_GET["dg_group_id"])){
             $id = $_GET["dg_group_id"];
@@ -93,42 +91,27 @@ class Lp_oracle extends Front_Controller {
         $pri_id = $this->oracle->get_pri_id_by_group_id($id);
         $sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
-        if(isset($_POST["trans_type"])){
-            $trans_type = $_POST["trans_type"];
+        if(isset($_POST["dg_action"])){
+            $dg_action = $_POST["dg_action"];
 
-            if($trans_type == "Switchover"){
-
-                #$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
-                
-                #$result = shell_exec($order);
-                $result = "Succes";
-                
-            }
-            elseif($trans_type == "Failover"){
-
-                #$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
-                #$result = shell_exec($order);  
-                $result = "Succes";
-
-            }
-        }
-        
-        if(isset($_POST["mrp_action"])){
-            $mrp_action = $_POST["mrp_action"];
-
-            if($mrp_action == "MRPStart"){
-
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1';    
-                
+            if($dg_action == "Switchover"){
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
                 $result = shell_exec($order);
                 #$result = "Succes";
-                
             }
-            elseif($mrp_action == "MRPStop"){
-
+            elseif($dg_action == "Failover"){
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
+                $result = shell_exec($order);  
+                #$result = "Succes";
+            }
+            elseif($dg_action == "MRPStart"){
+                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1';    
+                $result = shell_exec($order);
+                #$result = "Succes";
+            }
+            elseif($dg_action == "MRPStop"){
                 $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1';   
                 $result = shell_exec($order);  
-
             }
         }
         
@@ -137,7 +120,7 @@ class Lp_oracle extends Front_Controller {
 
         $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
         $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
-        $setval["python"]=isset($_POST["trans_type"]) ? $_POST["trans_type"] : "xxx";
+        $setval["python"]=$_POST["dg_action"];
         $setval["test"]=$result;
         $data["setval"]=$setval;
         
