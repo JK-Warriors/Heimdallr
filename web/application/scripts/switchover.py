@@ -214,8 +214,6 @@ def to_primary(mysql_conn, group_id, s_conn_str):
     sqlplus.stdin.write(bytes("startup mount"+os.linesep))
     sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
     sqlplus.stdin.write(bytes("alter system archive log current;"+os.linesep))
-    sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
-    sqlplus.stdin.write(bytes("startup"+os.linesep))
     out, err = sqlplus.communicate()
     logger.info(out)
     logger.error(err)
