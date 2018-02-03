@@ -99,7 +99,21 @@ def update_mrp_status(mysql_conn, sta_id):
             logger.info("Update MRP status to active in oracle_dg_s_status for server %s failed." %(sta_id))
 
 
-                
+
+###############################################################################
+# function enable_rfs
+###############################################################################
+def enable_rfs(mysql_conn, p_conn):
+    logger.info("Enable RFS process in primary...")
+    str="alter system set log_archive_dest_state_2=defer sid='*' "
+    rfs_status=oracle.ExecuteSQL(p_conn, str)
+
+    str="alter system set log_archive_dest_state_2=enable sid='*' "
+    rfs_status=oracle.ExecuteSQL(p_conn, str)
+    
+    str="alter system archive log current "
+    res=oracle.ExecuteSQL(p_conn, str)
+
 ###############################################################################
 # main function
 ###############################################################################
@@ -131,14 +145,21 @@ if __name__=="__main__":
         sys.exit(2)
 		
     
+    p_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(pri_id)
+    p_conn_str = mysql.GetSingleValue(mysql_conn, p_str)
     s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(sta_id)
     s_conn_str = mysql.GetSingleValue(mysql_conn, s_str)
 
+	
+    p_str = """select concat(username, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(pri_id)
+    p_nopass_str = mysql.GetSingleValue(mysql_conn, p_str)
     s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
+    logger.info("The primary database is: " + p_nopass_str + ", the id is: " + str(pri_id))
     logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 	
+    p_conn = oracle.ConnectOracleAsSysdba(p_conn_str)
     s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
 	
 		
@@ -153,8 +174,7 @@ if __name__=="__main__":
             if res ==0:
                 update_mrp_status(mysql_conn, sta_id)
                 
+            enable_rfs(mysql_conn, p_conn)    
         finally:
             common.operation_unlock(mysql_conn, group_id, 'MRP_START')
-            None
 
-	 

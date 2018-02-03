@@ -100,6 +100,7 @@
 var base_url = "<?php echo site_url('lp_oracle/dg_switch?dg_group_id=') ?>";
 var group_id = "<?php echo $setval['id'] ?>";
 var target_url = base_url.toString() + group_id.toString();
+var dg_url = "<?php echo site_url('lp_oracle/dataguard?dg_group_id=') ?>" + group_id.toString();
 var user_pwd = "<?php echo $userdata['password'] ?>" ;
 
 function checkUser(e){
@@ -237,6 +238,7 @@ function queryHandle(url){
         				myBar.destroy(); 
         				myBar=null;
 						window.location.reload(); 
+						//window.location.href=dg_url;
         		}
             
         }else{ 
