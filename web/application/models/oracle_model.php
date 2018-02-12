@@ -148,7 +148,7 @@ class Oracle_model extends CI_Model{
     }
     
     function get_mrp_status_by_id($id){
-        $query=$this->db->query("select mrp_status from oracle_dg_s_status where server_id = $id order by id desc limit 1; ");
+        $query=$this->db->query("select mrp_status from oracle_dg_s_status where server_id = '$id' order by id desc limit 1; ");
         if ($query->num_rows() > 0)
         {
         	 $result=$query->row();

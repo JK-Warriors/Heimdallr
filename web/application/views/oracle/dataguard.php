@@ -34,7 +34,7 @@
     </div>
     <button type="submit" class="btn btn-success" action="<?php site_url('lp_oracle/dataguard') ?>" > <?php echo $this->lang->line('detail'); ?></button>
     
-    <a class="btn btn-success" href="<?php echo site_url('lp_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('dg_management'); ?></a>
+    <a class="btn btn-success" href="<?php echo site_url('lp_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;" ><?php echo $this->lang->line('dg_management'); ?></a>
 
 </form>
 </div>
@@ -43,10 +43,16 @@
 
 
 
+<div style="padding: 19px; <?php if($setval['id']!=""){echo "display:none;";} ?>" >
+	<tr>
+<td colspan="12">
+<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+</td>
+</tr>
+</div>
 
 
-
-<div style="padding: 19px;" >
+<div style="padding: 19px; <?php if($setval['id']==""){echo "display:none;";} ?>">
     <div style='padding: 20px 120px 0px 60px; height:100px; overflow:hidden'>
         <div style='float:left; height:100px; width:280px;'>
         <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
@@ -67,7 +73,7 @@
     <div style="float:left;"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
 
         <div style="float:left;">
-        <label style='padding: 0px 0px 0px 120px;' class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+        <label style='padding: 0px 0px 0px 100px;' class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
         <img src="
         <?php
         $second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);

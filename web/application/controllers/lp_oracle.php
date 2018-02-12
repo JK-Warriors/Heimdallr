@@ -59,15 +59,21 @@ class Lp_oracle extends Front_Controller {
         else{
             $id = $data["dg_group"][0]["id"];
         }
+        
         $setval["id"] = $id;
+        
+        if($id != ""){
+        		$pri_id = $this->oracle->get_pri_id_by_group_id($id);
+        		$sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
-        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
-        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
-
-        $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
-        $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
+						if($pri_id != "" && $sta_id != ""){
+        				$data["primary_db"] = $this->oracle->get_primary_info($pri_id);
+        				$data["standby_db"] = $this->oracle->get_standby_info($sta_id);
+						}
+						
+        }
+        
         $data["setval"]=$setval;
-
 
         $this->layout->view("oracle/dataguard",$data);
     }
@@ -88,47 +94,52 @@ class Lp_oracle extends Front_Controller {
             $id = $data["dg_group"][0]["id"];
         }
         $setval["id"] = $id;
-        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
-        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
+        
+        if($id != ""){
+        		$pri_id = $this->oracle->get_pri_id_by_group_id($id);
+        		$sta_id = $this->oracle->get_sta_id_by_group_id($id);
 
-        if(isset($_POST["dg_action"])){
-            $dg_action = $_POST["dg_action"];
-
-            if($dg_action == "Switchover"){
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
-                $result = shell_exec($order);
-                #$result = "Succes";
-            }
-            elseif($dg_action == "Failover"){
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
-                $result = shell_exec($order);  
-                #$result = "Succes";
-            }
-            elseif($dg_action == "MRPStart"){
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1';    
-                $result = shell_exec($order);
-                #$result = "Succes";
-            }
-            elseif($dg_action == "MRPStop"){
-                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1';   
-                $result = shell_exec($order);  
-            }
+		        if(isset($_POST["dg_action"])){
+		            $dg_action = $_POST["dg_action"];
+		
+		            if($dg_action == "Switchover"){
+		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
+		                $result = shell_exec($order);
+		                #$result = "Succes";
+		            }
+		            elseif($dg_action == "Failover"){
+		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
+		                $result = shell_exec($order);  
+		                #$result = "Succes";
+		            }
+		            elseif($dg_action == "MRPStart"){
+		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1';    
+		                $result = shell_exec($order);
+		                #$result = "Succes";
+		            }
+		            elseif($dg_action == "MRPStop"){
+		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1';   
+		                $result = shell_exec($order);  
+		            }
+		        }
         }
         
-        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
-        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
-
-        $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
-        $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
-        $setval["python"]=$_POST["dg_action"];
-        $setval["test"]=$result;
-        $data["setval"]=$setval;
         
-        sleep(1);
-        
-        $data["userdata"] = $this->user->get_user_by_username('admin');
-
-        $this->layout->view("oracle/dg_switch",$data);
+				if($id != ""){
+		        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
+		        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
+		
+		        $data["primary_db"] = $this->oracle->get_primary_info($pri_id);
+		        $data["standby_db"] = $this->oracle->get_standby_info($sta_id);
+		        
+		        $data["setval"]=$setval;
+		        
+		        $data["userdata"] = $this->user->get_user_by_username('admin');
+		
+				}
+				
+		    $this->layout->view("oracle/dg_switch",$data);
+      
     }
 
 
@@ -152,14 +163,18 @@ class Lp_oracle extends Front_Controller {
         else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopmrp'] == '1'){
         		$type="MRP_STOP";
         }
-        $data["dg_process"]=$this->oracle->get_dg_process_info($group_id, $type);
+        
+        if($group_id!="-1"){
+		        $data["dg_process"]=$this->oracle->get_dg_process_info($group_id, $type);
+						
+						# get mrp status by group id
+						$sta_id = $this->oracle->get_sta_id_by_group_id($group_id);
+						$mrp_status=$this->oracle->get_mrp_status_by_id($sta_id);
+						
+						$setval["mrp_status"] = $mrp_status;
+		        $data["mrp_status"] = $setval;
+        }
 				
-				# get mrp status by group id
-				$sta_id = $this->oracle->get_sta_id_by_group_id($group_id);
-				$mrp_status=$this->oracle->get_mrp_status_by_id($sta_id);
-				
-				$setval["mrp_status"] = $mrp_status;
-        $data["mrp_status"] = $setval;
 
 				$this->layout->setLayout("layout_blank");
         $this->layout->view("oracle/dg_progress",$data);

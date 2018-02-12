@@ -31,11 +31,11 @@
     <a class="btn btn " href="<?php echo site_url('lp_oracle/dataguard') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
 
     
-    <button name="trans_type" type="button" value="Failover" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('failover'); ?></button>
-    <button name="trans_type" type="button" value="Switchover" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('switchover'); ?></button>
+    <button name="trans_type" type="button" value="Failover" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('failover'); ?></button>
+    <button name="trans_type" type="button" value="Switchover" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('switchover'); ?></button>
 
-		<button name="mrp_action" type="button" value="MRPStop" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('stop_mrp'); ?></button>
-		<button name="mrp_action" type="button" value="MRPStart" onclick="checkUser(this)" class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('start_mrp'); ?></button>
+		<button name="mrp_action" type="button" value="MRPStop" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('stop_mrp'); ?></button>
+		<button name="mrp_action" type="button" value="MRPStart" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('start_mrp'); ?></button>
     
 
 </form>
@@ -44,10 +44,16 @@
 
 
 
+<div style="padding: 19px; <?php if($setval['id']!=""){echo "display:none;";} ?>" >
+	<tr>
+<td colspan="12">
+<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+</td>
+</tr>
+</div>
 
 
-
-<div style="padding: 19px;" >
+<div style="padding: 19px; <?php if($setval['id']==""){echo "display:none;";} ?>" >
     <div style='padding: 20px 120px 0px 60px; height:100px; overflow:hidden'>
         <div style='float:left; height:100px; width:280px;'>
         <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
@@ -140,7 +146,7 @@ function checkUser(e){
 		                            $.ajax({
 											                    url: target_url,
 											                    data: $("#form_switch").serializeArray(),
-											                    data: "mrp_action=" + e.value,
+											                    data: "dg_action=" + e.value,
 											                    type: "POST",
 											                    success: function (data) {
 											              			//回调函数，判断提交返回的数据执行相应逻辑
@@ -194,6 +200,7 @@ function checkUser(e){
 
 var oTimer = null; 
 var myBar = null;
+var last_switchover = null;
 var warningDiv = document.getElementById("mrp_warning");
 var query_url="<?php echo site_url('lp_oracle/dg_progress') ?>";
 var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
@@ -202,8 +209,10 @@ var on_failover="<?php echo $dg_group[0]['on_failover'] ?>" ;
 var on_startmrp="<?php echo $dg_group[0]['on_startmrp'] ?>" ;
 var on_stopmrp="<?php echo $dg_group[0]['on_stopmrp'] ?>" ;
   
-jQuery(document).ready(function(){ 
-		oTimer = setInterval("queryHandle(query_url)",2000);
+jQuery(document).ready(function(){
+		if(group_id != ""){
+			oTimer = setInterval("queryHandle(query_url)",2000);
+		} 
 		
 		if(on_process=='1'){
 			myBar = new YprogressBar({
@@ -225,6 +234,8 @@ jQuery(document).ready(function(){
 function queryHandle(url){
     $.post(url, {group_id:group_id}, function(json){ 
         //var status = 1;
+        last_switchover = json.on_switchover;
+        
         if(json.mrp_status=='1'){
 						warningDiv.style.display="none";
         }
@@ -237,8 +248,16 @@ function queryHandle(url){
         		if(myBar!=null){
         				myBar.destroy(); 
         				myBar=null;
-						window.location.reload(); 
-						//window.location.href=dg_url;
+        				//window.location.reload();
+        				
+        						alert(last_switchover);
+        				if(last_switchover == 1){
+        						window.location.href=dg_url;
+        				}
+        				else{
+        						window.location.reload();
+        				} 
+
         		}
             
         }else{ 
