@@ -4,7 +4,7 @@ class Wl_oracle extends Front_Controller {
 
     function __construct(){
 		parent::__construct();
-        $this->load->model('servers_oracle_model','server');
+        $this->load->model('cfg_oracle_model','server');
         $this->load->model("option_model","option");
 		$this->load->model("oracle_model","oracle");
         $this->load->model("os_model","os");  

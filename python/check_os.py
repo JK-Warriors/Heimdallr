@@ -49,7 +49,7 @@ def check_os(ip,community,filter_os_disk,tags):
 def main():
 
     #get os servers list
-    servers=func.mysql_query("select host,community,filter_os_disk,tags from db_servers_os where is_delete=0 and monitor=1;")
+    servers=func.mysql_query("select host,community,filter_os_disk,tags from db_cfg_os where is_delete=0 and monitor=1;")
     
     logger.info("check os controller started.")
     if servers:

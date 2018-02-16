@@ -4,7 +4,7 @@ class Wl_sqlserver extends Front_Controller {
 
     function __construct(){
 		parent::__construct();
-        $this->load->model('servers_sqlserver_model','server');
+        $this->load->model('cfg_sqlserver_model','server');
         $this->load->model("option_model","option");
 		$this->load->model("sqlserver_model","sqlserver");
         $this->load->model("os_model","os");  
@@ -13,17 +13,17 @@ class Wl_sqlserver extends Front_Controller {
         public function index2(){
 
         $sqlserver_statistics = array();
-        $sqlserver_statistics["sqlserver_servers_up"] = $this->db->query("select count(*) as num from sqlserver_status where connect=1")->row()->num;
-        $sqlserver_statistics["sqlserver_servers_down"] = $this->db->query("select count(*) as num from sqlserver_status  where connect!=1")->row()->num;
+        $sqlserver_statistics["sqlserver_cfg_up"] = $this->db->query("select count(*) as num from sqlserver_status where connect=1")->row()->num;
+        $sqlserver_statistics["sqlserver_cfg_down"] = $this->db->query("select count(*) as num from sqlserver_status  where connect!=1")->row()->num;
         $data["sqlserver_statistics"] = $sqlserver_statistics;
         //print_r($mysql_statistics);
         $data["sqlserver_versions"] = $this->db->query("select sqlserver_version as versions, count(*) as num from sqlserver_status where sqlserver_version !='0' GROUP BY versions")->result_array();
         
         $data['sqlserver_connected_clients_ranking'] = $this->db->query("select server.host,server.port,status.connected_clients
-        value from sqlserver_status status left join db_servers_sqlserver server
+        value from sqlserver_status status left join db_cfg_sqlserver server
 on `status`.server_id=`server`.id order by connected_clients desc limit 10;")->result_array();
         $data['sqlserver_used_memory_ranking'] = $this->db->query("select server.host,server.port,status.used_memory
-        value from sqlserver_status status left join db_servers_sqlserver server
+        value from sqlserver_status status left join db_cfg_sqlserver server
 on `status`.server_id=`server`.id order by used_memory desc limit 10;")->result_array();
        
         $this->layout->view("sqlserver/index",$data);

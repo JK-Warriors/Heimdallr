@@ -21,7 +21,7 @@
         <th><center>MongoDB <?php echo $this->lang->line('version'); ?></center></th>
 	</tr>
     <tr style="font-size: 13px;" class="">
-       <td><div id="mongodb_servers_health" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
+       <td><div id="mongodb_cfg_health" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
        <td><div id="mongodb_versions" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
 	</tr>
    
@@ -56,12 +56,12 @@
 //########################## mongodb_Health ##################################
 $(document).ready(function(){
   var data = [
-    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mongodb_statistics['mongodb_servers_up']; ?>)", <?php echo $mongodb_statistics['mongodb_servers_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mongodb_statistics['mongodb_servers_down']; ?>)", <?php echo $mongodb_statistics['mongodb_servers_down'];?> ]
+    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mongodb_statistics['mongodb_cfg_up']; ?>)", <?php echo $mongodb_statistics['mongodb_cfg_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mongodb_statistics['mongodb_cfg_down']; ?>)", <?php echo $mongodb_statistics['mongodb_cfg_down'];?> ]
   ];
-  var plot1 = jQuery.jqplot ('mongodb_servers_health', [data], 
+  var plot1 = jQuery.jqplot ('mongodb_cfg_health', [data], 
     { 
       title: {  
-        text: "MongoDB <?php echo $this->lang->line('servers'); ?>(<?php echo $mongodb_statistics['mongodb_servers_up']+$mongodb_statistics['mongodb_servers_down']?>)",  //        设置当前图的标题  
+        text: "MongoDB <?php echo $this->lang->line('servers'); ?>(<?php echo $mongodb_statistics['mongodb_cfg_up']+$mongodb_statistics['mongodb_cfg_down']?>)",  //        设置当前图的标题  
         show: true,//设置当前标题是否显示 
         fontSize:'13px',    //刻度值的字体大小  
       },

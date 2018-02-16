@@ -177,10 +177,10 @@ CREATE TABLE `alarm_temp` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3624365 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for db_servers_mongodb
+-- Table structure for db_cfg_mongodb
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_mongodb`;
-CREATE TABLE `db_servers_mongodb` (
+DROP TABLE IF EXISTS `db_cfg_mongodb`;
+CREATE TABLE `db_cfg_mongodb` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `port` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
@@ -209,10 +209,10 @@ CREATE TABLE `db_servers_mongodb` (
 ) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for db_servers_mysql
+-- Table structure for db_cfg_mysql
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_mysql`;
-CREATE TABLE `db_servers_mysql` (
+DROP TABLE IF EXISTS `db_cfg_mysql`;
+CREATE TABLE `db_cfg_mysql` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `port` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
@@ -251,10 +251,10 @@ CREATE TABLE `db_servers_mysql` (
 ) ENGINE=InnoDB AUTO_INCREMENT=274 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for db_servers_oracle
+-- Table structure for db_cfg_oracle
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_oracle`;
-CREATE TABLE `db_servers_oracle` (
+DROP TABLE IF EXISTS `db_cfg_oracle`;
+CREATE TABLE `db_cfg_oracle` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   `port` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -292,10 +292,10 @@ CREATE TABLE `db_servers_oracle` (
 
 
 -- ----------------------------
--- Table structure for db_servers_oracle_dg
+-- Table structure for db_cfg_oracle_dg
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_oracle_dg`;
-CREATE TABLE `db_servers_oracle_dg` (
+DROP TABLE IF EXISTS `db_cfg_oracle_dg`;
+CREATE TABLE `db_cfg_oracle_dg` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(200),
   `primary_db_id` int(10),
@@ -313,11 +313,11 @@ CREATE TABLE `db_servers_oracle_dg` (
   KEY `primary_db_id` (`primary_db_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
-alter table db_servers_oracle_dg modify column on_process tinyint(1) DEFAULT 0 comment '值为1时，表明正在进行Switchover，或者Failover，或者开启停止MRP进程'; 
-alter table db_servers_oracle_dg modify column on_switchover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Switchover切换'; 
-alter table db_servers_oracle_dg modify column on_failover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Failover切换'; 
-alter table db_servers_oracle_dg modify column on_startmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在开启MRP进程'; 
-alter table db_servers_oracle_dg modify column on_stopmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在停止MRP进程'; 
+alter table db_cfg_oracle_dg modify column on_process tinyint(1) DEFAULT 0 comment '值为1时，表明正在进行Switchover，或者Failover，或者开启停止MRP进程'; 
+alter table db_cfg_oracle_dg modify column on_switchover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Switchover切换'; 
+alter table db_cfg_oracle_dg modify column on_failover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Failover切换'; 
+alter table db_cfg_oracle_dg modify column on_startmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在开启MRP进程'; 
+alter table db_cfg_oracle_dg modify column on_stopmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在停止MRP进程'; 
 
 -- ----------------------------
 -- Table structure for db_oracle_dg_process
@@ -336,10 +336,10 @@ CREATE TABLE `db_oracle_dg_process` (
 
 
 -- ----------------------------
--- Table structure for db_servers_os
+-- Table structure for db_cfg_os
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_os`;
-CREATE TABLE `db_servers_os` (
+DROP TABLE IF EXISTS `db_cfg_os`;
+CREATE TABLE `db_cfg_os` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) DEFAULT NULL,
   `community` varchar(50) DEFAULT NULL,
@@ -377,10 +377,10 @@ CREATE TABLE `db_servers_os` (
 ) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for db_servers_redis
+-- Table structure for db_cfg_redis
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_redis`;
-CREATE TABLE `db_servers_redis` (
+DROP TABLE IF EXISTS `db_cfg_redis`;
+CREATE TABLE `db_cfg_redis` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `port` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
@@ -408,10 +408,10 @@ CREATE TABLE `db_servers_redis` (
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for db_servers_sqlserver
+-- Table structure for db_cfg_sqlserver
 -- ----------------------------
-DROP TABLE IF EXISTS `db_servers_sqlserver`;
-CREATE TABLE `db_servers_sqlserver` (
+DROP TABLE IF EXISTS `db_cfg_sqlserver`;
+CREATE TABLE `db_cfg_sqlserver` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `port` varchar(10) COLLATE utf8_unicode_ci NOT NULL,

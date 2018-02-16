@@ -4,7 +4,7 @@ class redis extends Front_Controller {
 
     function __construct(){
 		parent::__construct();
-        $this->load->model('servers_redis_model','server');
+        $this->load->model('cfg_redis_model','server');
         $this->load->model("option_model","option");
 		$this->load->model("redis_model","redis");
         $this->load->model("os_model","os");  
@@ -13,17 +13,17 @@ class redis extends Front_Controller {
         public function index2(){
 
         $redis_statistics = array();
-        $redis_statistics["redis_servers_up"] = $this->db->query("select count(*) as num from redis_status where connect=1")->row()->num;
-        $redis_statistics["redis_servers_down"] = $this->db->query("select count(*) as num from redis_status  where connect!=1")->row()->num;
+        $redis_statistics["redis_cfg_up"] = $this->db->query("select count(*) as num from redis_status where connect=1")->row()->num;
+        $redis_statistics["redis_cfg_down"] = $this->db->query("select count(*) as num from redis_status  where connect!=1")->row()->num;
         $data["redis_statistics"] = $redis_statistics;
         //print_r($mysql_statistics);
         $data["redis_versions"] = $this->db->query("select redis_version as versions, count(*) as num from redis_status where redis_version !='0' GROUP BY versions")->result_array();
         
         $data['redis_connected_clients_ranking'] = $this->db->query("select server.host,server.port,status.connected_clients
-        value from redis_status status left join db_servers_redis server
+        value from redis_status status left join db_cfg_redis server
 on `status`.server_id=`server`.id order by connected_clients desc limit 10;")->result_array();
         $data['redis_used_memory_ranking'] = $this->db->query("select server.host,server.port,status.used_memory
-        value from redis_status status left join db_servers_redis server
+        value from redis_status status left join db_cfg_redis server
 on `status`.server_id=`server`.id order by used_memory desc limit 10;")->result_array();
        
         $this->layout->view("redis/index",$data);

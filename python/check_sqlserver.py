@@ -82,7 +82,7 @@ def main():
     func.mysql_exec("insert into sqlserver_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from sqlserver_status;",'')
     func.mysql_exec('delete from sqlserver_status;','')
 
-    servers = func.mysql_query('select id,host,port,username,password,tags from db_servers_sqlserver where is_delete=0 and monitor=1;')
+    servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_sqlserver where is_delete=0 and monitor=1;')
 
     logger.info("check sqlserver controller started.")
 

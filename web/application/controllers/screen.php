@@ -11,8 +11,8 @@ class Screen extends Front_Controller {
     public function index(){
 
     	$mysql_statistics = array();
-        $mysql_statistics["mysql_servers_up"] = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
-        $mysql_statistics["mysql_servers_down"] = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
+        $mysql_statistics["mysql_cfg_up"] = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
+        $mysql_statistics["mysql_cfg_down"] = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
         $mysql_statistics["master_mysql_instance"] = $this->db->query("select count(*) as num from mysql_replication where is_master=1")->row()->num;
         $mysql_statistics["slave_mysql_instance"] = $this->db->query("select count(*) as num from mysql_replication where is_slave=1")->row()->num;
         
@@ -24,13 +24,13 @@ class Screen extends Front_Controller {
         $data["mysql_versions"] = $this->db->query("select version as versions, count(*) as num from mysql_status where version !='0' GROUP BY versions")->result_array();
         
         $data['mysql_qps_ranking'] = $this->db->query("select server.host,server.port,status.queries_persecond
-        value from mysql_status status left join db_servers_mysql server
+        value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by queries_persecond desc limit 10;")->result_array();
-        $data['mysql_tps_ranking'] = $this->db->query("select server.host,server.port,status.transaction_persecond value from mysql_status status left join db_servers_mysql server
+        $data['mysql_tps_ranking'] = $this->db->query("select server.host,server.port,status.transaction_persecond value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by transaction_persecond desc limit 10;")->result_array();
-        $data['mysql_threads_connected_ranking'] = $this->db->query("select server.host,server.port,status.threads_connected value from mysql_status status left join db_servers_mysql server
+        $data['mysql_threads_connected_ranking'] = $this->db->query("select server.host,server.port,status.threads_connected value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by threads_connected desc limit 10;")->result_array();
-        $data['mysql_threads_running_ranking'] = $this->db->query("select server.host,server.port,status.threads_running value from mysql_status status left join db_servers_mysql server
+        $data['mysql_threads_running_ranking'] = $this->db->query("select server.host,server.port,status.threads_running value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by threads_running desc limit 10;")->result_array();
 //print_r($data['mysql_thread_ranking']);
         
@@ -45,7 +45,7 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
     function ajax_get_cpu(){
          $data = $this->db->query("SELECT os.tags, (100-SUBSTRING_INDEX(avg(cpu_idle_time),'.',1)) cpu_used_time,SUBSTRING_INDEX(avg(cpu_idle_time),'.',1) cpu_idle_time 
 FROM (SELECT * FROM os_status_history WHERE create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) order BY create_time DESC) his
-JOIN db_servers_os os ON his.ip=os.host and his.snmp=1
+JOIN db_cfg_os os ON his.ip=os.host and his.snmp=1
 group by ip order by cpu_idle_time asc limit 10;")->result_array();
          $result = array();
          foreach($data as $item){
@@ -63,7 +63,7 @@ group by ip order by cpu_idle_time asc limit 10;")->result_array();
     function ajax_get_net(){
         /*$data = $this->db->query("select os.tags,TRUNCATE(avg(his.in_bytes+his.out_bytes)/1024,0) bytes
 FROM os_net_history  his
-JOIN db_servers_os os ON his.ip=os.host
+JOIN db_cfg_os os ON his.ip=os.host
 WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE)
 GROUP BY os.tags
 ORDER BY bytes DESC limit 10")->result_array();*/
@@ -84,7 +84,7 @@ ORDER BY bytes DESC limit 10")->result_array();*/
     function ajax_get_diskio(){
         /*$data = $this->db->query("select os.tags,TRUNCATE(sum(his.disk_io_writes),0) io_writes,TRUNCATE(avg(his.disk_io_reads),0) io_reads
 FROM os_diskio_history  his
-JOIN db_servers_os os ON his.ip=os.host
+JOIN db_cfg_os os ON his.ip=os.host
 WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE)
 GROUP BY os.tags
 ORDER BY io_writes DESC limit 10;")->result_array();*/

@@ -4,7 +4,7 @@ class Slowquery extends Front_Controller {
     function __construct(){
 		parent::__construct();
 	    $this->load->model('application_model','app');
-        $this->load->model('servers_model','server');
+        $this->load->model('cfg_model','server');
         $this->load->model("option_model","option");
         $this->load->model("slowquery_model","slowquery");
 	}

@@ -122,7 +122,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               func.mysql_exec(sql,param)
               
         #check dataguard status
-        result = func.mysql_query("select count(1) from db_servers_oracle_dg where primary_db_id = '%s' or standby_db_id = '%s'" %(server_id, server_id))
+        result = func.mysql_query("select count(1) from db_cfg_oracle_dg where primary_db_id = '%s' or standby_db_id = '%s'" %(server_id, server_id))
         if result:
             is_dg = result[0][0]
 
@@ -228,7 +228,7 @@ def main():
     func.mysql_exec('insert into oracle_dg_s_status_tmp select * from oracle_dg_s_status;','')
 
     #get oracle servers list
-    servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_servers_oracle where is_delete=0 and monitor=1;")
+    servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_cfg_oracle where is_delete=0 and monitor=1;")
 
     logger.info("check oracle controller start.")
     if servers:

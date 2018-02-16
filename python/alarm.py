@@ -27,7 +27,7 @@ send_sms_sleep_time = func.get_option('send_sms_sleep_time')
 sms_to_list_common = func.get_option('send_sms_to_list')
 
 def get_alarm_mysql_status():
-    sql="select a.server_id,a.connect,a.threads_connected,a.threads_running,a.threads_waits,a.create_time,a.host,a.port,b.alarm_threads_connected,b.alarm_threads_running,alarm_threads_waits,b.threshold_warning_threads_connected,b.threshold_critical_threads_connected,b.threshold_warning_threads_running,b.threshold_critical_threads_running,threshold_warning_threads_waits,threshold_critical_threads_waits,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_status a, db_servers_mysql b where a.server_id=b.id;"
+    sql="select a.server_id,a.connect,a.threads_connected,a.threads_running,a.threads_waits,a.create_time,a.host,a.port,b.alarm_threads_connected,b.alarm_threads_running,alarm_threads_waits,b.threshold_warning_threads_connected,b.threshold_critical_threads_connected,b.threshold_warning_threads_running,b.threshold_critical_threads_running,threshold_warning_threads_waits,threshold_critical_threads_waits,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_status a, db_cfg_mysql b where a.server_id=b.id;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -122,7 +122,7 @@ def get_alarm_mysql_status():
 
 
 def get_alarm_mysql_replcation():
-    sql = "select a.server_id,a.slave_io_run,a.slave_sql_run,a.delay,a.create_time,b.host,b.port,b.alarm_repl_status,b.alarm_repl_delay,b.threshold_warning_repl_delay,b.threshold_critical_repl_delay,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_replication a, db_servers_mysql b  where a.server_id=b.id and a.is_slave='1';"
+    sql = "select a.server_id,a.slave_io_run,a.slave_sql_run,a.delay,a.create_time,b.host,b.port,b.alarm_repl_status,b.alarm_repl_delay,b.threshold_warning_repl_delay,b.threshold_critical_repl_delay,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_replication a, db_cfg_mysql b  where a.server_id=b.id and a.is_slave='1';"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -178,7 +178,7 @@ def get_alarm_mysql_replcation():
 
 
 def get_alarm_oracle_status():
-    sql = "select a.server_id,a.connect,a.session_total,a.session_actives,a.session_waits,a.create_time,b.host,b.port,b.alarm_session_total,b.alarm_session_actives,b.alarm_session_waits,b.threshold_warning_session_total,b.threshold_critical_session_total,b.threshold_warning_session_actives,b.threshold_critical_session_actives,b.threshold_warning_session_waits,b.threshold_critical_session_waits,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'oracle' as db_type from oracle_status a, db_servers_oracle b where a.server_id=b.id;"
+    sql = "select a.server_id,a.connect,a.session_total,a.session_actives,a.session_waits,a.create_time,b.host,b.port,b.alarm_session_total,b.alarm_session_actives,b.alarm_session_waits,b.threshold_warning_session_total,b.threshold_critical_session_total,b.threshold_warning_session_actives,b.threshold_critical_session_actives,b.threshold_warning_session_waits,b.threshold_critical_session_waits,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'oracle' as db_type from oracle_status a, db_cfg_oracle b where a.server_id=b.id;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -277,7 +277,7 @@ def get_alarm_oracle_status():
 
 
 def get_alarm_sqlserver_status():
-    sql="select a.server_id,a.connect,a.processes,a.processes_running,a.processes_waits,a.create_time,a.host,a.port,b.alarm_processes,b.alarm_processes_running,alarm_processes_waits,b.threshold_warning_processes,b.threshold_warning_processes_running,b.threshold_warning_processes_waits,b.threshold_critical_processes,threshold_critical_processes_running,threshold_critical_processes_waits,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'sqlserver' as db_type from sqlserver_status a, db_servers_sqlserver b where a.server_id=b.id;"
+    sql="select a.server_id,a.connect,a.processes,a.processes_running,a.processes_waits,a.create_time,a.host,a.port,b.alarm_processes,b.alarm_processes_running,alarm_processes_waits,b.threshold_warning_processes,b.threshold_warning_processes_running,b.threshold_warning_processes_waits,b.threshold_critical_processes,threshold_critical_processes_running,threshold_critical_processes_waits,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'sqlserver' as db_type from sqlserver_status a, db_cfg_sqlserver b where a.server_id=b.id;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -373,7 +373,7 @@ def get_alarm_sqlserver_status():
 
 
 def get_alarm_oracle_tablespace():
-    sql = "select a.server_id,a.tablespace_name,a.total_size,a.used_size,a.avail_size,a.used_rate,a.create_time,b.host,b.port,b.alarm_tablespace,b.threshold_warning_tablespace,b.threshold_critical_tablespace,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'oracle' as db_type from oracle_tablespace a, db_servers_oracle b where a.server_id=b.id  order by SUBSTRING_INDEX(used_rate,'%',1)+0 asc;"
+    sql = "select a.server_id,a.tablespace_name,a.total_size,a.used_size,a.avail_size,a.used_rate,a.create_time,b.host,b.port,b.alarm_tablespace,b.threshold_warning_tablespace,b.threshold_critical_tablespace,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'oracle' as db_type from oracle_tablespace a, db_cfg_oracle b where a.server_id=b.id  order by SUBSTRING_INDEX(used_rate,'%',1)+0 asc;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -424,7 +424,7 @@ def get_alarm_oracle_tablespace():
 
 
 def get_alarm_mongodb_status():
-    sql = "select a.server_id,a.connect,a.connections_current,a.globalLock_activeClients,a.globalLock_currentQueue,a.create_time,b.host,b.port,b.alarm_connections_current,b.alarm_active_clients,b.alarm_current_queue,b.threshold_warning_connections_current,b.threshold_critical_connections_current,b.threshold_warning_active_clients,b.threshold_critical_active_clients,b.threshold_warning_current_queue,b.threshold_critical_current_queue,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mongodb' as db_type from mongodb_status a, db_servers_mongodb b where a.server_id=b.id;"
+    sql = "select a.server_id,a.connect,a.connections_current,a.globalLock_activeClients,a.globalLock_currentQueue,a.create_time,b.host,b.port,b.alarm_connections_current,b.alarm_active_clients,b.alarm_current_queue,b.threshold_warning_connections_current,b.threshold_critical_connections_current,b.threshold_warning_active_clients,b.threshold_critical_active_clients,b.threshold_warning_current_queue,b.threshold_critical_current_queue,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mongodb' as db_type from mongodb_status a, db_cfg_mongodb b where a.server_id=b.id;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -524,7 +524,7 @@ def get_alarm_mongodb_status():
 
 
 def get_alarm_redis_status():
-    sql = "select a.server_id,a.connect,a.connected_clients,a.current_commands_processed,a.blocked_clients,a.create_time,b.host,b.port,b.alarm_connected_clients,b.alarm_command_processed,b.alarm_blocked_clients,b.threshold_warning_connected_clients,b.threshold_critical_connected_clients,b.threshold_warning_command_processed,b.threshold_critical_command_processed,b.threshold_warning_blocked_clients,b.threshold_critical_blocked_clients,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'redis' as db_type from redis_status a, db_servers_redis b where a.server_id=b.id ;"
+    sql = "select a.server_id,a.connect,a.connected_clients,a.current_commands_processed,a.blocked_clients,a.create_time,b.host,b.port,b.alarm_connected_clients,b.alarm_command_processed,b.alarm_blocked_clients,b.threshold_warning_connected_clients,b.threshold_critical_connected_clients,b.threshold_warning_command_processed,b.threshold_critical_command_processed,b.threshold_warning_blocked_clients,b.threshold_critical_blocked_clients,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'redis' as db_type from redis_status a, db_cfg_redis b where a.server_id=b.id ;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -623,7 +623,7 @@ def get_alarm_redis_status():
 
 
 def get_alarm_os_status():
-    sql = "select a.ip,a.hostname,a.snmp,a.process,a.load_1,a.cpu_idle_time,a.mem_usage_rate,a.create_time,b.tags,b.alarm_os_process,b.alarm_os_load,b.alarm_os_cpu,b.alarm_os_memory,b.threshold_warning_os_process,b.threshold_critical_os_process,b.threshold_warning_os_load,b.threshold_critical_os_load,b.threshold_warning_os_cpu,b.threshold_critical_os_cpu,b.threshold_warning_os_memory,b.threshold_critical_os_memory,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list from os_status a,db_servers_os b where a.ip=b.host"
+    sql = "select a.ip,a.hostname,a.snmp,a.process,a.load_1,a.cpu_idle_time,a.mem_usage_rate,a.create_time,b.tags,b.alarm_os_process,b.alarm_os_load,b.alarm_os_cpu,b.alarm_os_memory,b.threshold_warning_os_process,b.threshold_critical_os_process,b.threshold_warning_os_load,b.threshold_critical_os_load,b.threshold_warning_os_cpu,b.threshold_critical_os_cpu,b.threshold_warning_os_memory,b.threshold_critical_os_memory,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list from os_status a,db_cfg_os b where a.ip=b.host"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -751,7 +751,7 @@ def get_alarm_os_status():
 
 
 def get_alarm_os_disk():
-    sql="select a.ip,a.mounted,a.used_rate,a.create_time,b.tags,b.alarm_os_disk,b.threshold_warning_os_disk,b.threshold_critical_os_disk,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list  from os_disk a,db_servers_os b where a.ip=b.host group by ip,mounted order by SUBSTRING_INDEX(used_rate,'%',1)+0 asc;"
+    sql="select a.ip,a.mounted,a.used_rate,a.create_time,b.tags,b.alarm_os_disk,b.threshold_warning_os_disk,b.threshold_critical_os_disk,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list  from os_disk a,db_cfg_os b where a.ip=b.host group by ip,mounted order by SUBSTRING_INDEX(used_rate,'%',1)+0 asc;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -800,7 +800,7 @@ def get_alarm_os_disk():
 
 
 def get_alarm_os_network():
-    sql="select a.ip,a.if_descr,a.in_bytes,a.out_bytes,sum(in_bytes+out_bytes) sum_bytes,a.create_time,b.tags,b.alarm_os_network,b.threshold_warning_os_network,b.threshold_critical_os_network,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list  from os_net a,db_servers_os b where a.ip=b.host group by ip,if_descr order by sum(in_bytes+out_bytes) asc;"
+    sql="select a.ip,a.if_descr,a.in_bytes,a.out_bytes,sum(in_bytes+out_bytes) sum_bytes,a.create_time,b.tags,b.alarm_os_network,b.threshold_warning_os_network,b.threshold_critical_os_network,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list  from os_net a,db_cfg_os b where a.ip=b.host group by ip,if_descr order by sum(in_bytes+out_bytes) asc;"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:

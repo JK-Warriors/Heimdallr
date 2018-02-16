@@ -21,7 +21,7 @@
         <th><center>Redis <?php echo $this->lang->line('version'); ?></center></th>
 	</tr>
     <tr style="font-size: 13px;" class="">
-       <td><div id="redis_servers_health" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
+       <td><div id="redis_cfg_health" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
        <td><div id="redis_versions" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
 	</tr>
    
@@ -56,9 +56,9 @@
 //########################## Redis_Health ##################################
 $(document).ready(function(){
   var data = [
-    ["<?php echo $this->lang->line('up'); ?>(<?php echo $redis_statistics['redis_servers_up']; ?>)", <?php echo $redis_statistics['redis_servers_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $redis_statistics['redis_servers_down']; ?>)", <?php echo $redis_statistics['redis_servers_down'];?> ]
+    ["<?php echo $this->lang->line('up'); ?>(<?php echo $redis_statistics['redis_cfg_up']; ?>)", <?php echo $redis_statistics['redis_cfg_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $redis_statistics['redis_cfg_down']; ?>)", <?php echo $redis_statistics['redis_cfg_down'];?> ]
   ];
-  var plot1 = jQuery.jqplot ('redis_servers_health', [data], 
+  var plot1 = jQuery.jqplot ('redis_cfg_health', [data], 
     { 
       title: {  
         text: "",  //        设置当前图的标题  

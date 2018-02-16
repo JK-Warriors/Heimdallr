@@ -119,7 +119,7 @@ def check_redis(host,port,passwd,server_id,tags):
            #slave_repl_offset = info['slave_repl_offset']
            slave_priority = check_value(info,'slave_priority')
            slave_read_only = check_value(info,'slave_read_only')
-           master_server_id = func.mysql_query("SELECT id FROM db_servers_redis WHERE host='%s' AND port='%s' limit 1;" %(master_host,master_port))
+           master_server_id = func.mysql_query("SELECT id FROM db_cfg_redis WHERE host='%s' AND port='%s' limit 1;" %(master_host,master_port))
            master_server_id = master_server_id[0][0]
            role_new='s'
         else:
@@ -174,7 +174,7 @@ def main():
     func.mysql_exec("insert into redis_replication_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_replication;",'')
     func.mysql_exec('delete from redis_replication;','')
 
-    servers = func.mysql_query('select id,host,port,password,tags from db_servers_redis where is_delete=0 and monitor=1;')
+    servers = func.mysql_query('select id,host,port,password,tags from db_cfg_redis where is_delete=0 and monitor=1;')
 
     logger.info("check redis controller started.")
 

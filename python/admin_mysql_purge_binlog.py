@@ -37,7 +37,7 @@ def main():
 
     user = func.get_config('mysql_db','username')
     passwd = func.get_config('mysql_db','password')
-    servers=func.mysql_query("select host,port,binlog_store_days from db_servers_mysql where is_delete=0 and monitor=1 and binlog_auto_purge=1;")
+    servers=func.mysql_query("select host,port,binlog_store_days from db_cfg_mysql where is_delete=0 and monitor=1 and binlog_auto_purge=1;")
     if servers:
          print("%s: admin mysql purge binlog controller started." % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),));
          plist = []

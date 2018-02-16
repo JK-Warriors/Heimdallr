@@ -5,7 +5,7 @@ class Wl_os extends Front_Controller {
     function __construct(){
 		parent::__construct();
 		$this->load->model("os_model","os");
-        $this->load->model('servers_mysql_model','server');
+        $this->load->model('cfg_mysql_model','server');
         
 	}
     

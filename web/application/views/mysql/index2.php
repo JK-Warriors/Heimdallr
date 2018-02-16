@@ -17,7 +17,7 @@
         <th><center>MySQL <?php echo $this->lang->line('version'); ?></center></th>
 	</tr>
     <tr style="font-size: 13px;" class="">
-       <td><div id="mysql_servers_health" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
+       <td><div id="mysql_cfg_health" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
        <td><div id="mysql_version" style="margin-top:5px; margin-left:0px; width:500px; height:350px;"></div></td>
 	</tr>
     <tr class="info">
@@ -68,12 +68,12 @@
 //########################## mysql_Health ##################################
 $(document).ready(function(){
   var data = [
-    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mysql_statistics['mysql_servers_up']; ?>)", <?php echo $mysql_statistics['mysql_servers_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mysql_statistics['mysql_servers_down']; ?>)", <?php echo $mysql_statistics['mysql_servers_down'];?> ]
+    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mysql_statistics['mysql_cfg_up']; ?>)", <?php echo $mysql_statistics['mysql_cfg_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mysql_statistics['mysql_cfg_down']; ?>)", <?php echo $mysql_statistics['mysql_cfg_down'];?> ]
   ];
-  var plot1 = jQuery.jqplot ('mysql_servers_health', [data], 
+  var plot1 = jQuery.jqplot ('mysql_cfg_health', [data], 
     { 
       title: {  
-        text: "MySQL <?php echo $this->lang->line('servers'); ?>(<?php echo $mysql_statistics['mysql_servers_up']+$mysql_statistics['mysql_servers_down']?>)",  //        设置当前图的标题  
+        text: "MySQL <?php echo $this->lang->line('servers'); ?>(<?php echo $mysql_statistics['mysql_cfg_up']+$mysql_statistics['mysql_cfg_down']?>)",  //        设置当前图的标题  
         show: true,//设置当前标题是否显示 
         fontSize:'13px',    //刻度值的字体大小  
       },

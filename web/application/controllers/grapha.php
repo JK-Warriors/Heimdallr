@@ -6,7 +6,7 @@ class Grapha extends Front_Controller {
         ini_set("include_path", "D:/wwwroot/mysqlmtop/frontweb/public");
 		$this->load->model("mysql_model","mysql");
         $this->load->model('application_model','app');
-        $this->load->model('servers_model','server');   
+        $this->load->model('cfg_model','server');   
 	}
     
     

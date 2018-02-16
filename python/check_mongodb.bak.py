@@ -119,7 +119,7 @@ def main():
     func.mysql_exec('delete from mongodb_status;','')
 
     #get mongodb servers list
-    servers = func.mysql_query('select id,host,port,username,password,tags from db_servers_mongodb where is_delete=0 and monitor=1;')
+    servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_mongodb where is_delete=0 and monitor=1;')
 
     logger.info("check mongodb controller started.")
 

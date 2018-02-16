@@ -6,7 +6,7 @@ class Chart extends Front_Controller {
 		parent::__construct();
 		$this->load->model("monitor_model","monitor");
         $this->load->model('application_model','app');
-        $this->load->model('servers_model','server');
+        $this->load->model('cfg_model','server');
         $this->load->model('chart_model','chart');
         
 	}

@@ -64,7 +64,7 @@ class Redis_model extends CI_Model{
         
         $this->db->select('repl.*,servers.host,servers.port,application.display_name application');
         $this->db->from('redis_replication repl');
-        $this->db->join('db_servers_redis servers', 'repl.server_id=servers.id', 'left');
+        $this->db->join('db_cfg_redis servers', 'repl.server_id=servers.id', 'left');
         $this->db->join('db_application application', 'servers.application_id=application.id', 'left');
         
         !empty($_GET["application_id"]) && $this->db->where("repl.application_id", $_GET["application_id"]);

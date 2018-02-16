@@ -2,8 +2,8 @@
 <div class="header">
     <div class="stats">
     <p class="stat"><span class="number"><?php echo $os_statistics['os_snmp_up']+$os_statistics['os_snmp_down']?></span>OS</p>
-    <p class="stat"><span class="number"><?php echo $mongodb_statistics['mongodb_servers_up']+$mongodb_statistics['mongodb_servers_down']?></span>MongoDB</p>
-    <p class="stat"><span class="number"><?php echo $mysql_statistics['mysql_servers_up']+$mysql_statistics['mysql_servers_down']?></span>MySQL</p>
+    <p class="stat"><span class="number"><?php echo $mongodb_statistics['mongodb_cfg_up']+$mongodb_statistics['mongodb_cfg_down']?></span>MongoDB</p>
+    <p class="stat"><span class="number"><?php echo $mysql_statistics['mysql_cfg_up']+$mysql_statistics['mysql_cfg_down']?></span>MySQL</p>
     </div>
 <h1 class="page-title"><?php echo $this->lang->line('dashboard'); ?></h1>
 </div>
@@ -22,9 +22,9 @@
 <div class="container-fluid">
  <div class="row-fluid">
  
-  <div id="mysql_servers_health" style="margin-top:5px; margin-right:10px; width:320px; height:240px; float:left;"></div>
+  <div id="mysql_cfg_health" style="margin-top:5px; margin-right:10px; width:320px; height:240px; float:left;"></div>
 
-  <div id="mongodb_servers_health" style="margin-top:5px; margin-right:10px; width:320px; height:240px;float:left;"></div>
+  <div id="mongodb_cfg_health" style="margin-top:5px; margin-right:10px; width:320px; height:240px;float:left;"></div>
   <div id="os_snmp_health" style="margin-top:5px; margin-right:10px; width:320px; height:240px;float:left;"></div>
   
   <div style="clear:both;"></div>
@@ -94,12 +94,12 @@
 //########################## mysql_Health ##################################
 $(document).ready(function(){
   var data = [
-    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mysql_statistics['mysql_servers_up']; ?>)", <?php echo $mysql_statistics['mysql_servers_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mysql_statistics['mysql_servers_down']; ?>)", <?php echo $mysql_statistics['mysql_servers_down'];?> ]
+    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mysql_statistics['mysql_cfg_up']; ?>)", <?php echo $mysql_statistics['mysql_cfg_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mysql_statistics['mysql_cfg_down']; ?>)", <?php echo $mysql_statistics['mysql_cfg_down'];?> ]
   ];
-  var plot1 = jQuery.jqplot ('mysql_servers_health', [data], 
+  var plot1 = jQuery.jqplot ('mysql_cfg_health', [data], 
     { 
       title: {  
-        text: "MySQL <?php echo $this->lang->line('servers'); ?>(<?php echo $mysql_statistics['mysql_servers_up']+$mysql_statistics['mysql_servers_down']?>)",  //        设置当前图的标题  
+        text: "MySQL <?php echo $this->lang->line('servers'); ?>(<?php echo $mysql_statistics['mysql_cfg_up']+$mysql_statistics['mysql_cfg_down']?>)",  //        设置当前图的标题  
         show: true,//设置当前标题是否显示 
         fontSize:'13px',    //刻度值的字体大小  
       },
@@ -128,12 +128,12 @@ $(document).ready(function(){
 //########################## mongodb_Health ##################################
 $(document).ready(function(){
   var data = [
-    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mongodb_statistics['mongodb_servers_up']; ?>)", <?php echo $mongodb_statistics['mongodb_servers_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mongodb_statistics['mongodb_servers_down']; ?>)", <?php echo $mongodb_statistics['mongodb_servers_down'];?> ]
+    ["<?php echo $this->lang->line('up'); ?>(<?php echo $mongodb_statistics['mongodb_cfg_up']; ?>)", <?php echo $mongodb_statistics['mongodb_cfg_up']; ?>],["<?php echo $this->lang->line('down'); ?>(<?php echo $mongodb_statistics['mongodb_cfg_down']; ?>)", <?php echo $mongodb_statistics['mongodb_cfg_down'];?> ]
   ];
-  var plot1 = jQuery.jqplot ('mongodb_servers_health', [data], 
+  var plot1 = jQuery.jqplot ('mongodb_cfg_health', [data], 
     { 
       title: {  
-        text: "MongoDB <?php echo $this->lang->line('servers'); ?>(<?php echo $mongodb_statistics['mongodb_servers_up']+$mongodb_statistics['mongodb_servers_down']?>)",  //        设置当前图的标题  
+        text: "MongoDB <?php echo $this->lang->line('servers'); ?>(<?php echo $mongodb_statistics['mongodb_cfg_up']+$mongodb_statistics['mongodb_cfg_down']?>)",  //        设置当前图的标题  
         show: true,//设置当前标题是否显示 
         fontSize:'13px',    //刻度值的字体大小  
       },

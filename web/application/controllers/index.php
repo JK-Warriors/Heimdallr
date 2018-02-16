@@ -10,12 +10,12 @@ class Index extends Front_Controller {
     public function index(){
         //for mysql
         $mysql_statistics = array();
-        $data["servers_mysql_count"] = $this->db->query("select count(*) as num from db_servers_mysql where is_delete=0")->row()->num;
-		$data["servers_oracle_count"] = $this->db->query("select count(*) as num from db_servers_oracle where is_delete=0")->row()->num;
-        $data["servers_sqlserver_count"] = $this->db->query("select count(*) as num from db_servers_sqlserver where is_delete=0")->row()->num;
-		$data["servers_mongodb_count"] = $this->db->query("select count(*) as num from db_servers_mongodb where is_delete=0")->row()->num;
-		$data["servers_redis_count"] = $this->db->query("select count(*) as num from db_servers_redis where is_delete=0")->row()->num;
-		$data["servers_os_count"] = $this->db->query("select count(*) as num from db_servers_os where is_delete=0")->row()->num;
+        $data["cfg_mysql_count"] = $this->db->query("select count(*) as num from db_cfg_mysql where is_delete=0")->row()->num;
+		$data["cfg_oracle_count"] = $this->db->query("select count(*) as num from db_cfg_oracle where is_delete=0")->row()->num;
+        $data["cfg_sqlserver_count"] = $this->db->query("select count(*) as num from db_cfg_sqlserver where is_delete=0")->row()->num;
+		$data["cfg_mongodb_count"] = $this->db->query("select count(*) as num from db_cfg_mongodb where is_delete=0")->row()->num;
+		$data["cfg_redis_count"] = $this->db->query("select count(*) as num from db_cfg_redis where is_delete=0")->row()->num;
+		$data["cfg_os_count"] = $this->db->query("select count(*) as num from db_cfg_os where is_delete=0")->row()->num;
         
         
 		$wlblazers_status=$this->wlblazers->get_wlblazers_status();

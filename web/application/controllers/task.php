@@ -9,7 +9,7 @@ class Task extends CI_Controller {
     
     public function send_mysql_slowquery_mail()
     {
-        $query_getservers = $this->db->query("select id,host,port,send_slowquery_to_list from db_servers_mysql where slow_query=1 and send_slowquery_to_list != '';");
+        $query_getservers = $this->db->query("select id,host,port,send_slowquery_to_list from db_cfg_mysql where slow_query=1 and send_slowquery_to_list != '';");
 		if ($query_getservers->num_rows() > 0)
 		{
 			$servers = $query_getservers->result_array();
@@ -130,11 +130,11 @@ class Task extends CI_Controller {
             
             //Overview
 
-            $mysql_servers_up = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
-            $mysql_servers_down = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
+            $mysql_cfg_up = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
+            $mysql_cfg_down = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
 
-            $mongodb_servers_up = $this->db->query("select count(*) as num from mongodb_status where ok=1")->row()->num;
-            $mongodb_servers_down = $this->db->query("select count(*) as num from mongodb_status  where ok!=1")->row()->num;
+            $mongodb_cfg_up = $this->db->query("select count(*) as num from mongodb_status where ok=1")->row()->num;
+            $mongodb_cfg_down = $this->db->query("select count(*) as num from mongodb_status  where ok!=1")->row()->num;
 
             $os_snmp_up = $this->db->query("select count(*) as num from os_resource where snmp=1")->row()->num;
             $os_snmp_down = $this->db->query("select count(*) as num from os_resource  where snmp!=1")->row()->num;
@@ -154,10 +154,10 @@ class Task extends CI_Controller {
                                 <td> OS SNMP Down </td>
                                  </tr>
                                  <tr>
-                                <td>".$mysql_servers_up."</td>
-                                <td>".$mysql_servers_down."</td>  
-                                <td>".$mongodb_servers_up." </td>  
-                                <td>".$mongodb_servers_down."</td>  
+                                <td>".$mysql_cfg_up."</td>
+                                <td>".$mysql_cfg_down."</td>  
+                                <td>".$mongodb_cfg_up." </td>  
+                                <td>".$mongodb_cfg_down."</td>  
                                 <td>".$os_snmp_up." </td>
                                 <td>".$os_snmp_down." </td>  
                       
@@ -203,7 +203,7 @@ class Task extends CI_Controller {
 
 
             //mysql thread top 10
-            $top_mysql_thread = $this->db->query("select server.host,server.port,status.threads_running,`status`.threads_connected,queries_persecond,transaction_persecond,app.`name` appname  from mysql_status status left join db_servers_mysql server
+            $top_mysql_thread = $this->db->query("select server.host,server.port,status.threads_running,`status`.threads_connected,queries_persecond,transaction_persecond,app.`name` appname  from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id join db_application app where `server`.application_id=app.id order by threads_running desc limit 10;")->result_array();
             $table_header="<table border=1 bgcolor=#dae8fb style='font-size: 12px;' >
                                 <tr>
@@ -239,7 +239,7 @@ on `status`.server_id=`server`.id join db_application app where `server`.applica
             
             //mongodb connection top 10
             $top_mongodb_connections = $this->db->query("select server.host,server.port,`status`.connections_current,`status`.connections_available,`status`.opcounters_query_persecond,
-`status`.opcounters_insert_persecond,`status`.opcounters_update_persecond,`status`.opcounters_delete_persecond,app.name appname from mongodb_status status left join db_servers_mongodb server
+`status`.opcounters_insert_persecond,`status`.opcounters_update_persecond,`status`.opcounters_delete_persecond,app.name appname from mongodb_status status left join db_cfg_mongodb server
 on `status`.server_id=`server`.id  join db_application app where `server`.application_id=app.id order by connections_current desc limit 10;")->result_array();
             $table_header="<table border=1 bgcolor=#dae8fb style='font-size: 12px;' >
                                 <tr>

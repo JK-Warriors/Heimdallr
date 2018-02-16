@@ -52,7 +52,7 @@ def log_dg_op_process(mysql_conn, dg_id, process_type, process_desc, rate, block
 # function operation_lock
 ###############################################################################
 def operation_lock(mysql_conn, dg_id, process_type):
-    logger.info("Lock the %s process status in db_servers_oracle_dg for dataguard group: %s" %(process_type, dg_id))
+    logger.info("Lock the %s process status in db_cfg_oracle_dg for dataguard group: %s" %(process_type, dg_id))
     
     # update process status to 1
     col_name=""
@@ -67,7 +67,7 @@ def operation_lock(mysql_conn, dg_id, process_type):
     else:
         col_name=""
     	
-    str='update db_servers_oracle_dg set on_process = 1, %s = 1 where id= %s ' %(col_name, dg_id)
+    str='update db_cfg_oracle_dg set on_process = 1, %s = 1 where id= %s ' %(col_name, dg_id)
     op_status=mysql.ExecuteSQL(mysql_conn, str)
     logger.info(str)
     
@@ -81,7 +81,7 @@ def operation_lock(mysql_conn, dg_id, process_type):
 # function operation_unlock
 ###############################################################################
 def operation_unlock(mysql_conn, dg_id, process_type):
-    logger.info("Unlock the %s process status in db_servers_oracle_dg for dataguard group: %s" %(process_type, dg_id))
+    logger.info("Unlock the %s process status in db_cfg_oracle_dg for dataguard group: %s" %(process_type, dg_id))
     
     # update process status to 1
     col_name=""
@@ -96,7 +96,7 @@ def operation_unlock(mysql_conn, dg_id, process_type):
     else:
         col_name=""
     	
-    str='update db_servers_oracle_dg set on_process = 0, %s = 0 where id= %s ' %(col_name, dg_id)
+    str='update db_cfg_oracle_dg set on_process = 0, %s = 0 where id= %s ' %(col_name, dg_id)
     op_status=mysql.ExecuteSQL(mysql_conn, str)
     logger.info(str)
     
@@ -123,7 +123,7 @@ def kill_sessions(mysql_conn, ora_conn, server_id):
     host_user=""
     host_pwd=""
     host_protocol=""
-    query_str = """select host, host_type, host_user, host_pwd, host_protocol from db_servers_oracle t where t.id = %s """ %(server_id)
+    query_str = """select host, host_type, host_user, host_pwd, host_protocol from db_cfg_oracle t where t.id = %s """ %(server_id)
     res = mysql.GetMultiValue(mysql_conn, query_str)
     for row in res:
         host_ip = row[0]

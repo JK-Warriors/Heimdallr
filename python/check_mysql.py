@@ -324,7 +324,7 @@ def main():
     func.mysql_exec("insert into mysql_replication_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mysql_replication",'')
     func.mysql_exec('delete from mysql_replication;','')
     #get mysql servers list
-    servers = func.mysql_query('select id,host,port,username,password,tags from db_servers_mysql where is_delete=0 and monitor=1;')
+    servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_mysql where is_delete=0 and monitor=1;')
 
     logger.info("check mysql controller started.")
 

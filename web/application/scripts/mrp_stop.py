@@ -130,10 +130,10 @@ if __name__=="__main__":
         sys.exit(2)
 		
     
-    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(sta_id)
+    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(sta_id)
     s_conn_str = mysql.GetSingleValue(mysql_conn, s_str)
 
-    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(sta_id)
+    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
     logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))

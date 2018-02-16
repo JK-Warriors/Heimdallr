@@ -4,7 +4,7 @@ class Wl_mySQL extends Front_Controller {
 
     function __construct(){
 		parent::__construct();
-        $this->load->model('servers_mysql_model','server');
+        $this->load->model('cfg_mysql_model','server');
         $this->load->model("option_model","option");
 		$this->load->model("mysql_model","mysql");
         $this->load->model("os_model","os");  
@@ -12,8 +12,8 @@ class Wl_mySQL extends Front_Controller {
     
     public function index2(){
         $mysql_statistics = array();
-        $mysql_statistics["mysql_servers_up"] = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
-        $mysql_statistics["mysql_servers_down"] = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
+        $mysql_statistics["mysql_cfg_up"] = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
+        $mysql_statistics["mysql_cfg_down"] = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
         $mysql_statistics["master_mysql_instance"] = $this->db->query("select count(*) as num from mysql_replication where is_master=1")->row()->num;
         $mysql_statistics["slave_mysql_instance"] = $this->db->query("select count(*) as num from mysql_replication where is_slave=1")->row()->num;
         
@@ -25,13 +25,13 @@ class Wl_mySQL extends Front_Controller {
         $data["mysql_versions"] = $this->db->query("select version as versions, count(*) as num from mysql_status where version !='0' GROUP BY versions")->result_array();
         
         $data['mysql_qps_ranking'] = $this->db->query("select server.host,server.port,status.queries_persecond
-        value from mysql_status status left join db_servers_mysql server
+        value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by queries_persecond desc limit 10;")->result_array();
-        $data['mysql_tps_ranking'] = $this->db->query("select server.host,server.port,status.transaction_persecond value from mysql_status status left join db_servers_mysql server
+        $data['mysql_tps_ranking'] = $this->db->query("select server.host,server.port,status.transaction_persecond value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by transaction_persecond desc limit 10;")->result_array();
-        $data['mysql_threads_connected_ranking'] = $this->db->query("select server.host,server.port,status.threads_connected value from mysql_status status left join db_servers_mysql server
+        $data['mysql_threads_connected_ranking'] = $this->db->query("select server.host,server.port,status.threads_connected value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by threads_connected desc limit 10;")->result_array();
-        $data['mysql_threads_running_ranking'] = $this->db->query("select server.host,server.port,status.threads_running value from mysql_status status left join db_servers_mysql server
+        $data['mysql_threads_running_ranking'] = $this->db->query("select server.host,server.port,status.threads_running value from mysql_status status left join db_cfg_mysql server
 on `status`.server_id=`server`.id order by threads_running desc limit 10;")->result_array();
 //print_r($data['mysql_thread_ranking']);
         $this->layout->view("mysql/index",$data);

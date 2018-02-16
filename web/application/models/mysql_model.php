@@ -74,7 +74,7 @@ class MySQL_model extends CI_Model{
         
         $this->db->select('process.*,servers.host as server,servers.port,application.display_name application');
         $this->db->from('mysql_process process');
-        $this->db->join('db_servers_mysql servers', 'process.server_id=servers.id', 'left');
+        $this->db->join('db_cfg_mysql servers', 'process.server_id=servers.id', 'left');
         $this->db->join('db_application application', 'servers.application_id=application.id', 'left');
         
         !empty($_GET["application_id"]) && $this->db->where("process.application_id", $_GET["application_id"]);
@@ -98,7 +98,7 @@ class MySQL_model extends CI_Model{
         
         $this->db->select('repl.*,servers.host,servers.port,servers.tags');
         $this->db->from('mysql_replication repl');
-        $this->db->join('db_servers_mysql servers', 'repl.server_id=servers.id', 'left');
+        $this->db->join('db_cfg_mysql servers', 'repl.server_id=servers.id', 'left');
         
         !empty($_GET["host"]) && $this->db->like("repl.host", $_GET["host"]);
         !empty($_GET["tags"]) && $this->db->like("repl.tags", $_GET["tags"]);

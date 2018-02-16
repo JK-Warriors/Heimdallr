@@ -145,15 +145,15 @@ if __name__=="__main__":
         sys.exit(2)
 		
     
-    p_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(pri_id)
+    p_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(pri_id)
     p_conn_str = mysql.GetSingleValue(mysql_conn, p_str)
-    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(sta_id)
+    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(sta_id)
     s_conn_str = mysql.GetSingleValue(mysql_conn, s_str)
 
 	
-    p_str = """select concat(username, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(pri_id)
+    p_str = """select concat(username, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(pri_id)
     p_nopass_str = mysql.GetSingleValue(mysql_conn, p_str)
-    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_servers_oracle where id=%s """ %(sta_id)
+    s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
     logger.info("The primary database is: " + p_nopass_str + ", the id is: " + str(pri_id))

@@ -157,31 +157,31 @@ def check_db_status(server_id,db_host,db_port,tags,db_type):
 
         if db_type=='mysql':
              sort=1
-             sql="""delete s from db_status s, db_servers_mysql o 
+             sql="""delete s from db_status s, db_cfg_mysql o 
                     where s.host= o.host
                     and s.tags != o.tags
                     and s.db_type_sort = 1 """
         elif db_type=='oracle':
              sort=2
-             sql="""delete s from db_status s, db_servers_oracle o 
+             sql="""delete s from db_status s, db_cfg_oracle o 
                     where s.host= o.host
                     and s.tags != o.tags
                     and s.db_type_sort = 2 """
         elif db_type=='mongodb':            
              sort=3
-             sql="""delete s from db_status s, db_servers_mongodb o 
+             sql="""delete s from db_status s, db_cfg_mongodb o 
                     where s.host= o.host
                     and s.tags != o.tags
                     and s.db_type_sort = 2 """
         elif db_type=='redis':
              sort=4
-             sql="""delete s from db_status s, db_servers_redis o 
+             sql="""delete s from db_status s, db_cfg_redis o 
                     where s.host= o.host
                     and s.tags != o.tags
                     and s.db_type_sort = 2 """
         elif db_type=='sqlserver':
              sort=5
-             sql="""delete s from db_status s, db_servers_sqlserver o 
+             sql="""delete s from db_status s, db_cfg_sqlserver o 
                     where s.host= o.host
                     and s.tags != o.tags
                     and s.db_type_sort = 2 """

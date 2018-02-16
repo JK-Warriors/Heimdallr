@@ -4,7 +4,7 @@ class Wl_mongodb extends Front_Controller {
 
     function __construct(){
 		parent::__construct();
-        $this->load->model('servers_mongodb_model','server');
+        $this->load->model('cfg_mongodb_model','server');
         $this->load->model("option_model","option");
 		$this->load->model("mongodb_model","mongodb");
         $this->load->model("os_model","os");  
@@ -13,17 +13,17 @@ class Wl_mongodb extends Front_Controller {
         public function index2(){
 
         $mongodb_statistics = array();
-        $mongodb_statistics["mongodb_servers_up"] = $this->db->query("select count(*) as num from mongodb_status where ok=1")->row()->num;
-        $mongodb_statistics["mongodb_servers_down"] = $this->db->query("select count(*) as num from mongodb_status  where ok!=1")->row()->num;
+        $mongodb_statistics["mongodb_cfg_up"] = $this->db->query("select count(*) as num from mongodb_status where ok=1")->row()->num;
+        $mongodb_statistics["mongodb_cfg_down"] = $this->db->query("select count(*) as num from mongodb_status  where ok!=1")->row()->num;
         $data["mongodb_statistics"] = $mongodb_statistics;
         //print_r($mysql_statistics);
         $data["mongodb_versions"] = $this->db->query("select version as versions, count(*) as num from mongodb_status where version !='0' GROUP BY versions")->result_array();
         
         $data['mongodb_connections_current_ranking'] = $this->db->query("select server.host,server.port,status.connections_current
-        value from mongodb_status status left join db_servers_mongodb server
+        value from mongodb_status status left join db_cfg_mongodb server
 on `status`.server_id=`server`.id order by connections_current desc limit 10;")->result_array();
         $data['mongodb_query_ranking'] = $this->db->query("select server.host,server.port,status.opcounters_query_persecond
-        value from mongodb_status status left join db_servers_mongodb server
+        value from mongodb_status status left join db_cfg_mongodb server
 on `status`.server_id=`server`.id order by opcounters_query_persecond desc limit 10;")->result_array();
        
         $this->layout->view("mongodb/index",$data);
