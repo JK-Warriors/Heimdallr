@@ -3,7 +3,7 @@
 class cfg_os extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model('cfg_os_model','servers');
+        $this->load->model('cfg_os_model','os');
 		$this->load->library('form_validation');
 	
 	}
@@ -29,7 +29,7 @@ class cfg_os extends Front_Controller {
         
         $sql="select * from db_cfg_os  where is_delete=0 $ext_where order by id asc";
         
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->os->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         
@@ -42,7 +42,7 @@ class cfg_os extends Front_Controller {
     public function trash(){
         parent::check_privilege();
         $sql="select * from db_cfg_os  where is_delete=1 order by id asc";
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->os->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_os/trash",$data);
@@ -112,7 +112,7 @@ class cfg_os extends Front_Controller {
 						'threshold_critical_os_memory'=>$this->input->post('threshold_critical_os_memory'),
                         'filter_os_disk'=>$this->input->post('filter_os_disk'),
 					);
-					$this->servers->insert($data);
+					$this->os->insert($data);
                     redirect(site_url('cfg_os/index'));
             }
         }
@@ -184,14 +184,14 @@ class cfg_os extends Front_Controller {
 						'threshold_critical_os_memory'=>$this->input->post('threshold_critical_os_memory'),
                         'filter_os_disk'=>$this->input->post('filter_os_disk'),
 					);
-					$this->servers->update($data,$id);
+					$this->os->update($data,$id);
 					//echo $this->input->post('host_old');exit;
-					$this->servers->remove_hosts($this->input->post('host_old'));
+					$this->os->remove_hosts($this->input->post('host_old'));
                     redirect(site_url('cfg_os/index'));
             }
         }
         
-		$record = $this->servers->get_record_by_id($id);
+		$record = $this->os->get_record_by_id($id);
 		if(!$id || !$record){
 			show_404();
 		}
@@ -207,7 +207,7 @@ class cfg_os extends Front_Controller {
      */
     function delete($id){
         parent::check_privilege();
-		$host = $this->servers->get_host_by_id($id);
+		$host = $this->os->get_host_by_id($id);
 		if(!$id || !$host)
 		{
 			show_404();
@@ -217,8 +217,8 @@ class cfg_os extends Front_Controller {
             $data = array(
 				'is_delete'=>1
 			);
-		    $this->servers->update($data,$id);
-			$this->servers->remove_hosts($host);
+		    $this->os->update($data,$id);
+			$this->os->remove_hosts($host);
             redirect(site_url('cfg_os/index'));
         }
     }
@@ -232,7 +232,7 @@ class cfg_os extends Front_Controller {
             $data = array(
 				'is_delete'=>0
             );
-		    $this->servers->update($data,$id);
+		    $this->os->update($data,$id);
             redirect(site_url('cfg_os/trash'));
         }
     }  
@@ -246,10 +246,10 @@ class cfg_os extends Front_Controller {
         parent::check_privilege('cfg_os/trash');
         if($id){
             //检查该数据是否是回收站数据
-            $record = $this->servers->get_record_by_id($id);
+            $record = $this->os->get_record_by_id($id);
             $is_delete = $record['is_delete'];
             if($is_delete==1){
-                $this->servers->delete($id);
+                $this->os->delete($id);
             }
             redirect(site_url('cfg_os/trash'));
         }
@@ -290,7 +290,7 @@ class cfg_os extends Front_Controller {
 						'alarm_os_disk'=>$this->input->post('alarm_os_disk'),
 						'alarm_os_memory'=>$this->input->post('alarm_os_memory'),
 					);
-					$this->servers->insert($data);
+					$this->os->insert($data);
               }
 		   }
            redirect(site_url('cfg_os/index'));
@@ -303,4 +303,4 @@ class cfg_os extends Front_Controller {
 }
 
 /* End of file cfg_os.php */
-/* Location: ./servers/controllers/cfg_os.php */
+/* Location: ./application/controllers/cfg_os.php */

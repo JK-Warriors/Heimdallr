@@ -3,7 +3,7 @@
 class cfg_mysql extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model('cfg_mysql_model','servers');
+        $this->load->model('cfg_mysql_model','mysql');
         $this->load->model('cfg_os_model','cfg_os');
 		$this->load->library('form_validation');
 	
@@ -30,7 +30,7 @@ class cfg_mysql extends Front_Controller {
         
         $sql="select * from db_cfg_mysql  where is_delete=0 $ext_where order by id asc";
         
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->mysql->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_mysql/index",$data);
@@ -42,7 +42,7 @@ class cfg_mysql extends Front_Controller {
     public function trash(){
         parent::check_privilege();
         $sql="select * from db_cfg_mysql  where is_delete=1 order by id asc";
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->mysql->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_mysql/trash",$data);
@@ -111,7 +111,7 @@ class cfg_mysql extends Front_Controller {
                         'threshold_warning_repl_delay'=>$this->input->post('threshold_warning_repl_delay'),
                         'threshold_critical_repl_delay'=>$this->input->post('threshold_critical_repl_delay'),
 					);
-					$this->servers->insert($data);
+					$this->mysql->insert($data);
                     redirect(site_url('cfg_mysql/index'));
             }
         }
@@ -182,15 +182,15 @@ class cfg_mysql extends Front_Controller {
                         'threshold_warning_repl_delay'=>$this->input->post('threshold_warning_repl_delay'),
                         'threshold_critical_repl_delay'=>$this->input->post('threshold_critical_repl_delay'),
 					);
-					$this->servers->update($data,$id);
+					$this->mysql->update($data,$id);
 					if($this->input->post('monitor')!=1){
-						$this->servers->db_status_remove($id);	
+						$this->mysql->db_status_remove($id);	
 					}
                     redirect(site_url('cfg_mysql/index'));
             }
         }
         
-		$record = $this->servers->get_record_by_id($id);
+		$record = $this->mysql->get_record_by_id($id);
 		if(!$id || !$record){
 			show_404();
 		}
@@ -210,8 +210,8 @@ class cfg_mysql extends Front_Controller {
             $data = array(
 				'is_delete'=>1
             );
-		    $this->servers->update($data,$id);
-			$this->servers->db_status_remove($id);
+		    $this->mysql->update($data,$id);
+			$this->mysql->db_status_remove($id);
             redirect(site_url('cfg_mysql/index'));
         }
     }
@@ -226,7 +226,7 @@ class cfg_mysql extends Front_Controller {
             $data = array(
 				'is_delete'=>0
             );
-		    $this->servers->update($data,$id);
+		    $this->mysql->update($data,$id);
             redirect(site_url('cfg_mysql/trash'));
         }
     }  
@@ -238,10 +238,10 @@ class cfg_mysql extends Front_Controller {
         parent::check_privilege('cfg_mysql/trash');
         if($id){
             //检查该数据是否是回收站数据
-            $record = $this->servers->get_record_by_id($id);
+            $record = $this->mysql->get_record_by_id($id);
             $is_delete = $record['is_delete'];
             if($is_delete==1){
-                $this->servers->delete($id);
+                $this->mysql->delete($id);
             }
             redirect(site_url('cfg_mysql/trash'));
         }
@@ -284,7 +284,7 @@ class cfg_mysql extends Front_Controller {
                         'alarm_repl_status'=>$this->input->post('alarm_repl_status_'.$n),
                         'alarm_repl_delay'=>$this->input->post('alarm_repl_delay_'.$n),
 					);
-					$this->servers->insert($data);
+					$this->mysql->insert($data);
               }
 		   }
            redirect(site_url('cfg_mysql/index'));
@@ -297,4 +297,4 @@ class cfg_mysql extends Front_Controller {
 }
 
 /* End of file cfg_mysql.php */
-/* Location: ./servers/controllers/cfg_mysql.php */
+/* Location: ./application/controllers/cfg_mysql.php */

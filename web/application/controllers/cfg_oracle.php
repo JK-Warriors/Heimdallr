@@ -3,7 +3,7 @@
 class cfg_oracle extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model('cfg_oracle_model','servers');
+        $this->load->model('cfg_oracle_model','oracle');
         $this->load->model('cfg_oracle_dg_model','oracle_dgs');
         $this->load->model('cfg_os_model','cfg_os');
 		$this->load->library('form_validation');
@@ -31,7 +31,7 @@ class cfg_oracle extends Front_Controller {
         
         $sql="select * from db_cfg_oracle   where is_delete=0 $ext_where order by id asc";
         
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->oracle->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         
@@ -44,7 +44,7 @@ class cfg_oracle extends Front_Controller {
     public function trash(){
         parent::check_privilege();
         $sql="select * from db_cfg_oracle  where is_delete=1 order by id asc";
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->oracle->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_oracle/trash",$data);
@@ -113,7 +113,7 @@ class cfg_oracle extends Front_Controller {
 						'threshold_critical_session_waits'=>$this->input->post('threshold_critical_session_waits'),
 						'threshold_critical_tablespace'=>$this->input->post('threshold_critical_tablespace'),
 					);
-					$this->servers->insert($data);
+					$this->oracle->insert($data);
                     redirect(site_url('cfg_oracle/index'));
             }
         }
@@ -183,16 +183,16 @@ class cfg_oracle extends Front_Controller {
 						'threshold_critical_session_waits'=>$this->input->post('threshold_critical_session_waits'),
 						'threshold_critical_tablespace'=>$this->input->post('threshold_critical_tablespace'),
 					);
-					$this->servers->update($data,$id);
+					$this->oracle->update($data,$id);
 					if($this->input->post('monitor')!=1){
-						$this->servers->db_status_remove($id);	
+						$this->oracle->db_status_remove($id);	
 					}
                     redirect(site_url('cfg_oracle/index'));
             }
         }
         
          
-		$record = $this->servers->get_record_by_id($id);
+		$record = $this->oracle->get_record_by_id($id);
 		if(!$id || !$record){
 			show_404();
 		}
@@ -213,8 +213,8 @@ class cfg_oracle extends Front_Controller {
             $data = array(
 				'is_delete'=>1
             );
-		    $this->servers->update($data,$id);
-			$this->servers->db_status_remove($id);
+		    $this->oracle->update($data,$id);
+			$this->oracle->db_status_remove($id);
             redirect(site_url('cfg_oracle/index'));
         }
     }
@@ -230,7 +230,7 @@ class cfg_oracle extends Front_Controller {
             $data = array(
 				'is_delete'=>0
             );
-		    $this->servers->update($data,$id);
+		    $this->oracle->update($data,$id);
             redirect(site_url('cfg_oracle/trash'));
         }
     }  
@@ -242,10 +242,10 @@ class cfg_oracle extends Front_Controller {
         parent::check_privilege('cfg_mysql/trash');
         if($id){
             //检查该数据是否是回收站数据
-            $record = $this->servers->get_record_by_id($id);
+            $record = $this->oracle->get_record_by_id($id);
             $is_delete = $record['is_delete'];
             if($is_delete==1){
-                $this->servers->delete($id);
+                $this->oracle->delete($id);
             }
             redirect(site_url('cfg_oracle/trash'));
         }
@@ -290,7 +290,7 @@ class cfg_oracle extends Front_Controller {
                         'alarm_tablespace'=>$this->input->post('alarm_tablespace_'.$n),
     
 					);
-					$this->servers->insert($data);
+					$this->oracle->insert($data);
               }
 		   }
            redirect(site_url('cfg_oracle/index'));
@@ -306,7 +306,7 @@ class cfg_oracle extends Front_Controller {
     public function add_dg(){
         #parent::check_privilege();
         $sql="select * from db_cfg_oracle   where is_delete=0 $ext_where order by id asc";
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->oracle->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         
@@ -377,4 +377,4 @@ class cfg_oracle extends Front_Controller {
 }
 
 /* End of file cfg_oracle.php */
-/* Location: ./servers/controllers/cfg_oracle.php */
+/* Location: ./application/controllers/cfg_oracle.php */

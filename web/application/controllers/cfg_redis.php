@@ -3,7 +3,7 @@
 class cfg_redis extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model('cfg_redis_model','servers');
+        $this->load->model('cfg_redis_model','redis');
         $this->load->model('cfg_os_model','cfg_os');
 		$this->load->library('form_validation');
 	
@@ -30,7 +30,7 @@ class cfg_redis extends Front_Controller {
         
         $sql="select * from db_cfg_redis   where is_delete=0 $ext_where order by id asc";
         
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->redis->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         
@@ -43,7 +43,7 @@ class cfg_redis extends Front_Controller {
     public function trash(){
         parent::check_privilege();
         $sql="select * from db_cfg_redis  where is_delete=1 order by id asc";
-		$result=$this->servers->get_total_record_sql($sql);
+		$result=$this->redis->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_redis/trash",$data);
@@ -98,7 +98,7 @@ class cfg_redis extends Front_Controller {
 						'threshold_critical_command_processed'=>$this->input->post('threshold_critical_command_processed'),
 						'threshold_critical_blocked_clients'=>$this->input->post('threshold_critical_blocked_clients'),
 					);
-					$this->servers->insert($data);
+					$this->redis->insert($data);
                     redirect(site_url('cfg_redis/index'));
             }
         }
@@ -156,15 +156,15 @@ class cfg_redis extends Front_Controller {
 						'threshold_critical_command_processed'=>$this->input->post('threshold_critical_command_processed'),
 						'threshold_critical_blocked_clients'=>$this->input->post('threshold_critical_blocked_clients'),
 					);
-					$this->servers->update($data,$id);
+					$this->redis->update($data,$id);
 					if($this->input->post('monitor')!=1){
-						$this->servers->db_status_remove($id);	
+						$this->redis->db_status_remove($id);	
 					}
                     redirect(site_url('cfg_redis/index'));
             }
         }
         
-		$record = $this->servers->get_record_by_id($id);
+		$record = $this->redis->get_record_by_id($id);
 		if(!$id || !$record){
 			show_404();
 		}
@@ -185,8 +185,8 @@ class cfg_redis extends Front_Controller {
             $data = array(
 				'is_delete'=>1
             );
-		    $this->servers->update($data,$id);
-			$this->servers->db_status_remove($id);
+		    $this->redis->update($data,$id);
+			$this->redis->db_status_remove($id);
             redirect(site_url('cfg_redis/index'));
         }
     }
@@ -201,7 +201,7 @@ class cfg_redis extends Front_Controller {
             $data = array(
 				'is_delete'=>0
             );
-		    $this->servers->update($data,$id);
+		    $this->redis->update($data,$id);
             redirect(site_url('cfg_redis/trash'));
         }
     }  
@@ -213,10 +213,10 @@ class cfg_redis extends Front_Controller {
         parent::check_privilege('cfg_redis/trash');
         if($id){
             //检查该数据是否是回收站数据
-            $record = $this->servers->get_record_by_id($id);
+            $record = $this->redis->get_record_by_id($id);
             $is_delete = $record['is_delete'];
             if($is_delete==1){
-                $this->servers->delete($id);
+                $this->redis->delete($id);
             }
             redirect(site_url('cfg_redis/trash'));
         }
@@ -255,7 +255,7 @@ class cfg_redis extends Front_Controller {
                         'alarm_command_processed'=>$this->input->post('alarm_command_processed_'.$n),
 						'alarm_blocked_clients'=>$this->input->post('alarm_blocked_clients_'.$n),
 					);
-					$this->servers->insert($data);
+					$this->redis->insert($data);
               }
 		   }
            redirect(site_url('cfg_redis/index'));
@@ -268,4 +268,4 @@ class cfg_redis extends Front_Controller {
 }
 
 /* End of file cfg_redis.php */
-/* Location: ./servers/controllers/cfg_redis.php */
+/* Location: ./application/controllers/cfg_redis.php */

@@ -3,7 +3,7 @@
 class cfg_sqlserver extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model('cfg_sqlserver_model','servers');
+        $this->load->model('cfg_sqlserver_model','sqlserver');
         $this->load->model('cfg_os_model','cfg_os');
 		$this->load->library('form_validation');
 	
@@ -30,7 +30,7 @@ class cfg_sqlserver extends Front_Controller {
         
         $sql="select * from db_cfg_sqlserver   where is_delete=0 $ext_where order by id asc";
         
-        $result=$this->servers->get_total_record_sql($sql);
+        $result=$this->sqlserver->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         
@@ -43,7 +43,7 @@ class cfg_sqlserver extends Front_Controller {
     public function trash(){
         parent::check_privilege();
         $sql="select * from db_cfg_redis  where is_delete=1 order by id asc";
-		$result=$this->servers->get_total_record_sql($sql);
+		$result=$this->sqlserver->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_redis/trash",$data);
@@ -100,7 +100,7 @@ class cfg_sqlserver extends Front_Controller {
 						'threshold_critical_processes_running'=>$this->input->post('threshold_critical_processes_running'),
 						'threshold_critical_processes_waits'=>$this->input->post('threshold_critical_processes_waits'),
 					);
-					$this->servers->insert($data);
+					$this->sqlserver->insert($data);
                     redirect(site_url('cfg_sqlserver/index'));
             }
         }
@@ -159,15 +159,15 @@ class cfg_sqlserver extends Front_Controller {
                     'threshold_critical_processes_running'=>$this->input->post('threshold_critical_processes_running'),
                     'threshold_critical_processes_waits'=>$this->input->post('threshold_critical_processes_waits'),
                 );
-					$this->servers->update($data,$id);
+					$this->sqlserver->update($data,$id);
 					if($this->input->post('monitor')!=1){
-						$this->servers->db_status_remove($id);	
+						$this->sqlserver->db_status_remove($id);	
 					}
                     redirect(site_url('cfg_sqlserver/index'));
             }
         }
         
-		$record = $this->servers->get_record_by_id($id);
+		$record = $this->sqlserver->get_record_by_id($id);
 		if(!$id || !$record){
 			show_404();
 		}
@@ -188,8 +188,8 @@ class cfg_sqlserver extends Front_Controller {
             $data = array(
 				'is_delete'=>1
             );
-		    $this->servers->update($data,$id);
-			$this->servers->db_status_remove($id);
+		    $this->sqlserver->update($data,$id);
+			$this->sqlserver->db_status_remove($id);
             redirect(site_url('cfg_sqlserver/index'));
         }
     }
@@ -204,7 +204,7 @@ class cfg_sqlserver extends Front_Controller {
             $data = array(
 				'is_delete'=>0
             );
-		    $this->servers->update($data,$id);
+		    $this->sqlserver->update($data,$id);
             redirect(site_url('cfg_sqlserver/trash'));
         }
     }  
@@ -216,10 +216,10 @@ class cfg_sqlserver extends Front_Controller {
         parent::check_privilege('cfg_sqlserver/trash');
         if($id){
             //检查该数据是否是回收站数据
-            $record = $this->servers->get_record_by_id($id);
+            $record = $this->sqlserver->get_record_by_id($id);
             $is_delete = $record['is_delete'];
             if($is_delete==1){
-                $this->servers->delete($id);
+                $this->sqlserver->delete($id);
             }
             redirect(site_url('cfg_sqlserver/trash'));
         }
@@ -258,7 +258,7 @@ class cfg_sqlserver extends Front_Controller {
                         'alarm_command_processed'=>$this->input->post('alarm_command_processed_'.$n),
 						'alarm_blocked_clients'=>$this->input->post('alarm_blocked_clients_'.$n),
 					);
-					$this->servers->insert($data);
+					$this->sqlserver->insert($data);
               }
 		   }
            redirect(site_url('cfg_sqlserver/index'));
@@ -271,4 +271,4 @@ class cfg_sqlserver extends Front_Controller {
 }
 
 /* End of file cfg_sqlserver.php */
-/* Location: ./servers/controllers/cfg_sqlserver.php */
+/* Location: ./application/controllers/cfg_sqlserver.php */
