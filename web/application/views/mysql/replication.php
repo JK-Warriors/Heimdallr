@@ -16,7 +16,7 @@
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span class="ui-icon ui-icon-search" style="float: left; margin-right: .3em;"></span>
                     
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_mysql/replication') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php site_url('wl_mysql/replication') ?>" >
   <input type="hidden" name="search" value="submit" />
   
    <input type="text" id="host"  name="host" value="" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
@@ -54,7 +54,7 @@
   </select>
   
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_mysql/replication') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_mysql/replication') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 
 </form>               
@@ -107,7 +107,7 @@
         <td><?php echo $item['master_binlog_file'] ?></td>
         <td><?php echo $item['master_binlog_pos'] ?></td>
         <td><?php echo check_binlog_space($item['master_binlog_space']) ?></td>
-        <td><?php if($item['is_slave']=='1' and $item['slave_io_run']=='Yes' and $item['slave_sql_run']=='Yes'){?><a href="<?php echo site_url('lp_mysql/replication_chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a><?php } ?>&nbsp;</td>
+        <td><?php if($item['is_slave']=='1' and $item['slave_io_run']=='Yes' and $item['slave_sql_run']=='Yes'){?><a href="<?php echo site_url('wl_mysql/replication_chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a><?php } ?>&nbsp;</td>
         
 	</tr>
  <?php endforeach;?>

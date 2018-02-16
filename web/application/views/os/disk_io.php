@@ -12,7 +12,7 @@
 
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_os/disk_io') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php site_url('wl_os/disk_io') ?>" >
  
   <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
  <input type="text" id="tags"  name="tags" value="<?php echo $setval['tags']; ?>" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
@@ -31,7 +31,7 @@
   <option value="desc" <?php if($setval['order_type']=='desc') echo "selected"; ?> ><?php echo $this->lang->line('desc'); ?></option>
   </select>
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_os/disk_io') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_os/disk_io') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
 </form>                
 </div> 
 
@@ -56,7 +56,7 @@
 		<td><?php echo $item['fdisk'] ?></td>
         <td><?php echo $item['disk_io_reads'] ?></td>
         <td><?php echo $item['disk_io_writes'] ?></td>
-        <td><a href="<?php echo site_url('lp_os/disk_io_chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a></a></td>
+        <td><a href="<?php echo site_url('wl_os/disk_io_chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

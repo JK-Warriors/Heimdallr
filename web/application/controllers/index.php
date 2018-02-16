@@ -3,7 +3,7 @@
 class Index extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model("lepus_model","lepus"); 
+        $this->load->model("wlblazers_model","wlblazers"); 
 	
 	}
     
@@ -18,8 +18,8 @@ class Index extends Front_Controller {
 		$data["servers_os_count"] = $this->db->query("select count(*) as num from db_servers_os where is_delete=0")->row()->num;
         
         
-		$lepus_status=$this->lepus->get_lepus_status();
-        $data['lepus_status']=$lepus_status;
+		$wlblazers_status=$this->wlblazers->get_wlblazers_status();
+        $data['wlblazers_status']=$wlblazers_status;
         
         $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
         $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
@@ -29,7 +29,7 @@ class Index extends Front_Controller {
         $data["setval"]=$setval;
 
         //$data['db_status'] = $this->db->query("select db_status.* from db_status where db_status.db_type in('mysql', 'oracle', 'mongodb', 'redis') order by db_status.db_type_sort asc,db_status.host asc, db_status.tags asc,db_status.role asc;")->result_array();
-        $data['db_status'] = $this->lepus->get_db_status();
+        $data['db_status'] = $this->wlblazers->get_db_status();
         
         $this->layout->view("index/index",$data);
     }

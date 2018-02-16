@@ -96,7 +96,7 @@ $(document).ready(function(){
   </select>
  
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_mysql/process') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_mysql/process') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   &nbsp;
   <label class="checkbox"><div id="toggle-state-switch-button" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('auto_refresh'); ?></div>
     <div id="toggle-state-switch" class="make-switch" data-on="success" data-off="danger" data-on-label="ON" data-text-label="">
@@ -195,7 +195,7 @@ function kill_process(server_id,pid){
     else{
         $.ajax({   
 		  type:"GET",   
-			  url:"<?php echo site_url('lp_mysql/ajax_kill_process') ?>",
+			  url:"<?php echo site_url('wl_mysql/ajax_kill_process') ?>",
 			  data:{
 				  server_id: server_id, pid: pid
 				  },   

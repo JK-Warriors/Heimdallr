@@ -1,7 +1,7 @@
 <?php
-$lang['lepus'] = '西子';
+$lang['wlblazers'] = '西子';
 $lang['database_monitor_system'] = '数据库监控系统';
-$lang['lepus_database_monitor'] = '西子数据库监控系统';
+$lang['wlblazers_database_monitor'] = '西子数据库监控系统';
 $lang['login'] = '登录';
 $lang['username'] = "用户名";
 $lang['password'] = '密码';
@@ -129,11 +129,11 @@ $lang['delete_confirm']='您确定要删除该内容?';
 $lang['edit_user_password_help'] = '如果不修改密码，请不要填写';
 $lang['choose_menu_error_msg'] = '父菜单不能选择当前菜单';
 
-$lang['lepus_version'] = '西子版本';
-$lang['lepus_status'] = '西子状态';
+$lang['wlblazers_version'] = '西子版本';
+$lang['wlblazers_status'] = '西子状态';
 $lang['last_check_time'] = '最新监测时间';
-$lang['lepus_running'] = '正在运行';
-$lang['lepus_not_run'] = '没有运行';
+$lang['wlblazers_running'] = '正在运行';
+$lang['wlblazers_not_run'] = '没有运行';
 
 $lang['mailprotocol'] = '邮件协议';
 $lang['mailtype'] = '邮件类型';

@@ -1,20 +1,20 @@
 <?php 
-class Lepus_model extends CI_Model{
+class Wlblazers_model extends CI_Model{
 
-    protected $table='lepus_status';
+    protected $table='wlblazers_status';
     
 	
    	/*
 	 * 获取选项
 	 */
-	function get_lepus_status(){
+	function get_wlblazers_status(){
 		$query = $this->db->get($this->table);
 		if ($query->num_rows() > 0)
 		{
 	        $result=$query->result_array();
             foreach($result as $r){
-                $variables=$r['lepus_variables'];
-                $value=$r['lepus_value'];
+                $variables=$r['wl_variables'];
+                $value=$r['wl_value'];
                 $data[$variables]=$value;
 		
             }
@@ -26,8 +26,8 @@ class Lepus_model extends CI_Model{
     /*
 	 * 获取单个选项
 	 */
-	function get_lepus_item($key){
-        $this->db->where('lepus_variables',$key);
+	function get_wlblazers_item($key){
+        $this->db->where('wl_variables',$key);
 		$query = $this->db->get($this->table);
 		if ($query->num_rows() > 0)
 		{
@@ -71,5 +71,5 @@ class Lepus_model extends CI_Model{
     
 }
 
-/* End of file lepus_model.php */
-/* Location: ./application/models/lepus_model.php */
+/* End of file wlblazers_model.php */
+/* Location: ./application/models/wlblazers_model.php */

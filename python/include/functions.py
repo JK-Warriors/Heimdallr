@@ -256,7 +256,7 @@ def update_check_time():
         conn.select_db(dbname)
         curs = conn.cursor()
         localtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        curs.execute("update lepus_status set lepus_value='%s'  where lepus_variables='lepus_checktime';" %(localtime))
+        curs.execute("update wlblazers_status set wl_value='%s'  where wl_variables='wlblazers_checktime';" %(localtime))
         conn.commit()
     except Exception, e:
         print "update check time: " + str(e)

@@ -78,7 +78,7 @@ class Task extends CI_Controller {
 				 	            $title="您的MySQL数据库".$server."发现慢查询,请及时优化.";
 				 	            $content =
 				 	            $table_content.
-				 	            "<br> 该邮件由Lepus系统自动发出，请勿回复，语句详细执行情况请登录Lepus系统查看.";
+				 	            "<br> 该邮件由Wlblazerss系统自动发出，请勿回复，语句详细执行情况请登录Wlblazers系统查看.";
 			
                       $send_mail_to_list = array_filter(explode(';',$send_mail_to_list));
                       /*foreach($send_mail_to_list as $item){

@@ -10,11 +10,11 @@ import cx_Oracle
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("lepus")
+logger = logging.getLogger("wlblazers")
 path='./include'
 sys.path.insert(0,path)
 import functions as func
-import lepus_oracle as oracle
+import wl_oracle as oracle
 from multiprocessing import Process;
 
 

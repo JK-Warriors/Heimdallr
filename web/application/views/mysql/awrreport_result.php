@@ -51,13 +51,13 @@ a {color:#950000;	text-decoration:none;}
 MySQL Online AWR Report
 </h1>
 <hr />
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_server">Server |</a> 
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_resource">Resource |</a> 
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_threads">Threads |</a>
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_aborted">Aborted |</a>
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_queries">Queries |</a> 
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_cpu">Cpu |</a>
-<a href="<?php echo site_url('lp_mysql/awrreport_create'); ?>#t_slowsql">SlowSQL |</a>   
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_server">Server |</a> 
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_resource">Resource |</a> 
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_threads">Threads |</a>
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_aborted">Aborted |</a>
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_queries">Queries |</a> 
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_cpu">Cpu |</a>
+<a href="<?php echo site_url('wl_mysql/awrreport_create'); ?>#t_slowsql">SlowSQL |</a>   
 <hr />
 <p id="t_server"><h3>Server</h3> </p>
 <p>
@@ -138,7 +138,7 @@ MySQL Online AWR Report
   <?php if(!empty($top10_slowQuery)) {?>
  <?php foreach ($top10_slowQuery  as $item):?>
     <tr>
-        <td><a href="<?php echo site_url("lp_mysql/awrreport_create#".$item['checksum']) ?>"   title="<?php echo $this->lang->line('view_detail'); ?>"><?php  echo $item['checksum'] ?></a></td>
+        <td><a href="<?php echo site_url("wl_mysql/awrreport_create#".$item['checksum']) ?>"   title="<?php echo $this->lang->line('view_detail'); ?>"><?php  echo $item['checksum'] ?></a></td>
         <td> <?php echo substring($item['fingerprint'],0,35); ?> </td>
         <td><?php echo $item['db_max'] ?></td>
         <td><?php echo $item['user_max'] ?></td>

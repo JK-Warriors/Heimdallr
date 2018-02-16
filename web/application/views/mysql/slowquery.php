@@ -65,7 +65,7 @@ $(document).ready(function(){
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span class="ui-icon ui-icon-search" style="float: left; margin-right: .3em;"></span>
                     
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_mysql/slowquery') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php site_url('wl_mysql/slowquery') ?>" >
   <input type="hidden" name="search" value="submit" />
   
   <select name="server_id" class="input-large" style="width:230px"  >
@@ -97,7 +97,7 @@ $(document).ready(function(){
   </select>
   
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_mysql/slowquery') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_mysql/slowquery') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
 
   <!--添加一个空的表单变量让URL中order_type=desc?noparam=0变成order_type=desc&noparam=0?，使order by生效  -->
   <input type="hidden" name="noparam" value="0" />
@@ -132,7 +132,7 @@ $(document).ready(function(){
   <?php if(!empty($datalist)) {?>
  <?php foreach ($datalist  as $item):?>
     <tr>
-        <td><a href="<?php echo site_url('lp_mysql/slowquery_detail/'.$item['checksum']) ?>" target="_blank"  title="<?php echo $this->lang->line('view_detail'); ?>"><?php  echo $item['checksum'] ?></a></td>
+        <td><a href="<?php echo site_url('wl_mysql/slowquery_detail/'.$item['checksum']) ?>" target="_blank"  title="<?php echo $this->lang->line('view_detail'); ?>"><?php  echo $item['checksum'] ?></a></td>
          <td>
          
          <div class="message_head"><span class="message_icon"><i class="icon-plus"></i></span><cite><?php echo substring($item['fingerprint'],0,35); ?>:</cite></div>

@@ -11,7 +11,7 @@
 
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_os/cpu') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php site_url('wl_os/cpu') ?>" >
  <select name="application_id" class="input-small" style="width: 120px;">
   <option value=""><?php echo $this->lang->line('application'); ?></option>
   <?php foreach ($application  as $item):?>
@@ -20,7 +20,7 @@
  </select>
   <input placeholder="<?php echo $this->lang->line('ip_address'); ?>" class="" style="width:150px;" type="text" name="host" id="host" value="<?php echo $setval['host']; ?>"  />
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_os/cpu') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_os/cpu') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
 </form>                
 </div> 
 
@@ -51,7 +51,7 @@
         <td><?php echo $item['cpu_user_time'] ?>%</td>
         <td><?php echo $item['cpu_system_time'] ?>%</td>
         <td><?php echo $item['cpu_idle_time'] ?>%</td>
-        <td><a href="<?php echo site_url('lp_os/cpu_chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a></a></td>
+        <td><a href="<?php echo site_url('wl_os/cpu_chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

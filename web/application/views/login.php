@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title><?php echo $this->lang->line('login'); ?>-<?php echo $this->lang->line('lepus'); ?> <?php echo $this->lang->line('database_monitor_system'); ?></title>
+    <title><?php echo $this->lang->line('login'); ?>-<?php echo $this->lang->line('wlblazers'); ?> <?php echo $this->lang->line('database_monitor_system'); ?></title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -63,7 +63,7 @@
                 <ul class="nav pull-right">
                     
                 </ul>
-                <span style="float:left;"><img src="./images/logo.png"/></span><a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"><?php echo $this->lang->line('lepus'); ?></span> <span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
+                <span style="float:left;"><img src="./images/logo.png"/></span><a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"><?php echo $this->lang->line('wlblazers'); ?></span> <span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
         </div>
     </div>
     
@@ -105,8 +105,8 @@
                 </form>
             </div>
         </div>
-        <!-- <p class="pull-right" style=""><a href="http://www.lepus.cc" target="blank"><?php echo $this->lang->line('get_support'); ?></a></p> -->
-        <p>&nbsp;<?php echo $this->lang->line('version'); ?>:<?php echo $lepus_status['lepus_version']; ?></p>
+        <!-- <p class="pull-right" style=""><a href="http://www.wlblazers.com" target="blank"><?php echo $this->lang->line('get_support'); ?></a></p> -->
+        <p>&nbsp;<?php echo $this->lang->line('version'); ?>:<?php echo $wlblazers_status['wlblazers_version']; ?></p>
     </div>
 </div>
   

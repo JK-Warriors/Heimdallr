@@ -12,14 +12,14 @@
  
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_os/baseinfo') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php site_url('wl_os/baseinfo') ?>" >
  
  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
  <input type="text" id="tags"  name="tags" value="<?php echo $setval['tags']; ?>" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
   
   
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_os/index') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_os/index') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 </form>                
 </div>
@@ -81,7 +81,7 @@
         <td><?php echo $item['disk_io_writes_total'] ?></td>
 		<td><?php echo format_bytes($item['net_in_bytes_total']) ?></td>
         <td><?php echo format_bytes($item['net_out_bytes_total']) ?></td>
-        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('lp_os/chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('wl_os/chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

@@ -9,7 +9,7 @@ import MySQLdb
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("lepus")
+logger = logging.getLogger("wlblazers")
 path='./include'
 sys.path.insert(0,path)
 import functions as func
@@ -23,7 +23,7 @@ def job_run(script_name,times):
 
 
 def main():
-    logger.info("lepus controller start.")
+    logger.info("wlblazers controller start.")
     monitor = str(func.get_option('monitor'))
     monitor_mysql = str(func.get_option('monitor_mysql'))
     monitor_mongodb = str(func.get_option('monitor_mongodb'))
@@ -81,7 +81,7 @@ def main():
         for job in joblist:
             job.join();
 
-    logger.info("lepus controller finished.")
+    logger.info("wlblazers controller finished.")
     
 
   

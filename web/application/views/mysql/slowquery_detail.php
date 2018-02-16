@@ -10,9 +10,9 @@
 <div class="row-fluid">
  
 <div class="btn-toolbar">
-    <!--<a class="btn btn-primary " href="<?php echo site_url('lp_mysql/slowquery_detail/'.$record['checksum'].'/'.$setval['server_id'].'/prev') ?>"><i class="icon-arrow-left"></i> <?php echo $this->lang->line('prev'); ?></a>
-    <a class="btn btn-primary " href="<?php echo site_url('lp_mysql/slowquery_detail/'.$record['checksum'].'/'.$setval['server_id'].'/next') ?>"><i class="icon-arrow-right"></i> <?php echo $this->lang->line('next'); ?></a>-->
-    <a class="btn btn " href="<?php echo site_url('lp_mysql/slowquery') ?>"><i class="icon-list"></i> <?php echo $this->lang->line('return'); ?><?php echo $this->lang->line('list'); ?></a>
+    <!--<a class="btn btn-primary " href="<?php echo site_url('wl_mysql/slowquery_detail/'.$record['checksum'].'/'.$setval['server_id'].'/prev') ?>"><i class="icon-arrow-left"></i> <?php echo $this->lang->line('prev'); ?></a>
+    <a class="btn btn-primary " href="<?php echo site_url('wl_mysql/slowquery_detail/'.$record['checksum'].'/'.$setval['server_id'].'/next') ?>"><i class="icon-arrow-right"></i> <?php echo $this->lang->line('next'); ?></a>-->
+    <a class="btn btn " href="<?php echo site_url('wl_mysql/slowquery') ?>"><i class="icon-list"></i> <?php echo $this->lang->line('return'); ?><?php echo $this->lang->line('list'); ?></a>
     <button id="close" class="btn btn-danger"><i class="icon-off"></i> <?php echo $this->lang->line('close'); ?></button>
   <div class="btn-group"></div>
 </div>

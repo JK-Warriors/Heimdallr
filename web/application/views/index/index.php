@@ -5,7 +5,7 @@
         
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
-            <span class="right"><?php echo $this->lang->line('lepus_version'); ?>:<?php echo $lepus_status['lepus_version']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('lepus_status'); ?>:<?php if($lepus_status['lepus_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('lepus_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('lepus_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $lepus_status['lepus_checktime']; ?></span>
+            <span class="right"><?php echo $this->lang->line('wlblazers_version'); ?>:<?php echo $wlblazers_status['wlblazers_version']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('wlblazers_status'); ?>:<?php if($wlblazers_status['wlblazers_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('wlblazers_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('wlblazers_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $wlblazers_status['wlblazers_checktime']; ?></span>
     </ul>
 
  
@@ -56,7 +56,7 @@
 
 
 <div class="well monitor " style=" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  'font-family: 微软雅黑;' ?>  ;">
-    <table class="table table-hover table-condensed tooltip-lepus">
+    <table class="table table-hover table-condensed tooltip-wlblazers">
       
       <thead>
         <tr style="font-size: 13px;">
@@ -111,7 +111,7 @@
         <td><?php echo check_db_status_level($item['memory'],$item['memory_tips']) ?></td>
         <td><?php echo check_db_status_level($item['network'],$item['network_tips']) ?></td>
         <td><?php echo check_db_status_level($item['disk'],$item['disk_tips']) ?></td>
-        <td><a href="<?php echo site_url('lp_'.$item['db_type'].'/chart/'.$item['server_id']); ?>"><img src="./images/chart.gif"/></a></td>
+        <td><a href="<?php echo site_url('wl_'.$item['db_type'].'/chart/'.$item['server_id']); ?>"><img src="./images/chart.gif"/></a></td>
   </tr>
  <?php endforeach;?>
  <?php }else{  ?>
@@ -133,7 +133,7 @@
 
      $(function(){
 		// tooltip demo
-    	$('.tooltip-lepus').tooltip({
+    	$('.tooltip-wlblazers').tooltip({
       		selector: "a[data-toggle=tooltip]"
     	})
 		

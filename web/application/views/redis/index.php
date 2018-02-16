@@ -40,7 +40,7 @@
   </select>
 
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_redis/health') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_redis/health') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 </form>                
 </div>
@@ -91,7 +91,7 @@
         <td><?php echo check_value($item['keyspace_hits']) ?></td>
         <td><?php echo check_value($item['keyspace_misses']) ?></td>
      
-        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('lp_redis/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('wl_redis/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

@@ -32,9 +32,9 @@
         </select>
         <!-- <span class="help-inline"></span> -->
     </div>
-    <button type="submit" class="btn btn-success" action="<?php site_url('lp_oracle/dataguard') ?>" > <?php echo $this->lang->line('detail'); ?></button>
+    <button type="submit" class="btn btn-success" action="<?php site_url('wl_oracle/dataguard') ?>" > <?php echo $this->lang->line('detail'); ?></button>
     
-    <a class="btn btn-success" href="<?php echo site_url('lp_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;" ><?php echo $this->lang->line('dg_management'); ?></a>
+    <a class="btn btn-success" href="<?php echo site_url('wl_oracle/dg_switch?dg_group_id='); echo $setval['id']; ?>" style="width:100px; float:right; margin-right:5px;" ><?php echo $this->lang->line('dg_management'); ?></a>
 
 </form>
 </div>

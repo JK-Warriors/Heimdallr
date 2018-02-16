@@ -16,7 +16,7 @@
                     
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
-<form name="form" class="form-inline" method="get" action="<?php echo site_url('lp_mysql/index') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php echo site_url('wl_mysql/index') ?>" >
    <input type="hidden" name="search" value="submit" />
 
  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
@@ -60,7 +60,7 @@
   </select>
 
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_mysql/index') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_mysql/index') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 </form>                
 </div>
@@ -111,7 +111,7 @@
         <td><?php echo format_kbytes($item['bytes_sent_persecond']) ?></td>
         <td><?php echo check_value($item['queries_persecond']) ?></td>
         <td><?php echo check_value($item['transaction_persecond']) ?></td>
-        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('lp_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('wl_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

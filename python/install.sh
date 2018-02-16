@@ -6,11 +6,11 @@ basedir=""
 ########################################################
 if test -z "$basedir"
 then
-  basedir=/usr/local/lepus
+  basedir=/usr/local/wlblazers
 else
   basedir="$basedir"
 fi
-echo "[note] lepus will be install on basedir: $basedir"
+echo "[note] wlblazers will be install on basedir: $basedir"
 
 #create dir
 #########################################################
@@ -31,11 +31,11 @@ cp -r * $basedir
 #change chmod
 ########################################################
 echo "[note] change script permission."
-chmod +x $basedir/lepus*
+chmod +x $basedir/wlblazers*
 
 #create links
 ########################################################
 echo "[note] create links."
-ln -s $basedir/lepus /usr/local/sbin/
-ln -s $basedir/lepus_monitor /usr/local/sbin/
+ln -s $basedir/wlblazers /usr/local/sbin/
+ln -s $basedir/wlblazers_monitor /usr/local/sbin/
 echo "[note] install complete."

@@ -11,7 +11,7 @@ import bson
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("lepus")
+logger = logging.getLogger("wlblazers")
 path='./include'
 sys.path.insert(0,path)
 import functions as func

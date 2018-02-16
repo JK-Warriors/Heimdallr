@@ -38,7 +38,7 @@
         </tr>
          </tr>
         <tr class="success">
-        	<td style="width:200px"><?php echo $this->lang->line('my_server_mac_addr'); ?></td><td><?php echo $my_server_mac_addr; ?> &nbsp;&nbsp;<a href="http://www.lepus.cc" target="_blank" ><?php echo $this->lang->line('license_support'); ?></a></td>
+        	<td style="width:200px"><?php echo $this->lang->line('my_server_mac_addr'); ?></td><td><?php echo $my_server_mac_addr; ?> &nbsp;&nbsp;<a href="http://www.wlblazers.com" target="_blank" ><?php echo $this->lang->line('license_support'); ?></a></td>
         </tr>
         </table>
        

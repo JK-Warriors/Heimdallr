@@ -3,8 +3,8 @@ Navicat MySQL Data Transfer
 
 Source Server         : westserver_new
 Source Server Version : 50536
-Source Host           : www.lepus.cc:3306
-Source Database       : lepus
+Source Host           : localhost
+Source Database       : Wlblazers
 
 Target Server Type    : MYSQL
 Target Server Version : 50536
@@ -560,12 +560,12 @@ CREATE TABLE `oracle_dg_s_status_his` (
 
 
 -- ----------------------------
--- Table structure for lepus_status
+-- Table structure for wlblazers_status
 -- ----------------------------
-DROP TABLE IF EXISTS `lepus_status`;
-CREATE TABLE `lepus_status` (
-  `lepus_variables` varchar(255) NOT NULL,
-  `lepus_value` varchar(255) NOT NULL
+DROP TABLE IF EXISTS `wlblazers_status`;
+CREATE TABLE `wlblazers_status` (
+  `wl_variables` varchar(255) NOT NULL,
+  `wl_value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

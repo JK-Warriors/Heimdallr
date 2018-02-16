@@ -17,7 +17,7 @@
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span class="ui-icon ui-icon-search" style="float: left; margin-right: .3em;"></span>
                     
-<form name="form" class="form-inline" method="get" action="<?php site_url('lp_mysql/replication') ?>" >
+<form name="form" class="form-inline" method="get" action="<?php site_url('wl_mysql/replication') ?>" >
   <input type="hidden" name="search" value="submit" />
   
   <select name="application_id" class="input-small" style="width: 120px;">
@@ -55,7 +55,7 @@
   </select>
   
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_redis/replication') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_redis/replication') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 
 </form>               

@@ -98,9 +98,9 @@ class Login extends CI_Controller  {
 		$data['cur_nav']='login';
 		$data['site_title']='用户登录';
 	 	$data['return_url'] = isset($_GET['return_url']) ? $_GET['return_url'] : base_url();	 //登录后返回url
-		$this->load->model("lepus_model","lepus"); 
-        $lepus_status=$this->lepus->get_lepus_status();
-        $data['lepus_status']=$lepus_status;
+		$this->load->model("wlblazers_model","wlblazers"); 
+        $wlblazers_status=$this->wlblazers->get_wlblazers_status();
+        $data['wlblazers_status']=$wlblazers_status;
         $this->load->view('login',$data);
 		
 	}

@@ -1,5 +1,5 @@
 <?php
-$lang['lepus'] = '天兔';
+$lang['wlblazers'] = '西子';
 $lang['database_monitor_system'] = '企業數據庫監控系統';
 $lang['login'] = '登錄';
 $lang['username'] = "用戶名";

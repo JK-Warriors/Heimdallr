@@ -41,7 +41,7 @@
   </select>
 
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_mysql/key_cache') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_mysql/key_cache') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 </form>                
 </div>
@@ -87,7 +87,7 @@
         <td><?php echo format_rate($item['key_blocks_used_rate']); ?></td>
         <td><?php echo format_rate($item['key_buffer_read_rate']); ?></td>
         <td><?php echo format_rate($item['key_buffer_write_rate']); ?></td>
-        <td><a href="<?php echo site_url('lp_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></td>
+        <td><a href="<?php echo site_url('wl_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></td>
     </tr>
  <?php endforeach;?>
  <?php }else{  ?>

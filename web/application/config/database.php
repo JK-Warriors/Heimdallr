@@ -50,9 +50,9 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = '192.168.129.80';
 $db['default']['port']     = '3306';
-$db['default']['username'] = 'lepus_user';
+$db['default']['username'] = 'wlblazers';
 $db['default']['password'] = 'oracle';
-$db['default']['database'] = 'lepus';
+$db['default']['database'] = 'wlblazers';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

@@ -6,57 +6,57 @@ basedir="/wlblazers/site/python"
 #############################################################################
 if test -z "$basedir"
 then
-  basedir=/usr/local/lepus
+  basedir=/usr/local/wlblazers
 else
   basedir="$basedir"
 fi
 
 arg=$1
-lepus_process=`ps -ef|grep lepus.py |grep -v grep|wc -l`
+wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
 case "$arg" in
   'status')
-    #check lepus status
-    if [ $lepus_process -ge "2" ];then
-       echo "lepus server is running..."
+    #check wlblazers status
+    if [ $wlblazers_process -ge "2" ];then
+       echo "wlblazers server is running..."
     else
-       echo "lepus server is not run!"
+       echo "wlblazers server is not run!"
     fi
   ;;
 
   'start')
-    #start lepus
-    if [ $lepus_process -ge "2" ];then
-       echo " lepus server is already run!"
+    #start wlblazers
+    if [ $wlblazers_process -ge "2" ];then
+       echo " wlblazers server is already run!"
     else
-       cd $basedir && nohup  python lepus.py &> logs/lepus.log& 
+       cd $basedir && nohup  python wlblazers.py &> logs/wlblazers.log& 
        sleep 5
-       lepus_process=`ps -ef|grep lepus.py |grep -v grep|wc -l`
-       if [ $lepus_process -ge "2" ];then
-          echo "lepus server start success!"
+       wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
+       if [ $wlblazers_process -ge "2" ];then
+          echo "wlblazers server start success!"
        else
-          echo "lepus server start fail!"
+          echo "wlblazers server start fail!"
        fi
     fi
   ;;
 
   'stop')
-    #stop lepus
-    if [ $lepus_process -le "2" ];then
-       echo "lepus server is not running!"
+    #stop wlblazers
+    if [ $wlblazers_process -le "2" ];then
+       echo "wlblazers server is not running!"
     else
-       ps -ef |grep -i -E "lepus.py"|grep -v -E "vi|grep"|awk '{print $2}' |while read line; do kill $line; echo "lepus processes id $line been stop"; done 
-       #killall python lepus.py*
+       ps -ef |grep -i -E "wlblazers.py"|grep -v -E "vi|grep"|awk '{print $2}' |while read line; do kill $line; echo "wlblazers processes id $line been stop"; done 
+       #killall python wlblazers.py*
     fi
   ;;
 
   '--help')
     #for help
-    echo "lepus help:"
-    echo "support-site:  www.lepus.cc"
+    echo "wlblazers help:"
+    echo "support-site:  www.wlblazers.com"
     echo "===================================================================="
-    echo "start        Start lepus monitor server; Command: #lepus start"
-    echo "stop         Stop lepus monitor server; Command: #lepus stop"
-    echo "status       Check lepus monitor run status; Command: #lepus status"
+    echo "start        Start wlblazers monitor server; Command: #wlblazers start"
+    echo "stop         Stop wlblazers monitor server; Command: #wlblazers stop"
+    echo "status       Check wlblazers monitor run status; Command: #wlblazers status"
   ;;
     *)
         echo "Please input  --help to read the help info."

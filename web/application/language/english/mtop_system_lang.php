@@ -1,7 +1,7 @@
 <?php
-$lang['lepus'] = 'Lepus';
+$lang['wlblazers'] = 'Wlblazers';
 $lang['database_monitor_system'] = 'Database Monitor';
-$lang['lepus_database_monitor'] = 'Lepus Database Monitor';
+$lang['wlblazers_database_monitor'] = 'Wlblazers Database Monitor';
 $lang['login'] = 'Login';
 $lang['username'] = "Username";
 $lang['password'] = 'Password';
@@ -129,11 +129,11 @@ $lang['delete_confirm']='Are you sure you want to delete the content?';
 $lang['edit_user_password_help'] = 'If you don not change your password, please do not fill in';
 $lang['choose_menu_error_msg'] = 'The parent menu cannot choose the menu';
 
-$lang['lepus_version'] = 'Lepus Version';
-$lang['lepus_status'] = 'lepus Status';
+$lang['wlblazers_version'] = 'Wlblazers Version';
+$lang['wlblazers_status'] = 'wlblazers Status';
 $lang['last_check_time'] = 'Last Check Time';
-$lang['lepus_running'] = 'Running';
-$lang['lepus_not_run'] = 'Not Run';
+$lang['wlblazers_running'] = 'Running';
+$lang['wlblazers_not_run'] = 'Not Run';
 
 $lang['mailprotocol'] = 'Mail Protocol';
 $lang['mailtype'] = 'Mail Type';

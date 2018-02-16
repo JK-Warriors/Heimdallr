@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title><?php echo $this->lang->line('lepus'); ?> <?php echo $this->lang->line('database_monitor_system'); ?></title>
+    <title><?php echo $this->lang->line('wlblazers'); ?> <?php echo $this->lang->line('database_monitor_system'); ?></title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -62,12 +62,12 @@
 					?>
                     <li <?php if($model=='index'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('dashboard'); ?></a></li>
                     <li <?php if($model=='screen'){ echo "class='active'";} ?>><a href="<?php echo site_url('screen/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('screen'); ?></a></li>
-                    <li <?php if($model=='lp_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('lp_mysql/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li>
-                    <li <?php if($model=='lp_oracle'){ echo "class='active'";} ?>><a href="<?php echo site_url('lp_oracle/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li>
-                    <li <?php if($model=='lp_mongodb'){ echo "class='active'";} ?>><a href="<?php echo site_url('lp_mongodb/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MongoDB</a></li>
-                    <li <?php if($model=='lp_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('lp_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li>
-                    <li <?php if($model=='lp_redis'){ echo "class='active'";} ?>><a href="<?php echo site_url('lp_redis/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Redis</a></li>
-                    <li <?php if($model=='lp_os'){ echo "class='active'";} ?>><a href="<?php echo site_url('lp_os/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">OS</a></li>
+                    <li <?php if($model=='wl_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mysql/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li>
+                    <li <?php if($model=='wl_oracle'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_oracle/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li>
+                    <li <?php if($model=='wl_mongodb'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mongodb/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MongoDB</a></li>
+                    <li <?php if($model=='wl_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li>
+                    <li <?php if($model=='wl_redis'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_redis/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Redis</a></li>
+                    <li <?php if($model=='wl_os'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_os/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">OS</a></li>
                     <li <?php if($model=='alarm'){ echo "class='active'";} ?>><a href="<?php echo site_url('alarm/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('alarm'); ?></a></li>
                     <li <?php if($model=='settings'){ echo "class='active'";} ?>><a href="<?php echo site_url('settings/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('settings'); ?></a></li>
                     
@@ -102,7 +102,7 @@
                     </li>
                     
                 </ul>
-                <span style="float:left;"><img src="./images/logo.png"/></span><a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"></span> <span class="second"><?php echo $this->lang->line('lepus'); ?></span></a>
+                <span style="float:left;"><img src="./images/logo.png"/></span><a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"></span> <span class="second"><?php echo $this->lang->line('wlblazers'); ?></span></a>
         </div>
     </div>
     
@@ -115,9 +115,9 @@
                         <hr>
 
                         <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
-                        <p class="pull-right">Power by <a href="http://www.lepus.cc" target="_blank">Lepus</a></p>
+                        <p class="pull-right">Power by <a href="http://www.wlblazers.com" target="_blank">Wlblazers</a></p>
 
-                        <p>&copy; 2014 <a href="http://www.lepus.cc" target="_blank">Lepus</a>(天兔数据库监控系统)</p>
+                        <p>&copy; 2014 <a href="http://www.wlblazers.com" target="_blank">Wlblazers</a>(西子数据库监控系统)</p>
                     </footer>
 
     </div>

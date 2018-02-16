@@ -9,11 +9,11 @@ import pymssql
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("lepus")
+logger = logging.getLogger("wlblazers")
 path='./include'
 sys.path.insert(0,path)
 import functions as func
-import lepus_sqlserver as sqlserver
+import wl_sqlserver as sqlserver
 from multiprocessing import Process;
 
      

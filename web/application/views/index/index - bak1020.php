@@ -11,7 +11,7 @@
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('dashboard'); ?></li><span class="divider">/</span></li>
-            <span class="right"><?php echo $this->lang->line('lepus_version'); ?>:<?php echo $lepus_status['lepus_version']['value']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('lepus_status'); ?>:<?php if($lepus_status['lepus_running']['value']==1){ ?><span class="label label-success"><?php echo $this->lang->line('lepus_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('lepus_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $lepus_status['lepus_running']['update_time']; ?></span>
+            <span class="right"><?php echo $this->lang->line('wlblazers_version'); ?>:<?php echo $wlblazers_status['wlblazers_version']['value']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('wlblazers_status'); ?>:<?php if($wlblazers_status['wlblazers_running']['value']==1){ ?><span class="label label-success"><?php echo $this->lang->line('wlblazers_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('wlblazers_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $wlblazers_status['wlblazers_running']['update_time']; ?></span>
 </ul>
 
  

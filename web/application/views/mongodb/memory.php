@@ -25,7 +25,7 @@
   
 
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
-  <a href="<?php echo site_url('lp_mongodb/indexes') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <a href="<?php echo site_url('wl_mongodb/indexes') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
   <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
 </form>                 
 </div>
@@ -59,7 +59,7 @@
         <td><?php echo check_status($item['mem_supported']) ?></td>
         <td><?php echo format_mbytes($item['mem_mapped']) ?></td>
         <td><?php echo format_mbytes($item['mem_mappedWithJournal']) ?></td>
-        <td><a href="<?php echo site_url('lp_mongodb/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></a></td>
+        <td><a href="<?php echo site_url('wl_mongodb/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></a></td>
      </tr>
  <?php endforeach;?>
  <?php }else{  ?>

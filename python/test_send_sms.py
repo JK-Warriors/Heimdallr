@@ -12,6 +12,6 @@ sms_to_list=send_sms_to_list.split(';')
 sms_to_list_comma = ",".join(sms_to_list)
 sms_fetion_user = func.get_option('sms_fetion_user')
 sms_fetion_pass = func.get_option('sms_fetion_pass')
-sms_msg = "Hello Lepus!"
+sms_msg = "Hello wlblazers!"
 result = os.system('fetion --mobile=%s --pwd=%s --to=%s --msg-type=1  --msg-utf8="%s" --debug' %(sms_fetion_user,sms_fetion_pass,sms_to_list_comma,sms_msg))
 print result

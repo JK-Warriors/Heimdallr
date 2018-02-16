@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-lepus_process=`ps -ef|grep lepus.py |grep -v grep|wc -l`
-if [ $lepus_process -le "3" ];then
-       echo "`date` lepus server is not run."
+wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
+if [ $wlblazers_process -le "3" ];then
+       echo "`date` wlblazers server is not run."
 else
-       echo "`date` lepus server is running..."
+       echo "`date` wlblazers server is running..."
 fi

@@ -28,7 +28,7 @@
 
 <div>
 <form id="form_switch" class="form-inline" method="post" action="" >
-    <a class="btn btn " href="<?php echo site_url('lp_oracle/dataguard') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
+    <a class="btn btn " href="<?php echo site_url('wl_oracle/dataguard') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
 
     
     <button name="trans_type" type="button" value="Failover" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('failover'); ?></button>
@@ -103,10 +103,10 @@
 
 
 <script type="text/javascript">
-var base_url = "<?php echo site_url('lp_oracle/dg_switch?dg_group_id=') ?>";
+var base_url = "<?php echo site_url('wl_oracle/dg_switch?dg_group_id=') ?>";
 var group_id = "<?php echo $setval['id'] ?>";
 var target_url = base_url.toString() + group_id.toString();
-var dg_url = "<?php echo site_url('lp_oracle/dataguard?dg_group_id=') ?>" + group_id.toString();
+var dg_url = "<?php echo site_url('wl_oracle/dataguard?dg_group_id=') ?>" + group_id.toString();
 var user_pwd = "<?php echo $userdata['password'] ?>" ;
 
 function checkUser(e){
@@ -202,7 +202,7 @@ var oTimer = null;
 var myBar = null;
 var last_switchover = null;
 var warningDiv = document.getElementById("mrp_warning");
-var query_url="<?php echo site_url('lp_oracle/dg_progress') ?>";
+var query_url="<?php echo site_url('wl_oracle/dg_progress') ?>";
 var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
 var on_switchover="<?php echo $dg_group[0]['on_switchover'] ?>" ;
 var on_failover="<?php echo $dg_group[0]['on_failover'] ?>" ;
