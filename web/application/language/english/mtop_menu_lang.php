@@ -1,7 +1,7 @@
 <?php
 
 //菜单语言包
-$lang['_Configure'] = 'Configure';
+$lang['_Servers Configure'] = 'Configure';
 $lang['_Settings'] = 'Settings';
 $lang['_Machine Room'] = 'Machine Room';
 $lang['_Application'] = 'Application';

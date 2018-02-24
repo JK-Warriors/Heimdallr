@@ -36,7 +36,7 @@ CREATE TABLE `admin_menu` (
 -- ----------------------------
 -- Records of admin_menu
 -- ----------------------------
-INSERT INTO `admin_menu` VALUES ('10', 'Configure', '1', '0', 'server', 'icon-dashboard', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('10', 'Servers Configure', '1', '0', 'server', 'icon-dashboard', '0', '1', '2', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('11', 'MySQL Monitor', '1', '0', 'wl_mysql', 'icon-dashboard', '0', '1', '3', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('12', 'Oracle Monitor', '1', '0', 'wl_oracle', 'icon-dashboard', '0', '1', '4', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlserver', 'icon-dashboard', '0', '1', '5', CURRENT_TIMESTAMP);
