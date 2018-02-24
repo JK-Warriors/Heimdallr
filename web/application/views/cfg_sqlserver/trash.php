@@ -1,19 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<div class="header">  
-            <h1 class="page-title"><?php echo $this->lang->line('_Redis'); ?> <?php echo $this->lang->line('trash'); ?></h1>
-</div>
-     
+
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Servers Configure'); ?></li><span class="divider">/</span></li>
-            <li class="active"><?php echo $this->lang->line('_Redis'); ?></li>
+            <li class="active"><?php echo $this->lang->line('_SQLServer'); ?></li>
 </ul>
 
 <div class="container-fluid">
 <div class="row-fluid">
  
 <div class="btn-toolbar">
-    <a class="btn btn " href="<?php echo site_url('cfg_redis/index') ?>"><i class="icon-list"></i> <?php echo $this->lang->line('list'); ?></a>
+    <a class="btn btn " href="<?php echo site_url('cfg_sqlserver/index') ?>"><i class="icon-list"></i> <?php echo $this->lang->line('list'); ?></a>
   <div class="btn-group"></div>
 </div>
 
@@ -55,7 +52,7 @@
 		<td><?php echo check_on_off($item['alarm_connected_clients']) ?></td>
 		<td><?php echo check_on_off($item['alarm_command_processed']) ?></td>
 		<td><?php echo check_on_off($item['alarm_blocked_clients']) ?></td>
-        <td><a href="<?php echo site_url('cfg_redis/recover/'.$item['id']) ?>" title="<?php echo $this->lang->line('recover'); ?>"><i class="icon-repeat"></i></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo site_url('cfg_redis/forever_delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('forever_delete'); ?>" ><i class="icon-remove"></i></a></td>
+        <td><a href="<?php echo site_url('cfg_sqlserver/recover/'.$item['id']) ?>" title="<?php echo $this->lang->line('recover'); ?>"><i class="icon-repeat"></i></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo site_url('cfg_redis/forever_delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('forever_delete'); ?>" ><i class="icon-remove"></i></a></td>
 	</tr>
  <?php endforeach;?>
 <tr>

@@ -1,22 +1,19 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<div class="header">  
-            <h1 class="page-title"><?php echo $this->lang->line('_Redis'); ?> <?php echo $this->lang->line('batch_add'); ?></h1>
-</div>
-     
+
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Servers Configure'); ?></li><span class="divider">/</span></li>
-            <li class="active"><?php echo $this->lang->line('_Redis'); ?></li>
+            <li class="active"><?php echo $this->lang->line('_SQLServer'); ?></li>
 </ul>
 
 <div class="container-fluid">
 <div class="row-fluid">
 
-<form name="form" class="form-horizontal" method="post" action="<?php echo site_url('cfg_redis/batch_add') ?>" >
+<form name="form" class="form-horizontal" method="post" action="<?php echo site_url('cfg_sqlserver/batch_add') ?>" >
 <input type="hidden" name="submit"  value="batch_add"/> 
 <div class="btn-toolbar">
     <button type="submit" class="btn btn-primary confirm_add"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
-    <a class="btn btn " href="<?php echo site_url('cfg_Redis/index') ?>"><i class="icon-list"></i> <?php echo $this->lang->line('list'); ?></a>
+    <a class="btn btn " href="<?php echo site_url('cfg_sqlserver/index') ?>"><i class="icon-list"></i> <?php echo $this->lang->line('list'); ?></a>
   <div class="btn-group"></div>
 </div>
 

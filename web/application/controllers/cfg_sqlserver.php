@@ -46,7 +46,7 @@ class cfg_sqlserver extends Front_Controller {
 		$result=$this->sqlserver->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
-        $this->layout->view("cfg_redis/trash",$data);
+        $this->layout->view("cfg_sqlserver/trash",$data);
     }
     
     /**
