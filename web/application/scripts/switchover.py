@@ -57,7 +57,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
     if role=="PRIMARY":
         common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功。', 20, 2)
         logger.info("Now we are going to switch database %s to physical standby." %(pri_id))
-        if switch_status=="TO STANDBY" or switch_status=="SESSIONS ACTIVE":
+        if switch_status=="TO STANDBY" or switch_status=="SESSIONS ACTIVE" or switch_status=="FAILED DESTINATION":
             logger.info("Switchover to physical standby... ")
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '正在将主库切换成备库，可能会花费几分钟时间，请耐心等待...', 25, 0)
             sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
