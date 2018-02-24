@@ -36,50 +36,73 @@ CREATE TABLE `admin_menu` (
 -- ----------------------------
 -- Records of admin_menu
 -- ----------------------------
-INSERT INTO `admin_menu` VALUES ('3', 'MySQL Monitor', '1', '0', 'wl_mysql', 'icon-dashboard', '0', '1', '3', '2014-02-25 19:57:29');
-INSERT INTO `admin_menu` VALUES ('5', 'Permission System', '1', '0', 'rabc', 'icon-legal', '0', '1', '10', '2014-02-26 12:24:33');
-INSERT INTO `admin_menu` VALUES ('6', 'Health Monitor', '2', '3', 'wl_mysql/index', ' icon-list', '0', '1', '1', '2014-02-26 12:25:15');
-INSERT INTO `admin_menu` VALUES ('8', 'Replication Monitor', '2', '3', 'wl_mysql/replication', ' icon-list', '0', '1', '6', '2014-02-26 12:26:05');
-INSERT INTO `admin_menu` VALUES ('9', 'Slowquery Analysis', '2', '3', 'wl_mysql/slowquery', 'icon-list', '0', '1', '9', '2014-02-26 12:26:52');
-INSERT INTO `admin_menu` VALUES ('10', 'User', '2', '5', 'user/index', '', '0', '1', '1', '2014-02-26 12:43:02');
-INSERT INTO `admin_menu` VALUES ('11', 'Role', '2', '5', 'role/index', '', '0', '1', '2', '2014-02-26 12:43:19');
-INSERT INTO `admin_menu` VALUES ('12', 'Menu', '2', '5', 'menu/index', '', '0', '1', '3', '2014-02-26 12:43:41');
-INSERT INTO `admin_menu` VALUES ('13', 'Privilege', '2', '5', 'privilege/index', '', '0', '1', '4', '2014-02-26 12:45:01');
-INSERT INTO `admin_menu` VALUES ('15', 'Authorization', '2', '5', 'auth/index', '', '0', '1', '2', '2014-03-03 22:23:28');
-INSERT INTO `admin_menu` VALUES ('16', 'Servers Configure', '1', '0', 'server', 'icon-dashboard', '0', '1', '2', '2014-03-05 18:31:17');
-INSERT INTO `admin_menu` VALUES ('18', 'MySQL', '2', '16', 'cfg_mysql/index', 'icon-list', '0', '1', '3', '2014-03-05 18:33:40');
-INSERT INTO `admin_menu` VALUES ('19', 'AWR Report', '2', '3', 'wl_mysql/awrreport', 'icon-list', '0', '1', '12', '2014-03-06 13:47:17');
-INSERT INTO `admin_menu` VALUES ('20', 'Alarm Panel', '1', '0', 'alarm', 'icon-dashboard', '0', '1', '9', '2014-03-11 21:41:13');
-INSERT INTO `admin_menu` VALUES ('21', 'Alarm List', '2', '20', 'alarm/index', '', '0', '1', '0', '2014-03-11 21:46:28');
-INSERT INTO `admin_menu` VALUES ('22', 'OS Monitor', '1', '0', 'wl_os', 'icon-dashboard', '0', '1', '8', '2014-03-24 15:33:42');
-INSERT INTO `admin_menu` VALUES ('26', 'Disk', '2', '22', 'wl_os/disk', 'icon-list', '0', '1', '4', '2014-03-24 17:46:29');
-INSERT INTO `admin_menu` VALUES ('28', 'BigTable Analysis', '2', '3', 'wl_mysql/bigtable', 'icon-list', '0', '1', '7', '2014-04-02 13:38:15');
-INSERT INTO `admin_menu` VALUES ('29', 'Key Cache Monitor', '2', '3', 'wl_mysql/key_cache', 'icon-list', '0', '1', '3', '2014-04-09 15:52:12');
-INSERT INTO `admin_menu` VALUES ('30', 'InnoDB Monitor', '2', '3', 'wl_mysql/innodb', 'icon-list', '0', '1', '4', '2014-04-09 15:54:47');
-INSERT INTO `admin_menu` VALUES ('31', 'Resource Monitor', '2', '3', 'wl_mysql/resource', 'icon-list', '0', '1', '2', '2014-04-10 13:23:06');
--- INSERT INTO `admin_menu` VALUES ('32', 'MongoDB', '2', '16', 'cfg_mongodb/index', 'icon-list', '0', '1', '5', '2014-04-14 12:26:35');
--- INSERT INTO `admin_menu` VALUES ('33', 'MongoDB Monitor', '1', '0', 'wl_mongodb', 'icon-dashboard', '0', '1', '5', '2014-04-14 14:15:52');
--- INSERT INTO `admin_menu` VALUES ('34', 'Health Montior', '2', '33', 'wl_mongodb/index', 'icon-list', '0', '1', '1', '2014-04-14 14:17:23');
--- INSERT INTO `admin_menu` VALUES ('35', 'Indexes Monitor', '2', '33', 'wl_mongodb/indexes', 'icon-list', '0', '0', '2', '2014-04-14 16:25:48');
--- INSERT INTO `admin_menu` VALUES ('36', 'Memory Monitor', '2', '33', 'wl_mongodb/memory', 'icon-list', '0', '1', '3', '2014-04-14 16:26:50');
-INSERT INTO `admin_menu` VALUES ('40', 'Oracle', '2', '16', 'cfg_oracle/index', 'icon-list', '0', '1', '4', '2014-05-27 13:21:49');
-INSERT INTO `admin_menu` VALUES ('43', 'Health Monitor', '2', '22', 'wl_os/index', 'icon-list', '0', '1', '0', '2014-07-08 09:19:11');
-INSERT INTO `admin_menu` VALUES ('44', 'Disk IO', '2', '22', 'wl_os/disk_io', 'icon-list', '0', '1', '5', '2014-07-15 15:35:56');
-INSERT INTO `admin_menu` VALUES ('45', 'OS', '2', '16', 'cfg_os/index', 'icon-list', '0', '1', '8', '2014-07-16 10:32:13');
-INSERT INTO `admin_menu` VALUES ('46', 'Settings', '2', '16', 'settings/index', 'icon-list', '0', '1', '0', '2014-08-12 15:30:54');
--- INSERT INTO `admin_menu` VALUES ('48', 'Redis Monitor', '1', '0', 'wl_redis', 'icon-dashboard', '0', '1', '6', '2014-09-02 12:36:41');
--- INSERT INTO `admin_menu` VALUES ('50', 'Health Monitor', '2', '48', 'wl_redis/index', 'icon-list', '0', '1', '2', '2014-09-02 12:39:58');
--- INSERT INTO `admin_menu` VALUES ('51', 'Redis', '2', '16', 'cfg_redis/index', 'icon-list', '0', '1', '7', '2014-09-09 17:15:41');
--- INSERT INTO `admin_menu` VALUES ('52', 'Memory Monitor', '2', '48', 'wl_redis/memory', 'icon-list', '0', '1', '3', '2014-09-11 14:34:13');
--- INSERT INTO `admin_menu` VALUES ('54', 'Replication Monitor', '2', '48', 'wl_redis/replication', 'icon-list', '0', '0', '5', '2014-09-11 14:37:12');
-INSERT INTO `admin_menu` VALUES ('56', 'Oracle Monitor', '1', '0', 'wl_oracle', 'icon-dashboard', '0', '1', '4', '2014-10-24 15:34:50');
-INSERT INTO `admin_menu` VALUES ('57', 'Health Montior', '2', '56', 'wl_oracle/index', 'icon-list', '0', '1', '1', '2014-10-24 15:35:47');
-INSERT INTO `admin_menu` VALUES ('58', 'Tablespace Monitor', '2', '56', 'wl_oracle/tablespace', 'icon-list', '0', '1', '2', '2014-10-24 15:37:19');
-INSERT INTO `admin_menu` VALUES ('59', 'DataGuard Monitor', '2', '56', 'wl_oracle/dataguard', 'icon-list', '0', '1', '3', '2014-10-24 15:37:19');
+INSERT INTO `admin_menu` VALUES ('10', 'Configure', '1', '0', 'server', 'icon-dashboard', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('11', 'MySQL Monitor', '1', '0', 'wl_mysql', 'icon-dashboard', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('12', 'Oracle Monitor', '1', '0', 'wl_oracle', 'icon-dashboard', '0', '1', '4', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlserver', 'icon-dashboard', '0', '1', '5', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('14', 'MongoDB Monitor', '1', '0', 'wl_mongodb', 'icon-dashboard', '0', '1', '6', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('15', 'Redis Monitor', '1', '0', 'wl_redis', 'icon-dashboard', '0', '1', '7', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('20', 'OS Monitor', '1', '0', 'wl_os', 'icon-dashboard', '0', '1', '8', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('21', 'Alarm Panel', '1', '0', 'alarm', 'icon-dashboard', '0', '1', '9', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('22', 'Permission System', '1', '0', 'rabc', 'icon-legal', '0', '1', '10', CURRENT_TIMESTAMP);
 
--- INSERT INTO `admin_menu` VALUES ('70', 'SQLServer', '2', '16', 'cfg_sqlserver/index', 'icon-list', '0', '1', '6', '2015-12-31 11:06:53');
--- INSERT INTO `admin_menu` VALUES ('72', 'Health Monitor', '2', '71', 'wl_sqlserver/index', 'icon-list', '0', '1', '1', '2016-01-26 17:24:20');
--- INSERT INTO `admin_menu` VALUES ('71', 'SQLServer Monitor', '1', '0', 'wl_sqlserver', 'icon-dashboard', '0', '1', '5', '2016-01-26 17:22:09');
+-- ------------------Configure--------------------
+INSERT INTO `admin_menu` VALUES ('1001', 'Settings', '2', '10', 'settings/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1002', 'MySQL', '2', '10', 'cfg_mysql/index', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1003', 'Oracle', '2', '10', 'cfg_oracle/index', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1004', 'SQLServer', '2', '10', 'cfg_sqlserver/index', 'icon-list', '0', '1', '4', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1005', 'MongoDB', '2', '10', 'cfg_mongodb/index', 'icon-list', '0', '1', '5', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1006', 'Redis', '2', '10', 'cfg_redis/index', 'icon-list', '0', '1', '6', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1010', 'OS', '2', '10', 'cfg_os/index', 'icon-list', '0', '1', '10', CURRENT_TIMESTAMP);
+
+-- ------------------MySQL Monitor--------------------
+INSERT INTO `admin_menu` VALUES ('1101', 'Health Monitor', '2', '11', 'wl_mysql/index', ' icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1102', 'Resource Monitor', '2', '11', 'wl_mysql/resource', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1103', 'Key Cache Monitor', '2', '11', 'wl_mysql/key_cache', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1104', 'InnoDB Monitor', '2', '11', 'wl_mysql/innodb', 'icon-list', '0', '1', '4', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1105', 'Replication Monitor', '2', '11', 'wl_mysql/replication', ' icon-list', '0', '1', '5', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1106', 'BigTable Analysis', '2', '11', 'wl_mysql/bigtable', 'icon-list', '0', '1', '6', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1107', 'Slowquery Analysis', '2', '11', 'wl_mysql/slowquery', 'icon-list', '0', '1', '7', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1108', 'AWR Report', '2', '11', 'wl_mysql/awrreport', 'icon-list', '0', '1', '8', CURRENT_TIMESTAMP);
+
+-- ------------------Oracle Monitor--------------------
+INSERT INTO `admin_menu` VALUES ('1201', 'Health Montior', '2', '12', 'wl_oracle/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1202', 'Tablespace Monitor', '2', '12', 'wl_oracle/tablespace', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1203', 'DataGuard Monitor', '2', '12', 'wl_oracle/dataguard', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+
+-- ------------------SQLServer Monitor--------------------
+INSERT INTO `admin_menu` VALUES ('1301', 'Health Monitor', '2', '13', 'wl_sqlserver/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+
+
+-- ------------------MongoDB Monitor--------------------
+-- INSERT INTO `admin_menu` VALUES ('1401', 'Health Montior', '2', '14', 'wl_mongodb/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1402', 'Indexes Monitor', '2', '14', 'wl_mongodb/indexes', 'icon-list', '0', '0', '2', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1403', 'Memory Monitor', '2', '14', 'wl_mongodb/memory', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+
+-- ------------------Redis Monitor--------------------
+-- INSERT INTO `admin_menu` VALUES ('1501', 'Health Monitor', '2', '15', 'wl_redis/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1502', 'Memory Monitor', '2', '15', 'wl_redis/memory', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1503', 'Replication Monitor', '2', '15', 'wl_redis/replication', 'icon-list', '0', '0', '3', CURRENT_TIMESTAMP);
+
+
+-- ------------------OS Monitor--------------------
+INSERT INTO `admin_menu` VALUES ('2001', 'Health Monitor', '2', '20', 'wl_os/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2002', 'Disk', '2', '20', 'wl_os/disk', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2003', 'Disk IO', '2', '20', 'wl_os/disk_io', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+
+
+-- ------------------Alarm Panel--------------------
+INSERT INTO `admin_menu` VALUES ('2101', 'Alarm List', '2', '21', 'alarm/index', '', '0', '1', '0', CURRENT_TIMESTAMP);
+
+
+-- ------------------Permission System--------------------
+INSERT INTO `admin_menu` VALUES ('2201', 'User', '2', '22', 'user/index', '', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2202', 'Role', '2', '22', 'role/index', '', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2203', 'Menu', '2', '22', 'menu/index', '', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2204', 'Privilege', '2', '22', 'privilege/index', '', '0', '1', '4', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2205', 'Authorization', '2', '22', 'auth/index', '', '0', '1', '5', CURRENT_TIMESTAMP);
+
+
 
 -- ----------------------------
 -- Table structure for admin_privilege
@@ -97,100 +120,128 @@ CREATE TABLE `admin_privilege` (
 -- ----------------------------
 -- Records of admin_privilege
 -- ----------------------------
-INSERT INTO `admin_privilege` VALUES ('1', 'MySQL Health Monitor', '6', 'wl_mysql/index', '1');
-INSERT INTO `admin_privilege` VALUES ('3', 'MySQL Replication Monitor', '8', 'wl_mysql/replication', '2');
-INSERT INTO `admin_privilege` VALUES ('4', 'MySQLSlowQuery', '9', 'wl_mysql/slowquery', '4');
-INSERT INTO `admin_privilege` VALUES ('6', 'Admin User View', '10', 'user/index', '52');
-INSERT INTO `admin_privilege` VALUES ('7', 'Admin User Add ', '10', 'user/add', '52');
-INSERT INTO `admin_privilege` VALUES ('8', 'Admin User Edit', '10', 'user/edit', '53');
-INSERT INTO `admin_privilege` VALUES ('9', 'Admin User Delete', '10', 'user/forever_delete', '54');
-INSERT INTO `admin_privilege` VALUES ('10', 'Admin Role View', '11', 'role/index', '61');
-INSERT INTO `admin_privilege` VALUES ('11', 'Admin Role Add', '11', 'role/add', '62');
-INSERT INTO `admin_privilege` VALUES ('12', 'Admin Role Edit', '11', 'role/edit', '63');
-INSERT INTO `admin_privilege` VALUES ('13', 'Admin Role Delete', '11', 'role/forever_delete', '64');
-INSERT INTO `admin_privilege` VALUES ('14', 'Admin Menu View', '12', 'menu/index', '71');
-INSERT INTO `admin_privilege` VALUES ('15', 'Admin Menu Add', '12', 'menu/add', '72');
-INSERT INTO `admin_privilege` VALUES ('16', 'Admin Menu Edit', '12', 'menu/edit', '73');
-INSERT INTO `admin_privilege` VALUES ('17', 'Admin Menu Delete', '12', 'menu/forever_delete', '74');
-INSERT INTO `admin_privilege` VALUES ('18', 'Admin Privilege View', '13', 'privilege/index', '81');
-INSERT INTO `admin_privilege` VALUES ('19', 'Admin Privilege Add', '13', 'privilege/add', '82');
-INSERT INTO `admin_privilege` VALUES ('20', 'Admin Privilege Edit', '13', 'privilege/edit', '83');
-INSERT INTO `admin_privilege` VALUES ('21', 'Admin Privilege Delete', '13', 'privilege/forever_delete', '84');
-INSERT INTO `admin_privilege` VALUES ('22', 'Admin Auth View', '15', 'auth/index', '91');
-INSERT INTO `admin_privilege` VALUES ('23', 'Admin Role Privilege Update', '15', 'auth/update_role_privilege', '92');
-INSERT INTO `admin_privilege` VALUES ('24', 'Login System', '0', 'index/index', '0');
-INSERT INTO `admin_privilege` VALUES ('25', 'Admin User Role Update', '13', 'auth/update_user_role', '93');
-INSERT INTO `admin_privilege` VALUES ('31', 'MySQL Servers View', '18', 'cfg_mysql/index', '36');
-INSERT INTO `admin_privilege` VALUES ('32', 'MySQL Servers Add', '18', 'cfg_mysql/add', '37');
-INSERT INTO `admin_privilege` VALUES ('33', 'MySQL Servers Edit', '18', 'cfg_mysql/edit', '38');
-INSERT INTO `admin_privilege` VALUES ('34', 'MySQL Servers Trash', '18', 'cfg_mysql/trash', '39');
-INSERT INTO `admin_privilege` VALUES ('35', 'MySQL Servers Delete', '18', 'cfg_mysql/delete', '40');
-INSERT INTO `admin_privilege` VALUES ('36', 'MySQLSlowQuery Detail', '9', 'wl_mysql/slowquery_detail', '4');
-INSERT INTO `admin_privilege` VALUES ('37', 'MySQL AWR Report', '19', 'wl_mysql/awrreport', '5');
-INSERT INTO `admin_privilege` VALUES ('38', 'MySQL Health Chart', '6', 'wl_mysql/chart', '1');
-INSERT INTO `admin_privilege` VALUES ('39', 'MySQL Replication Chart', '8', 'wl_mysql/replication_chart', '2');
-INSERT INTO `admin_privilege` VALUES ('40', 'Alarm View', '21', 'alarm/index', '8');
-INSERT INTO `admin_privilege` VALUES ('41', 'OS Health View', '43', 'wl_os/index', '100');
-INSERT INTO `admin_privilege` VALUES ('44', 'OS Disk View', '26', 'wl_os/disk', '100');
-INSERT INTO `admin_privilege` VALUES ('46', 'OS Disk Chart View', '26', 'wl_os/disk_chart', '100');
-INSERT INTO `admin_privilege` VALUES ('48', 'OS Health Chart View', '43', 'wl_os/chart', '100');
-INSERT INTO `admin_privilege` VALUES ('49', 'MySQL BigTable Analysis', '28', 'wl_mysql/bigtable', '8');
-INSERT INTO `admin_privilege` VALUES ('50', 'MySQL BigTable Analysis Chart', '28', 'wl_mysql/bigtable_chart', '8');
-INSERT INTO `admin_privilege` VALUES ('51', 'MySQL Key Cache Monitor', '29', 'wl_mysql/key_cache', '2');
-INSERT INTO `admin_privilege` VALUES ('52', 'MySQL InnoDB Monitor', '30', 'wl_mysql/innodb', '2');
-INSERT INTO `admin_privilege` VALUES ('53', 'MySQL Resource Monitor', '31', 'wl_mysql/resource', '2');
--- INSERT INTO `admin_privilege` VALUES ('54', 'MongoDB Servers View', '32', 'cfg_mongodb/index', '42');
--- INSERT INTO `admin_privilege` VALUES ('55', 'MongoDB Servers Add', '32', 'cfg_mongodb/add', '43');
--- INSERT INTO `admin_privilege` VALUES ('56', 'MongoDB Servers Edit', '32', 'cfg_mongodb/edit', '44');
--- INSERT INTO `admin_privilege` VALUES ('57', 'MongoDB Servers Trash', '32', 'cfg_mongodb/trash', '44');
--- INSERT INTO `admin_privilege` VALUES ('58', 'MongoDB Servers Delete', '32', 'cfg_mongodb/delete', '44');
--- INSERT INTO `admin_privilege` VALUES ('59', 'MongoDB Health View', '34', 'wl_mongodb/index', '10');
--- INSERT INTO `admin_privilege` VALUES ('60', 'MongoDB Indexes View', '35', 'wl_mongodb/indexes', '11');
--- INSERT INTO `admin_privilege` VALUES ('61', 'MongoDB Memory View', '36', 'wl_mongodb/memory', '12');
-INSERT INTO `admin_privilege` VALUES ('67', 'Oracle Servers View', '40', 'cfg_oracle/index', '45');
-INSERT INTO `admin_privilege` VALUES ('68', 'Oracle Servers Add', '40', 'cfg_oracle/add', '46');
-INSERT INTO `admin_privilege` VALUES ('69', 'Oracle Servers Edit', '40', 'cfg_oracle/edit', '47');
--- INSERT INTO `admin_privilege` VALUES ('76', 'Mongodb Health Chart View', '34', 'wl_mongodb/chart', '13');
-INSERT INTO `admin_privilege` VALUES ('77', 'OS Disk View', '44', 'wl_os/disk_io', '100');
-INSERT INTO `admin_privilege` VALUES ('78', 'OS Disk Chart View', '44', 'wl_os/disk_io_chart', '100');
-INSERT INTO `admin_privilege` VALUES ('79', 'OS Servers View', '45', 'cfg_os/index', '50');
-INSERT INTO `admin_privilege` VALUES ('80', 'OS  Servers Add', '45', 'cfg_os/add', '50');
-INSERT INTO `admin_privilege` VALUES ('81', 'OS Servers Edit', '45', 'cfg_os/edit', '50');
-INSERT INTO `admin_privilege` VALUES ('82', 'OS Servers Delete', '45', 'cfg_os/delete', '50');
-INSERT INTO `admin_privilege` VALUES ('83', 'OS Servers Trash', '45', 'cfg_os/trash', '50');
-INSERT INTO `admin_privilege` VALUES ('84', 'OS Servers Batch Add', '45', 'cfg_os/batch_add', '50');
--- INSERT INTO `admin_privilege` VALUES ('85', 'MongoDB Servers Batch Add', '32', 'cfg_mongodb/batch_add', '44');
-INSERT INTO `admin_privilege` VALUES ('86', 'MySQL Servers Batch Add', '18', 'cfg_mysql/batch_add', '40');
-INSERT INTO `admin_privilege` VALUES ('87', 'Settings View', '46', 'settings/index', '30');
-INSERT INTO `admin_privilege` VALUES ('92', 'Redis Health View', '50', 'wl_redis/index', '19');
--- INSERT INTO `admin_privilege` VALUES ('93', 'Redis Health Chart View', '50', 'wl_redis/chart', '20');
--- INSERT INTO `admin_privilege` VALUES ('94', 'Redis Servers View', '51', 'cfg_redis/index', '51');
--- INSERT INTO `admin_privilege` VALUES ('95', 'Redis Servers Add', '51', 'cfg_redis/add', '51');
--- INSERT INTO `admin_privilege` VALUES ('96', 'Redis Servers Edit', '51', 'cfg_redis/edit', '51');
--- INSERT INTO `admin_privilege` VALUES ('97', 'Redis Servers Trash', '51', 'cfg_redis/trash', '51');
--- INSERT INTO `admin_privilege` VALUES ('98', 'Redis Servers Delete', '51', 'cfg_redis/delete', '51');
--- INSERT INTO `admin_privilege` VALUES ('99', 'Redis Servers Batch Add', '51', 'cfg_redis/batch_add', '51');
--- INSERT INTO `admin_privilege` VALUES ('100', 'Redis Memory View', '52', 'wl_redis/memory', '21');
--- INSERT INTO `admin_privilege` VALUES ('101', 'Redis Memory Chart View', '52', 'wl_redis/memory_chart', '21');
--- INSERT INTO `admin_privilege` VALUES ('104', 'Redis Replication View', '54', 'wl_redis/replication', '23');
--- INSERT INTO `admin_privilege` VALUES ('105', 'Redis Replication Chart View', '54', 'wl_redis/replication_chart', '23');
-INSERT INTO `admin_privilege` VALUES ('110', 'Oracle Health Monitor', '57', 'wl_oracle/index', '25');
-INSERT INTO `admin_privilege` VALUES ('111', 'Oracle Health Chart', '57', 'wl_oracle/chart', '26');
-INSERT INTO `admin_privilege` VALUES ('112', 'Oracle Tablespace Monitor', '58', 'wl_oracle/tablespace', '27');
-INSERT INTO `admin_privilege` VALUES ('125', 'Oracle DataGuard Monitor', '59', 'wl_oracle/dataguard', '28');
-INSERT INTO `admin_privilege` VALUES ('126', 'Oracle DataGuard Switch', '59', 'wl_oracle/dg_switch', '29');
-INSERT INTO `admin_privilege` VALUES ('113', 'Settings Save', '46', 'settings/save', '31');
-INSERT INTO `admin_privilege` VALUES ('114', 'Oracle Servers Trash', '40', 'cfg_oracle/trash', '48');
-INSERT INTO `admin_privilege` VALUES ('115', 'Oracle Servers Delete', '40', 'cfg_oracle/delete', '48');
-INSERT INTO `admin_privilege` VALUES ('116', 'Oracle Servers Batch Add', '40', 'cfg_oracle/batch_add', '48');
--- INSERT INTO `admin_privilege` VALUES ('117', 'SQLServer Servers View', '59', 'cfg_sqlserver/index', '51');
--- INSERT INTO `admin_privilege` VALUES ('118', 'SQLServer Servers Add', '59', 'cfg_sqlserver/add', '51');
--- INSERT INTO `admin_privilege` VALUES ('119', 'SQLServer Servers Edit', '59', 'cfg_sqlserver/edit', '51');
--- INSERT INTO `admin_privilege` VALUES ('120', 'SQLServer Servers Trash', '59', 'cfg_sqlserver/trash', '51');
--- INSERT INTO `admin_privilege` VALUES ('121', 'SQLServer Servers Delete', '59', 'cfg_sqlserver/delete', '51');
--- INSERT INTO `admin_privilege` VALUES ('122', 'SQLServer Servers Batch Add', '59', 'cfg_sqlserver/batch_add', '51');
--- INSERT INTO `admin_privilege` VALUES ('123', 'SQLServer Health Monitor', '61', 'wl_sqlserver/index', '28');
--- INSERT INTO `admin_privilege` VALUES ('124', 'SQLServer Health Chart', '61', 'wl_sqlserver/chart', '29');
+
+INSERT INTO `admin_privilege` VALUES ('1011', 'Admin User View', '2201', 'user/index', '11');
+INSERT INTO `admin_privilege` VALUES ('1012', 'Admin User Add ', '2201', 'user/add', '12');
+INSERT INTO `admin_privilege` VALUES ('1013', 'Admin User Edit', '2201', 'user/edit', '13');
+INSERT INTO `admin_privilege` VALUES ('1014', 'Admin User Delete', '2201', 'user/forever_delete', '14');
+
+INSERT INTO `admin_privilege` VALUES ('1021', 'Admin Role View', '2202', 'role/index', '21');
+INSERT INTO `admin_privilege` VALUES ('1022', 'Admin Role Add', '2202', 'role/add', '22');
+INSERT INTO `admin_privilege` VALUES ('1023', 'Admin Role Edit', '2202', 'role/edit', '23');
+INSERT INTO `admin_privilege` VALUES ('1024', 'Admin Role Delete', '2202', 'role/forever_delete', '24');
+
+INSERT INTO `admin_privilege` VALUES ('1031', 'Admin Menu View', '2203', 'menu/index', '31');
+INSERT INTO `admin_privilege` VALUES ('1032', 'Admin Menu Add', '2203', 'menu/add', '32');
+INSERT INTO `admin_privilege` VALUES ('1033', 'Admin Menu Edit', '2203', 'menu/edit', '33');
+INSERT INTO `admin_privilege` VALUES ('1034', 'Admin Menu Delete', '2203', 'menu/forever_delete', '34');
+
+INSERT INTO `admin_privilege` VALUES ('1041', 'Admin Privilege View', '2204', 'privilege/index', '41');
+INSERT INTO `admin_privilege` VALUES ('1042', 'Admin Privilege Add', '2204', 'privilege/add', '42');
+INSERT INTO `admin_privilege` VALUES ('1043', 'Admin Privilege Edit', '2204', 'privilege/edit', '43');
+INSERT INTO `admin_privilege` VALUES ('1044', 'Admin Privilege Delete', '2204', 'privilege/forever_delete', '44');
+
+INSERT INTO `admin_privilege` VALUES ('1051', 'Admin Auth View', '2205', 'auth/index', '51');
+INSERT INTO `admin_privilege` VALUES ('1052', 'Admin Role Privilege Update', '2205', 'auth/update_role_privilege', '52');
+INSERT INTO `admin_privilege` VALUES ('1053', 'Admin User Role Update', '2205', 'auth/update_user_role', '53');
+
+INSERT INTO `admin_privilege` VALUES ('1061', 'Settings View', '1001', 'settings/index', '61');
+INSERT INTO `admin_privilege` VALUES ('1062', 'Settings Save', '1001', 'settings/save', '62');
+
+INSERT INTO `admin_privilege` VALUES ('1071', 'Login System', '0', 'index/index', '71');
+
+INSERT INTO `admin_privilege` VALUES ('1081', 'Alarm View', '2101', 'alarm/index', '81');
+
+-- -------------------------------------------------- MySQL -------------------------------------------------------
+INSERT INTO `admin_privilege` VALUES ('1101', 'MySQL Config View', '1002', 'cfg_mysql/index', '101');
+INSERT INTO `admin_privilege` VALUES ('1102', 'MySQL Config Add', '1002', 'cfg_mysql/add', '102');
+INSERT INTO `admin_privilege` VALUES ('1103', 'MySQL Config Edit', '1002', 'cfg_mysql/edit', '103');
+INSERT INTO `admin_privilege` VALUES ('1104', 'MySQL Config Trash', '1002', 'cfg_mysql/trash', '104');
+INSERT INTO `admin_privilege` VALUES ('1105', 'MySQL Config Delete', '1002', 'cfg_mysql/delete', '105');
+INSERT INTO `admin_privilege` VALUES ('1106', 'MySQL Config Batch Add', '1002', 'cfg_mysql/batch_add', '106');
+
+INSERT INTO `admin_privilege` VALUES ('1151', 'MySQL Health Monitor', '1101', 'wl_mysql/index', '151');
+INSERT INTO `admin_privilege` VALUES ('1152', 'MySQL Health Chart', '1101', 'wl_mysql/chart', '152');
+INSERT INTO `admin_privilege` VALUES ('1153', 'MySQL Resource Monitor', '1102', 'wl_mysql/resource', '153');
+INSERT INTO `admin_privilege` VALUES ('1154', 'MySQL Key Cache Monitor', '1103', 'wl_mysql/key_cache', '154');
+INSERT INTO `admin_privilege` VALUES ('1155', 'MySQL InnoDB Monitor', '1104', 'wl_mysql/innodb', '155');
+INSERT INTO `admin_privilege` VALUES ('1156', 'MySQL Replication Monitor', '1105', 'wl_mysql/replication', '156');
+INSERT INTO `admin_privilege` VALUES ('1157', 'MySQL Replication Chart', '1105', 'wl_mysql/replication_chart', '157');
+INSERT INTO `admin_privilege` VALUES ('1158', 'MySQL BigTable Analysis', '1106', 'wl_mysql/bigtable', '158');
+INSERT INTO `admin_privilege` VALUES ('1159', 'MySQL BigTable Analysis Chart', '1106', 'wl_mysql/bigtable_chart', '159');
+INSERT INTO `admin_privilege` VALUES ('1160', 'MySQLSlowQuery', '1107', 'wl_mysql/slowquery', '160');
+INSERT INTO `admin_privilege` VALUES ('1161', 'MySQLSlowQuery Detail', '1107', 'wl_mysql/slowquery_detail', '161');
+INSERT INTO `admin_privilege` VALUES ('1162', 'MySQL AWR Report', '1108', 'wl_mysql/awrreport', '162');
+
+-- --------------------------------------------------- Oracle ------------------------------------------------------
+INSERT INTO `admin_privilege` VALUES ('1201', 'Oracle Config View', '1003', 'cfg_oracle/index', '201');
+INSERT INTO `admin_privilege` VALUES ('1202', 'Oracle Config Add', '1003', 'cfg_oracle/add', '202');
+INSERT INTO `admin_privilege` VALUES ('1203', 'Oracle Config Edit', '1003', 'cfg_oracle/edit', '203');
+INSERT INTO `admin_privilege` VALUES ('1204', 'Oracle Config Trash', '1003', 'cfg_oracle/trash', '204');
+INSERT INTO `admin_privilege` VALUES ('1205', 'Oracle Config Delete', '1003', 'cfg_oracle/delete', '205');
+INSERT INTO `admin_privilege` VALUES ('1206', 'Oracle Config Batch Add', '1003', 'cfg_oracle/batch_add', '206');
+
+INSERT INTO `admin_privilege` VALUES ('1251', 'Oracle Health Monitor', '1201', 'wl_oracle/index', '251');
+INSERT INTO `admin_privilege` VALUES ('1252', 'Oracle Health Chart', '1201', 'wl_oracle/chart', '252');
+INSERT INTO `admin_privilege` VALUES ('1253', 'Oracle Tablespace Monitor', '1202', 'wl_oracle/tablespace', '253');
+INSERT INTO `admin_privilege` VALUES ('1254', 'Oracle DataGuard Monitor', '1203', 'wl_oracle/dataguard', '254');
+INSERT INTO `admin_privilege` VALUES ('1255', 'Oracle DataGuard Switch', '1203', 'wl_oracle/dg_switch', '255');
+
+-- --------------------------------------------------- OS ------------------------------------------------------
+INSERT INTO `admin_privilege` VALUES ('1301', 'OS Config View', '1010', 'cfg_os/index', '301');
+INSERT INTO `admin_privilege` VALUES ('1302', 'OS Config Add', '1010', 'cfg_os/add', '302');
+INSERT INTO `admin_privilege` VALUES ('1303', 'OS Config Edit', '1010', 'cfg_os/edit', '303');
+INSERT INTO `admin_privilege` VALUES ('1304', 'OS Config Delete', '1010', 'cfg_os/delete', '304');
+INSERT INTO `admin_privilege` VALUES ('1305', 'OS Config Trash', '1010', 'cfg_os/trash', '305');
+INSERT INTO `admin_privilege` VALUES ('1306', 'OS Config Batch Add', '1010', 'cfg_os/batch_add', '306');
+
+INSERT INTO `admin_privilege` VALUES ('1351', 'OS Health View', '2001', 'wl_os/index', '351');
+INSERT INTO `admin_privilege` VALUES ('1352', 'OS Health Chart View', '2001', 'wl_os/chart', '352');
+INSERT INTO `admin_privilege` VALUES ('1353', 'OS Disk View', '2002', 'wl_os/disk', '353');
+INSERT INTO `admin_privilege` VALUES ('1354', 'OS Disk Chart View', '2002', 'wl_os/disk_chart', '354');
+INSERT INTO `admin_privilege` VALUES ('1355', 'OS Disk View', '2003', 'wl_os/disk_io', '355');
+INSERT INTO `admin_privilege` VALUES ('1356', 'OS Disk Chart View', '2003', 'wl_os/disk_io_chart', '356');
+
+
+-- --------------------------------------------------- SQLServer ------------------------------------------------------------
+INSERT INTO `admin_privilege` VALUES ('1401', 'SQLServer Config View', '1004', 'cfg_sqlserver/index', '401');
+INSERT INTO `admin_privilege` VALUES ('1402', 'SQLServer Config Add', '1004', 'cfg_sqlserver/add', '402');
+INSERT INTO `admin_privilege` VALUES ('1403', 'SQLServer Config Edit', '1004', 'cfg_sqlserver/edit', '403');
+INSERT INTO `admin_privilege` VALUES ('1404', 'SQLServer Config Trash', '1004', 'cfg_sqlserver/trash', '404');
+INSERT INTO `admin_privilege` VALUES ('1405', 'SQLServer Config Delete', '1004', 'cfg_sqlserver/delete', '405');
+INSERT INTO `admin_privilege` VALUES ('1406', 'SQLServer Config Batch Add', '1004', 'cfg_sqlserver/batch_add', '406');
+
+INSERT INTO `admin_privilege` VALUES ('1451', 'SQLServer Health Monitor', '1301', 'wl_sqlserver/index', '451');
+INSERT INTO `admin_privilege` VALUES ('1452', 'SQLServer Health Chart', '1301', 'wl_sqlserver/chart', '452');
+
+-- ---------------------------------------------------- MongoDB -----------------------------------------------------------
+-- INSERT INTO `admin_privilege` VALUES ('1501', 'MongoDB Config View', '1005', 'cfg_mongodb/index', '501');
+-- INSERT INTO `admin_privilege` VALUES ('1502', 'MongoDB Config Add', '1005', 'cfg_mongodb/add', '502');
+-- INSERT INTO `admin_privilege` VALUES ('1503', 'MongoDB Config Edit', '1005', 'cfg_mongodb/edit', '503');
+-- INSERT INTO `admin_privilege` VALUES ('1504', 'MongoDB Config Trash', '1005', 'cfg_mongodb/trash', '504');
+-- INSERT INTO `admin_privilege` VALUES ('1505', 'MongoDB Config Delete', '1005', 'cfg_mongodb/delete', '505');
+-- INSERT INTO `admin_privilege` VALUES ('1506', 'MongoDB Config Batch Add', '1005', 'cfg_mongodb/batch_add', '506');
+
+-- INSERT INTO `admin_privilege` VALUES ('1551', 'MongoDB Health View', '1401', 'wl_mongodb/index', '551');
+-- INSERT INTO `admin_privilege` VALUES ('1552', 'Mongodb Health Chart View', '1401', 'wl_mongodb/chart', '552');
+-- INSERT INTO `admin_privilege` VALUES ('1553', 'MongoDB Indexes View', '1402', 'wl_mongodb/indexes', '553');
+-- INSERT INTO `admin_privilege` VALUES ('1554', 'MongoDB Memory View', '1403', 'wl_mongodb/memory', '554');
+
+-- ----------------------------------------------------- Redis ----------------------------------------------------------
+-- INSERT INTO `admin_privilege` VALUES ('1601', 'Redis Config View', '1006', 'cfg_redis/index', '601');
+-- INSERT INTO `admin_privilege` VALUES ('1602', 'Redis Config Add', '1006', 'cfg_redis/add', '602');
+-- INSERT INTO `admin_privilege` VALUES ('1603', 'Redis Config Edit', '1006', 'cfg_redis/edit', '603');
+-- INSERT INTO `admin_privilege` VALUES ('1604', 'Redis Config Trash', '1006', 'cfg_redis/trash', '604');
+-- INSERT INTO `admin_privilege` VALUES ('1605', 'Redis Config Delete', '1006', 'cfg_redis/delete', '605');
+-- INSERT INTO `admin_privilege` VALUES ('1606', 'Redis Config Batch Add', '1006', 'cfg_redis/batch_add', '606');
+
+-- INSERT INTO `admin_privilege` VALUES ('1651', 'Redis Health View', '1501', 'wl_redis/index', '651');
+-- INSERT INTO `admin_privilege` VALUES ('1652', 'Redis Health Chart View', '1501', 'wl_redis/chart', '652');
+-- INSERT INTO `admin_privilege` VALUES ('1653', 'Redis Memory View', '1502', 'wl_redis/memory', '653');
+-- INSERT INTO `admin_privilege` VALUES ('1654', 'Redis Memory Chart View', '1502', 'wl_redis/memory_chart', '654');
+-- INSERT INTO `admin_privilege` VALUES ('1655', 'Redis Replication View', '1503', 'wl_redis/replication', '655');
+-- INSERT INTO `admin_privilege` VALUES ('1656', 'Redis Replication Chart View', '1503', 'wl_redis/replication_chart', '656');
+
 
 -- ----------------------------
 -- Table structure for admin_role
@@ -206,8 +257,6 @@ CREATE TABLE `admin_role` (
 -- Records of admin_role
 -- ----------------------------
 INSERT INTO `admin_role` VALUES ('1', 'Administrator');
-INSERT INTO `admin_role` VALUES ('3', 'IT-DBA');
-INSERT INTO `admin_role` VALUES ('5', 'IT-Developer');
 INSERT INTO `admin_role` VALUES ('7', 'guest_group');
 
 -- ----------------------------
@@ -223,230 +272,79 @@ CREATE TABLE `admin_role_privilege` (
 -- ----------------------------
 -- Records of admin_role_privilege
 -- ----------------------------
-INSERT INTO `admin_role_privilege` VALUES ('1', '1');
-INSERT INTO `admin_role_privilege` VALUES ('1', '3');
-INSERT INTO `admin_role_privilege` VALUES ('1', '4');
-INSERT INTO `admin_role_privilege` VALUES ('1', '6');
-INSERT INTO `admin_role_privilege` VALUES ('1', '7');
-INSERT INTO `admin_role_privilege` VALUES ('1', '8');
-INSERT INTO `admin_role_privilege` VALUES ('1', '9');
-INSERT INTO `admin_role_privilege` VALUES ('1', '10');
-INSERT INTO `admin_role_privilege` VALUES ('1', '11');
-INSERT INTO `admin_role_privilege` VALUES ('1', '12');
-INSERT INTO `admin_role_privilege` VALUES ('1', '13');
-INSERT INTO `admin_role_privilege` VALUES ('1', '14');
-INSERT INTO `admin_role_privilege` VALUES ('1', '15');
-INSERT INTO `admin_role_privilege` VALUES ('1', '16');
-INSERT INTO `admin_role_privilege` VALUES ('1', '17');
-INSERT INTO `admin_role_privilege` VALUES ('1', '18');
-INSERT INTO `admin_role_privilege` VALUES ('1', '19');
-INSERT INTO `admin_role_privilege` VALUES ('1', '20');
-INSERT INTO `admin_role_privilege` VALUES ('1', '21');
-INSERT INTO `admin_role_privilege` VALUES ('1', '22');
-INSERT INTO `admin_role_privilege` VALUES ('1', '23');
-INSERT INTO `admin_role_privilege` VALUES ('1', '24');
-INSERT INTO `admin_role_privilege` VALUES ('1', '25');
-INSERT INTO `admin_role_privilege` VALUES ('1', '31');
-INSERT INTO `admin_role_privilege` VALUES ('1', '32');
-INSERT INTO `admin_role_privilege` VALUES ('1', '33');
-INSERT INTO `admin_role_privilege` VALUES ('1', '34');
-INSERT INTO `admin_role_privilege` VALUES ('1', '35');
-INSERT INTO `admin_role_privilege` VALUES ('1', '36');
-INSERT INTO `admin_role_privilege` VALUES ('1', '37');
-INSERT INTO `admin_role_privilege` VALUES ('1', '38');
-INSERT INTO `admin_role_privilege` VALUES ('1', '39');
-INSERT INTO `admin_role_privilege` VALUES ('1', '40');
-INSERT INTO `admin_role_privilege` VALUES ('1', '41');
-INSERT INTO `admin_role_privilege` VALUES ('1', '44');
-INSERT INTO `admin_role_privilege` VALUES ('1', '46');
-INSERT INTO `admin_role_privilege` VALUES ('1', '48');
-INSERT INTO `admin_role_privilege` VALUES ('1', '49');
-INSERT INTO `admin_role_privilege` VALUES ('1', '50');
-INSERT INTO `admin_role_privilege` VALUES ('1', '51');
-INSERT INTO `admin_role_privilege` VALUES ('1', '52');
-INSERT INTO `admin_role_privilege` VALUES ('1', '53');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '54');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '55');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '56');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '57');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '58');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '59');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '60');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '61');
-INSERT INTO `admin_role_privilege` VALUES ('1', '67');
-INSERT INTO `admin_role_privilege` VALUES ('1', '68');
-INSERT INTO `admin_role_privilege` VALUES ('1', '69');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '76');
-INSERT INTO `admin_role_privilege` VALUES ('1', '77');
-INSERT INTO `admin_role_privilege` VALUES ('1', '78');
-INSERT INTO `admin_role_privilege` VALUES ('1', '79');
-INSERT INTO `admin_role_privilege` VALUES ('1', '80');
-INSERT INTO `admin_role_privilege` VALUES ('1', '81');
-INSERT INTO `admin_role_privilege` VALUES ('1', '82');
-INSERT INTO `admin_role_privilege` VALUES ('1', '83');
-INSERT INTO `admin_role_privilege` VALUES ('1', '84');
--- INSERT INTO `admin_role_privilege` VALUES ('1', '85');
-INSERT INTO `admin_role_privilege` VALUES ('1', '86');
-INSERT INTO `admin_role_privilege` VALUES ('1', '87');
-INSERT INTO `admin_role_privilege` VALUES ('1', '92');
-INSERT INTO `admin_role_privilege` VALUES ('1', '110');
-INSERT INTO `admin_role_privilege` VALUES ('1', '111');
-INSERT INTO `admin_role_privilege` VALUES ('1', '112');
-INSERT INTO `admin_role_privilege` VALUES ('1', '113');
-INSERT INTO `admin_role_privilege` VALUES ('1', '114');
-INSERT INTO `admin_role_privilege` VALUES ('1', '115');
-INSERT INTO `admin_role_privilege` VALUES ('1', '116');
-INSERT INTO `admin_role_privilege` VALUES ('1', '125');
-INSERT INTO `admin_role_privilege` VALUES ('1', '126');
-INSERT INTO `admin_role_privilege` VALUES ('2', '4');
-INSERT INTO `admin_role_privilege` VALUES ('3', '1');
-INSERT INTO `admin_role_privilege` VALUES ('3', '2');
-INSERT INTO `admin_role_privilege` VALUES ('3', '3');
-INSERT INTO `admin_role_privilege` VALUES ('3', '4');
-INSERT INTO `admin_role_privilege` VALUES ('3', '6');
-INSERT INTO `admin_role_privilege` VALUES ('3', '7');
-INSERT INTO `admin_role_privilege` VALUES ('3', '8');
-INSERT INTO `admin_role_privilege` VALUES ('3', '9');
-INSERT INTO `admin_role_privilege` VALUES ('3', '10');
-INSERT INTO `admin_role_privilege` VALUES ('3', '11');
-INSERT INTO `admin_role_privilege` VALUES ('3', '12');
-INSERT INTO `admin_role_privilege` VALUES ('3', '13');
-INSERT INTO `admin_role_privilege` VALUES ('3', '14');
-INSERT INTO `admin_role_privilege` VALUES ('3', '15');
-INSERT INTO `admin_role_privilege` VALUES ('3', '16');
-INSERT INTO `admin_role_privilege` VALUES ('3', '17');
-INSERT INTO `admin_role_privilege` VALUES ('3', '18');
-INSERT INTO `admin_role_privilege` VALUES ('3', '19');
-INSERT INTO `admin_role_privilege` VALUES ('3', '20');
-INSERT INTO `admin_role_privilege` VALUES ('3', '21');
-INSERT INTO `admin_role_privilege` VALUES ('3', '22');
-INSERT INTO `admin_role_privilege` VALUES ('3', '23');
-INSERT INTO `admin_role_privilege` VALUES ('3', '24');
-INSERT INTO `admin_role_privilege` VALUES ('3', '25');
-INSERT INTO `admin_role_privilege` VALUES ('3', '26');
-INSERT INTO `admin_role_privilege` VALUES ('3', '27');
-INSERT INTO `admin_role_privilege` VALUES ('3', '28');
-INSERT INTO `admin_role_privilege` VALUES ('3', '29');
-INSERT INTO `admin_role_privilege` VALUES ('3', '30');
-INSERT INTO `admin_role_privilege` VALUES ('3', '31');
-INSERT INTO `admin_role_privilege` VALUES ('3', '32');
-INSERT INTO `admin_role_privilege` VALUES ('3', '33');
-INSERT INTO `admin_role_privilege` VALUES ('3', '34');
-INSERT INTO `admin_role_privilege` VALUES ('3', '35');
-INSERT INTO `admin_role_privilege` VALUES ('3', '36');
-INSERT INTO `admin_role_privilege` VALUES ('3', '37');
-INSERT INTO `admin_role_privilege` VALUES ('3', '38');
-INSERT INTO `admin_role_privilege` VALUES ('3', '39');
-INSERT INTO `admin_role_privilege` VALUES ('3', '40');
-INSERT INTO `admin_role_privilege` VALUES ('3', '41');
-INSERT INTO `admin_role_privilege` VALUES ('3', '42');
-INSERT INTO `admin_role_privilege` VALUES ('3', '43');
-INSERT INTO `admin_role_privilege` VALUES ('3', '44');
-INSERT INTO `admin_role_privilege` VALUES ('3', '46');
-INSERT INTO `admin_role_privilege` VALUES ('3', '47');
-INSERT INTO `admin_role_privilege` VALUES ('3', '48');
-INSERT INTO `admin_role_privilege` VALUES ('3', '49');
-INSERT INTO `admin_role_privilege` VALUES ('3', '50');
-INSERT INTO `admin_role_privilege` VALUES ('3', '51');
-INSERT INTO `admin_role_privilege` VALUES ('3', '52');
-INSERT INTO `admin_role_privilege` VALUES ('3', '53');
-INSERT INTO `admin_role_privilege` VALUES ('3', '54');
-INSERT INTO `admin_role_privilege` VALUES ('3', '55');
-INSERT INTO `admin_role_privilege` VALUES ('3', '56');
-INSERT INTO `admin_role_privilege` VALUES ('3', '57');
-INSERT INTO `admin_role_privilege` VALUES ('3', '58');
-INSERT INTO `admin_role_privilege` VALUES ('3', '59');
-INSERT INTO `admin_role_privilege` VALUES ('3', '60');
-INSERT INTO `admin_role_privilege` VALUES ('3', '61');
-INSERT INTO `admin_role_privilege` VALUES ('3', '67');
-INSERT INTO `admin_role_privilege` VALUES ('3', '68');
-INSERT INTO `admin_role_privilege` VALUES ('3', '69');
-INSERT INTO `admin_role_privilege` VALUES ('3', '70');
-INSERT INTO `admin_role_privilege` VALUES ('3', '71');
-INSERT INTO `admin_role_privilege` VALUES ('3', '72');
-INSERT INTO `admin_role_privilege` VALUES ('3', '74');
-INSERT INTO `admin_role_privilege` VALUES ('3', '75');
-INSERT INTO `admin_role_privilege` VALUES ('3', '76');
-INSERT INTO `admin_role_privilege` VALUES ('3', '77');
-INSERT INTO `admin_role_privilege` VALUES ('3', '78');
-INSERT INTO `admin_role_privilege` VALUES ('3', '79');
-INSERT INTO `admin_role_privilege` VALUES ('3', '80');
-INSERT INTO `admin_role_privilege` VALUES ('3', '81');
-INSERT INTO `admin_role_privilege` VALUES ('3', '82');
-INSERT INTO `admin_role_privilege` VALUES ('3', '83');
-INSERT INTO `admin_role_privilege` VALUES ('3', '84');
-INSERT INTO `admin_role_privilege` VALUES ('3', '85');
-INSERT INTO `admin_role_privilege` VALUES ('3', '86');
-INSERT INTO `admin_role_privilege` VALUES ('3', '87');
-INSERT INTO `admin_role_privilege` VALUES ('3', '88');
-INSERT INTO `admin_role_privilege` VALUES ('3', '89');
-INSERT INTO `admin_role_privilege` VALUES ('3', '90');
-INSERT INTO `admin_role_privilege` VALUES ('5', '1');
-INSERT INTO `admin_role_privilege` VALUES ('5', '3');
-INSERT INTO `admin_role_privilege` VALUES ('5', '4');
-INSERT INTO `admin_role_privilege` VALUES ('5', '24');
-INSERT INTO `admin_role_privilege` VALUES ('5', '36');
-INSERT INTO `admin_role_privilege` VALUES ('5', '38');
-INSERT INTO `admin_role_privilege` VALUES ('5', '39');
-INSERT INTO `admin_role_privilege` VALUES ('5', '42');
-INSERT INTO `admin_role_privilege` VALUES ('5', '43');
-INSERT INTO `admin_role_privilege` VALUES ('5', '44');
-INSERT INTO `admin_role_privilege` VALUES ('5', '46');
-INSERT INTO `admin_role_privilege` VALUES ('5', '47');
-INSERT INTO `admin_role_privilege` VALUES ('5', '48');
-INSERT INTO `admin_role_privilege` VALUES ('5', '59');
-INSERT INTO `admin_role_privilege` VALUES ('5', '60');
-INSERT INTO `admin_role_privilege` VALUES ('5', '61');
-INSERT INTO `admin_role_privilege` VALUES ('5', '74');
-INSERT INTO `admin_role_privilege` VALUES ('5', '75');
-INSERT INTO `admin_role_privilege` VALUES ('5', '76');
-INSERT INTO `admin_role_privilege` VALUES ('5', '77');
-INSERT INTO `admin_role_privilege` VALUES ('5', '78');
-INSERT INTO `admin_role_privilege` VALUES ('5', '88');
-INSERT INTO `admin_role_privilege` VALUES ('5', '89');
-INSERT INTO `admin_role_privilege` VALUES ('5', '90');
-INSERT INTO `admin_role_privilege` VALUES ('7', '1');
-INSERT INTO `admin_role_privilege` VALUES ('7', '3');
-INSERT INTO `admin_role_privilege` VALUES ('7', '4');
-INSERT INTO `admin_role_privilege` VALUES ('7', '6');
-INSERT INTO `admin_role_privilege` VALUES ('7', '10');
-INSERT INTO `admin_role_privilege` VALUES ('7', '14');
-INSERT INTO `admin_role_privilege` VALUES ('7', '18');
-INSERT INTO `admin_role_privilege` VALUES ('7', '22');
-INSERT INTO `admin_role_privilege` VALUES ('7', '24');
-INSERT INTO `admin_role_privilege` VALUES ('7', '36');
-INSERT INTO `admin_role_privilege` VALUES ('7', '37');
-INSERT INTO `admin_role_privilege` VALUES ('7', '38');
-INSERT INTO `admin_role_privilege` VALUES ('7', '39');
-INSERT INTO `admin_role_privilege` VALUES ('7', '40');
-INSERT INTO `admin_role_privilege` VALUES ('7', '41');
-INSERT INTO `admin_role_privilege` VALUES ('7', '44');
-INSERT INTO `admin_role_privilege` VALUES ('7', '46');
-INSERT INTO `admin_role_privilege` VALUES ('7', '48');
-INSERT INTO `admin_role_privilege` VALUES ('7', '49');
-INSERT INTO `admin_role_privilege` VALUES ('7', '50');
-INSERT INTO `admin_role_privilege` VALUES ('7', '51');
-INSERT INTO `admin_role_privilege` VALUES ('7', '52');
-INSERT INTO `admin_role_privilege` VALUES ('7', '53');
-INSERT INTO `admin_role_privilege` VALUES ('7', '59');
-INSERT INTO `admin_role_privilege` VALUES ('7', '60');
-INSERT INTO `admin_role_privilege` VALUES ('7', '61');
-INSERT INTO `admin_role_privilege` VALUES ('7', '76');
-INSERT INTO `admin_role_privilege` VALUES ('7', '77');
-INSERT INTO `admin_role_privilege` VALUES ('7', '78');
-INSERT INTO `admin_role_privilege` VALUES ('7', '87');
-INSERT INTO `admin_role_privilege` VALUES ('7', '92');
-INSERT INTO `admin_role_privilege` VALUES ('7', '93');
-INSERT INTO `admin_role_privilege` VALUES ('7', '100');
-INSERT INTO `admin_role_privilege` VALUES ('7', '101');
-INSERT INTO `admin_role_privilege` VALUES ('7', '104');
-INSERT INTO `admin_role_privilege` VALUES ('7', '105');
-INSERT INTO `admin_role_privilege` VALUES ('7', '110');
-INSERT INTO `admin_role_privilege` VALUES ('7', '111');
-INSERT INTO `admin_role_privilege` VALUES ('7', '112');
-INSERT INTO `admin_role_privilege` VALUES ('7', '117');
-INSERT INTO `admin_role_privilege` VALUES ('7', '123');
-INSERT INTO `admin_role_privilege` VALUES ('7', '124');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1011');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1012');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1013');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1014');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1021');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1022');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1023');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1024');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1031');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1032');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1033');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1034');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1041');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1042');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1043');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1044');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1051');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1052');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1053');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1061');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1062');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1071');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1081');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1101');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1102');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1103');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1104');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1105');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1106');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1151');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1152');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1153');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1154');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1155');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1156');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1157');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1158');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1159');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1160');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1161');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1162');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1201');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1202');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1203');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1204');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1205');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1206');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1251');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1252');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1253');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1254');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1255');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1301');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1302');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1303');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1304');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1305');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1306');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1351');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1352');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1353');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1354');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1355');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1356');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1401');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1402');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1403');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1404');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1405');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1406');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1451');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1452');
+
 
 -- ----------------------------
 -- Table structure for admin_user
@@ -470,9 +368,7 @@ CREATE TABLE `admin_user` (
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
-INSERT INTO `admin_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'admin@mail.com', '', '48', '42.196.163.128', '2016-05-01 09:53:36', '1', '2013-12-25 15:58:34');
-INSERT INTO `admin_user` VALUES ('8', 'guest', 'e10adc3949ba59abbe56e057f20f883e', 'Guest', '', '', '5664', '42.196.163.128', '2016-05-01 09:28:46', '1', '2014-03-12 17:06:36');
-
+INSERT INTO `admin_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'admin@mail.com', '', '0', '192.168.129.1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP);
 -- ----------------------------
 -- Table structure for admin_user_role
 -- ----------------------------
@@ -487,12 +383,6 @@ CREATE TABLE `admin_user_role` (
 -- Records of admin_user_role
 -- ----------------------------
 INSERT INTO `admin_user_role` VALUES ('1', '1');
-INSERT INTO `admin_user_role` VALUES ('2', '1');
-INSERT INTO `admin_user_role` VALUES ('2', '2');
-INSERT INTO `admin_user_role` VALUES ('2', '3');
-INSERT INTO `admin_user_role` VALUES ('2', '5');
-INSERT INTO `admin_user_role` VALUES ('8', '7');
-INSERT INTO `admin_user_role` VALUES ('9', '3');
 
 -- ----------------------------
 -- Table structure for wlblazers_status
@@ -508,7 +398,7 @@ CREATE TABLE `wlblazers_status` (
 -- ----------------------------
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_running', '1');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_version', '1.0.0 Beta');
-INSERT INTO `wlblazers_status` VALUES ('wlblazers_checktime', '2016-05-01 09:56:10');
+INSERT INTO `wlblazers_status` VALUES ('wlblazers_checktime', '2017-05-01 09:56:10');
 
 -- ----------------------------
 -- Table structure for options
