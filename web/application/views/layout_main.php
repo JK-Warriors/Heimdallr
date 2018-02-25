@@ -75,6 +75,8 @@
                         <li <?php if($model=='wl_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mysql/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li>
                             <li class="divider"></li>
                             <li <?php if($model=='wl_oracle'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_oracle/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li>
+                            <li class="divider"></li>
+                            <li <?php if($model=='wl_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li>
                         </ul>
                     </li>                    
                     
