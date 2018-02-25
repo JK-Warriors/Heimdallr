@@ -41,7 +41,9 @@ if [ "$hostname" != "" ];then
     mem_cached=`/usr/bin/snmpwalk -v1 -c ${community}  ${ip}  UCD-SNMP-MIB::memCached.0 |cut -d= -f2 |awk -F ' ' '{print $2}'`
     mem_usage_rate=`/usr/bin/snmpdf -v1 -c ${community}  ${ip}  |grep "Physical"|awk '{print $6}'`
     mem_available=$[$mem_avail+$mem_buffered+$mem_cached]
-
+    if [ -z $mem_shared ]; then
+        mem_shared=0
+    fi
 
    #disk usage
    IFS=$'\n'
