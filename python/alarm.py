@@ -948,8 +948,8 @@ def check_send_alarm_sleep():
         send_mail_sleep_time_format = "%d" %(int(send_mail_sleep_time))
         result=datetime.datetime(*time.strptime(now_time,format)[:6])-datetime.timedelta(minutes=int(send_mail_sleep_time_format))
         sleep_alarm_time= result.strftime(format)
-        sql="delete from alarm_temp where alarm_type='mail' and create_time <= %s"
-        param=(sleep_alarm_time)
+        sql="delete from alarm_temp where alarm_type='mail' and create_time <= '%s' " %(sleep_alarm_time)
+        param=()
         func.mysql_exec(sql,param)
 
     if send_sms_sleep_time:
@@ -958,8 +958,8 @@ def check_send_alarm_sleep():
         send_sms_sleep_time_format = "%d" %(int(send_sms_sleep_time))
         result=datetime.datetime(*time.strptime(now_time,format)[:6])-datetime.timedelta(minutes=int(send_sms_sleep_time_format))
         sleep_alarm_time= result.strftime(format)
-        sql="delete from alarm_temp where alarm_type='sms' and create_time <= %s"
-        param=(sleep_alarm_time)
+        sql="delete from alarm_temp where alarm_type='sms' and create_time <= '%s' " %(sleep_alarm_time)
+        param=()
         func.mysql_exec(sql,param)
 
 

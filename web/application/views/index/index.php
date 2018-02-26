@@ -25,8 +25,8 @@
   <option value="" <?php if($setval['db_type']=='') echo "selected"; ?> ><?php echo $this->lang->line('db_type'); ?></option>
   <option value="mysql" <?php if($setval['db_type']=='mysql') echo "selected"; ?> ><?php echo $this->lang->line('mysql'); ?></option>
   <option value="oracle" <?php if($setval['db_type']=='oracle') echo "selected"; ?> ><?php echo $this->lang->line('oracle'); ?></option>
-  <!-- <option value="sqlserver" <?php if($setval['db_type']=='sqlserver') echo "selected"; ?> ><?php echo $this->lang->line('sqlserver'); ?></option>
-  <option value="mongodb" <?php if($setval['db_type']=='mongodb') echo "selected"; ?> ><?php echo $this->lang->line('mongodb'); ?></option>
+  <option value="sqlserver" <?php if($setval['db_type']=='sqlserver') echo "selected"; ?> ><?php echo $this->lang->line('sqlserver'); ?></option>
+  <!-- <option value="mongodb" <?php if($setval['db_type']=='mongodb') echo "selected"; ?> ><?php echo $this->lang->line('mongodb'); ?></option>
   <option value="redis" <?php if($setval['db_type']=='redis') echo "selected"; ?> ><?php echo $this->lang->line('redis'); ?></option> -->
   
   </select>

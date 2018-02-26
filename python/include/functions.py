@@ -50,6 +50,7 @@ def mysql_exec(sql,param):
         conn.close()
     except Exception,e:
        print "mysql execute: " + str(e) 
+       print "sql: " + sql
 
 
 def mysql_query(sql):
@@ -172,19 +173,19 @@ def check_db_status(server_id,db_host,db_port,tags,db_type):
              sql="""delete s from db_status s, db_cfg_mongodb o 
                     where s.host= o.host
                     and s.tags != o.tags
-                    and s.db_type_sort = 2 """
+                    and s.db_type_sort = 3 """
         elif db_type=='redis':
              sort=4
              sql="""delete s from db_status s, db_cfg_redis o 
                     where s.host= o.host
                     and s.tags != o.tags
-                    and s.db_type_sort = 2 """
+                    and s.db_type_sort = 4 """
         elif db_type=='sqlserver':
              sort=5
              sql="""delete s from db_status s, db_cfg_sqlserver o 
                     where s.host= o.host
                     and s.tags != o.tags
-                    and s.db_type_sort = 2 """
+                    and s.db_type_sort = 5 """
         else:
              sort=0
 
