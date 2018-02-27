@@ -86,14 +86,14 @@
                 <form class="form-horizontal" method='post' action="<?php echo site_url('login')?>">
                 <input type='hidden'  name='login' value='doing' />
                 <input type='hidden'  name='return_url' value='<?php  echo $return_url ?>' />
-                    <label><?php echo $this->lang->line('system_language'); ?></label>
+                    <!-- <label><?php echo $this->lang->line('system_language'); ?></label>
                     <select name="language" id="language" class="input-large">
                     
                     <option value="zh-hans" <?php echo set_selected($this->input->cookie('lang_current'),"zh-hans") ?> >简体中文</option>
                     <option value="english" <?php echo set_selected($this->input->cookie('lang_current'),"english") ?> >English</option>
-                    <!--<option value="zh-hant" <?php echo set_selected($this->input->cookie('lang_current'),"zh-hant") ?> >繁體中文</option>-->
+                    <option value="zh-hant" <?php echo set_selected($this->input->cookie('lang_current'),"zh-hant") ?> >繁體中文</option>
                     </select>
-                    <hr/>
+                    <hr/> -->
                     <label><?php echo $this->lang->line('username'); ?></label>
                     <input type="text" id="username" name="username" value="<?php echo set_value('username'); ?>" class="span12">
                     <label><?php echo $this->lang->line('password'); ?></label>

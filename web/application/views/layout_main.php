@@ -93,7 +93,7 @@
                     
 
                     
-                    <li id="fat-menu" class="dropdown">
+                    <!-- <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-th-large"></i><?php echo $this->lang->line('language'); ?>
                             <i class="icon-caret-down"></i>
@@ -103,11 +103,8 @@
                             <li class="divider"></li>
                             <li><a tabindex="-1" href="<?php echo site_url('language/switchover/zh-hans').'?return_url='.current_url(); ?>">简体中文</a></li>
                             <li class="divider"></li>
-                            <!--<li><a tabindex="-1" href="<?php echo site_url('language/switchover/zh-hant').'?return_url='.current_url(); ?>">繁體中文</a></li>
-                            <li class="divider"></li>-->
-                            
                         </ul>
-                    </li>
+                    </li> -->
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-user"></i> <?php echo $this->session->userdata('username') ?>
