@@ -205,15 +205,61 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
                 
                 logger.info("Gather standby database infomation for server:" + str(server_id))
 
+        # auto create restore point for standby database  
+        if database_role == 'PHYSICAL STANDBY' and flashback_on == 'YES':  
+            logger.info("Automatic create restore point for server:" + str(server_id))
+            create_restore_point(conn)
+
+
     except Exception, e:
         logger.error(e)
-        logger.error("zzz")
         sys.exit(1)
 
     finally:
         conn.close()
         
 
+
+def create_restore_point(conn):
+    cur = None
+    try:
+        last_restore_time = oracle.get_last_fbtime(conn)
+        db_time = oracle.get_sysdate(conn)
+
+        time_def = -1
+        if last_restore_time <> 'null':
+            time_def = (datetime.datetime.strptime(db_time,'%Y%m%d%H%M%S') - datetime.datetime.strptime(last_restore_time,'%Y%m%d%H%M%S')).seconds
+        
+        # 没有闪回点，或者当前数据库时间和最后的闪回点时间相差1小时以上，创建闪回点
+        logger.info('last_restore_time: %s' %(last_restore_time))
+        logger.info('db_time: %s' %(db_time))
+        logger.info('time_def: %s' %(time_def))
+        if last_restore_time == 'null' or time_def > 3600:
+            db_unique_name = oracle.get_database(conn,'db_unique_name')
+
+            cur = conn.cursor()
+
+            # 关闭MRP进程
+            mrp_status = oracle.get_dg_s_mrp(conn)
+            #logger.info('mrp_status: %s' %(mrp_status))
+            if mrp_status == 1:
+                str = 'alter database recover managed standby database cancel'
+                cur.execute(str)
+
+            #生成闪回点
+            restore_name = db_unique_name + db_time
+            str = 'create restore point %s' %(restore_name)
+            cur.execute(str)
+
+            # 开启MRP进程
+            str = 'alter database recover managed standby database using  current logfile  disconnect from session'
+            cur.execute(str)
+		
+    except Exception, e:
+        logger.error(e)
+    finally:
+        if cur:
+            cur.close()
 
 
 

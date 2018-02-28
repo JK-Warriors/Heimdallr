@@ -184,6 +184,20 @@ def get_dg_delay(conn):
         curs.close()
 
 
+def get_sysdate(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("select to_char(sysdate, 'yyyymmddhh24miss') from dual");
+        result = curs.fetchone()[0]
+        return result
+
+    except Exception,e:
+        return null
+        print e
+
+    finally:
+        curs.close()
+
 
 def get_dg_p_info(conn, dest_id):
     try:
@@ -350,6 +364,26 @@ def get_earliest_fbtime(conn):
 
         if mintime:
             result = mintime
+        else:
+            result = 'null'
+
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_last_fbtime(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select to_char(max(time), 'yyyymmddhh24miss') maxtime from v$restore_point """);
+        lasttime = curs.fetchone()[0]
+
+        if lasttime:
+            result = lasttime
         else:
             result = 'null'
 
