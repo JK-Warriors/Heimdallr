@@ -192,6 +192,9 @@ class Oracle_model extends CI_Model{
                                     d.port         as p_port,
                                     s.db_name      as db_name,
                                     s.open_mode    as open_mode,
+                                    s.flashback_on    as flashback_on,
+                                    s.flashback_earliest_time    as flashback_e_time,
+                                    s.flashback_space_used    as flashback_space_used,
                                     p.`thread#`    as p_thread,
                                     p.`sequence#`  as p_sequence,
                                     p.curr_scn     as p_scn,
@@ -217,6 +220,9 @@ class Oracle_model extends CI_Model{
                                         d.port as s_port,
                                         os.db_name  as db_name,
                                         os.open_mode  as open_mode,
+                                        os.flashback_on    as flashback_on,
+                                        os.flashback_earliest_time    as flashback_e_time,
+                                        os.flashback_space_used    as flashback_space_used,
                                         s.`thread#` as s_thread,
                                         s.`sequence#` as s_sequence,
                                         s.`block#` as s_block,
@@ -225,6 +231,9 @@ class Oracle_model extends CI_Model{
                                         s.curr_scn       as s_scn,
                                         s.curr_db_time   as s_db_time,
                                         s.mrp_status     as s_mrp_status
+                                    s.flashback_on    as flashback_on,
+                                    s.flashback_earliest_time    as flashback_e_time,
+                                    s.flashback_space_used    as flashback_space_used,
                                   from (select * from db_cfg_oracle where id = $sta_id) d
                                 left join oracle_status os
                                     on d.id = os.server_id

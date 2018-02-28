@@ -327,7 +327,55 @@ def get_dg_s_lar_10g(conn):
         curs.close()
         
 
-        
+def get_earliest_fbscn(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select min(scn) from v$restore_point """);
+        result = curs.fetchone()[0]
+
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_earliest_fbtime(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select to_char(min(time), 'yyyy-mm-dd hh24:mi:ss') mintime from v$restore_point """);
+        mintime = curs.fetchone()[0]
+
+        if mintime:
+            result = mintime
+        else:
+            result = 'null'
+
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_flashback_space_used(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select percent_space_used from v$flash_recovery_area_usage where file_type='FLASHBACKLOG' """);
+        result = curs.fetchone()[0]
+
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+
 
 def get_tablespace(conn):
     try:

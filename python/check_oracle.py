@@ -105,11 +105,17 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         user_rollbacks_persecond = sysstat_1['user rollbacks']-sysstat_0['user rollbacks']
         user_calls_persecond = sysstat_1['user calls']-sysstat_0['user calls']
         db_block_gets_persecond = sysstat_1['db block gets']-sysstat_0['db block gets']
-        #print session_logical_reads_persecond
+        
+        # get flashback information
+        flashback_on = oracle.get_database(conn,'flashback_on')
+        #earliest_fbscn = oracle.get_earliest_fbscn(conn)
+        flashback_earliest_time = oracle.get_earliest_fbtime(conn)
+        flashback_space_used = oracle.get_flashback_space_used(conn)
+
 
         ##################### insert data to mysql server#############################
-        sql = "insert into oracle_status(server_id,host,port,tags,connect,db_name, instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        param = (server_id,host,port,tags,connect,db_name,instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond)
+        sql = "insert into oracle_status(server_id,host,port,tags,connect,db_name, instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond,flashback_on,flashback_earliest_time,flashback_space_used) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        param = (server_id,host,port,tags,connect,db_name,instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond,flashback_on,flashback_earliest_time,flashback_space_used)
         func.mysql_exec(sql,param) 
         func.update_db_status_init(database_role_new,version,host,port,tags)
 
@@ -213,17 +219,17 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
 def main():
 
-    func.mysql_exec("insert into oracle_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_status;",'')
+    func.mysql_exec("insert into oracle_status_history SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_status;",'')
     func.mysql_exec('delete from oracle_status;','')
 
-    func.mysql_exec("insert into oracle_tablespace_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_tablespace;",'')
+    func.mysql_exec("insert into oracle_tablespace_history SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_tablespace;",'')
     func.mysql_exec('delete from oracle_tablespace;','')
 
-    func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_dg_p_status;",'')
+    func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_p_status;",'')
     func.mysql_exec('delete from oracle_dg_p_status_tmp;','')
     func.mysql_exec('insert into oracle_dg_p_status_tmp select * from oracle_dg_p_status;','')
 
-    func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from oracle_dg_s_status;",'')
+    func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_s_status;",'')
     func.mysql_exec('delete from oracle_dg_s_status_tmp;','')
     func.mysql_exec('insert into oracle_dg_s_status_tmp select * from oracle_dg_s_status;','')
 
