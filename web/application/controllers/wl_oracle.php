@@ -180,6 +180,86 @@ class Wl_oracle extends Front_Controller {
         $this->layout->view("oracle/dg_progress",$data);
     }
     
+
+    public function flashback()
+	{
+        parent::check_privilege();
+        $data["datalist"]=$this->oracle->get_flashback_db_list();
+
+        if(isset($_GET["server_id"])){
+            $id = $_GET["server_id"];
+        }
+        else{
+            $id = $data["datalist"][0]["server_id"];
+        }
+        
+        $setval["id"] = $id;
+        
+        if($id != ""){
+        		$pri_id = $this->oracle->get_pri_id_by_sta_id($id);
+		        $data["userdata"] = $this->user->get_user_by_username('admin');
+        		$data["restore_point"] = $this->oracle->get_restorepoint($id);
+        		
+        		if($pri_id == ""){
+        				$tablespaces = $this->oracle->get_tablespace_by_id($id);
+        				$schemas = $this->oracle->get_users_by_id($id);
+        				$tables = $this->oracle->get_tables_by_id($id);
+        		}
+        		else{
+        				$tablespaces = $this->oracle->get_tablespace_by_id($pri_id);
+        				$schemas = $this->oracle->get_users_by_id($pri_id);
+        				$tables = $this->oracle->get_tables_by_id($pri_id);
+        		}
+        		
+        		$data["tablespace"] = $tablespaces;
+        		$data["users"] = $schemas;
+        		$data["tables"] = $tables;
+        		
+        		
+		        if(isset($_POST["fb_type"])){
+		            $fb_type = $_POST["fb_type"];
+		            $fb_method = $_POST["fb_method"];
+		            $fb_point = $_POST["fb_point"];
+		            $fb_time = "'" . $_POST["fb_time"] . "'";
+		            $restore_table = "'" . $_POST["restore_table"] . "'";
+		
+        				$base_path=$_SERVER['DOCUMENT_ROOT'];
+        				
+        				if($fb_method == 1){
+        						$value = $fb_point;
+        				}
+        				else{
+        						$value = $fb_time;
+        				}
+        				$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python fb_database.py -d ' . $id . ' -t ' . $fb_type . ' -m ' . $fb_method . ' -v ' . $value . ' -n ' . $restore_table . ' >fb_database.log 2>&1'; 
+		            $result = shell_exec($order);
+		              
+		        }
+		        
+        }
+        
+        $setval["order"] = $order;
+        $data["setval"]=$setval;
+        
+
+        $this->layout->view("oracle/flashback",$data);
+    }
+
+
+    public function flashback_process()
+	{
+        $server_id=isset($_POST["server_id"]) ? $_POST["server_id"] : "-1";
+
+        if($server_id!="-1"){
+		        $data["fb_process"]=$this->oracle->get_fb_process($server_id);
+						
+        }
+				
+
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("oracle/fb_progress",$data);
+    }
+    
     
     public function chart()
     {

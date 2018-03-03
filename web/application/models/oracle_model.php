@@ -89,6 +89,58 @@ class Oracle_model extends CI_Model{
 		}
     }
 
+
+    function get_tablespace_by_id($id){
+        $query=$this->db->query("select tablespace_name from oracle_tablespace where server_id = $id order by id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+
+    function get_flashback_db_list(){
+        $query=$this->db->query("select * from oracle_status where database_role = 'PHYSICAL STANDBY' order by id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    function get_users_by_id($id){
+        $query=$this->db->query("select distinct owner from oracle_tables where server_id = $id order by 1; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+
+    function get_tables_by_id($id){
+        $query=$this->db->query("select owner, table_name from oracle_tables where server_id = $id order by 1,2; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+
+    function get_fb_process($server_id){
+        $query=$this->db->query("select * from oracle_fb_process where server_id = $server_id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+            
+    function get_restorepoint($id){
+        $query=$this->db->query("select name from oracle_flashback where server_id = $id order by id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    
     function get_dataguard_total_record(){
         $query=$this->db->query("select t.id, 
                                         t.group_name,
@@ -122,6 +174,7 @@ class Oracle_model extends CI_Model{
         }
     }
 
+    
     function get_dataguard_group(){
         $query=$this->db->query("select * from db_cfg_oracle_dg where is_delete = 0 order by display_order, id; ");
         if ($query->num_rows() > 0)
@@ -186,6 +239,22 @@ class Oracle_model extends CI_Model{
     }
 
 
+    function get_pri_id_by_sta_id($id){
+        $query=$this->db->query("select CASE is_switch
+                                            WHEN 0 THEN primary_db_id
+                                            ELSE standby_db_id
+                                        END as pri_id
+                                   from db_cfg_oracle_dg
+                                  where primary_db_id = $id 
+                                    or standby_db_id = $id ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->pri_id;
+        }
+    }
+    
+
     function get_primary_info($pri_id){
         $query=$this->db->query("select d.id,
                                     d.host         as p_host,
@@ -231,9 +300,6 @@ class Oracle_model extends CI_Model{
                                         s.curr_scn       as s_scn,
                                         s.curr_db_time   as s_db_time,
                                         s.mrp_status     as s_mrp_status
-                                    s.flashback_on    as flashback_on,
-                                    s.flashback_earliest_time    as flashback_e_time,
-                                    s.flashback_space_used    as flashback_space_used,
                                   from (select * from db_cfg_oracle where id = $sta_id) d
                                 left join oracle_status os
                                     on d.id = os.server_id

@@ -126,7 +126,28 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               sql="insert into oracle_tablespace(server_id,host,port,tags,tablespace_name,total_size,used_size,avail_size,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
               param=(server_id,host,port,tags,line[0],line[1],line[2],line[3],line[4])
               func.mysql_exec(sql,param)
+
+
+        #check tablespace
+        tables = oracle.get_tables(conn)
+        if tables:
+           func.mysql_exec('delete from oracle_tables where server_id = %s;'%(server_id),'')
+           for line in tables:
+              sql="insert into oracle_tables(server_id,host,port,tags,owner,table_name) values(%s,%s,%s,%s,%s,%s)"
+              param=(server_id,host,port,tags,line[0],line[1])
+              func.mysql_exec(sql,param)
               
+              
+        #check restore point
+        restore_point = oracle.get_restorepoint(conn)
+        if restore_point:
+           func.mysql_exec('delete from oracle_flashback where server_id = %s;'%(server_id),'')
+           for line in restore_point:
+              sql="insert into oracle_flashback(server_id,host,port,tags,name) values(%s,%s,%s,%s,%s)"
+              param=(server_id,host,port,tags,line[0])
+              func.mysql_exec(sql,param)
+
+
         #check dataguard status
         result = func.mysql_query("select count(1) from db_cfg_oracle_dg where primary_db_id = '%s' or standby_db_id = '%s'" %(server_id, server_id))
         if result:

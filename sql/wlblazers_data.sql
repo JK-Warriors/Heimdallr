@@ -69,6 +69,7 @@ INSERT INTO `admin_menu` VALUES ('1108', 'AWR Report', '2', '11', 'wl_mysql/awrr
 INSERT INTO `admin_menu` VALUES ('1201', 'Health Montior', '2', '12', 'wl_oracle/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1202', 'Tablespace Monitor', '2', '12', 'wl_oracle/tablespace', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1203', 'DataGuard Monitor', '2', '12', 'wl_oracle/dataguard', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1204', 'Flashback', '2', '12', 'wl_oracle/flashback', 'icon-list', '0', '1', '4', CURRENT_TIMESTAMP);
 
 -- ------------------SQLServer Monitor--------------------
 INSERT INTO `admin_menu` VALUES ('1301', 'Health Monitor', '2', '13', 'wl_sqlserver/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
@@ -186,6 +187,7 @@ INSERT INTO `admin_privilege` VALUES ('1252', 'Oracle Health Chart', '1201', 'wl
 INSERT INTO `admin_privilege` VALUES ('1253', 'Oracle Tablespace Monitor', '1202', 'wl_oracle/tablespace', '253');
 INSERT INTO `admin_privilege` VALUES ('1254', 'Oracle DataGuard Monitor', '1203', 'wl_oracle/dataguard', '254');
 INSERT INTO `admin_privilege` VALUES ('1255', 'Oracle DataGuard Switch', '1203', 'wl_oracle/dg_switch', '255');
+INSERT INTO `admin_privilege` VALUES ('1256', 'Oracle Flashback', '1204', 'wl_oracle/flashback', '256');
 
 -- --------------------------------------------------- OS ------------------------------------------------------
 INSERT INTO `admin_privilege` VALUES ('1301', 'OS Config View', '1010', 'cfg_os/index', '301');
@@ -324,6 +326,7 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1252');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1253');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1254');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1255');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1256');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1301');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1302');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1303');

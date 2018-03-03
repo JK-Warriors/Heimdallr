@@ -411,10 +411,40 @@ def get_flashback_space_used(conn):
         curs.close()
 
 
+def get_restorepoint(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("select name from v$restore_point ");
+        list = curs.fetchall()
+        return list
+
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+
+
 def get_tablespace(conn):
     try:
         curs=conn.cursor()
         curs.execute("select df.tablespace_name ,totalspace total_size, (totalspace-freespace) used_size,freespace avail_size ,round((1-freespace/totalspace)*100) || '%' as used_ratio from (select tablespace_name,round(sum(bytes)/1024/1024) totalspace from dba_data_files group by tablespace_name) df,(select tablespace_name,round(sum(bytes)/1024/1024) freespace from dba_free_space group by tablespace_name) fs where df.tablespace_name=fs.tablespace_name and df.tablespace_name not like 'UNDOTBS%'");
+        list = curs.fetchall()
+        return list
+
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+        
+        
+def get_tables(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("select owner, owner || '.' || table_name from dba_tables ");
         list = curs.fetchall()
         return list
 

@@ -1307,6 +1307,60 @@ CREATE TABLE `oracle_tablespace_history` (
   KEY `idx_server_id` (`server_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for oracle_flashback
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_flashback`;
+CREATE TABLE `oracle_flashback` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL DEFAULT '0',
+  `host` varchar(50) NOT NULL DEFAULT '0',
+  `port` varchar(30) NOT NULL DEFAULT '0',
+  `tags` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for oracle_fb_process
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_fb_process`;
+CREATE TABLE `oracle_fb_process` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL DEFAULT '0',
+  `fb_type` tinyint(1),
+  `fb_object` varchar(65),
+  `on_process` tinyint(1)  NOT NULL DEFAULT '1',
+  `result` tinyint(1),
+  `reason` varchar(1000),
+  `blocked` tinyint(1)  NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for oracle_tables
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_tables`;
+CREATE TABLE `oracle_tables` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL DEFAULT '0',
+  `host` varchar(50) NOT NULL DEFAULT '0',
+  `port` varchar(30) NOT NULL DEFAULT '0',
+  `tags` varchar(50) NOT NULL DEFAULT '',
+  `owner` varchar(30) NOT NULL DEFAULT '',
+  `table_name` varchar(65) NOT NULL DEFAULT '',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ----------------------------
 -- Table structure for os_disk
 -- ----------------------------

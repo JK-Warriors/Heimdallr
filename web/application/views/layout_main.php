@@ -145,7 +145,7 @@
     
 
     
-<div class="content">
+<div id="inner_frame" class="content" >
        <?php echo $content_for_layout ; ?>
 
 
@@ -157,7 +157,7 @@
                         <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
                         <p class="pull-right">Power by <a href="http://www.wlblazers.com" target="_blank">WLBlazers</a></p>
 
-                        <p>&copy; 2014 <a href="http://www.wlblazers.com" target="_blank">WLBlazers</a>(西子数据库监控系统)</p>
+                        <p>&copy; 2016 <a href="http://www.wlblazers.com" target="_blank">WLBlazers</a>(西子数据库监控系统)</p>
                     </footer>
                     
             </div>
