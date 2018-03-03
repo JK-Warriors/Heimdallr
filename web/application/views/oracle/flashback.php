@@ -58,7 +58,7 @@
   		<div class="controls" style="display:inline-block;height:50px;">
       <select id="flashback_type" onchange="fb_type_change(this)" class="input-large">
 		  <option value="1"> 数据库闪回</option>
-		  <option value="2"> 表空间闪回</option>
+		  <!-- <option value="2"> 表空间闪回</option> -->
 		  <option value="3"> 表格闪回</option>
       </select>
     	</div>
@@ -124,7 +124,7 @@
 		    
 		    <div id="div_time" class="controls">
 				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回时间</label>
-				    <input id="fb_time" type="datetime-local"/>
+				    <input id="fb_time" type="datetime-local" style="width:195px"/>
 		    </div>
     </div>
     
