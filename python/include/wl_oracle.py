@@ -362,7 +362,7 @@ def get_earliest_fbtime(conn):
         curs.execute("""select to_char(min(time), 'yyyy-mm-dd hh24:mi:ss') mintime from v$restore_point """);
         mintime = curs.fetchone()
 
-        if mintime:
+        if mintime[0]:
             result = mintime[0]
         else:
             result = 'null'
@@ -382,7 +382,7 @@ def get_last_fbtime(conn):
         curs.execute("""select to_char(max(time), 'yyyymmddhh24miss') maxtime from v$restore_point """);
         lasttime = curs.fetchone()
 
-        if lasttime:
+        if lasttime[0]:
             result = lasttime[0]
         else:
             result = 'null'
@@ -402,7 +402,7 @@ def get_flashback_space_used(conn):
         curs.execute("""select percent_space_used from v$flash_recovery_area_usage where file_type='FLASHBACKLOG' """);
         fb_space = curs.fetchone()
 
-        if fb_space:
+        if fb_space[0]:
            result = fb_space[0]
         else:
            result = 0
