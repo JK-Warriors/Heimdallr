@@ -78,6 +78,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         session_total = oracle.get_sessions(conn)
         session_actives = oracle.get_actives(conn)
         session_waits = oracle.get_waits(conn)
+        
         #get info by v$parameters
         parameters = oracle.get_parameters(conn)
         processes = parameters['processes']
@@ -111,6 +112,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         #earliest_fbscn = oracle.get_earliest_fbscn(conn)
         flashback_earliest_time = oracle.get_earliest_fbtime(conn)
         flashback_space_used = oracle.get_flashback_space_used(conn)
+        flashback_retention = parameters['db_flashback_retention_target']
 
 
         ##################### insert data to mysql server#############################
@@ -230,6 +232,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         if database_role == 'PHYSICAL STANDBY' and flashback_on == 'YES':  
             logger.info("Automatic create restore point for server:" + str(server_id))
             create_restore_point(conn)
+            update_fb_retention(conn, server_id, flashback_retention)
 
 
     except Exception, e:
@@ -284,6 +287,32 @@ def create_restore_point(conn):
 
 
 
+def update_fb_retention(conn, server_id, old_value):
+    cur = None
+    try:
+        sql = "select fb_retention from db_cfg_oracle_dg where primary_db_id=%s or standby_db_id=%s limit 1;" %(server_id,server_id)
+        res = func.mysql_single_query(sql)
+        
+        if res:
+            sta_retention = res*24*60
+            
+            # 如果dg配置的闪回保留时间和数据库里面的不一致，则更新数据库 flashback_retention参数
+            logger.info('dg flashback retention config: %s' %(sta_retention))
+            logger.info('db_flashback_retention_target: %s' %(old_value))
+                 
+            if sta_retention <> old_value:
+                logger.info('Update db_flashback_retention_target to %s' %(sta_retention))
+                cur = conn.cursor()
+                str = 'alter system set db_flashback_retention_target=%s  scope=both' %(sta_retention)
+                cur.execute(str)
+		
+    except Exception, e:
+        logger.error(e)
+    finally:
+        if cur:
+            cur.close()
+            
+            
 def main():
 
     func.mysql_exec("insert into oracle_status_history SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_status;",'')

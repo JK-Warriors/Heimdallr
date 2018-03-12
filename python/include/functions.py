@@ -66,6 +66,24 @@ def mysql_query(sql):
     cursor.close()
     conn.close()
 
+def mysql_single_query(sql):
+    result = None
+    try: 
+        conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
+        conn.select_db(dbname)
+        curs = conn.cursor()
+        count=curs.execute(sql)
+        
+        if count:
+            result=curs.fetchone()[0]
+        
+        return result
+    except Exception,e:
+        print "Get single value: " + str(e) 
+    finally:
+        curs.close()
+        conn.close()    
+    
 def add_alarm(server_id,tags,db_host,db_port,create_time,db_type,alarm_item,alarm_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
    try: 
        conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
