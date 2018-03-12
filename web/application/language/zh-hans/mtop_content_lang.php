@@ -62,6 +62,7 @@ $lang['primary_db'] = '主库';
 $lang['standby_db'] = '备库';
 $lang['primary_dest_id'] = '主库归档传输编号';
 $lang['standby_dest_id'] = '备库归档传输编号';
+$lang['fb_retention'] = '闪回天数';
 $lang['dest_id'] = '传输编号';
 $lang['dg_management'] = 'DG 管理';
 $lang['db_name'] = '数据库名';

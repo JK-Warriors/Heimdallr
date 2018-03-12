@@ -300,6 +300,7 @@ CREATE TABLE `db_cfg_oracle_dg` (
   `group_name` varchar(200),
   `primary_db_id` int(10),
   `standby_db_id` int(10),
+  `fb_retenton` int(10),
   `is_switch` tinyint(1) DEFAULT 0,
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
   `on_process` tinyint(1) DEFAULT 0,
