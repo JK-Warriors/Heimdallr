@@ -358,8 +358,6 @@ class cfg_oracle extends Front_Controller {
             from db_cfg_oracle_dg t, db_cfg_oracle p, db_cfg_oracle s
             where t.primary_db_id = p.id
                 and t.standby_db_id = s.id
-                and p.is_delete = 0
-                and s.is_delete = 0
             order by t.display_order asc";
         $result=$this->oracle_dgs->get_total_record_sql($sql);
         $data["dglist"]=$result['datalist'];
