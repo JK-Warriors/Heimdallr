@@ -14,9 +14,9 @@ $lang['_SQLServer'] = 'SQLServer';
 $lang['_OS'] = '操作系统';
 
 $lang['_MySQL Panel'] = 'MySQL监控';
-$lang['_MySQL Monitor'] = 'MySQL监控';
+$lang['_MySQL Monitor'] = 'MySQL';
 $lang['_Overview'] = '统计概况';
-$lang['_Health Monitor'] = '健康监控';
+$lang['_Health Monitor'] = '健康状态';
 $lang['_Replication Monitor'] = '复制监控';
 $lang['_Process Monitor'] = '进程监控';
 $lang['_Slowquery Analysis'] = '慢查询分析';
@@ -28,29 +28,29 @@ $lang['_Key Cache Monitor'] = '键缓存监控';
 $lang['_Resource Monitor'] = '资源监控';
 $lang['_Performance Advisor'] = '性能顾问';
 
-$lang['_Oracle Monitor'] = 'Oracle监控';
+$lang['_Oracle Monitor'] = 'Oracle';
 $lang['_DataGuard Monitor'] = 'DataGuard监控';
 $lang['_DataGuard Switch'] = 'DataGuard切换';
 $lang['_Tablespace Monitor'] = '表空间监控';
 $lang['_Flashback'] = '闪回';
 
-$lang['_SQLServer Monitor'] = 'SQLServer监控';
+$lang['_SQLServer Monitor'] = 'SQLServer';
 
-$lang['_MongoDB Panel'] = 'MongoDB监控';
+$lang['_MongoDB Panel'] = 'MongoDB';
 $lang['_MongoDB Monitor'] = 'MongoDB监控';
 $lang['_Health Montior'] = '健康监控';
 $lang['_Indexes Monitor'] = '索引监控';
 $lang['_Memory Monitor'] = '内存监控';
 
-$lang['_Redis Panel'] = 'Redis监控';
+$lang['_Redis Panel'] = 'Redis';
 $lang['_Redis Monitor'] = 'Redis监控';
 $lang['_Persistence Monitor'] = '持久化监控';
 
 $lang['_Alarm Panel'] = '告警面板';
 $lang['_Alarm List'] = '告警事件列表';
 
-$lang['_OS Panel'] = '主机监控';
-$lang['_OS Monitor'] = '主机监控';
+$lang['_OS Panel'] = '主机';
+$lang['_OS Monitor'] = '主机';
 $lang['_BaseInfo'] = '基本信息';
 $lang['_CPU'] = 'CPU负载';
 $lang['_Memory'] = '内存';
