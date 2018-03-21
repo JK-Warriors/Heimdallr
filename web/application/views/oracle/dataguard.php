@@ -52,28 +52,27 @@
 </div>
 
 
-<div style="padding: 19px; <?php if($setval['id']==""){echo "display:none;";} ?>">
-    <div style='padding: 20px 120px 0px 60px; height:100px; overflow:hidden'>
-        <div style='float:left; height:100px; width:280px;'>
+<div class="datastyle <?php if($setval['id']==""){echo "display:none;";} ?>">
+<div class="d1 cf">
+    <div class="span6">
         <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
         <label name="pri_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $primary_db[0]['db_name'] ?></label>
         <label name="pri_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $primary_db[0]['open_mode'] ?></label>
         <label name="pri_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $primary_db[0]['p_port'] ?></label>
         </div>
-        <div style='float:right; height:100px; width:280px;'>
+    <div class="span6">
         <label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>
         <label name="sta_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $standby_db[0]['db_name'] ?></label>
         <label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $standby_db[0]['open_mode'] ?></label>
         <label name="sta_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $standby_db[0]['s_port'] ?></label>
         </div>
-    </div>
+</div>
 
+<div class="d2 cf">
+    <div class="d2_left d2_main"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
 
-<div style='padding: 5px 0px 0px 200px; height:150px;'>
-    <div style="float:left;"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
-
-        <div style="float:left;">
-        <label style='padding: 0px 0px 0px 100px;' class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+        <div class="d2_center">
+        <label class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
         <img src="
         <?php
         $second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);
@@ -85,12 +84,10 @@
         
         <!-- <div style="float:left;"><img src="./images/standby_db.png"/></div>  -->
         
-        <div style="float:left;"><img src="<?php if($standby_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/standby_db.png";}  ?> "/></div> 
+        <div class="d2_right d2_main"><img src="<?php if($standby_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/standby_db.png";}  ?> "/></div> 
     </div>
-
-    <div style='padding: 5px 200px 0px 60px; height:200px;'>
-        <div style="float:left; width:350px; height:240px; border:1px solid blue; color:blue"> 
-            <div style='padding: 5px 0px 0px 10px;'>
+	<div class="d1 cf">
+	<div class="span6"> <div style='padding: 5px 0px 0px 10px;'>
             <label name="pri_thread" class="control-label" for=""><?php echo $this->lang->line('primary_db'); ?>: </label>
             <label name="pri_scn" class="control-label" for="">当前SCN：<?php echo $primary_db[0]['p_scn'] ?></label>
             <label name="pri_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $primary_db[0]['p_db_time'] ?></label>
@@ -102,11 +99,8 @@
             <label name="pri_fb_status" class="control-label" style="<?php if($primary_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>">生产库闪回状态：未启动</label>
             <label name="pri_fb_time" class="control-label" style="<?php if($primary_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $primary_db[0]['flashback_e_time'] ?></label>
             <label name="pri_fb_pct" class="control-label" for="">闪回空间使用率：<?php echo $primary_db[0]['flashback_space_used'] ?>%</label>
-            </div>
-        </div>
-
-        <div style="float:right; width:350px; height:240px; border:1px solid blue; color:blue"> 
-            <div style='padding: 5px 0px 0px 10px;'>
+            </div></div>
+	<div class="span6"><div style='padding: 5px 0px 0px 10px;'>
             <label name="sta_status" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
             <label name="sta_scn" class="control-label" for="">当前SCN：<?php echo $standby_db[0]['s_scn'] ?></label>
             <label name="sta_time" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
@@ -118,11 +112,8 @@
             <label name="sta_fb_time" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $standby_db[0]['flashback_e_time'] ?></label>
             <label name="sta_fb_pct" class="control-label" >闪回空间使用率：<?php echo $standby_db[0]['flashback_space_used'] ?>%</label>
             <label name="sta_mrp" class="control-label" style="color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>" for=""> Warning: The MRP process is not running!!!</label>
-            </div>
-        </div>
-        
-
-    </div>
+            </div></div>
+			</div>
 </div>  
 
 

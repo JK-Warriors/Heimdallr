@@ -19,7 +19,10 @@
     
     <script src="lib/jquery-1.7.2.min.js" type="text/javascript"></script>
     <script src="lib/bootstrap/js/jquery-ui-1.10.0.custom.min.js"></script>
-
+	
+	
+    <link href="iconfont/iconfont.css" rel="stylesheet" type="text/css">
+	
     <style type="text/css">
         #line-chart {
             height:300px;
@@ -36,6 +39,14 @@
             color: #fff;
             font-weight: bold;
         }
+		/*
+		by.zx
+		*/
+		
+		body{
+			background:#3B3A3F
+		}
+		
     </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -118,18 +129,27 @@
                     </li>
                     
                 </ul>
-                <span style="float:left;"><img src="./images/logo.png"/></span><a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"></span> <span class="second"><?php echo $this->lang->line('wlblazers'); ?></span></a>
+                
+				<div class="nav_logo">
+				<span class="nav_logo_img">
+				<img src="./images/logo.png"/></span>
+				
+				<a class="brand" href="<?php echo site_url('index')?>">
+				<!--<span class="first"></span>-->
+				<span class="second" style="display:none;"><?php echo $this->lang->line('wlblazers'); ?></span>
+				</a>
+				</div>
         </div>
     </div>
     
 
     <?php $this->load->model("user_model");?>
     <?php $menus = $this->user_model->get_user_menus(); //print_r($menus);?>
-    <div class="sidebar-nav" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  "style='font-family: 微软雅黑;'" ?> >
-        <a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-comment"></i><?php echo $this->lang->line('home'); ?></a>
+    <div class="sidebar-nav cf" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  "style='font-family: 微软雅黑;font-size:12px'" ?> >
+        <li class="active"><a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-home"></i><?php echo $this->lang->line('home'); ?></a></li>
         <?php if (isset($menus)):?>
           	<?php foreach($menus as $menu):?>
-            <a href="#<?php echo $menu['parent_url'];?>" class="nav-header collapsed" data-toggle="collapse"><i class="<?php echo $menu['parent_icon'];?>"></i><?php echo $this->lang->line('_'.$menu['parent_title']); ?><i class="icon-chevron-up" ></i></a>
+            <li><a href="#<?php echo $menu['parent_url'];?>" class="nav-header collapsed" data-toggle="collapse"><i class="<?php echo $menu['parent_icon'];?>"></i><?php echo $this->lang->line('_'.$menu['parent_title']); ?><i class="icon-chevron-up" ></i></a></li>
             <ul id="<?php echo $menu['parent_url'];?>" class="nav nav-list collapse <?php if(is_active_menu($this->user_model->get_user_current_action(),$menu['parent_action'])) echo "in"; ?> ">
               <?php foreach($menu as $sub_menu):?>
               <?php if(is_array($sub_menu)):?>
@@ -155,9 +175,9 @@
                         <hr>
 
                         <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
-                        <p class="pull-right">Power by <a href="http://www.wlblazers.com" target="_blank">WLBlazers</a></p>
+                        <p class="pull-right">Power by <a href="#" target="_blank">DR&M</a></p>
 
-                        <p>&copy; 2016 <a href="http://www.wlblazers.com" target="_blank">WLBlazers</a>(西子数据库监控系统)</p>
+                        <p>&copy; 2018 <a href="#" target="_blank">DR&M Cloud</a>&nbsp;(Disaster Recovery & Monitor Cloud)</p>
                     </footer>
                     
             </div>

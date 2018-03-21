@@ -36,15 +36,15 @@ CREATE TABLE `admin_menu` (
 -- ----------------------------
 -- Records of admin_menu
 -- ----------------------------
-INSERT INTO `admin_menu` VALUES ('10', 'Servers Configure', '1', '0', 'server', 'icon-dashboard', '0', '1', '2', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('11', 'MySQL Monitor', '1', '0', 'wl_mysql', 'icon-dashboard', '0', '1', '3', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('12', 'Oracle Monitor', '1', '0', 'wl_oracle', 'icon-dashboard', '0', '1', '4', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlserver', 'icon-dashboard', '0', '1', '5', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('10', 'Servers Configure', '1', '0', 'server', 'iconfont icon-icon-test', '0', '1', '2', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('11', 'MySQL Monitor', '1', '0', 'wl_mysql', 'iconfont icon-shujuku', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('12', 'Oracle Monitor', '1', '0', 'wl_oracle', 'iconfont icon-shujuku', '0', '1', '4', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlserver', 'iconfont icon-shujuku', '0', '1', '5', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('14', 'MongoDB Monitor', '1', '0', 'wl_mongodb', 'icon-dashboard', '0', '1', '6', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('15', 'Redis Monitor', '1', '0', 'wl_redis', 'icon-dashboard', '0', '1', '7', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('20', 'OS Monitor', '1', '0', 'wl_os', 'icon-dashboard', '0', '1', '8', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('21', 'Alarm Panel', '1', '0', 'alarm', 'icon-dashboard', '0', '1', '9', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('22', 'Permission System', '1', '0', 'rabc', 'icon-legal', '0', '1', '10', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('20', 'OS Monitor', '1', '0', 'wl_os', 'iconfont icon-zhuji', '0', '1', '8', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('21', 'Alarm Panel', '1', '0', 'alarm', 'iconfont icon-jinggao', '0', '1', '9', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('22', 'Permission System', '1', '0', 'rabc', 'iconfont icon-icon-quanxianxg', '0', '1', '10', CURRENT_TIMESTAMP);
 
 -- ------------------Configure--------------------
 INSERT INTO `admin_menu` VALUES ('1001', 'Settings', '2', '10', 'settings/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
