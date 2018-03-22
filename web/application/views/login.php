@@ -74,7 +74,7 @@
 	<div class="navbar">
         <div class="navbar-inner">
 		<div class="navlogo"><img src="./images/logo.png"/></div>
-               <a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"><?php echo $this->lang->line('wlblazers'); ?></span> <span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
+        <a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
         </div>
     </div>
     <?php if ($error_code!==0) { ?>

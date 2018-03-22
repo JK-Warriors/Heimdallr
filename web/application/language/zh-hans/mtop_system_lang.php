@@ -1,6 +1,6 @@
 <?php
 $lang['wlblazers'] = '西子';
-$lang['database_monitor_system'] = '数据库监控系统';
+$lang['database_monitor_system'] = '数据库容灾云';
 $lang['wlblazers_database_monitor'] = '西子数据库监控系统';
 $lang['login'] = '登录';
 $lang['username'] = "用户名";
