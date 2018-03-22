@@ -5,7 +5,7 @@
         
 <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
-            <span class="right"><?php echo $this->lang->line('wlblazers_version'); ?>:<?php echo $wlblazers_status['wlblazers_version']; ?>&nbsp;&nbsp; <?php echo $this->lang->line('wlblazers_status'); ?>:<?php if($wlblazers_status['wlblazers_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('wlblazers_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('wlblazers_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $wlblazers_status['wlblazers_checktime']; ?></span>
+            <span class="right"><?php echo $this->lang->line('wlblazers_status'); ?>:<?php if($wlblazers_status['wlblazers_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('wlblazers_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('wlblazers_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $wlblazers_status['wlblazers_checktime']; ?></span>
     </ul>
 
  

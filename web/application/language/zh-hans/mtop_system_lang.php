@@ -130,7 +130,7 @@ $lang['edit_user_password_help'] = '如果不修改密码，请不要填写';
 $lang['choose_menu_error_msg'] = '父菜单不能选择当前菜单';
 
 $lang['wlblazers_version'] = '西子版本';
-$lang['wlblazers_status'] = '西子状态';
+$lang['wlblazers_status'] = '状态';
 $lang['last_check_time'] = '最新监测时间';
 $lang['wlblazers_running'] = '正在运行';
 $lang['wlblazers_not_run'] = '没有运行';
