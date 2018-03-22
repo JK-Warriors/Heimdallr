@@ -35,6 +35,13 @@
             color: #fff;
             font-weight: bold;
         }
+		body{background:#354053;}
+		.navbar .navbar-inner{background:none;border:0px;height:auto;box-shadow:none;text-align:center;}
+		.navlogo img{width:180px;margin:0 auto;}
+		.navbar .brand{float:none;width:100%;text-align:center;}
+		.dialog .block{box-shadow:none;border:0px}
+		p.block-heading{background:#fff;border-top:5px solid #4BBAC0}
+		.form-horizontal{padding-bottom:20px;}
     </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -58,19 +65,18 @@
   <body class=""> 
   <!--<![endif]-->
     
-    <div class="navbar">
-        <div class="navbar-inner">
-                <ul class="nav pull-right">
-                    
-                </ul>
-                <span style="float:left;"><img src="./images/logo.png"/></span><a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"><?php echo $this->lang->line('wlblazers'); ?></span> <span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
-        </div>
-    </div>
+    
     
 
     
 <div class="row-fluid">
     <div class="dialog">
+	<div class="navbar">
+        <div class="navbar-inner">
+		<div class="navlogo"><img src="./images/logo.png"/></div>
+               <a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"><?php echo $this->lang->line('wlblazers'); ?></span> <span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
+        </div>
+    </div>
     <?php if ($error_code!==0) { ?>
 	<div class="alert alert-error">
     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -106,7 +112,7 @@
             </div>
         </div>
         <!-- <p class="pull-right" style=""><a href="http://www.wlblazers.com" target="blank"><?php echo $this->lang->line('get_support'); ?></a></p> -->
-        <p>&nbsp;<?php echo $this->lang->line('version'); ?>:<?php echo $wlblazers_status['wlblazers_version']; ?></p>
+        <p style="text-align:right:font-size:12px;color:#aaa;">&nbsp;<?php echo $this->lang->line('version'); ?>:<?php echo $wlblazers_status['wlblazers_version']; ?></p>
     </div>
 </div>
   
