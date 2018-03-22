@@ -385,11 +385,10 @@ def get_last_fbtime(conn):
         if lasttime[0]:
             result = lasttime[0]
             
-        print resule
         return result
     except Exception,e:
-        return None
         print e
+        return None
 
     finally:
         curs.close()

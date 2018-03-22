@@ -250,7 +250,7 @@ function queryHandle(url){
         				myBar=null;
         				//window.location.reload();
         				
-        						alert(last_switchover);
+        				//alert(last_switchover);
         				if(last_switchover == 1){
         						window.location.href=dg_url;
         				}

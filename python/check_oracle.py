@@ -300,7 +300,7 @@ def update_fb_retention(conn, server_id, old_value):
             logger.info('dg flashback retention config: %s' %(sta_retention))
             logger.info('db_flashback_retention_target: %s' %(old_value))
                  
-            if sta_retention <> old_value:
+            if int(sta_retention) <> int(old_value):
                 logger.info('Update db_flashback_retention_target to %s' %(sta_retention))
                 cur = conn.cursor()
                 str = 'alter system set db_flashback_retention_target=%s  scope=both' %(sta_retention)

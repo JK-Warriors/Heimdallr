@@ -56,31 +56,35 @@ def flashback_db(mysql_conn, server_id, conn, conn_str, restore_str):
             sqlplus.stdin.write(bytes(restore_str + os.linesep))
             out, err = sqlplus.communicate()
             logger.debug(out)
-            #logger.error(err)
-            if err is None:
+            
+            if 'ORA-' in out:
+                rea_str = out[out.index("ORA-"):]
+                logger.info("Flashback failed.")
+                str = """update oracle_fb_process set result='0', reason='%s' where server_id=%s """ %(rea_str, server_id)
+                op_status = mysql.ExecuteSQL(mysql_conn, str)
+            else:
                 logger.info("Flashback successfully.")
                 str = """update oracle_fb_process set result='1', reason='' where server_id=%s """ %(server_id)
                 op_status = mysql.ExecuteSQL(mysql_conn, str)
                 result=0
-            else:
-                logger.info("Flashback failed.")
-                str = """update oracle_fb_process set result='0', reason='%s' where server_id=%s """ %(err, server_id)
-                op_status = mysql.ExecuteSQL(mysql_conn, str)
         else:
             sqlplus = Popen(["sqlplus", "-S", conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+            logger.info(restore_str)
             sqlplus.stdin.write(bytes(restore_str + os.linesep))
             out, err = sqlplus.communicate()
             logger.debug(out)
             #logger.error(err)
-            if err is None:
+            
+            if 'ORA-' in out:
+                rea_str = out[out.index("ORA-"):]
+                logger.info("Flashback failed.")
+                str = """update oracle_fb_process set result='0', reason='%s' where server_id=%s """ %(rea_str, server_id)
+                op_status = mysql.ExecuteSQL(mysql_conn, str)
+            else:
                 logger.info("Flashback successfully.")
                 str = """update oracle_fb_process set result='1', reason='' where server_id=%s """ %(server_id)
                 op_status = mysql.ExecuteSQL(mysql_conn, str)
                 result=0
-            else:
-                logger.info("Flashback failed.")
-                str = """update oracle_fb_process set result='0', reason='%s' where server_id=%s """ %(err, server_id)
-                op_status = mysql.ExecuteSQL(mysql_conn, str)
     else:
         logger.info("The current database role is not PHYSICAL STANDBY, not allow to flashback databaes.")
         
@@ -143,7 +147,7 @@ def pre_flashback(mysql_conn, server_id, fb_type, fb_object):
     
     if fb_record == 0:	
         logger.info("Generate a flashback process for server: %s" %(server_id))
-        str="""insert into oracle_fb_process(server_id, fb_type, fb_object) values('%s', '%s', '%s') """ %(server_id, fb_type, fb_object)
+        str="""insert into oracle_fb_process(server_id, fb_type, fb_object, on_process) values('%s', '%s', '%s', 1) """ %(server_id, fb_type, fb_object)
         op_status=mysql.ExecuteSQL(mysql_conn, str)
         return 0
     else:
@@ -157,7 +161,7 @@ def pre_flashback(mysql_conn, server_id, fb_type, fb_object):
             sys.exit(2)
         else:
             logger.info("Update the flashback process infomation for server: %s" %(server_id))
-            str = """update oracle_fb_process set fb_type = '%s', fb_object='%s', result='', reason='', blocked=0, create_time=CURRENT_TIMESTAMP where server_id=%s """ %(fb_type, fb_object,server_id)
+            str = """update oracle_fb_process set fb_type = '%s', fb_object='%s', on_process=1, result='-1', reason='', blocked=0, create_time=CURRENT_TIMESTAMP where server_id=%s """ %(fb_type, fb_object,server_id)
             op_status = mysql.ExecuteSQL(mysql_conn, str)
             logger.info("The flashback process is already prepared for server: %s" %(server_id))
             return 0

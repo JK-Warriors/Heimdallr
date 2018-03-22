@@ -53,13 +53,14 @@
 
 <div  style="padding:19px;height:200px; <?php if($setval['id']==""){echo "display:none;";} ?>">
     <div id="div_fb" class="controls">
-  		<label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回类型</label>
+  		<label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回类型: </label>
   		
   		<div class="controls" style="display:inline-block;height:50px;">
-      <select id="flashback_type" onchange="fb_type_change(this)" class="input-large">
+  		<label class="control-label" style="display:inline-block;padding-left:0px; width:80px">数据库闪回</label>
+      <select id="flashback_type" onchange="fb_type_change(this)" class="input-large" style="display:none;">
 		  <option value="1"> 数据库闪回</option>
 		  <!-- <option value="2"> 表空间闪回</option> -->
-		  <option value="3"> 表格闪回</option>
+		  <!-- <option value="3"> 表格闪回</option> -->
       </select>
     	</div>
     </div>
@@ -68,9 +69,7 @@
     <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*表空间名</label>
     <div class="controls" style="display:inline-block;height:50px;" >
       <select id="restore_tbs" class="input-large">
-        <?php foreach ($tablespace as $item):?>
-        <option value="<?php echo $item['tablespace_name'];?>" ><?php echo $item['tablespace_name'];?> </option>
-        <?php endforeach;?>
+        
       </select>
     </div>
     </div>
@@ -79,9 +78,7 @@
     <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*用户名</label>
     <div class="controls" style="display:inline-block;height:50px;" >
       <select id="restore_user" onchange="user_change(this)" class="input-large">
-        <?php foreach ($users as $item):?>
-        <option value="<?php echo $item['owner'];?>" ><?php echo $item['owner'];?> </option>
-        <?php endforeach;?>
+        
       </select>
     </div>
     </div>
@@ -90,10 +87,7 @@
     <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*表名</label>
     <div class="controls" style="display:inline-block;height:50px;" >
       <select id="restore_tables" class="input-large">
-        <?php foreach ($tables as $item){
-        	if($item['owner'] == $users[0][owner]){?>
-        		<option value="<?php echo $item['table_name'];?>" ><?php echo $item['table_name'];?> </option>
-        <?php	}}?>
+        
       </select>
     </div>
     </div>
@@ -186,15 +180,19 @@ function fb_method_change(e){
 
 
 function user_change(e){
-		var tab_list=<?php echo json_encode($tables);?>;
+	  /*
+		var tab_list= null;
 		var tab_array=eval(tab_list);  
+		
 		
 		$("#restore_tables").empty();
     for(i=0;i<tab_array.length;i++){
     		if(tab_array[i]['owner'] == e.value){
 						$("#restore_tables").append("<option value='"+ tab_array[i]['table_name'] +"'>"+ tab_array[i]['table_name'] +"</option>");
     		}
-    }  
+    }*/ 
+    
+    $("#restore_tables").empty();
 }
 
 
@@ -215,6 +213,20 @@ function checkUser(e){
 		var restore_user = $('#restore_user option:selected').val();
 		var restore_table = $('#restore_tables option:selected').val();
 		
+		//空值检查
+		if(fb_method == "1" && typeof(fb_point) == "undefined"){
+				bootbox.alert({
+		        		message: "闪回点名称不能为空!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+		        	
+		    return false;
+		}
 
 		bootbox.prompt({
 		    title: "请输入管理员密码!",
