@@ -17,10 +17,28 @@
 <script src="lib/bootstrap/js/bootstrap-switch.js"></script>
 <link href="lib/bootstrap/css/bootstrap-switch.css" rel="stylesheet"/>
                     
-<div class="ui-state-default ui-corner-all" style="height: 45px;" >
+<div class="ui-state-default ui-corner-all" style="height: 45px;display:none;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 
 <div class="control-group">
+
+</div>
+    
+</div>
+
+
+
+<div style="padding: 19px; <?php if($setval['id']!=""){echo "display:none;";} ?>" >
+	<tr>
+<td colspan="12">
+<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+</td>
+</tr>
+</div>
+
+
+<div class="dg">
+<div class="dg1">
 <form name="form" class="form-inline" method="get" >
     <label class="control-label" for="">*<?php echo $this->lang->line('dg_group'); ?></label>
     
@@ -38,41 +56,36 @@
 
 </form>
 </div>
-    
-</div>
-
-
-
-<div style="padding: 19px; <?php if($setval['id']!=""){echo "display:none;";} ?>" >
-	<tr>
-<td colspan="12">
-<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
-</td>
-</tr>
-</div>
-
-
-<div class="datastyle <?php if($setval['id']==""){echo "display:none;";} ?>">
-<div class="d1 cf">
-    <div class="span6">
-        <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
+<div class="dg2  <?php if($setval['id']==""){echo "display:none;";} ?>">
+<div class="dg2_1">
+<div class="dgc1">
+ <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
         <label name="pri_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $primary_db[0]['db_name'] ?></label>
         <label name="pri_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $primary_db[0]['open_mode'] ?></label>
         <label name="pri_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $primary_db[0]['p_port'] ?></label>
-        </div>
-    <div class="span6">
-        <label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>
-        <label name="sta_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $standby_db[0]['db_name'] ?></label>
-        <label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $standby_db[0]['open_mode'] ?></label>
-        <label name="sta_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $standby_db[0]['s_port'] ?></label>
-        </div>
 </div>
+<div class="dgc2"><img style="margin-right:70px;" src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div>
+<div class="dgc3">
+<div class="dgc3c">
+            <label name="pri_thread" class="control-label" for=""><?php echo $this->lang->line('primary_db'); ?>: </label>
+            <label name="pri_scn" class="control-label" for="">当前SCN：<?php echo $primary_db[0]['p_scn'] ?></label>
+            <label name="pri_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $primary_db[0]['p_db_time'] ?></label>
+            <hr>
+            <?php foreach ($primary_db as $item):?>
+                    <label class="control-label" for="">Thread <?php echo $item['p_thread'] ?>: sequence: <?php echo $item['p_sequence'] ?></label>
+            <?php endforeach;?>
+            <hr>
+            <label name="pri_fb_status" class="control-label" style="<?php if($primary_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>">生产库闪回状态：未启动</label>
+            <label name="pri_fb_time" class="control-label" style="<?php if($primary_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $primary_db[0]['flashback_e_time'] ?></label>
+            <label name="pri_fb_pct" class="control-label" for="">闪回空间使用率：<?php echo $primary_db[0]['flashback_space_used'] ?>%</label>
+            </div>
 
-<div class="d2 cf">
-    <div class="d2_left d2_main"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
 
-        <div class="d2_center">
-        <label class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+</div>
+</div>
+<div class="dg2_2">
+<div class="dgc2c">
+<label class="control-label">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
         <img src="
         <?php
         $second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);
@@ -80,41 +93,40 @@
         elseif($primary_db[0]['open_mode']==-1 or $standby_db[0]['open_mode']==-1){echo "./images/trans_error.png";}
         else{echo "./images/health_transfer.gif";}  ?> 
         "/>
-        </div> 
-        
-        <!-- <div style="float:left;"><img src="./images/standby_db.png"/></div>  -->
-        
-        <div class="d2_right d2_main"><img src="<?php if($standby_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/standby_db.png";}  ?> "/></div> 
-    </div>
-	<div class="d1 cf">
-	<div class="span6"> <div style='padding: 5px 0px 0px 10px;'>
-            <label name="pri_thread" class="control-label" for=""><?php echo $this->lang->line('primary_db'); ?>: </label>
-            <label name="pri_scn" class="control-label" for="">当前SCN：<?php echo $primary_db[0]['p_scn'] ?></label>
-            <label name="pri_time" class="control-label" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $primary_db[0]['p_db_time'] ?></label>
-            <label name="sta_line" class="control-label" for=""> ---------------------------------------------------------------------- </label>
-            <?php foreach ($primary_db as $item):?>
-                    <label class="control-label" for="">Thread <?php echo $item['p_thread'] ?>: sequence: <?php echo $item['p_sequence'] ?></label>
-            <?php endforeach;?>
-            <label name="sta_line" class="control-label" for=""> ---------------------------------------------------------------------- </label>
-            <label name="pri_fb_status" class="control-label" style="<?php if($primary_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>">生产库闪回状态：未启动</label>
-            <label name="pri_fb_time" class="control-label" style="<?php if($primary_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $primary_db[0]['flashback_e_time'] ?></label>
-            <label name="pri_fb_pct" class="control-label" for="">闪回空间使用率：<?php echo $primary_db[0]['flashback_space_used'] ?>%</label>
-            </div></div>
-	<div class="span6"><div style='padding: 5px 0px 0px 10px;'>
-            <label name="sta_status" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
+</div>
+
+</div>
+<div class="dg2_3">
+<div class="dgc1"><label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>
+        <label name="sta_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $standby_db[0]['db_name'] ?></label>
+        <label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $standby_db[0]['open_mode'] ?></label>
+        <label name="sta_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $standby_db[0]['s_port'] ?></label></div>
+		
+<div class="dgc2"><img style="margin-left:60px;" src="<?php if($standby_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/standby_db.png";}  ?> "/></div>
+<div class="dgc3">
+
+
+<div class="dgc3c co2">
+		  <label name="sta_status" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
             <label name="sta_scn" class="control-label" for="">当前SCN：<?php echo $standby_db[0]['s_scn'] ?></label>
             <label name="sta_time" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
-            <label name="sta_line" class="control-label" for=""> ---------------------------------------------------------------------- </label>
+            <hr>
             <label name="sta_thread1" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
             <label name="sta_thread2" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
-            <label name="sta_line" class="control-label" for=""> ---------------------------------------------------------------------- </label>
+            <hr>
             <label name="sta_fb_status" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>">容灾库闪回状态：未启动</label>
             <label name="sta_fb_time" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $standby_db[0]['flashback_e_time'] ?></label>
             <label name="sta_fb_pct" class="control-label" >闪回空间使用率：<?php echo $standby_db[0]['flashback_space_used'] ?>%</label>
             <label name="sta_mrp" class="control-label" style="color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>" for=""> Warning: The MRP process is not running!!!</label>
-            </div></div>
-			</div>
-</div>  
+           
+</div>
+</div>
+
+
+</div>
+<div style="clear:both"></div>
+</div>
+</div>
 
 
 <script type="text/javascript">
