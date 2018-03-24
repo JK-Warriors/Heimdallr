@@ -37,7 +37,8 @@
 		<button name="mrp_action" type="button" value="MRPStop" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('stop_mrp'); ?></button>
 		<button name="mrp_action" type="button" value="MRPStart" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('start_mrp'); ?></button>
     
-
+		<button name="mrp_action" type="button" value="SnapshotStop" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right: 5px;"><?php echo $this->lang->line('stop_snapshot'); ?></button>
+		<button name="mrp_action" type="button" value="SnapshotStart" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('start_snapshot'); ?></button>
 </form>
 </div>
 </div>
@@ -122,6 +123,12 @@ function checkUser(e){
 		}
 		else if(e.value == "Failover"){
 			_message = "确认要开始灾难切换吗？";
+		}
+		else if(e.value == "SnapshotStart"){
+			_message = "确认要进入快照状态吗？";
+		}
+		else if(e.value == "SnapshotStop"){
+			_message = "确认要退出快照状态吗？";
 		}
 		else{
 			_message = "";
@@ -250,7 +257,6 @@ function queryHandle(url){
         				myBar=null;
         				//window.location.reload();
         				
-        				//alert(last_switchover);
         				if(last_switchover == 1){
         						window.location.href=dg_url;
         				}

@@ -64,6 +64,10 @@ def operation_lock(mysql_conn, dg_id, process_type):
         col_name="on_startmrp"
     elif process_type == "MRP_STOP":
         col_name="on_stopmrp"
+    elif process_type == "SNAPSHOT_START":
+        col_name="on_startsnapshot"
+    elif process_type == "SNAPSHOT_STOP":
+        col_name="on_stopsnapshot"
     else:
         col_name=""
     	
@@ -93,6 +97,10 @@ def operation_unlock(mysql_conn, dg_id, process_type):
         col_name="on_startmrp"
     elif process_type == "MRP_STOP":
         col_name="on_stopmrp"
+    elif process_type == "SNAPSHOT_START":
+        col_name="on_startsnapshot"
+    elif process_type == "SNAPSHOT_STOP":
+        col_name="on_stopsnapshot"
     else:
         col_name=""
     	

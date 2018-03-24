@@ -308,6 +308,8 @@ CREATE TABLE `db_cfg_oracle_dg` (
   `on_failover` tinyint(1) DEFAULT 0,
   `on_startmrp` tinyint(1) DEFAULT 0,
   `on_stopmrp` tinyint(1) DEFAULT 0,
+  `on_startsnapshot` tinyint(1) DEFAULT 0,
+  `on_stopsnapshot` tinyint(1) DEFAULT 0,
   `display_order` smallint(4) NOT NULL DEFAULT '1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -319,6 +321,8 @@ alter table db_cfg_oracle_dg modify column on_switchover tinyint(1) DEFAULT 0 co
 alter table db_cfg_oracle_dg modify column on_failover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Failover切换'; 
 alter table db_cfg_oracle_dg modify column on_startmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在开启MRP进程'; 
 alter table db_cfg_oracle_dg modify column on_stopmrp tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在停止MRP进程'; 
+alter table db_cfg_oracle_dg modify column on_startsnapshot tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在激活数据库快照'; 
+alter table db_cfg_oracle_dg modify column on_stopsnapshot tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在从快照恢复到物理备库'; 
 
 -- ----------------------------
 -- Table structure for db_oracle_dg_process

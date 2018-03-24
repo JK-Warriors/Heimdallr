@@ -83,6 +83,8 @@ $lang['add_dg'] = '新增 DG';
 $lang['switch_dg'] = '切换 DG';
 $lang['start_mrp'] = '开启MRP';
 $lang['stop_mrp'] = '停止MRP';
+$lang['start_snapshot'] = '进入快照';
+$lang['stop_snapshot'] = '退出快照';
 $lang['switchover'] = '主备切换';
 $lang['failover'] = '灾难切换';
 $lang['edit'] = '编辑';
@@ -129,7 +131,7 @@ $lang['delete_confirm']='您确定要删除该内容?';
 $lang['edit_user_password_help'] = '如果不修改密码，请不要填写';
 $lang['choose_menu_error_msg'] = '父菜单不能选择当前菜单';
 
-$lang['wlblazers_version'] = '西子版本';
+$lang['wlblazers_version'] = '版本';
 $lang['wlblazers_status'] = '状态';
 $lang['last_check_time'] = '最新监测时间';
 $lang['wlblazers_running'] = '正在运行';

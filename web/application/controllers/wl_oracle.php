@@ -121,6 +121,15 @@ class Wl_oracle extends Front_Controller {
 		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1';   
 		                $result = shell_exec($order);  
 		            }
+		            elseif($dg_action == "SnapshotStart"){
+		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_start.log 2>&1';    
+		                $result = shell_exec($order);
+		                #$result = "Succes";
+		            }
+		            elseif($dg_action == "SnapshotStop"){
+		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_stop.log 2>&1';   
+		                $result = shell_exec($order);  
+		            }
 		        }
         }
         
