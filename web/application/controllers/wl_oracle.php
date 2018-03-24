@@ -134,7 +134,7 @@ class Wl_oracle extends Front_Controller {
         }
         
         
-				if($id != ""){
+        if($id != ""){
 		        $pri_id = $this->oracle->get_pri_id_by_group_id($id);
 		        $sta_id = $this->oracle->get_sta_id_by_group_id($id);
 		
@@ -144,10 +144,9 @@ class Wl_oracle extends Front_Controller {
 		        $data["setval"]=$setval;
 		        
 		        $data["userdata"] = $this->user->get_user_by_username('admin');
-		
-				}
+        }
 				
-		    $this->layout->view("oracle/dg_switch",$data);
+        $this->layout->view("oracle/dg_switch",$data);
       
     }
 

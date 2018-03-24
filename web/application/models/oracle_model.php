@@ -288,6 +288,7 @@ class Oracle_model extends CI_Model{
         $query=$this->db->query("select d.host as s_host,
                                         d.port as s_port,
                                         os.db_name  as db_name,
+                                        os.version  as db_version,
                                         os.open_mode  as open_mode,
                                         os.flashback_on    as flashback_on,
                                         os.flashback_earliest_time    as flashback_e_time,
@@ -313,8 +314,8 @@ class Oracle_model extends CI_Model{
         }
     }
 
-    
-    
+
+
     function get_total_host(){
         $query=$this->db->query("select host  from mysql_status order by host;");
         if ($query->num_rows() > 0)

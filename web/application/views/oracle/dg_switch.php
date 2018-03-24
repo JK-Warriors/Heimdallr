@@ -109,6 +109,7 @@ var group_id = "<?php echo $setval['id'] ?>";
 var target_url = base_url.toString() + group_id.toString();
 var dg_url = "<?php echo site_url('wl_oracle/dataguard?dg_group_id=') ?>" + group_id.toString();
 var user_pwd = "<?php echo $userdata['password'] ?>" ;
+var sta_version = "<?php echo $standby_db[0]['db_version'] ?>" ;
 
 function checkUser(e){
 
@@ -134,7 +135,24 @@ function checkUser(e){
 			_message = "";
 		}
 
-
+		if((e.value == "SnapshotStart" || e.value == "SnapshotStop")){
+				var version = sta_version.substring(0, sta_version.indexOf('.'));
+				if(version <=10){
+						bootbox.alert({
+				        		message: "数据库版本必须是11g以上才能支持此项功能!",
+				        		buttons: {
+									        ok: {
+									            label: '确定',
+									            className: 'btn-success'
+									        }
+									    }
+				        	});
+				        	
+				    return false;
+		  }
+		}
+		        	
+		        	
 		bootbox.prompt({
 		    title: "请输入管理员密码!",
 		    inputType: 'password',
