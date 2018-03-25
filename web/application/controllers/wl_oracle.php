@@ -171,6 +171,12 @@ class Wl_oracle extends Front_Controller {
         else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopmrp'] == '1'){
         		$type="MRP_STOP";
         }
+        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_startsnapshot'] == '1'){
+        		$type="SNAPSHOT_START";
+        }
+        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopsnapshot'] == '1'){
+        		$type="SNAPSHOT_STOP";
+        }
         
         if($group_id!="-1"){
 		        $data["dg_process"]=$this->oracle->get_dg_process_info($group_id, $type);

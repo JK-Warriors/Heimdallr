@@ -288,6 +288,7 @@ class Oracle_model extends CI_Model{
         $query=$this->db->query("select d.host as s_host,
                                         d.port as s_port,
                                         os.db_name  as db_name,
+                                        os.database_role  as database_role,
                                         os.version  as db_version,
                                         os.open_mode  as open_mode,
                                         os.flashback_on    as flashback_on,
@@ -313,7 +314,6 @@ class Oracle_model extends CI_Model{
            return $query->result_array(); 
         }
     }
-
 
 
     function get_total_host(){
