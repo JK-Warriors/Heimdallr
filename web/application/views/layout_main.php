@@ -92,12 +92,12 @@
                     </li>                    
                     
                     
-                    <!-- <li <?php if($model=='screen'){ echo "class='active'";} ?>><a href="<?php echo site_url('screen/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('screen'); ?></a></li> -->
-                    <!-- <li <?php if($model=='wl_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mysql/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li> -->
-                    <!-- <li <?php if($model=='wl_oracle'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_oracle/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li> -->
-                    <!-- <li <?php if($model=='wl_mongodb'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mongodb/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MongoDB</a></li> -->
-                    <!-- <li <?php if($model=='wl_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li> -->
-                    <!-- <li <?php if($model=='wl_redis'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_redis/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Redis</a></li> -->
+                    <!-- <li <?php if($model=='screen'){ echo "class='action'";} ?>><a href="<?php echo site_url('screen/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('screen'); ?></a></li> -->
+                    <!-- <li <?php if($model=='wl_mysql'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_mysql/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li> -->
+                    <!-- <li <?php if($model=='wl_oracle'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_oracle/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li> -->
+                    <!-- <li <?php if($model=='wl_mongodb'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_mongodb/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MongoDB</a></li> -->
+                    <!-- <li <?php if($model=='wl_sqlserver'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li> -->
+                    <!-- <li <?php if($model=='wl_redis'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_redis/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Redis</a></li> -->
                     <li <?php if($model=='wl_os'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_os/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('_OS'); ?></a></li>
                     <li <?php if($model=='alarm'){ echo "class='active'";} ?>><a href="<?php echo site_url('alarm/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('alarm'); ?></a></li>
                     <li <?php if($model=='settings'){ echo "class='active'";} ?>><a href="<?php echo site_url('settings/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('settings'); ?></a></li>
@@ -146,14 +146,14 @@
     <?php $this->load->model("user_model");?>
     <?php $menus = $this->user_model->get_user_menus(); //print_r($menus);?>
     <div class="sidebar-nav cf" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  "style='font-family: 微软雅黑;font-size:12px'" ?> >
-        <li class="active"><a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-home"></i><?php echo $this->lang->line('home'); ?></a></li>
+        <li <?php if(is_active_menu($this->user_model->get_user_current_action(),"index/") || is_active_menu($this->user_model->get_user_current_action(),"index/index")) echo "class=action"; ?> ><a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-home"></i><?php echo $this->lang->line('home'); ?></a></li>
         <?php if (isset($menus)):?>
           	<?php foreach($menus as $menu):?>
             <li><a href="#<?php echo $menu['parent_url'];?>" class="nav-header collapsed" data-toggle="collapse"><i class="<?php echo $menu['parent_icon'];?>"></i><?php echo $this->lang->line('_'.$menu['parent_title']); ?><i class="icon-chevron-up" ></i></a></li>
             <ul id="<?php echo $menu['parent_url'];?>" class="nav nav-list collapse <?php if(is_active_menu($this->user_model->get_user_current_action(),$menu['parent_action'])) echo "in"; ?> ">
               <?php foreach($menu as $sub_menu):?>
               <?php if(is_array($sub_menu)):?>
-              <li <?php if(is_active_menu($this->user_model->get_user_current_action(),$sub_menu['action'])) echo "class=active"; ?> ><a href="<?php echo site_url($sub_menu['url']) ?>"><i class="<?php echo $sub_menu['icon'];?>"></i><?php echo $this->lang->line('_'.$sub_menu['title']); ?></a></li>
+              <li <?php if(is_active_menu($this->user_model->get_user_current_action(),$sub_menu['action'])) echo "class=action"; ?> ><a href="<?php echo site_url($sub_menu['url']) ?>"><i class="<?php echo $sub_menu['icon'];?>"></i><?php echo $this->lang->line('_'.$sub_menu['title']); ?></a></li>
               <?php endif;?>
      	      <?php endforeach;?>
             </ul>
