@@ -92,7 +92,7 @@ class Oracle_model extends CI_Model{
 										oracle_dg_s_status dgs
 									WHERE dg.primary_db_id = pdb.id
 									AND dg.standby_db_id = sdb.id
-									AND dg.standby_db_id = dgs.server_id ";
+									AND (dg.primary_db_id = dgs.server_id or dg.standby_db_id = dgs.server_id)";
 				if($host != ""){
 						$sql = $sql . "AND (pdb.`host` like '%" . $host . "%' or sdb.`host` like '%" . $host . "%')";
 				}
