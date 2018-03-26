@@ -89,7 +89,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         sqlplus.stdin.write(bytes("shutdown immediate;"+os.linesep))
         sqlplus.stdin.write(bytes("startup mount;"+os.linesep))
         sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
-        sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep))
+        sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
         out, err = sqlplus.communicate()
     else:
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是SNAPSHOT STANDBY，不能停止快照。', 90)
