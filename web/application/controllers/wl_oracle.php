@@ -198,9 +198,11 @@ class Wl_oracle extends Front_Controller {
 						# get mrp status by group id
 						$sta_id = $this->oracle->get_sta_id_by_group_id($group_id);
 						$mrp_status=$this->oracle->get_mrp_status_by_id($sta_id);
+						$sta_role=$this->oracle->get_db_role_by_id($sta_id);
 						
 						$setval["mrp_status"] = $mrp_status;
-		        $data["mrp_status"] = $setval;
+						$setval["sta_role"] = $sta_role;
+		        $data["items"] = $setval;
         }
 				
 

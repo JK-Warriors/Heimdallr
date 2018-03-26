@@ -248,6 +248,15 @@ class Oracle_model extends CI_Model{
            return $result->mrp_status; 
         }
     }
+    
+    function get_db_role_by_id($id){
+        $query=$this->db->query("select database_role from oracle_status where server_id = '$id' order by id desc limit 1; ");
+        if ($query->num_rows() > 0)
+        {
+        	 $result=$query->row();
+           return $result->database_role; 
+        }
+    }
 
     function get_pri_id_by_group_id($id){
         $query=$this->db->query("select CASE is_switch

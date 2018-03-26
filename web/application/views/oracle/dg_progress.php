@@ -11,7 +11,8 @@ $arr = array('on_process' => $dg_group[0]['on_process'],
 						 'process_type' => $dg_process[0]['process_type'],
 						 'process_desc' => $dg_process[0]['process_desc'],
 						 'rate' => $dg_process[0]['rate'],
-						 'mrp_status' => $mrp_status['mrp_status']);
+						 'mrp_status' => $items['mrp_status'],
+						 'sta_role' => $items['sta_role']);
 
 $test = array('mrp_status' => $test['mrp_status']);
 						  		 

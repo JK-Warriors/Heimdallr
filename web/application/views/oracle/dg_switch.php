@@ -94,7 +94,7 @@
 		<div style="float:left; width:265px; height:30px; border:0px solid red;">
 		</div>
 		<div id="mrp_warning" style="float:left; width:400px; height:30px; border:1px solid red; color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>">
-			<label name="sta_mrp" class="control-label" style="font-size:18px;color:red; padding: 5px 0px 0px 20px;"> Warning: The MRP process is not running!!!</label>
+			<label id="lb_warning" class="control-label" style="font-size:18px;color:red; padding: 5px 0px 0px 20px;"></label>
 		</div>
 		
 </div>  
@@ -169,6 +169,21 @@ function checkUser(e){
 		  if(sta_db_role=="PHYSICAL STANDBY" && e.value == "SnapshotStop"){
 					bootbox.alert({
 			        		message: "数据库不在快照模式中，无法退出！",
+			        		buttons: {
+								        ok: {
+								            label: '确定',
+								            className: 'btn-success'
+								        }
+								    }
+			        	});
+			        	
+			    return false;
+		  }
+		}
+		else{
+			if(sta_db_role=="SNAPSHOT STANDBY"){
+					bootbox.alert({
+			        		message: "数据库已经处于快照模式，无法进行主备切换及MRP起停等操作！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -264,6 +279,11 @@ var on_startmrp="<?php echo $dg_group[0]['on_startmrp'] ?>" ;
 var on_stopmrp="<?php echo $dg_group[0]['on_stopmrp'] ?>" ;
   
 jQuery(document).ready(function(){
+		if(sta_db_role=="SNAPSHOT STANDBY"){
+			$("#lb_warning").html("The standby database is in Snapshot status.");
+			warningDiv.style.display="block";
+		}
+		
 		if(group_id != ""){
 			oTimer = setInterval("queryHandle(query_url)",2000);
 		} 
@@ -286,15 +306,22 @@ jQuery(document).ready(function(){
 });  
   
 function queryHandle(url){
-    $.post(url, {group_id:group_id}, function(json){ 
+    $.post(url, {group_id:group_id}, function(json){
+    		sta_db_role = json.sta_role; 					//update value for sta_db_role
         //var status = 1;
         last_switchover = json.on_switchover;
         
-        if(json.mrp_status=='1'){
-						warningDiv.style.display="none";
+        if(json.mrp_status!='1' || json.sta_role=='SNAPSHOT STANDBY'){
+						if(json.sta_role=='SNAPSHOT STANDBY'){
+							$("#lb_warning").html("The standby database is in Snapshot status.");
+						}
+						else{
+							$("#lb_warning").html("Warning: The MRP process is not running!!!");
+						}
+						warningDiv.style.display="block";
         }
         else{
-						warningDiv.style.display="block";
+						warningDiv.style.display="none";
         }
         
         
