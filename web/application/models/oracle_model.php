@@ -67,6 +67,46 @@ class Oracle_model extends CI_Model{
 		}
     }
     
+    
+    function get_dg_status_total(){
+        
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $dsn=isset($_GET["dsn"]) ? $_GET["dsn"] : "";
+        $sql = "SELECT
+										dg.id as group_id,
+										dg.group_name,
+										pdb.`host`  as p_host,
+										pdb.`port`  as p_port,
+										pdb.dsn		as p_dsn,
+										pdb.tags  as p_tags,
+										sdb.`host`  as s_host,
+										sdb.`port`  as s_port,
+										sdb.dsn    as s_dsn,
+										sdb.tags   as s_tags,
+										dgs.mrp_status,
+										dgs.delay_mins,
+										dgs.create_time
+									FROM db_cfg_oracle_dg dg,
+										db_cfg_oracle pdb,
+										db_cfg_oracle sdb,
+										oracle_dg_s_status dgs
+									WHERE dg.primary_db_id = pdb.id
+									AND dg.standby_db_id = sdb.id
+									AND dg.standby_db_id = dgs.server_id ";
+				if($host != ""){
+						$sql = $sql . "AND (pdb.`host` like '%" . $host . "%' or sdb.`host` like '%" . $host . "%')";
+				}
+				if($dsn != ""){
+						$sql = $sql . "AND (pdb.`dsn` like '%" . $dsn . "%' or sdb.`dsn` like '%" . $dsn . "%')";
+				}
+																
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
     function get_tablespace_total_record(){
         
         $this->db->select('*');

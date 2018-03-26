@@ -60,6 +60,10 @@ $lang['group_name'] = '组名';
 $lang['dg_group'] = 'DG 组';
 $lang['primary_db'] = '主库';
 $lang['standby_db'] = '备库';
+$lang['ip'] = 'IP';
+$lang['port'] = '端口';
+$lang['instance_name'] = '实例名';
+$lang['dg_delay'] = '延时';
 $lang['primary_dest_id'] = '主库归档传输编号';
 $lang['standby_dest_id'] = '备库归档传输编号';
 $lang['fb_retention'] = '闪回天数';
@@ -323,6 +327,8 @@ $lang['the_latest_acquisition_time']='最新监控时间';
 $lang['the_monitoring_process_is_not_started']='监控进程未启动或异常';
 $lang['please_input_host'] = '请输入主机';
 $lang['please_input_tags'] = '请输入标签';
+$lang['please_input_ip'] = '请输入IP';
+$lang['please_input_inst_name'] = '请输入实例名称';
 
 
 /* End of file mtop_content_lang.php */

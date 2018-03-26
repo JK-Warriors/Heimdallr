@@ -29,8 +29,10 @@ $lang['_Resource Monitor'] = '资源监控';
 $lang['_Performance Advisor'] = '性能顾问';
 
 $lang['_Oracle Monitor'] = 'Oracle';
-$lang['_DataGuard Monitor'] = 'DataGuard监控';
-$lang['_DataGuard Switch'] = 'DataGuard切换';
+$lang['_DataGuard Monitor'] = 'DataGuard';
+$lang['_DataGuard List'] = 'DG列表';
+$lang['_DataGuard Detail'] = 'DG详细';
+$lang['_DataGuard Manage'] = 'DG管理';
 $lang['_Tablespace Monitor'] = '表空间监控';
 $lang['_Flashback'] = '闪回';
 

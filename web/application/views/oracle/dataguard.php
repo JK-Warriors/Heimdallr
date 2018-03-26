@@ -5,9 +5,9 @@
 </div> -->
         
 <ul class="breadcrumb">
-            <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
-            <li class="active"><?php echo $this->lang->line('_Oracle Monitor'); ?></li><span class="divider">/</span></li>
-            <li class="active"><?php echo $this->lang->line('_DataGuard Monitor'); ?></li>
+            <li class="active"><a href="<?php echo site_url('wl_oracle/index'); ?>"><?php echo $this->lang->line('_Oracle Monitor'); ?></a></li><span class="divider">/</span></li>
+            <li class="active"><a href="<?php echo site_url('wl_oracle/dglist'); ?>"><?php echo $this->lang->line('_DataGuard List'); ?></a></li><span class="divider">/</span></li>
+            <li class="active"><?php echo $this->lang->line('_DataGuard Detail'); ?></li><span class="divider"></span></li>
             <span class="right"><?php echo $this->lang->line('the_latest_acquisition_time'); ?>:<?php if(!empty($datalist)){ echo $datalist[0]['create_time'];} else {echo $this->lang->line('the_monitoring_process_is_not_started');} ?></span>
 </ul>
 
@@ -45,7 +45,7 @@
     <div class="controls" style="display:inline-block;" >
       <select name="dg_group_id" id="dg_group_id" class="input-large">
         <?php foreach ($dg_group as $item):?>
-        <option value="<?php echo $item['id'];?>" <?php if ($item['id'] == $setval['id']) { ?>selected="selected"<?php } ?>><?php echo $item['id'];?>(<?php echo $item['group_name'];?>)</option>
+        <option value="<?php echo $item['id'];?>" <?php if ($item['id'] == $setval['id']) { ?>selected="selected"<?php } ?>><?php echo $item['group_name'];?></option>
         <?php endforeach;?>
         </select>
         <!-- <span class="help-inline"></span> -->
