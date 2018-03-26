@@ -33,22 +33,21 @@
       <thead>
         <tr style="font-size: 12px;">
 				<th colspan="1"><center></center></th>
-        <th colspan="4"><center><?php echo $this->lang->line('primary_db'); ?></center></th>
-        <th colspan="4"><center><?php echo $this->lang->line('standby_db'); ?></center></th>
-				<th colspan="3"><center><?php echo $this->lang->line('status'); ?></center></th>
-        
-        <th ></th>
+        <th colspan="3"><center><?php echo $this->lang->line('primary_db'); ?></center></th>
+        <th colspan="3"><center><?php echo $this->lang->line('standby_db'); ?></center></th>
+				<th colspan="2"><center><?php echo $this->lang->line('status'); ?></center></th>
+				<th colspan="1"></th>
 	   		</tr>
         <tr style="font-size: 12px;">
-        <th><?php echo $this->lang->line('group_name'); ?></th> 
-        <th><?php echo $this->lang->line('primary_db'); echo $this->lang->line('ip'); ?></th> 
-        <th><?php echo $this->lang->line('primary_db'); echo $this->lang->line('port'); ?></th> 
-				<th><?php echo $this->lang->line('primary_db'); echo $this->lang->line('instance_name'); ?></th>
-        <th><?php echo $this->lang->line('standby_db'); echo $this->lang->line('ip'); ?></th> 
-        <th><?php echo $this->lang->line('standby_db'); echo $this->lang->line('port'); ?></th> 
-				<th><?php echo $this->lang->line('standby_db'); echo $this->lang->line('instance_name'); ?></th>
-				<th><?php echo $this->lang->line('status'); ?></th>
-				<th><?php echo $this->lang->line('dg_delay'); ?></th>
+        <th><center><?php echo $this->lang->line('group_name'); ?></th> 
+        <th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('ip'); ?></th> 
+        <th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('port'); ?></th> 
+				<th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('instance_name'); ?></th>
+        <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('ip'); ?></th> 
+        <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('port'); ?></th> 
+				<th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('instance_name'); ?></th>
+				<th><center><?php echo $this->lang->line('status'); ?></th>
+				<th><center><?php echo $this->lang->line('dg_delay'); ?></th>
 				<th></th>
 	    </tr>
       </thead>
@@ -56,19 +55,16 @@
  <?php if(!empty($datalist)) {?>
  <?php foreach ($datalist  as $item):?>
     <tr style="font-size: 12px;">
-        <td><?php echo $item['group_name'] ?></td>
-        <td><?php echo $item['p_host'] ?></td>
-        <td><?php echo $item['p_port'] ?></td>
-        <td><?php echo $item['p_dsn'] ?></td>
-        <td><?php echo $item['s_host'] ?></td>
-        <td><?php echo $item['s_port'] ?></td>
-        <td><?php echo $item['s_dsn'] ?></td>
-        <td><?php echo $item['mrp_status'] ?></td>
-        <td><?php echo $item['delay_mins'] ?></td>
-				<td><a href="<?php echo site_url('wl_oracle/dataguard?dg_group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('detail'); ?></a></td>
-
-   
-        <td></td>
+        <td><center><?php echo $item['group_name'] ?></td>
+        <td><center><?php echo $item['p_host'] ?></td>
+        <td><center><?php echo $item['p_port'] ?></td>
+        <td><center><?php echo $item['p_dsn'] ?></td>
+        <td><center><?php echo $item['s_host'] ?></td>
+        <td><center><?php echo $item['s_port'] ?></td>
+        <td><center><?php echo $item['s_dsn'] ?></td>
+        <td><center><?php echo $item['mrp_status'] ?></td>
+        <td><center><?php echo $item['delay_mins'] ?></td>
+				<td><center><a href="<?php echo site_url('wl_oracle/dataguard?dg_group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('detail'); ?></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>
