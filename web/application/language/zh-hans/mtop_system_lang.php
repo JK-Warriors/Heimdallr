@@ -67,7 +67,7 @@ $lang['you_need_renew_license'] = 'License已达到使用期限.您需要续费�
 $lang['you_need_upgrade_license'] = '服务器已达到License限制.您需要升级您的License才能继续使用.';
 
 $lang['home'] = '主页';
-$lang['dashboard'] = '首页';
+$lang['dashboard'] = '面板';
 $lang['help'] = '帮助';
 $lang['profile'] = '个人面板';
 $lang['language'] = '语言';

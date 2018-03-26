@@ -3,379 +3,145 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
         
-<!-- pho页面代码-开始 -->
-<script src="lib/echarts4/echarts.min.js"></script>
-<script src="lib/echarts4/dark.js"></script>
-<style>
-body {
-    background: url(images/bg.png) left top repeat-y #2A2A2A !important;
-}
-
-.content {
-    background: #2A2A2A
-}
-
-footer hr {
-    border: 0px;
-    border-top: 1px solid #3c3b3b;
-}
-</style>
-<div class="indexpage">
-    <ul class="breadcrumb">
-        <li><a href="http://localhost/index.php">主页</a> <span class="divider">/</span></li>
-        <li class="active">工作台</li>
+<ul class="breadcrumb">
+            <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
+            <span class="right"><?php echo $this->lang->line('wlblazers_status'); ?>:<?php if($wlblazers_status['wlblazers_running']==1){ ?><span class="label label-success"><?php echo $this->lang->line('wlblazers_running'); ?></span><?php }else{?><span class="label label-important"><?php echo $this->lang->line('wlblazers_not_run'); ?></span><?php } ?>&nbsp;&nbsp; <?php echo $this->lang->line('last_check_time'); ?>:<?php echo $wlblazers_status['wlblazers_checktime']; ?></span>
     </ul>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="block">
-                        <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>oracle</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                            </div>
-                        </div>
-                        <div class="block-content">
-                            <div class="row">
-                                <div class="col-md-6 tbox1">11
-                                </div>
-                                <div class="col-md-6 tbox2">
-                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i>11</p>
-                                    <p class="box_times"><i class="iconfont icon-icon2"></i>222</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="block">
-                        <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>MySQL</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                            </div>
-                        </div>
-                        <div class="block-content">
-                            <div class="row">
-                                <div class="col-md-6 tbox1">99
-                                </div>
-                                <div class="col-md-6 tbox2">
-                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i>11</p>
-                                    <p class="box_times"><i class="iconfont icon-icon2"></i>222</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="block">
-                        <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>SQLServer</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                            </div>
-                        </div>
-                        <div class="block-content">
-                            <div class="row">
-                                <div class="col-md-6 tbox1">1
-                                </div>
-                                <div class="col-md-6 tbox2">
-                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i>11</p>
-                                    <p class="box_times"><i class="iconfont icon-icon2"></i>222</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
-                    <div class="col-md-12">
-                        <div class="block">
-                            <div class="navbar navbar-inner block-header">
-                                <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库同步延迟情况</div>
-                                <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                                </div>
-                            </div>
-                            <div class="block-content">
-                                <div id="container" style="height: 300px"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
-                    <div class="col-md-12">
-                        <div class="block">
-                            <div class="navbar navbar-inner block-header">
-                                <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库主机资源情况</div>
-                                <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                                </div>
-                            </div>
-                            <div class="block-content">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>数据库名</th>
-                                            <th style="width:120px;">cpu</th>
-                                            <th style="width:120px;">内存</th>
-                                            <th style="width:120px;">I/O</th>
-                                            <th style="width:120px;">网络</th>
-                                            <th style="width:120px;">数据库类型</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- √×!分别对应不同的<i>标签,参考demo -->
-                                        <tr>
-                                            <td><i class="iconfont icon-ziyuan"></i>demo</td>
-                                            <td><i class="iconfont icon-icon2"></i>demo</td>
-                                            <td><i class="iconfont icon-jinggao1"></i>demo</td>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                        </tr>
-                                        <tr>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                            <td><i class="iconfont icon-ziyuan"></i></td>
-                                            <td><i class="iconfont icon-icon2"></i></td>
-                                            <td><i class="iconfont icon-jinggao1"></i></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="block">
-                        <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库容灾同步情况</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                            </div>
-                        </div>
-                        <div class="block-content">
-                            <div class="in4">
-                                <ul>
-                                    <li>
-                                        <div class="in4_1">Demo</div>
-                                        <div class="cf">
-                                            <div class="c1">
-                                                <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
-                                                    <div class="cschedule cschedule_green" style="height:30%;"></div>
-                                                    <!-- 绿色cschedule_green,黄色cschedule_yellow,红色cschedule_red style="height:xx%;"里面的百分数通过实际情况计算显示不同高度 -->
-                                                </div>
-                                            </div>
-                                            <div class="c2right">
-                                                <div class="c2 co1">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">High</p>
-                                                    </div>
-                                                </div>
-                                                <div class="c2 co2">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">Medium</p>
-                                                    </div>
-                                                </div>
-                                                <div class="c2 co3">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">Low</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                     <li>
-                                        <div class="in4_1">Demo</div>
-                                        <div class="cf">
-                                            <div class="c1">
-                                                <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
-                                                    <div class="cschedule cschedule_yellow" style="height:60%;"></div>
-                                                    <!-- 绿色cschedule_green,黄色cschedule_yellow,红色cschedule_red style="height:xx%;"里面的百分数通过实际情况计算显示不同高度 -->
-                                                </div>
-                                            </div>
-                                            <div class="c2right">
-                                                <div class="c2 co1">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">High</p>
-                                                    </div>
-                                                </div>
-                                                <div class="c2 co2">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">Medium</p>
-                                                    </div>
-                                                </div>
-                                                <div class="c2 co3">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">Low</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                     <li>
-                                        <div class="in4_1">Demo</div>
-                                        <div class="cf">
-                                            <div class="c1">
-                                                <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
-                                                    <div class="cschedule cschedule_red" style="height:100%;"></div>
-                                                    <!-- 绿色cschedule_green,黄色cschedule_yellow,红色cschedule_red style="height:xx%;"里面的百分数通过实际情况计算显示不同高度 -->
-                                                </div>
-                                            </div>
-                                            <div class="c2right">
-                                                <div class="c2 co1">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">High</p>
-                                                    </div>
-                                                </div>
-                                                <div class="c2 co2">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">Medium</p>
-                                                    </div>
-                                                </div>
-                                                <div class="c2 co3">
-                                                    <div>
-                                                        <p class="c3">99</p>
-                                                        <p class="c4">Low</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="block">
-                        <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>告警显示</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
-                            </div>
-                        </div>
-                        <div class="block-content">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <div>
-                                            <th>数据库名</th>
-                                            <th style="width:120px;">类型</th>
-                                            <th>告警内容</th>
-                                        </div>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>demo</td>
-                                        <td>demo</td>
-                                        <td>demo</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+ 
+
+<div class="container-fluid">
+<div class="row-fluid">
+ 
+<script src="lib/bootstrap/js/bootstrap-switch.js"></script>
+<link href="lib/bootstrap/css/bootstrap-switch.css" rel="stylesheet"/>
+                    
+<div class="ui-state-default ui-corner-all" style="height: 45px;" >
+<p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
+<form name="form" class="form-inline" method="get" action="<?php echo site_url('index/index') ?>" >
+
+  
+  <select name="db_type" class="input-small" style="width: 120px;">
+  <option value="" <?php if($setval['db_type']=='') echo "selected"; ?> ><?php echo $this->lang->line('db_type'); ?></option>
+  <option value="mysql" <?php if($setval['db_type']=='mysql') echo "selected"; ?> ><?php echo $this->lang->line('mysql'); ?></option>
+  <option value="oracle" <?php if($setval['db_type']=='oracle') echo "selected"; ?> ><?php echo $this->lang->line('oracle'); ?></option>
+  <option value="sqlserver" <?php if($setval['db_type']=='sqlserver') echo "selected"; ?> ><?php echo $this->lang->line('sqlserver'); ?></option>
+  <!-- <option value="mongodb" <?php if($setval['db_type']=='mongodb') echo "selected"; ?> ><?php echo $this->lang->line('mongodb'); ?></option>
+  <option value="redis" <?php if($setval['db_type']=='redis') echo "selected"; ?> ><?php echo $this->lang->line('redis'); ?></option> -->
+  
+  </select>
+  
+  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
+ <input type="text" id="tags"  name="tags" value="<?php echo $setval['tags']; ?>" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
+  
+  
+  <select name="order" class="input-small" style="width: 100px;">
+  <option value=""><?php echo $this->lang->line('sort'); ?></option>
+  <option value="db_type_sort" <?php if($setval['order']=='db_type_sort') echo "selected"; ?> ><?php echo $this->lang->line('default'); ?></option>
+  <option value="host" <?php if($setval['order']=='host') echo "selected"; ?> ><?php echo $this->lang->line('host'); ?></option>
+  <option value="db_type" <?php if($setval['order']=='db_type') echo "selected"; ?> ><?php echo $this->lang->line('db_type'); ?></option>
+  <option value="tags" <?php if($setval['order']=='tags') echo "selected"; ?> ><?php echo $this->lang->line('tags'); ?></option>
+
+  </select>
+  <select name="order_type" class="input-small" style="width: 70px;">
+  <option value="asc" <?php if($setval['order_type']=='asc') echo "selected"; ?> ><?php echo $this->lang->line('asc'); ?></option>
+  <option value="desc" <?php if($setval['order_type']=='desc') echo "selected"; ?> ><?php echo $this->lang->line('desc'); ?></option>
+  </select>
+
+  <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
+  <a href="<?php echo site_url('index/index') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>
+  <button id="refresh" class="btn btn-info"><i class="icon-refresh"></i> <?php echo $this->lang->line('refresh'); ?></button>
+</form>                
 </div>
-<script type="text/javascript">
-var dom = document.getElementById("container");
-var myChart = echarts.init(dom, 'dark');
-var app = {};
-option = null;
-app.title = '多 X 轴示例';
-
-var colors = ['#5793f3', '#d14a61', '#675bba'];
 
 
-option = {
-    color: colors,
+<div class="well monitor " style=" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  'font-family: 微软雅黑;' ?>  ;">
+    <table class="table table-hover table-condensed tooltip-wlblazers">
+      
+      <thead>
+        <tr style="font-size: 13px;">
+        <th colspan="4"><center><?php echo $this->lang->line('servers'); ?></center></th>
+        <th colspan="7"><center><?php echo $this->lang->line('db'); ?></center></th>
+        <th colspan="7"><center><?php echo $this->lang->line('os'); ?></center></th>
+        <th ></th>
+        </tr>
+        <tr style="font-size: 12px;" >
+        <th><?php echo $this->lang->line('type'); ?></th> 
+        <th><?php echo $this->lang->line('host'); ?></th>
+        <th><?php echo $this->lang->line('role'); ?></th> 
+        <th><?php echo $this->lang->line('tags'); ?></th>
+        <th><?php echo $this->lang->line('version'); ?></th>
+        <th><?php echo $this->lang->line('connect'); ?></th>
+        <th><?php echo $this->lang->line('sessions'); ?></th>
+        <th><?php echo $this->lang->line('actives'); ?></th>
+        <th><?php echo $this->lang->line('waits'); ?></th>
+        <th><?php echo $this->lang->line('repl'); ?></th>
+        <th><?php echo $this->lang->line('delay'); ?></th>
+        <th><?php echo $this->lang->line('tbs'); ?></th>
+        <th><?php echo $this->lang->line('snmp'); ?></th>
+        <th><?php echo $this->lang->line('process'); ?></th>
+        <th><?php echo $this->lang->line('load'); ?></th>
+        <th><?php echo $this->lang->line('cpu'); ?></th>
+        <th><?php echo $this->lang->line('mem'); ?></th>
+        <th><?php echo $this->lang->line('net'); ?></th>
+        <th><?php echo $this->lang->line('disk'); ?></th>
+        <th><?php echo $this->lang->line('chart'); ?></th>
+      </tr>
+      </thead>
+      <tbody>
+ <?php if(!empty($db_status)) {?>
+ <?php foreach ($db_status  as $item):?>
+    <tr style="font-size: 12px;">
+        <td><?php echo check_dbtype($item['db_type']) ?></td>
+        <td><?php echo $item['host'] ?>:<?php echo $item['port'] ?></td>
+        <td><?php echo check_db_status_role($item['role']) ?></td>
+        <td><?php echo $item['tags'] ?></td>
+        <td><?php echo check_value($item['version']) ?></td>
+        <td><?php echo check_db_status_level($item['connect'],$item['connect_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['sessions'],$item['sessions_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['actives'],$item['actives_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['waits'],$item['waits_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['repl'],$item['repl_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['repl_delay'],$item['repl_delay_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['tablespace'],$item['tablespace_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['snmp'],$item['snmp_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['process'],$item['process_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['load_1'],$item['load_1_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['cpu'],$item['cpu_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['memory'],$item['memory_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['network'],$item['network_tips']) ?></td>
+        <td><?php echo check_db_status_level($item['disk'],$item['disk_tips']) ?></td>
+        <td><a href="<?php echo site_url('wl_'.$item['db_type'].'/chart/'.$item['server_id']); ?>"><img src="./images/chart.gif"/></a></td>
+  </tr>
+ <?php endforeach;?>
+ <?php }else{  ?>
+<tr>
+<td colspan="16">
+<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+</td>
+</tr>
+<?php } ?>      
+      </tbody>
+    </table>
+</div>
 
-    tooltip: {
-        trigger: 'none',
-        axisPointer: {
-            type: 'cross'
-        }
-    },
-    legend: {
-        data: ['2015 降水量', '2016 降水量']
-    },
-    grid: {
-        top: 70,
-        bottom: 50
-    },
-    xAxis: [{
-        type: 'category',
-        axisTick: {
-            alignWithLabel: true
-        },
-        axisLine: {
-            onZero: false,
-            lineStyle: {
-                color: colors[1]
-            }
-        },
-        axisPointer: {
-            label: {
-                formatter: function(params) {
-                    return '降水量  ' + params.value + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                }
-            }
-        },
-        data: ["2016-1", "2016-2", "2016-3", "2016-4", "2016-5", "2016-6", "2016-7", "2016-8", "2016-9", "2016-10", "2016-11", "2016-12"]
-    }, {
-        type: 'category',
-        axisTick: {
-            alignWithLabel: true
-        },
-        axisLine: {
-            onZero: false,
-            lineStyle: {
-                color: colors[0]
-            }
-        },
-        axisPointer: {
-            label: {
-                formatter: function(params) {
-                    return '降水量  ' + params.value + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                }
-            }
-        },
-        data: ["2015-1", "2015-2", "2015-3", "2015-4", "2015-5", "2015-6", "2015-7", "2015-8", "2015-9", "2015-10", "2015-11", "2015-12"]
-    }],
-    yAxis: [{
-        type: 'value'
-    }],
-    series: [{
-        name: '2015 降水量',
-        type: 'line',
-        xAxisIndex: 1,
-        smooth: true,
-        data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-    }, {
-        name: '2016 降水量',
-        type: 'line',
-        smooth: true,
-        data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 46.6, 55.4, 18.4, 10.3, 0.7]
-    }]
-};;
-if (option && typeof option === "object") {
-    myChart.setOption(option, true);
-}
-</script>
-<!-- pho页面代码-结束 -->
+ <script type="text/javascript">
+    $('#refresh').click(function(){
+        document.location.reload(); 
+    })
+	
+
+     $(function(){
+		// tooltip demo
+    	$('.tooltip-wlblazers').tooltip({
+      		selector: "a[data-toggle=tooltip]"
+    	})
+		
+	 })
+	
+
+$(".thead").pin()
+ </script>
 
 
 

@@ -75,8 +75,10 @@
                 <ul class="nav pull-right">
 					<?php 
 						$model = $this->uri->segment(1);
+						$view = $this->uri->segment(2);
 					?>
-                    <li <?php if($model=='index'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('home'); ?></a></li>
+                    <li <?php if($model=='index' && ($view=='index' || $view=='')){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('home'); ?></a></li>
+                    <li <?php if($model=='index' && $view=='dashboard'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/dashboard'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('dashboard'); ?></a></li>
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-th-large"></i><?php echo $this->lang->line('database'); ?>
@@ -147,6 +149,7 @@
     <?php $menus = $this->user_model->get_user_menus(); //print_r($menus);?>
     <div class="sidebar-nav cf" <?php if($this->input->cookie('lang_current')=='zh-hans') echo  "style='font-family: 微软雅黑;font-size:12px'" ?> >
         <li <?php if(is_active_menu($this->user_model->get_user_current_action(),"index/") || is_active_menu($this->user_model->get_user_current_action(),"index/index")) echo "class=action"; ?> ><a href="<?php echo site_url('index')?>" class="nav-header" ><i class="icon-home"></i><?php echo $this->lang->line('home'); ?></a></li>
+        <li <?php if(is_active_menu($this->user_model->get_user_current_action(),"index/dashboard")) echo "class=action"; ?> ><a href="<?php echo site_url('index/dashboard')?>" class="nav-header" ><i class="icon-home"></i><?php echo $this->lang->line('dashboard'); ?></a></li>
         <?php if (isset($menus)):?>
           	<?php foreach($menus as $menu):?>
             <li><a href="#<?php echo $menu['parent_url'];?>" class="nav-header collapsed" data-toggle="collapse"><i class="<?php echo $menu['parent_icon'];?>"></i><?php echo $this->lang->line('_'.$menu['parent_title']); ?><i class="icon-chevron-up" ></i></a></li>
