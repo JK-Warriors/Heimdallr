@@ -161,6 +161,42 @@ $lang['open_files'] = '已打开文件数';
 $lang['table_open_cache'] = '表缓存数';
 $lang['open_tables'] = '已打开表';
 
+##innodb language
+$lang['buffer_pool'] = '缓存池';
+$lang['pages'] = '页';
+$lang['rows'] = '行数';
+$lang['buffer_pool_instances'] = '实例';
+$lang['buffer_pool_size'] = '大小';
+$lang['pages_total'] = '总页数';
+$lang['pages_data'] = '数据页';
+$lang['pages_dirty'] = '脏页';
+$lang['pages_flushed'] = '刷新页';
+$lang['pages_free'] = '空闲页';
+$lang['io_capacity'] = 'IO容量';
+$lang['read_io_threads'] = '读IO';
+$lang['write_io_threads'] = '写IO';
+$lang['read'] = '读取';
+$lang['inserted'] = '插入';
+$lang['updated'] = '更新';
+$lang['deleted'] = '删除';
+$lang['persecond'] = '每秒';
+
+        
+##Key Cache language      
+$lang['key_buffer'] = '键值缓存';
+$lang['key_blocks'] = '键值块';
+$lang['rate'] = '使用率';
+$lang['key_buffer_size'] = '键值缓存大小';
+$lang['sort_buffer_size'] = '排序缓存大小';
+$lang['join_buffer_size'] = '连接缓存大小';
+$lang['key_blocks_unused'] = '未使用的块';
+$lang['key_blocks_used'] = '已使用的块';
+$lang['key_blocks_not_flushed'] = '没刷新的块';
+$lang['key_blocks_used_rate'] = '块使用百分率';
+$lang['key_buffer_read_rate'] = '读缓存百分率';
+$lang['key_buffer_write_rate'] = '写缓存百分率';
+
+
 #mongodb language
 $lang['connections_current'] = '当前连接数';
 $lang['active_clients'] = '活动客户端数';
@@ -220,6 +256,9 @@ $lang['mail_to_list'] = '邮件接收人';
 #os
 $lang['disk'] = '磁盘';
 $lang['disk_io'] = '磁盘IO';
+$lang['fdisk'] = '磁盘';
+$lang['disk_io_reads'] = '磁盘读IO';
+$lang['disk_io_writes'] = '磁盘写IO';
 $lang['snmp'] = 'SNMP';
 $lang['process'] = '进程数';
 $lang['load'] = '负载';
