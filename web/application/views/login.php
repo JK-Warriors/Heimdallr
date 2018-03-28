@@ -35,7 +35,7 @@
             color: #fff;
             font-weight: bold;
         }
-		body{background:#354053;}
+		body{background:#354053 !important;}
 		.navbar .navbar-inner{background:none;border:0px;height:auto;box-shadow:none;text-align:center;}
 		.navlogo img{width:180px;margin:0 auto;}
 		.navbar .brand{float:none;width:100%;text-align:center;}
@@ -74,7 +74,7 @@
 	<div class="navbar">
         <div class="navbar-inner">
 		<div class="navlogo"><img src="./images/logo.png"/></div>
-        <a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
+               <a class="brand" href="<?php echo site_url('index')?>">&nbsp;<span class="first"><?php echo $this->lang->line('wlblazers'); ?></span> <span class="second"><?php echo $this->lang->line('database_monitor_system'); ?></span></a>
         </div>
     </div>
     <?php if ($error_code!==0) { ?>
