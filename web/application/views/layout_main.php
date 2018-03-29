@@ -17,7 +17,7 @@
     <link href="stylesheets/style.css" rel="stylesheet" type="text/css">
     <link href="stylesheets/wlblazers.css" rel="stylesheet" type="text/css">
     
-    <script src="lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="lib/jquery-2.2.4.min.js" type="text/javascript"></script>
     <script src="lib/bootstrap/js/jquery-ui-1.10.0.custom.min.js"></script>
 	
 	
