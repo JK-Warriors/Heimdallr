@@ -41,7 +41,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get database role
     str='select database_role from v$database'
     role=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '获取数据库角色成功。', 20, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '获取数据库角色成功', 20, 2)
     logger.info("The current database role is: " + role)
     
     # get database version
@@ -52,16 +52,16 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get instance status
     str='select status from v$instance'
     status=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '获取数据库角色成功。', 20, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '获取数据库角色成功', 20, 2)
     logger.info("The current instance status is: " + status)
 
     if version <=10:
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '停止快照状态失败，当前数据库版本不支持。', 90, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '停止快照状态失败，当前数据库版本不支持', 90, 2)
         return result;
     	
     	
     if role=="SNAPSHOT STANDBY":
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色成功。', 50, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色成功', 50, 2)
         
         if status != "MOUNTED":
             logger.info("Instance is not in MOUNT, startup mount first... ")
@@ -81,18 +81,20 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', rea_str, 90, 2)
             logger.info("Convert to physical standby failed!!! ")
         else:
-            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '停止快照模式成功。', 90, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '停止快照模式成功', 90, 2)
             logger.info("Convert to physical standby successfully.")
             result=0
             
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '正在开启MRP进程...', 90, 0)
         sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
         sqlplus.stdin.write(bytes("shutdown immediate;"+os.linesep))
         sqlplus.stdin.write(bytes("startup mount;"+os.linesep))
         sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
         sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
         out, err = sqlplus.communicate()
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '开启MRP进程成功', 90, 0)
     else:
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是SNAPSHOT STANDBY，不能停止快照。', 90)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是SNAPSHOT STANDBY，不能停止快照', 90)
 	 
     return result;
 
@@ -169,7 +171,7 @@ if __name__=="__main__":
     else:
         try:
             common.operation_lock(mysql_conn, group_id, 'SNAPSHOT_STOP')
-            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '准备停止快照模式。', 10, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '准备停止快照模式', 10, 2)
             res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
             if res ==0:
                 update_mrp_status(mysql_conn, sta_id)

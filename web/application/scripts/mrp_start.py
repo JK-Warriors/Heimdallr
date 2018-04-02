@@ -41,7 +41,7 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get database role
     str='select database_role from v$database'
     role=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取数据库角色成功。', 20, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取数据库角色成功', 20, 2)
     logger.info("The current database role is: " + role)
 	
     # get database version
@@ -51,13 +51,13 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get mrp process status
     str="""select count(1) from gv$session where program like '%(MRP0)' """
     mrp_process=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取MRP进程状态成功。', 30, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取MRP进程状态成功', 30, 2)
 	
     if role=="PHYSICAL STANDBY":
-        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色成功。', 50, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色成功', 50, 2)
         if(mrp_process > 0):
             logger.info("The mrp process is already active... ")
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证MRP进程，已经是激活状态。', 70, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证MRP进程，已经是激活状态', 70, 2)
         else:
             logger.info("Now we are going to start the mrp process... ")
             common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '正在开启MRP进程...', 70, 2)
@@ -67,11 +67,11 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             logger.info(out)
             #logger.error(err)
             if err is None:
-                common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', 'MRP进程开启成功。', 90, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', 'MRP进程开启成功', 90, 2)
                 logger.info("Start the MRP process successfully.")
                 result=0
     else:
-        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP。', 90)
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP', 90)
 	
     return result;
 
@@ -169,7 +169,7 @@ if __name__=="__main__":
     else:
         try:
             common.operation_lock(mysql_conn, group_id, 'MRP_START')
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '准备开始启动MRP进程。', 10, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '准备开始启动MRP进程', 10, 2)
             res = start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
             if res ==0:
                 update_mrp_status(mysql_conn, sta_id)

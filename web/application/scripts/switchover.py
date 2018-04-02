@@ -42,7 +42,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
     # get database role
     str='select database_role from v$database'
     role=oracle.GetSingleValue(p_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '获取数据库角色成功。', 15, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '获取数据库角色成功', 15, 2)
     logger.info("The current database role is: " + role)
 	
     # get switchover status
@@ -55,7 +55,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
     version=oracle.GetSingleValue(p_conn, str)
 	
     if role=="PRIMARY":
-        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功。', 20, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功', 20, 2)
         logger.info("Now we are going to switch database %s to physical standby." %(pri_id))
         if switch_status=="TO STANDBY" or switch_status=="SESSIONS ACTIVE" or switch_status=="FAILED DESTINATION":
             logger.info("Switchover to physical standby... ")
@@ -86,25 +86,25 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
                 str='select open_mode from v$database'
                 open_mode=oracle.GetSingleValue(p_conn, str)
                 if open_mode=="READ ONLY" or open_mode=="READ ONLY WITH APPLY" :
-                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库已经成功启动到open readonly状态。', 45, 2)
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库已经成功启动到open readonly状态', 45, 2)
                     logger.info("Alter standby database to open successfully.")
                 else:
-                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库已经成功启动到open readonly状态。', 45, 2)
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库已经成功启动到open readonly状态', 45, 2)
                     logger.error("Start MRP process failed!")
 
             str='select database_role from v$database'
             role=oracle.GetSingleValue(p_conn, str)
             if role=="PHYSICAL STANDBY":
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '主库已经成功切换成备库。', 50, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '主库已经成功切换成备库', 50, 2)
                 logger.info("Switchover to physical standby successfully.")
                 result=0
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '主库切换备库失败。', 50, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '主库切换备库失败', 50, 2)
                 logger.info("Switchover to physical standby failed.")
                 result=-1
             
     else:
-        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是主库，不能切换到备库。', 90, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是主库，不能切换到备库', 90, 2)
         logger.error("You can not switchover a standby database to physical standby!")
         
     return result;
@@ -120,7 +120,7 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get database role
     str='select database_role from v$database'
     role=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '获取数据库角色成功。', 55, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '获取数据库角色成功', 55, 2)
     logger.info("The current database role is: " + role)
 	
     # get switchover status
@@ -130,7 +130,7 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
 	
 
     if role=="PHYSICAL STANDBY":
-        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功。', 70, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功', 70, 2)
         logger.info("Now we are going to switch database %s to primary." %(sta_id))
         if switch_status=="NOT ALLOWED" or switch_status=="SWITCHOVER PENDING":
             show_str="数据库状态为 %s，无法进行切换，尝试重启MRP进程" %(switch_status)
@@ -148,10 +148,10 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             str="select count(1) from gv$session where program like '%(MRP0)' "
             mrp_status=oracle.GetSingleValue(s_conn, str)
             if mrp_status > 0:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库MRP进程成功。', 72, 0)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库MRP进程成功', 72, 0)
                 logger.info("Restart the MRP process successfully.")
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库MRP进程失败。', 72, 0)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库MRP进程失败', 72, 0)
                 logger.info("Restart the MRP process failed.")
 
 
@@ -163,7 +163,7 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
                 if timeout > 30:
                     break
                 	
-                show_str="数据库状态为 %s，无法进行切换。" %(switch_status)
+                show_str="数据库状态为 %s，无法进行切换" %(switch_status)
                 common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_str, 72, 2)
                 str='select switchover_status from v$database'
                 switch_status=oracle.GetSingleValue(s_conn, str)
@@ -187,11 +187,11 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         str='select database_role from v$database'
         db_role=oracle.GetSingleValue(s_conn, str)
         if db_role=="PRIMARY":
-            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库已经成功切换成主库。', 90, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库已经成功切换成主库', 90, 2)
             logger.info("Switchover standby database to primary successfully.")
             result = 0
         else:
-            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库切换主库失败。', 90, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '备库切换主库失败', 90, 2)
             logger.info("Switchover standby database to primary failed.")
             result = -1
         	
@@ -308,11 +308,11 @@ if __name__=="__main__":
         p_conn = oracle.ConnectOracleAsSysdba(p_conn_str)
         s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
         if p_conn is None:
-            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '连接主库失败，请根据相应日志查看原因。', 10, 5)
+            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '连接主库失败，请根据相应日志查看原因', 10, 5)
             logger.error("Connect to primary database error, exit!!!")
             sys.exit(2)
         if s_conn is None:
-            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '连接备库失败，请根据相应日志查看原因。', 10, 5)
+            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '连接备库失败，请根据相应日志查看原因', 10, 5)
             logger.error("Connect to standby database error, exit!!!")
             sys.exit(2)
         
@@ -323,9 +323,9 @@ if __name__=="__main__":
         # try to kill all "(LOCAL=NO)" connections in database
         try:
             if p_count > 1 or s_count > 1:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '正在尝试杀掉"(LOCAL=NO)"的会话，并关闭集群的其他节点。可能需要一段时间，请耐心等待...', 5, 0)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '正在尝试杀掉"(LOCAL=NO)"的会话，并关闭集群的其他节点可能需要一段时间，请耐心等待...', 5, 0)
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '正在尝试杀掉"(LOCAL=NO)"的会话。可能需要一段时间，请耐心等待...', 5, 0)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '正在尝试杀掉"(LOCAL=NO)"的会话可能需要一段时间，请耐心等待...', 5, 0)
     	  		
             common.kill_sessions(mysql_conn, p_conn, pri_id)
             common.kill_sessions(mysql_conn, s_conn, sta_id)
@@ -341,17 +341,17 @@ if __name__=="__main__":
         s_count=oracle.GetSingleValue(s_conn, str)
         show_msg=""
         if p_count > 1 and s_count > 1:
-            show_msg='关闭实例失败，主库端依然有 %s 个存活实例，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换。' %(p_count, s_count)
+            show_msg='关闭实例失败，主库端依然有 %s 个存活实例，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换' %(p_count, s_count)
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_msg, 10, 5)
             logger.error("Shutdown instance failed. There are still more than one instance active both in primary and standby.")
             sys.exit(2)
         elif p_count > 1:
-            show_msg='关闭实例失败，主库端依然有 %s 个存活实例，请手工关闭后重新尝试切换。' %(p_count)
+            show_msg='关闭实例失败，主库端依然有 %s 个存活实例，请手工关闭后重新尝试切换' %(p_count)
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_msg, 10, 5)
             logger.error("Shutdown instance failed. There are still more than one instance active in primary.")
             sys.exit(2)
         elif s_count > 1:
-            show_msg='关闭实例失败，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换。' %(s_count)
+            show_msg='关闭实例失败，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换' %(s_count)
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_msg, 10, 5)
             logger.error("Shutdown instance failed. There are still more than one instance active in standby.")
             sys.exit(2)
@@ -361,7 +361,7 @@ if __name__=="__main__":
                
         # 正式开始切换  
         try:
-            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '准备执行主备切换。', 10, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '准备执行主备切换', 10, 2)
         
             res_2s=switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id)
 
