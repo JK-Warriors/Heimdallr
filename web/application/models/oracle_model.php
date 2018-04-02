@@ -75,24 +75,21 @@ class Oracle_model extends CI_Model{
         $sql = "SELECT
 										dg.id as group_id,
 										dg.group_name,
+										pdb.`id`  as p_id,
 										pdb.`host`  as p_host,
 										pdb.`port`  as p_port,
 										pdb.dsn		as p_dsn,
 										pdb.tags  as p_tags,
+										sdb.`id`  as s_id,
 										sdb.`host`  as s_host,
 										sdb.`port`  as s_port,
 										sdb.dsn    as s_dsn,
-										sdb.tags   as s_tags,
-										dgs.mrp_status,
-										dgs.delay_mins,
-										dgs.create_time
+										sdb.tags   as s_tags
 									FROM db_cfg_oracle_dg dg,
 										db_cfg_oracle pdb,
-										db_cfg_oracle sdb,
-										oracle_dg_s_status dgs
+										db_cfg_oracle sdb
 									WHERE dg.primary_db_id = pdb.id
-									AND dg.standby_db_id = sdb.id
-									AND (dg.primary_db_id = dgs.server_id or dg.standby_db_id = dgs.server_id)";
+									AND dg.standby_db_id = sdb.id";
 				if($host != ""){
 						$sql = $sql . "AND (pdb.`host` like '%" . $host . "%' or sdb.`host` like '%" . $host . "%')";
 				}
@@ -106,6 +103,18 @@ class Oracle_model extends CI_Model{
            return $query->result_array(); 
         }
     }
+    
+    
+    function get_standby_total(){
+        $sql = "select * from oracle_dg_s_status where (server_id, id) in (select server_id, max(id) from oracle_dg_s_status t group by server_id)";
+										
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
     
     function get_tablespace_total_record(){
         

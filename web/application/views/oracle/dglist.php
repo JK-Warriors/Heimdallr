@@ -62,8 +62,24 @@
         <td><center><?php echo $item['s_host'] ?></td>
         <td><center><?php echo $item['s_port'] ?></td>
         <td><center><?php echo $item['s_dsn'] ?></td>
-        <td><center><?php echo $item['mrp_status'] ?></td>
-        <td><center><?php echo $item['delay_mins'] ?></td>
+        <td><center><?php if(!empty($sta_list)) { ?>
+ 										<?php foreach ($sta_list as $s_item):?>
+ 										<?php    if($s_item['server_id'] == $item['s_id']){  ?>
+ 									  <?php    		if($s_item['mrp_status'] == '1'){echo "<img src='images/ok.png' />"; echo $this->lang->line('mrp_on');   ?>
+ 									  <?php    			}else{ ?>
+ 									  <?php        	echo "<img src='images/critical.png' />"; echo $this->lang->line('mrp_stop'); ?>
+ 									  <?php         } ?>
+ 									  <?php    	} ?>
+ 										<?php endforeach; ?>
+ 										<?php } ?></td>
+ 										
+        <td><center><?php if(!empty($sta_list)) { ?>
+ 										<?php foreach ($sta_list as $s_item):?>
+ 										<?php    if($s_item['server_id'] == $item['s_id']){  ?>
+ 									  <?php    		echo $s_item['delay_mins'];   ?>
+ 									  <?php    	} ?>
+ 										<?php endforeach; ?>
+ 										<?php } ?></td>
 				<td><center><a href="<?php echo site_url('wl_oracle/dataguard?dg_group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('detail'); ?></a></td>
 	</tr>
  <?php endforeach;?>

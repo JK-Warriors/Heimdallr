@@ -107,18 +107,20 @@
 
 
 <div class="dgc3c co2">
-		  <label name="sta_status" class="control-label" for=""><?php echo $this->lang->line('standby_db'); ?>: </label>
-            <label name="sta_scn" class="control-label" for="">当前SCN：<?php echo $standby_db[0]['s_scn'] ?></label>
-            <label name="sta_time" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
-            <hr>
-            <label name="sta_thread1" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
-            <label name="sta_thread2" class="control-label" style="<?php if($standby_db[0]['s_mrp_status']==0){echo "display: none;";} ?>" for=""><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
-            <hr>
-            <label name="sta_fb_status" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>">容灾库闪回状态：未启动</label>
-            <label name="sta_fb_time" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $standby_db[0]['flashback_e_time'] ?></label>
-            <label name="sta_fb_pct" class="control-label" >闪回空间使用率：<?php echo $standby_db[0]['flashback_space_used'] ?>%</label>
-            <label name="sta_mrp" class="control-label" style="color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>" for=""> Warning: The MRP process is not running!!!</label>
-           
+		  <label name="sta_status" class="control-label" ><?php echo $this->lang->line('standby_db'); ?>: </label>
+      <label name="sta_scn" class="control-label" >当前SCN：<?php echo $standby_db[0]['s_scn'] ?></label>
+      <label name="sta_time" class="control-label"  ><?php echo $this->lang->line('db_time'); ?>：<?php echo $standby_db[0]['s_db_time'] ?></label>
+      <hr>
+      <label name="sta_thread1" class="control-label" ><?php echo $this->lang->line('recovery_rate'); ?>: <?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</label>
+      <label name="sta_thread2" class="control-label" ><?php echo $this->lang->line('curr_recover'); ?>: thread#<?php echo $standby_db[0]['s_thread'] ?> sequence <?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+      <hr>
+      <label name="sta_fb_status" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>">容灾库闪回状态：未启动</label>
+      <label name="sta_fb_time" class="control-label" style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>">最早闪回时间：<?php echo $standby_db[0]['flashback_e_time'] ?></label>
+      <label name="sta_fb_pct" class="control-label" >闪回空间使用率：<?php echo $standby_db[0]['flashback_space_used'] ?>%</label>
+
+      <div id="mrp_warning" >
+			<label id="lb_warning" class="control-label" style="color:red;"></label>
+      </div>
 </div>
 </div>
 
@@ -126,10 +128,33 @@
 </div>
 <div style="clear:both"></div>
 </div>
+
+
 </div>
 
 
 <script type="text/javascript">
+var warningDiv = document.getElementById("mrp_warning");
+var sta_db_role = "<?php echo $standby_db[0]['database_role'] ?>" ;
+var mrp_status = "<?php echo $standby_db[0]['s_mrp_status'] ?>" ;
+
+jQuery(document).ready(function(){
+		if(sta_db_role=="SNAPSHOT STANDBY"){
+			$("#lb_warning").html("The standby database is in Snapshot status.");
+			warningDiv.style.display="block";
+		}
+		else if(mrp_status=="0"){
+			$("#lb_warning").html("Warning: The MRP process is not running!!!");
+			warningDiv.style.display="block";
+		}
+		else{
+			warningDiv.style.display="none";
+		}
+		
+		
+});  
+
+
 function refresh()
 {
        window.location.reload();

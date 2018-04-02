@@ -75,6 +75,8 @@ $lang['db_port'] = '监听端口';
 $lang['db_time'] = '数据库时间';
 $lang['recovery_rate'] = '恢复速度';
 $lang['curr_recover'] = '当前恢复';
+$lang['mrp_on'] = '同步中';
+$lang['mrp_stop'] = '停止';
 
 $lang['connections_usage'] = '连接池使用';
 $lang['open_files_usage'] = '打开文件数';

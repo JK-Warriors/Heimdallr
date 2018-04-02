@@ -1,5 +1,5 @@
-#!//bin/env python
-#coding:utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import os
 import sys
 import string
@@ -111,6 +111,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         flashback_on = oracle.get_database(conn,'flashback_on')
         #earliest_fbscn = oracle.get_earliest_fbscn(conn)
         flashback_earliest_time = oracle.get_earliest_fbtime(conn)
+        print "flashback_earliest_time: %s" %(flashback_earliest_time)
         flashback_space_used = oracle.get_flashback_space_used(conn)
         flashback_retention = parameters['db_flashback_retention_target']
 
@@ -321,14 +322,16 @@ def main():
     func.mysql_exec("insert into oracle_tablespace_history SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_tablespace;",'')
     func.mysql_exec('delete from oracle_tablespace;','')
 
-    func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_p_status;",'')
-    func.mysql_exec('delete from oracle_dg_p_status_tmp;','')
-    func.mysql_exec('insert into oracle_dg_p_status_tmp select * from oracle_dg_p_status;','')
 
-    func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_s_status;",'')
-    func.mysql_exec('delete from oracle_dg_s_status_tmp;','')
-    func.mysql_exec('insert into oracle_dg_s_status_tmp select * from oracle_dg_s_status;','')
+    #func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_p_status;",'')
+    #func.mysql_exec('delete from oracle_dg_p_status_tmp;','')
+    #func.mysql_exec('insert into oracle_dg_p_status_tmp select * from oracle_dg_p_status;','')
 
+    #func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_s_status;",'')
+    #func.mysql_exec('delete from oracle_dg_s_status_tmp;','')
+    #func.mysql_exec('insert into oracle_dg_s_status_tmp select * from oracle_dg_s_status;','')
+
+		
     #get oracle servers list
     servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_cfg_oracle where is_delete=0 and monitor=1;")
 
@@ -356,8 +359,8 @@ def main():
         logger.warning("check oracle: not found any servers")
 
 
-    func.mysql_exec('DELETE FROM oracle_dg_p_status WHERE id IN (select id from oracle_dg_p_status_tmp);','')
-    func.mysql_exec('DELETE FROM oracle_dg_s_status WHERE id IN (select id from oracle_dg_s_status_tmp);','')
+    #func.mysql_exec('DELETE FROM oracle_dg_p_status WHERE id IN (select id from oracle_dg_p_status_tmp);','')
+    #func.mysql_exec('DELETE FROM oracle_dg_s_status WHERE id IN (select id from oracle_dg_s_status_tmp);','')
 
 
     logger.info("check oracle controller finished.")
