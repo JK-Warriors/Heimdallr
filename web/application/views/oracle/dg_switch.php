@@ -112,8 +112,21 @@ var dg_url = "<?php echo site_url('wl_oracle/dataguard?dg_group_id=') ?>" + grou
 var user_pwd = "<?php echo $userdata['password'] ?>" ;
 var sta_version = "<?php echo $standby_db[0]['db_version'] ?>" ;
 var sta_db_role = "<?php echo $standby_db[0]['database_role'] ?>" ;
-var mylay = null;
+var mrp_status = "<?php echo $standby_db[0]['s_mrp_status'] ?>" ;
 
+var mylay = null;
+var oTimer = null; 
+var last_time = null;
+var current_time = null;
+
+var last_switchover = null;
+var warningDiv = document.getElementById("mrp_warning");
+var query_url="<?php echo site_url('wl_oracle/dg_progress') ?>";
+var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
+var on_switchover="<?php echo $dg_group[0]['on_switchover'] ?>" ;
+var on_failover="<?php echo $dg_group[0]['on_failover'] ?>" ;
+var on_startmrp="<?php echo $dg_group[0]['on_startmrp'] ?>" ;
+var on_stopmrp="<?php echo $dg_group[0]['on_stopmrp'] ?>" ;
     
 function checkUser(e){
 
@@ -204,6 +217,38 @@ function checkUser(e){
 			    return false;
 		  }
 		}
+		
+		//
+		if((e.value == "MRPStart" || e.value == "MRPStop")){
+		  if(mrp_status=="1" && e.value == "MRPStart"){
+					bootbox.alert({
+			        		message: "MRP进程已经是开启状态！",
+			        		buttons: {
+								        ok: {
+								            label: '确定',
+								            className: 'btn-success'
+								        }
+								    }
+			        	});
+			        	
+			    return false;
+		  }
+		  
+		  if(mrp_status=="0" && e.value == "MRPStop"){
+					bootbox.alert({
+			        		message: "MRP进程已经是停止状态！",
+			        		buttons: {
+								        ok: {
+								            label: '确定',
+								            className: 'btn-success'
+								        }
+								    }
+			        	});
+			        	
+			    return false;
+		  }
+		}
+		
 		        	
 		        	
 		bootbox.prompt({
@@ -280,33 +325,25 @@ function checkUser(e){
 
 }
 
-
-var oTimer = null; 
-var last_time = null;
-var current_time = null;
-
-var last_switchover = null;
-var warningDiv = document.getElementById("mrp_warning");
-var query_url="<?php echo site_url('wl_oracle/dg_progress') ?>";
-var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
-var on_switchover="<?php echo $dg_group[0]['on_switchover'] ?>" ;
-var on_failover="<?php echo $dg_group[0]['on_failover'] ?>" ;
-var on_startmrp="<?php echo $dg_group[0]['on_startmrp'] ?>" ;
-var on_stopmrp="<?php echo $dg_group[0]['on_stopmrp'] ?>" ;
   
 jQuery(document).ready(function(){
 		if(sta_db_role=="SNAPSHOT STANDBY"){
 			$("#lb_warning").html("The standby database is in Snapshot status.");
 			warningDiv.style.display="block";
 		}
+		else if(mrp_status=="0"){
+			$("#lb_warning").html("Warning: The MRP process is not running!!!");
+			warningDiv.style.display="block";
+		}
 		
 		
-		      
 });  
   
 function queryHandle(url){
     $.post(url, {group_id:group_id}, function(json){
     		sta_db_role = json.sta_role; 					//update value for sta_db_role
+    		mrp_status = json.mrp_status; 			  //update value for mrp_status
+
         //var status = 1;
         last_switchover = json.on_switchover;
         
@@ -327,7 +364,7 @@ function queryHandle(url){
         		if(mylay!=null){
         			layer.close(mylay);
         			//setTimeout(function(){layer.close(mylay);}, 3000);
-        			window.clearInterval(oTimer);
+        			//window.clearInterval(oTimer);
         		}
             
         }else{
