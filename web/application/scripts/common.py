@@ -35,10 +35,10 @@ logger = logging.getLogger('WLBlazers')
 # function log_dg_op_process
 ###############################################################################
 def log_dg_op_process(mysql_conn, dg_id, process_type, process_desc, rate, block_time=0):
-    #logger.info("Log the operate process in db_oracle_dg_process for dataguard group: %s" %(dg_id))
+    #logger.info("Log the operate process in oracle_dg_process for dataguard group: %s" %(dg_id))
     
     # get current switch flag
-    str="insert into db_oracle_dg_process(group_id, process_type, process_desc, rate) values (%s, '%s', '%s', %s) " %(dg_id, process_type, process_desc, rate)
+    str="insert into oracle_dg_process(group_id, process_type, process_desc, rate) values (%s, '%s', '%s', %s) " %(dg_id, process_type, process_desc, rate)
     log_status=mysql.ExecuteSQL(mysql_conn, str)
     
     if log_status == 1:
@@ -109,7 +109,7 @@ def operation_unlock(mysql_conn, dg_id, process_type):
     logger.info(str)
     
     # 清理操作日志 
-    str='delete from db_oracle_dg_process '
+    str='delete from oracle_dg_process '
     op_status=mysql.ExecuteSQL(mysql_conn, str)
     
     if op_status == 1:

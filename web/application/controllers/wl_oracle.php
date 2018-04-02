@@ -171,7 +171,7 @@ class Wl_oracle extends Front_Controller {
         $dg_group=$this->oracle->get_dg_group_by_id($group_id);
         $data["dg_group"]=$dg_group;
         
-        #get log from db_oracle_dg_process
+        #get log from oracle_dg_process
         $type="";
         if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_switchover'] == '1'){
         		$type="SWITCHOVER";

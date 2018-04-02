@@ -233,7 +233,7 @@ class Oracle_model extends CI_Model{
 
     
     function get_dg_process_info($group_id,$type){
-        $query=$this->db->query("select * from db_oracle_dg_process where group_id = $group_id and process_type = '$type' order by id desc limit 1; ");
+        $query=$this->db->query("select * from oracle_dg_process where group_id = $group_id and process_type = '$type' order by id desc limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

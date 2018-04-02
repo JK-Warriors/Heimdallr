@@ -324,20 +324,7 @@ alter table db_cfg_oracle_dg modify column on_stopmrp tinyint(1) DEFAULT 0 comme
 alter table db_cfg_oracle_dg modify column on_startsnapshot tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在激活数据库快照'; 
 alter table db_cfg_oracle_dg modify column on_stopsnapshot tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在从快照恢复到物理备库'; 
 
--- ----------------------------
--- Table structure for db_oracle_dg_process
--- ----------------------------
-DROP TABLE IF EXISTS `db_oracle_dg_process`;
-CREATE TABLE `db_oracle_dg_process` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `group_id` int(10) NOT NULL,
-  `process_type` varchar(20) COMMENT '4个类型：SWITCHOVER;FAILOVER;MRP_START;MRP_STOP',
-  `process_desc` varchar(1000),
-  `rate` tinyint(1) DEFAULT 0,
-  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_group_type` (`group_id`, `process_type`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
 
 
 -- ----------------------------
@@ -562,6 +549,37 @@ CREATE TABLE `oracle_dg_s_status_his` (
   KEY `idx_ymdhi` (`ymdhi`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for oracle_dg_process
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_dg_process`;
+CREATE TABLE `oracle_dg_process` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `group_id` int(10) NOT NULL,
+  `process_type` varchar(20) COMMENT '4个类型：SWITCHOVER;FAILOVER;MRP_START;MRP_STOP',
+  `process_desc` varchar(1000),
+  `rate` tinyint(1) DEFAULT 0,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_type` (`group_id`, `process_type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for oracle_dg_process_his
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_dg_process_his`;
+CREATE TABLE `oracle_dg_process_his` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `group_id` int(10) NOT NULL,
+  `process_type` varchar(20) COMMENT '4个类型：SWITCHOVER;FAILOVER;MRP_START;MRP_STOP',
+  `process_desc` varchar(1000),
+  `rate` tinyint(1) DEFAULT 0,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `history_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_type` (`group_id`, `process_type`,`create_time`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 
 -- ----------------------------
