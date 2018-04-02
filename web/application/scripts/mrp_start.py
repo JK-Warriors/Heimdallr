@@ -47,6 +47,10 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get database version
     str="""select substr(version, 0, instr(version, '.')-1) from v$instance"""
     version=oracle.GetSingleValue(s_conn, str)
+    
+    # get instance status
+    str="""select status from v$instance"""
+    inst_status=oracle.GetSingleValue(s_conn, str)
 	
     # get mrp process status
     str="""select count(1) from gv$session where program like '%(MRP0)' """
@@ -59,6 +63,19 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             logger.info("The mrp process is already active... ")
             common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证MRP进程，已经是激活状态', 70, 2)
         else:
+            if version> 10 and inst_status=="MOUNTED":
+                common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '检测到当前实例处于MOUNTED状态，正在启动到OPEN...', 70, 2)
+                sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+                sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
+                out, err = sqlplus.communicate()
+                
+                if 'ORA-' in out:
+                    logger.info("Alter database open failed.")
+                else:
+                    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '启动实例到OPEN状态成功', 70, 2)
+                    logger.info("Alter database open successfully.")
+            	
+            
             logger.info("Now we are going to start the mrp process... ")
             common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '正在开启MRP进程...', 70, 2)
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
