@@ -232,7 +232,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         # auto create restore point for standby database  
         if database_role == 'PHYSICAL STANDBY' and flashback_on == 'YES':  
             logger.info("Automatic create restore point for server:" + str(server_id))
-            create_restore_point(conn)
+            create_restore_point(conn, flashback_retention)
             update_fb_retention(conn, server_id, flashback_retention)
 
 
@@ -245,7 +245,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         
 
 
-def create_restore_point(conn):
+def create_restore_point(conn, flashback_retention):
     cur = None
     try:
         last_restore_time = oracle.get_last_fbtime(conn)
@@ -271,6 +271,15 @@ def create_restore_point(conn):
                 str = 'alter database recover managed standby database cancel'
                 cur.execute(str)
 
+            # 删除过期的闪回点
+            r_name_list = oracle.get_expire_restore_list(conn, flashback_retention)
+            if r_name_list:
+                for r_name in r_name_list:
+                    str = 'drop restore point %s' %(r_name[0])
+                    cur.execute(str)
+                    logger.info('drop expire restore point: %s' %(r_name[0]))
+            #
+            
             #生成闪回点
             restore_name = db_unique_name + db_time
             str = 'create restore point %s' %(restore_name)

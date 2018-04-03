@@ -397,7 +397,7 @@ def get_last_fbtime(conn):
 def get_flashback_space_used(conn):
     try:
         curs=conn.cursor()
-        curs.execute("""select percent_space_used from v$flash_recovery_area_usage where file_type='FLASHBACKLOG' """);
+        curs.execute("""select percent_space_used from v$flash_recovery_area_usage where file_type='FLASHBACK LOG' """);
         fb_space = curs.fetchone()
         
         result = 0
@@ -428,6 +428,21 @@ def get_restorepoint(conn):
         curs.close()
 
 
+def get_expire_restore_list(conn, flashback_retention):
+    try:
+        curs=conn.cursor()
+        curs.execute("select name from v$restore_point where time < sysdate - %s/60/24 " %(flashback_retention));
+        list = curs.fetchall()
+        return list
+
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+        
+        
 def get_tablespace(conn):
     try:
         curs=conn.cursor()
