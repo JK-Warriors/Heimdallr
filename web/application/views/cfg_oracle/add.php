@@ -206,6 +206,28 @@
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_tablespace" class="input-small" placeholder="" name="threshold_critical_tablespace" value="95" >%
     </div>
    </div>
+    <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('fb_space'); ?>  <?php echo $this->lang->line('alarm'); ?></label>
+    <div class="controls">
+        <select name="alarm_fb_space" id="alarm_fb_space" class="input-small">
+         <option value="1"  ><?php echo $this->lang->line('on'); ?></option>
+         <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
+        </select>
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_fb_space" class="input-small" placeholder="" name="threshold_warning_fb_space" value="85" >%
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_fb_space" class="input-small" placeholder="" name="threshold_critical_fb_space" value="95" >%
+    </div>
+   </div>
+    <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('asm_space'); ?>  <?php echo $this->lang->line('alarm'); ?></label>
+    <div class="controls">
+        <select name="alarm_asm_space" id="alarm_asm_space" class="input-small">
+         <option value="1"  ><?php echo $this->lang->line('on'); ?></option>
+         <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
+        </select>
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_asm_space" class="input-small" placeholder="" name="threshold_warning_asm_space" value="85" >%
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_asm_space" class="input-small" placeholder="" name="threshold_critical_asm_space" value="95" >%
+    </div>
+   </div>
    
 </div>
 

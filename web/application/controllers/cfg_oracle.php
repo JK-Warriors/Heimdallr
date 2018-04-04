@@ -76,6 +76,10 @@ class cfg_oracle extends Front_Controller {
             $this->form_validation->set_rules('threshold_critical_session_waits',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_fb_space',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_critical_fb_space',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_asm_space',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_critical_asm_space',  'lang:alarm_threshold', 'trim|required|integer');
            
 			if ($this->form_validation->run() == FALSE)
 			{
@@ -104,44 +108,50 @@ class cfg_oracle extends Front_Controller {
 						'alarm_session_actives'=>$this->input->post('alarm_session_actives'),
 						'alarm_session_waits'=>$this->input->post('alarm_session_waits'),
 						'alarm_tablespace'=>$this->input->post('alarm_tablespace'),
+						'alarm_fb_space'=>$this->input->post('alarm_fb_space'),
+						'alarm_asm_space'=>$this->input->post('alarm_asm_space'),
 						'threshold_warning_session_total'=>$this->input->post('threshold_warning_session_total'),
 						'threshold_warning_session_actives'=>$this->input->post('threshold_warning_session_actives'),
 						'threshold_warning_session_waits'=>$this->input->post('threshold_warning_session_waits'),
 						'threshold_warning_tablespace'=>$this->input->post('threshold_warning_tablespace'),
+						'threshold_warning_fb_space'=>$this->input->post('threshold_warning_fb_space'),
+						'threshold_warning_asm_space'=>$this->input->post('threshold_warning_asm_space'),
 						'threshold_critical_session_total'=>$this->input->post('threshold_critical_session_total'),
 						'threshold_critical_session_actives'=>$this->input->post('threshold_critical_session_actives'),
 						'threshold_critical_session_waits'=>$this->input->post('threshold_critical_session_waits'),
 						'threshold_critical_tablespace'=>$this->input->post('threshold_critical_tablespace'),
+						'threshold_critical_fb_space'=>$this->input->post('threshold_critical_fb_space'),
+						'threshold_critical_asm_space'=>$this->input->post('threshold_critical_asm_space'),
 					);
                     $this->oracle->insert($data);
                     
                     $os_data = array(
-						'host'=>$this->input->post('host'),
-						'community'=> "public",
-					    'tags'=>$this->input->post('tags'),
+												'host'=>$this->input->post('host'),
+												'community'=> "public",
+					   					  'tags'=>$this->input->post('tags'),
                         'monitor'=> 1,
                         'send_mail'=> 0,
-						'send_sms'=> 0,
+												'send_sms'=> 0,
                         'send_mail_to_list'=> "",
-						'send_sms_to_list'=> "",
-						'alarm_os_process'=> 1,
-						'alarm_os_load'=> 1,
-						'alarm_os_cpu'=> 1,
-						'alarm_os_network'=> 1,
-						'alarm_os_disk'=> 1,
-						'alarm_os_memory'=> 1,
-						'threshold_warning_os_process'=> 300,
-						'threshold_warning_os_load'=> 3,
-						'threshold_warning_os_cpu'=> 70,
-						'threshold_warning_os_network'=> 2,
-						'threshold_warning_os_disk'=> 75,
-						'threshold_warning_os_memory'=> 85,
-						'threshold_critical_os_process'=> 500,
-						'threshold_critical_os_load'=> 10,
-						'threshold_critical_os_cpu'=> 80,
-						'threshold_critical_os_network'=> 10,
-						'threshold_critical_os_disk'=> 90,
-						'threshold_critical_os_memory'=> 90,
+												'send_sms_to_list'=> "",
+												'alarm_os_process'=> 1,
+												'alarm_os_load'=> 1,
+												'alarm_os_cpu'=> 1,
+												'alarm_os_network'=> 1,
+												'alarm_os_disk'=> 1,
+												'alarm_os_memory'=> 1,
+												'threshold_warning_os_process'=> 300,
+												'threshold_warning_os_load'=> 3,
+												'threshold_warning_os_cpu'=> 70,
+												'threshold_warning_os_network'=> 2,
+												'threshold_warning_os_disk'=> 75,
+												'threshold_warning_os_memory'=> 85,
+												'threshold_critical_os_process'=> 500,
+												'threshold_critical_os_load'=> 10,
+												'threshold_critical_os_cpu'=> 80,
+												'threshold_critical_os_network'=> 10,
+												'threshold_critical_os_disk'=> 90,
+												'threshold_critical_os_memory'=> 90,
                         'filter_os_disk'=> "",
 					);
                     $this->cfg_os->insert($os_data);
@@ -179,6 +189,10 @@ class cfg_oracle extends Front_Controller {
             $this->form_validation->set_rules('threshold_critical_session_waits',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_tablespace',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_fb_space',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_critical_fb_space',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_asm_space',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_critical_asm_space',  'lang:alarm_threshold', 'trim|required|integer');
 			if ($this->form_validation->run() == FALSE)
 			{
 				$data['error_code']='validation_error';
@@ -206,14 +220,20 @@ class cfg_oracle extends Front_Controller {
 						'alarm_session_actives'=>$this->input->post('alarm_session_actives'),
 						'alarm_session_waits'=>$this->input->post('alarm_session_waits'),
 						'alarm_tablespace'=>$this->input->post('alarm_tablespace'),
+						'alarm_fb_space'=>$this->input->post('alarm_fb_space'),
+						'alarm_asm_space'=>$this->input->post('alarm_asm_space'),
 						'threshold_warning_session_total'=>$this->input->post('threshold_warning_session_total'),
 						'threshold_warning_session_actives'=>$this->input->post('threshold_warning_session_actives'),
 						'threshold_warning_session_waits'=>$this->input->post('threshold_warning_session_waits'),
 						'threshold_warning_tablespace'=>$this->input->post('threshold_warning_tablespace'),
+						'threshold_warning_fb_space'=>$this->input->post('threshold_warning_fb_space'),
+						'threshold_warning_asm_space'=>$this->input->post('threshold_warning_asm_space'),
 						'threshold_critical_session_total'=>$this->input->post('threshold_critical_session_total'),
 						'threshold_critical_session_actives'=>$this->input->post('threshold_critical_session_actives'),
 						'threshold_critical_session_waits'=>$this->input->post('threshold_critical_session_waits'),
 						'threshold_critical_tablespace'=>$this->input->post('threshold_critical_tablespace'),
+						'threshold_critical_fb_space'=>$this->input->post('threshold_critical_fb_space'),
+						'threshold_critical_asm_space'=>$this->input->post('threshold_critical_asm_space'),
 					);
 					$this->oracle->update($data,$id);
 					if($this->input->post('monitor')!=1){
