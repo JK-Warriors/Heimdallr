@@ -228,6 +228,7 @@ class Wl_oracle extends Front_Controller {
         
         if($id != ""){
         		$pri_id = $this->oracle->get_pri_id_by_sta_id($id);
+        		$group_id = $this->oracle->get_dg_id_by_id($id);
 		        $data["userdata"] = $this->user->get_user_by_username('admin');
         		$data["restore_point"] = $this->oracle->get_restorepoint($id);
         		
@@ -270,6 +271,7 @@ class Wl_oracle extends Front_Controller {
         }
         
         $setval["order"] = $order;
+        $setval["group_id"] = $group_id;
         $data["setval"]=$setval;
         
 

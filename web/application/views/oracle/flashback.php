@@ -197,8 +197,10 @@ function user_change(e){
 
 
 
-var server_id = "<?php echo $setval['id'] ?>";
 var target_url = base_url.toString() + '?server_id=' + server_id.toString();
+var group_id = "<?php echo $setval['group_id'] ?>";
+var dg_manage_url = "<?php echo site_url('wl_oracle/dg_switch') ?>" + '?dg_group_id=' + group_id.toString();
+
 var user_pwd = "<?php echo $userdata['password'] ?>" ;
 var test_order = "<?php echo $setval['order'] ?>";
 var oTimer = null; 
@@ -298,20 +300,40 @@ function get_fb_process(url){
         		
         		if(json.fb_result=='1'){
         				fb_message = "闪回成功。";
+        		
+		        		bootbox.alert({
+				        		message: fb_message,
+				        		buttons: {
+									        ok: {
+									            label: '确定',
+									            className: 'btn-success'
+									        }
+									    }
+				        	});
         		}
         		else{
-        				fb_message = "闪回失败。原因是：" + json.fb_reason;
+        				fb_message = "闪回失败。原因是：" + json.fb_reason + "<p>MRP进程已经停止，是否跳转到管理页面重新开启MRP？";
+        				
+								bootbox.dialog({
+								    message: fb_message,
+								    buttons: {
+								        ok: {
+								            label: '确定',
+								            className: 'btn-danger',
+														callback: function(){
+																	//跳转到DG管理页面
+																	window.location.href = dg_manage_url;
+			                        }
+								        },
+								        cancel: {
+								            label: '取消',
+								            className: 'btn-default',
+								            callback: function () {
+			                      }
+								        }
+								    }
+								});
         		}
-        		
-        		bootbox.alert({
-		        		message: fb_message,
-		        		buttons: {
-							        ok: {
-							            label: '确定',
-							            className: 'btn-success'
-							        }
-							    }
-		        	});
             
         }else if(json.fb_blocked=='1'){ 
         		clearInterval(oTimer); 

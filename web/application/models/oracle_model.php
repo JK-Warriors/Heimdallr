@@ -148,7 +148,11 @@ class Oracle_model extends CI_Model{
     }
 
     function get_flashback_db_list(){
-        $query=$this->db->query("select * from oracle_status where database_role = 'PHYSICAL STANDBY' order by id; ");
+        $query=$this->db->query("select o.* 
+																	 from oracle_status o, db_cfg_oracle_dg d
+																	where database_role = 'PHYSICAL STANDBY'
+																	  and (o.server_id = d.primary_db_id or o.server_id = d.standby_db_id)
+																	order by id; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 
@@ -312,7 +316,20 @@ class Oracle_model extends CI_Model{
         }
     }
     
-
+    
+    function get_dg_id_by_id($id){
+        $query=$this->db->query("select id
+                                   from db_cfg_oracle_dg
+                                  where primary_db_id = $id 
+                                    or standby_db_id = $id ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->id;
+        }
+    }
+    
+    
     function get_primary_info($pri_id){
         $query=$this->db->query("select d.id,
                                     d.host         as p_host,
