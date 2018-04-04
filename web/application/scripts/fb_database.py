@@ -63,6 +63,11 @@ def flashback_db(mysql_conn, server_id, conn, conn_str, restore_str):
                 str = """update oracle_fb_process set result='0', reason='%s' where server_id=%s """ %(rea_str, server_id)
                 op_status = mysql.ExecuteSQL(mysql_conn, str)
             else:
+                # 开启数据库到OPEN状态
+                sqlplus = Popen(["sqlplus", "-S", conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+                sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
+                out, err = sqlplus.communicate()
+                
                 logger.info("Flashback successfully.")
                 str = """update oracle_fb_process set result='1', reason='' where server_id=%s """ %(server_id)
                 op_status = mysql.ExecuteSQL(mysql_conn, str)
@@ -81,6 +86,11 @@ def flashback_db(mysql_conn, server_id, conn, conn_str, restore_str):
                 str = """update oracle_fb_process set result='0', reason='%s' where server_id=%s """ %(rea_str, server_id)
                 op_status = mysql.ExecuteSQL(mysql_conn, str)
             else:
+                # 开启数据库到OPEN状态
+                sqlplus = Popen(["sqlplus", "-S", conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+                sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
+                out, err = sqlplus.communicate()
+                
                 logger.info("Flashback successfully.")
                 str = """update oracle_fb_process set result='1', reason='' where server_id=%s """ %(server_id)
                 op_status = mysql.ExecuteSQL(mysql_conn, str)

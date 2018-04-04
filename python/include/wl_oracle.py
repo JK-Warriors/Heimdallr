@@ -247,15 +247,10 @@ def get_dg_s_ms(conn):
         curs.close()
 
 
-def get_dg_s_al(conn):
+def get_dg_s_al(conn, scn):
     try:
         curs=conn.cursor()
-        curs.execute(""" select thread#,
-                                max(sequence#) sequence#
-                           from v$archived_log t
-                          where t.dest_id = 1
-                            and t.applied = 'YES'
-                          group by thread# """);
+        curs.execute(""" select thread#,sequence# from v$archived_log where first_change#<%s and next_change#>=%s """ %(scn,scn));
         result = curs.fetchone()
 
         return result
@@ -270,9 +265,12 @@ def get_dg_s_al(conn):
 def get_dg_s_rate(conn):
     try:
         curs=conn.cursor()
-        curs.execute("""select rp.sofar avg_apply_rate
-                          from v$recovery_progress rp
-                         where rp.item = 'Average Apply Rate' """);
+        curs.execute("""select *
+												  from (select rp.sofar avg_apply_rate
+												          from v$recovery_progress rp
+												         where rp.item = 'Average Apply Rate'
+												         order by start_time desc)
+												 where rownum < 2 """);
         result = curs.fetchone()
 
         return result
@@ -303,42 +301,76 @@ def get_dg_s_mrp(conn):
     finally:
         curs.close()
         
+
+def get_time_by_scn(conn, scn):
+    try:
+        result=None
+        curs=conn.cursor()
+        curs.execute("""select to_char(scn_to_timestamp(%s), 'yyyy-mm-dd hh24:mi:ss') curr_db_time  from v$database """ %(scn));
+        res = curs.fetchone()
+
+        if res:
+            result = res[0]
+        else:
+            result = None
+            
+        return result
+    except Exception,e:
+        #print e
+        return None
+
+    finally:
+        curs.close()
         
-def get_dg_s_lar_11g(conn):
-    try:
-        curs=conn.cursor()
-        curs.execute("""select replace(rp.comments, 'SCN: ', '') current_scn,
-                               to_char(rp.timestamp, 'yyyy-mm-dd hh24:mi:ss') curr_db_time
-                          from v$recovery_progress rp
-                         where rp.item = 'Last Applied Redo' """);
-        result = curs.fetchone()
 
+
+def get_time_from_restorepoint(conn, scn):
+    try:
+        result=None
+        curs=conn.cursor()
+        curs.execute("""select to_char(time, 'yyyy-mm-dd hh24:mi:ss') curr_db_time  from v$restore_point where scn = %s """ %(scn));
+        res = curs.fetchone()
+
+        if res:
+            result = res[0]
+        else:
+            result = None
+            
         return result
     except Exception,e:
-        return None
         print e
+        return None
 
     finally:
         curs.close()
-
-
-def get_dg_s_lar_10g(conn):
+        
+        
+def get_pri_id_by_server(conn, id):
     try:
+        result=None
         curs=conn.cursor()
-        curs.execute("""select sofar current_scn,
-                               to_char(rp.timestamp, 'yyyy-mm-dd hh24:mi:ss') curr_db_time
-                          from v$recovery_progress rp
-                         where rp.item = 'Last Applied Redo' 
-                         order by start_time desc """);
-        result = curs.fetchone()
+        curs.execute("""select CASE is_switch
+                                            WHEN 0 THEN standby_db_id 
+                                            ELSE primary_db_id
+                                        END as sta_id
+                                   from db_cfg_oracle_dg
+                                  where primary_db_id = %s or standby_db_id = %s  """ %(id, id));
+        res = curs.fetchone()
+        
+        if res:
+            result = res[0]
+        else:
+            result = None
 
         return result
     except Exception,e:
-        return None
         print e
+        return None
 
     finally:
         curs.close()
+        
+                 
         
 
 def get_earliest_fbscn(conn):
@@ -416,7 +448,7 @@ def get_flashback_space_used(conn):
 def get_restorepoint(conn):
     try:
         curs=conn.cursor()
-        curs.execute("select name from v$restore_point ");
+        curs.execute("select name from v$restore_point order by name desc ");
         list = curs.fetchall()
         return list
 
