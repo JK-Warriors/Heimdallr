@@ -129,8 +129,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         tablespace = oracle.get_tablespace(conn)
         if tablespace:
            for line in tablespace:
-              sql="insert into oracle_tablespace(server_id,host,port,tags,tablespace_name,total_size,used_size,avail_size,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-              param=(server_id,host,port,tags,line[0],line[1],line[2],line[3],line[4])
+              sql="insert into oracle_tablespace(server_id,host,port,tags,tablespace_name,status,management,total_size,used_size,max_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+              param=(server_id,host,port,tags,line[0],line[1],line[2],line[3],line[4],line[5])
               func.mysql_exec(sql,param)
               
               

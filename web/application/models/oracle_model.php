@@ -128,7 +128,7 @@ class Oracle_model extends CI_Model{
             $this->db->order_by($_GET["order"],$_GET["order_type"]);
         }
         else{
-            $this->db->order_by('avail_size asc');
+            $this->db->order_by('host, max_rate desc');
         }
         
         $query = $this->db->get();

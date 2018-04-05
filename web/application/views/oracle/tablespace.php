@@ -33,10 +33,11 @@
 <th><?php echo $this->lang->line('host'); ?></th> 
 <th><?php echo $this->lang->line('tags'); ?></th> 
 <th><?php echo $this->lang->line('tablespace_name'); ?></th>
-<th><?php echo $this->lang->line('total_size'); ?></th>
+    <th><?php echo $this->lang->line('status'); ?></th>
+    <th><?php echo $this->lang->line('management'); ?></th>
+    <th><?php echo $this->lang->line('total_size'); ?></th>
 <th><?php echo $this->lang->line('used_size'); ?></th>
-<th><?php echo $this->lang->line('avail_size'); ?></th>
-<th><?php echo $this->lang->line('used_rate'); ?></th>
+    <th><?php echo $this->lang->line('used_rate'); ?></th>
 
 </tr>
 </thead>
@@ -47,10 +48,11 @@
 <td><?php echo $item['host'] ?>:<?php echo $item['port'] ?></td>
 <td><?php echo $item['tags'] ?></td>
 <td><?php echo $item['tablespace_name'] ?></td>
+<td><?php echo $item['status'] ?></td>
+<td><?php echo $item['management'] ?></td>
 <td><?php echo $item['total_size'] ?>MB</td>
 <td><?php echo $item['used_size'] ?>MB</td>
-<td><?php echo $item['avail_size'] ?>MB</td>
-<td><?php echo $item['used_rate'] ?></td>
+<td><?php echo $item['max_rate'] ?></td>
 
 </tr>
 <?php endforeach;?>

@@ -315,6 +315,7 @@ $lang['tbs'] = '表空间使用';
 $lang['fb_space'] = '闪回空间使用';
 $lang['asm_space'] = '磁盘组空间使用';
 $lang['tablespace_name'] = '表空间名称';
+$lang['management'] = '段空间管理';
 $lang['total_size'] = '总大小';
 $lang['used_size'] = '已用空间';
 $lang['avail_size'] = '可用空间';

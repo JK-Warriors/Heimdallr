@@ -478,7 +478,37 @@ def get_expire_restore_list(conn, flashback_retention):
 def get_tablespace(conn):
     try:
         curs=conn.cursor()
-        curs.execute("select df.tablespace_name ,totalspace total_size, (totalspace-freespace) used_size,freespace avail_size ,round((1-freespace/totalspace)*100) || '%' as used_ratio from (select tablespace_name,round(sum(bytes)/1024/1024) totalspace from dba_data_files group by tablespace_name) df,(select tablespace_name,round(sum(bytes)/1024/1024) freespace from dba_free_space group by tablespace_name) fs where df.tablespace_name=fs.tablespace_name and df.tablespace_name not like 'UNDOTBS%'");
+        curs.execute("""select tpsname,status,mgr,max_size,curr_size, max_used
+											  from (SELECT d.tablespace_name tpsname,
+											               d.status status,
+											               d.segment_space_management mgr,
+											               TO_CHAR(NVL(trunc(A.maxbytes / 1024 / 1024), 0), '99999990') max_size,
+											               TO_CHAR(NVL(trunc(a.bytes / 1024 / 1024), 0), '99999990') curr_size,
+											               TO_CHAR(NVL((a.bytes - NVL(f.bytes, 0)) / a.bytes * 100, 0),
+											                       '990D00') c_used,
+											               TO_CHAR(NVL((a.bytes - NVL(f.bytes, 0)) / a.maxbytes * 100, 0),
+											                       '990D00') max_used
+											          FROM sys.dba_tablespaces d,
+											               (SELECT tablespace_name,
+											                       sum(bytes) bytes,
+											                       SUM(case autoextensible
+											                             when 'NO' then
+											                              BYTES
+											                             when 'YES' then
+											                              MAXBYTES
+											                             else
+											                              null
+											                           end) maxbytes
+											                  FROM dba_data_files
+											                 GROUP BY tablespace_name) a,
+											               (SELECT tablespace_name,
+											                       SUM(bytes) bytes,
+											                       MAX(bytes) largest_free
+											                  FROM dba_free_space
+											                 GROUP BY tablespace_name) f
+											         WHERE d.tablespace_name = a.tablespace_name
+											           AND d.tablespace_name = f.tablespace_name(+))
+											 order by max_used desc """);
         list = curs.fetchall()
         return list
 
