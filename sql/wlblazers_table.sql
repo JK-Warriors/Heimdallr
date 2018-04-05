@@ -306,7 +306,7 @@ CREATE TABLE `db_cfg_oracle_dg` (
   `group_name` varchar(200),
   `primary_db_id` int(10),
   `standby_db_id` int(10),
-  `fb_retenton` int(10),
+  `fb_retention` int(10),
   `is_switch` tinyint(1) DEFAULT 0,
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
   `on_process` tinyint(1) DEFAULT 0,
@@ -465,6 +465,8 @@ CREATE TABLE `db_status` (
   `repl_delay_tips` varchar(500) NOT NULL DEFAULT 'no_data',
   `tablespace` tinyint(2) NOT NULL DEFAULT '-1',
   `tablespace_tips` varchar(500) NOT NULL DEFAULT '-1',
+  `diskgroup` tinyint(2) NOT NULL DEFAULT '-1',
+  `diskgroup_tips` varchar(500) NOT NULL DEFAULT '-1',
   `flashback_space` tinyint(2) NOT NULL DEFAULT '-1',
   `flashback_space_tips` varchar(500) NOT NULL DEFAULT '-1',
   `snmp` tinyint(2) NOT NULL DEFAULT '-1',
@@ -1334,6 +1336,48 @@ CREATE TABLE `oracle_tablespace_history` (
   `total_size` bigint(18) NOT NULL DEFAULT '0',
   `used_size` bigint(18) NOT NULL DEFAULT '0',
   `max_rate` varchar(255) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ymdhi` bigint(18) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for oracle_diskgroup
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_diskgroup`;
+CREATE TABLE `oracle_diskgroup` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL DEFAULT '0',
+  `host` varchar(50) NOT NULL DEFAULT '0',
+  `diskgroup_name` varchar(100) NOT NULL,
+  `state` varchar(20) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `total_mb` bigint(18) NOT NULL DEFAULT '0',
+  `free_mb` bigint(18) NOT NULL DEFAULT '0',
+  `used_rate` varchar(255) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+-- ----------------------------
+-- Table structure for oracle_diskgroup_his
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_diskgroup_his`;
+CREATE TABLE `oracle_diskgroup_his` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL DEFAULT '0',
+  `host` varchar(50) NOT NULL DEFAULT '0',
+  `diskgroup_name` varchar(100) NOT NULL,
+  `state` varchar(20) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `total_mb` bigint(18) NOT NULL DEFAULT '0',
+  `free_mb` bigint(18) NOT NULL DEFAULT '0',
+  `used_rate` varchar(255) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ymdhi` bigint(18) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),

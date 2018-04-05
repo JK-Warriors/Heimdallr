@@ -46,7 +46,7 @@
         <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('ip'); ?></th> 
         <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('port'); ?></th> 
 				<th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('instance_name'); ?></th>
-				<th><center><?php echo $this->lang->line('status'); ?></th>
+				<th><center><?php echo $this->lang->line('mrp_status'); ?></th>
 				<th><center><?php echo $this->lang->line('dg_delay'); ?></th>
 				<th></th>
 	    </tr>

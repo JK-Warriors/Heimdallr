@@ -519,7 +519,28 @@ def get_tablespace(conn):
     finally:
         curs.close()
         
+
+def get_diskgroup(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select name,
+											       state,
+											       type,
+											       total_mb,
+											       free_mb,
+											       trunc(((total_mb - free_mb) / total_mb) * 100, 2) used_rate
+											  from v$asm_diskgroup """);
+        list = curs.fetchall()
+        return list
+
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
         
+                
 def get_tables(conn):
     try:
         curs=conn.cursor()
