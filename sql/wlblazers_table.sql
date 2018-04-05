@@ -465,6 +465,8 @@ CREATE TABLE `db_status` (
   `repl_delay_tips` varchar(500) NOT NULL DEFAULT 'no_data',
   `tablespace` tinyint(2) NOT NULL DEFAULT '-1',
   `tablespace_tips` varchar(500) NOT NULL DEFAULT '-1',
+  `flashback_space` tinyint(2) NOT NULL DEFAULT '-1',
+  `flashback_space_tips` varchar(500) NOT NULL DEFAULT '-1',
   `snmp` tinyint(2) NOT NULL DEFAULT '-1',
   `snmp_tips` varchar(500) NOT NULL DEFAULT 'no_data',
   `process` tinyint(2) NOT NULL DEFAULT '-1',
