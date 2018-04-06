@@ -509,6 +509,7 @@ DROP TABLE IF EXISTS `oracle_dg_p_status_his`;
 CREATE TABLE `oracle_dg_p_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` int(10) NOT NULL,
+  `check_seq` smallint(4) NOT NULL DEFAULT '0',
   `dest_id` smallint(4) NOT NULL DEFAULT '0',
   `thread#` smallint(4) NOT NULL DEFAULT '0',
   `sequence#` int(10) DEFAULT NULL,
