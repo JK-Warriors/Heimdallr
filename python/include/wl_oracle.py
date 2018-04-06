@@ -388,10 +388,10 @@ def get_earliest_fbscn(conn):
         curs.close()
 
 
-def get_earliest_fbtime(conn):
+def get_earliest_fbtime(conn,flashback_retention):
     try:
         curs=conn.cursor()
-        curs.execute("""select to_char(min(time), 'yyyy-mm-dd hh24:mi:ss') mintime from v$restore_point """);
+        curs.execute("""select to_char(min(time), 'yyyy-mm-dd hh24:mi:ss') mintime from v$restore_point where time > sysdate -%s/24/60 """ %(flashback_retention));
         mintime = curs.fetchone()
         
         result = 'null'
@@ -445,10 +445,10 @@ def get_flashback_space_used(conn):
         curs.close()
 
 
-def get_restorepoint(conn):
+def get_restorepoint(conn, flashback_retention):
     try:
         curs=conn.cursor()
-        curs.execute("select name from v$restore_point order by name desc ");
+        curs.execute("select * from v$restore_point where time > sysdate -%s/60/24 order by name desc " %(flashback_retention));
         list = curs.fetchall()
         return list
 

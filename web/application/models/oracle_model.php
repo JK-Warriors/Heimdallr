@@ -348,10 +348,10 @@ class Oracle_model extends CI_Model{
                                 on d.id = s.server_id
                             left join (select *
                                     from oracle_dg_p_status
-                                    where id in (select max(id)
+                                    where check_seq in (select max(check_seq)
                                                     from oracle_dg_p_status t
-                                                    where server_id = $pri_id
-                                                    group by `thread#`)) p
+                                                    where server_id = $pri_id)
+                                      and server_id = $pri_id) p
                                 on d.id = p.server_id; ");
         if ($query->num_rows() > 0)
         {

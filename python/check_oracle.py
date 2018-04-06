@@ -113,10 +113,10 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         # get flashback information
         flashback_on = oracle.get_database(conn,'flashback_on')
         #earliest_fbscn = oracle.get_earliest_fbscn(conn)
-        flashback_earliest_time = oracle.get_earliest_fbtime(conn)
+        flashback_retention = parameters['db_flashback_retention_target']
+        flashback_earliest_time = oracle.get_earliest_fbtime(conn,flashback_retention)
         #print "flashback_earliest_time: %s" %(flashback_earliest_time)
         flashback_space_used = oracle.get_flashback_space_used(conn)
-        flashback_retention = parameters['db_flashback_retention_target']
 
 
         ##################### insert data to mysql server#############################
@@ -145,7 +145,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               
                          
         #check restore point
-        restore_point = oracle.get_restorepoint(conn)
+        restore_point = oracle.get_restorepoint(conn, flashback_retention)
         if restore_point:
            func.mysql_exec('delete from oracle_flashback where server_id = %s;'%(server_id),'')
            for line in restore_point:
@@ -244,6 +244,9 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         applied = -1
         current_scn = -1
         if dg_p_info:
+            # get new check_seq
+            new_check_seq=func.mysql_single_query("select ifnull(max(check_seq),0)+1 from oracle_dg_p_status where server_id=%s;" %(p_id))
+                
             for line in dg_p_info:
                 dest_id=line[0]
                 thread=line[1]
@@ -255,8 +258,8 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
                 
                 ##################### insert data to mysql server#############################
                 #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
-                sql = "insert into oracle_dg_p_status(server_id, dest_id, `thread#`, `sequence#`, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s);"
-                param = (p_id, dest_id, thread, sequence, current_scn, dg_p_curr_time)
+                sql = "insert into oracle_dg_p_status(server_id, check_seq, dest_id, `thread#`, `sequence#`, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s);"
+                param = (p_id, new_check_seq, dest_id, thread, sequence, current_scn, dg_p_curr_time)
                 func.mysql_exec(sql,param) 
                 
             logger.info("Gather primary database infomation for server: %s" %(p_id))
@@ -280,14 +283,18 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         #logger.info("dg_s_curr_time: %s" %(dg_s_curr_time))
             
         
+        thread=-1
+        sequence=-1
+        block=-1
         if dg_s_ms:
             thread=dg_s_ms[0]
             sequence=dg_s_ms[1]
             block=dg_s_ms[2]
         else:
-            thread=dg_s_al[0]
-            sequence=dg_s_al[1]
-            block=0
+            if dg_s_ms:
+                thread=dg_s_al[0]
+                sequence=dg_s_al[1]
+                block=0
 
         dg_delay=-1
         if dg_s_curr_time ==None or dg_p_curr_time==None or dg_s_curr_time=="" or dg_p_curr_time == "":
@@ -347,31 +354,35 @@ def create_restore_point(conn, flashback_retention):
 
             cur = conn.cursor()
 
-            # 关闭MRP进程
-            mrp_status = oracle.get_dg_s_mrp(conn)
-            #logger.info('mrp_status: %s' %(mrp_status))
-            if mrp_status == 1:
-                str = 'alter database recover managed standby database cancel'
-                cur.execute(str)
-
-            # 删除过期的闪回点
-            r_name_list = oracle.get_expire_restore_list(conn, flashback_retention)
-            if r_name_list:
-                for r_name in r_name_list:
-                    str = 'drop restore point %s' %(r_name[0])
+            try:
+                # 关闭MRP进程
+                mrp_status = oracle.get_dg_s_mrp(conn)
+                #logger.info('mrp_status: %s' %(mrp_status))
+                if mrp_status == 1:
+                    str = 'alter database recover managed standby database cancel'
                     cur.execute(str)
-                    logger.info('drop expire restore point: %s' %(r_name[0]))
-            #
-            
-            #生成闪回点
-            restore_name = db_unique_name + db_time
-            str = 'create restore point %s' %(restore_name)
-            cur.execute(str)
 
-            # 如果一开始MRP进程是开启状态，则创建完成后，再次开启MRP进程
-            if mrp_status == 1:
-                str = 'alter database recover managed standby database using  current logfile  disconnect from session'
+                # 删除过期的闪回点
+                inst_status = oracle.get_instance(conn,'status')
+                if inst_status == "MOUNTED":
+                    r_name_list = oracle.get_expire_restore_list(conn, flashback_retention)
+                    if r_name_list:
+                        for r_name in r_name_list:
+                            str = 'drop restore point %s' %(r_name[0])
+                            cur.execute(str)
+                            logger.info('drop expire restore point: %s' %(r_name[0]))
+                #
+            
+                #生成闪回点
+                restore_name = db_unique_name + db_time
+                str = 'create restore point %s' %(restore_name)
                 cur.execute(str)
+                
+            finally: 
+                # 如果一开始MRP进程是开启状态，则创建完成后，再次开启MRP进程
+                if mrp_status == 1:
+                    str = 'alter database recover managed standby database using  current logfile  disconnect from session'
+                    cur.execute(str)
 		
     except Exception, e:
         logger.error(e)
