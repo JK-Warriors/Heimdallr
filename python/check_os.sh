@@ -56,6 +56,9 @@ if [ "$hostname" != "" ];then
       used_size=`echo $line|awk -F ' ' '{print $3}' `
       avail_size=`echo $line|awk -F ' ' '{print $4}' `
       used_rate=`echo $line|awk -F ' ' '{print $5}' `
+      
+      $mysql_client -N -e "insert into  $dbname.os_disk_history select *, DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from $dbname.os_disk where ip='${ip}';"
+      $mysql_client -N -e "delete from  $dbname.os_disk where ip='${ip}';"
       $mysql_client -N -e "insert  into $dbname.os_disk(ip,tags,mounted,total_size,used_size,avail_size,used_rate) values('${ip}','${tags}','${mounted}','${total_size}','${used_size}','${avail_size}','${used_rate}')"
    done
    
@@ -78,6 +81,9 @@ if [ "$hostname" != "" ];then
       disk_io_writes=$(($disk_io_writes_2-$disk_io_writes_1))
       #disk_io_reads=`expr $disk_io_reads / 3`
       #disk_io_writes=`expr $disk_io_writes / 3`
+      
+      $mysql_client -N -e "insert into  $dbname.os_diskio_history select *, DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from $dbname.os_diskio where ip='${ip}';"
+      $mysql_client -N -e "delete from  $dbname.os_diskio where ip='${ip}';"
       $mysql_client -N -e "insert  into $dbname.os_diskio(ip,tags,fdisk,disk_io_reads,disk_io_writes) values('${ip}','${tags}','${fdisk}','${disk_io_reads}','${disk_io_writes}')"
       let disk_io_reads_total=$disk_io_reads_total+$disk_io_reads
       let disk_io_writes_total=$disk_io_writes_total+$disk_io_writes
@@ -103,16 +109,21 @@ if [ "$hostname" != "" ];then
        out_bytes=$(($out_bytes_2-$out_bytes_1))
        #in_bytes=`expr $in_bytes / 3`
        #out_bytes=`expr $out_bytes / 3`
+       
+       $mysql_client -N -e "insert into  $dbname.os_net_history select *, DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from $dbname.os_net where ip='${ip}';"
+       $mysql_client -N -e "delete from  $dbname.os_net where ip='${ip}';"
        $mysql_client -N -e "insert  into $dbname.os_net(ip,tags,if_descr,in_bytes,out_bytes) values('${ip}','${tags}','${net_descr}','${in_bytes}','${out_bytes}')"
        let net_in_bytes_total=$net_in_bytes_total+$in_bytes
        let net_out_bytes_total=$net_out_bytes_total+$out_bytes
    done
 
-   $mysql_client -N -e "insert into  $dbname.os_status_history select *, LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from $dbname.os_status where ip='${ip}';"
+   $mysql_client -N -e "insert into  $dbname.os_status_history select *, DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from $dbname.os_status where ip='${ip}';"
    $mysql_client -N -e "delete from  $dbname.os_status where ip='${ip}';"
    $mysql_client -N -e "insert  into $dbname.os_status(ip,snmp,tags,hostname,kernel,system_date,system_uptime,process,load_1,load_5,load_15,cpu_user_time,cpu_system_time,cpu_idle_time,swap_total,swap_avail,mem_total,mem_avail,mem_free,mem_shared,mem_buffered,mem_cached,mem_usage_rate,mem_available,disk_io_reads_total,disk_io_writes_total,net_in_bytes_total,net_out_bytes_total) values('${ip}',1,'${tags}','${hostname}','${kernel}','${system_date}','${system_uptime}','${process}','${load_1}','${load_5}','${load_15}','${cpu_user_time}','${cpu_system_time}','${cpu_idle_time}','${swap_total}','${swap_avail}','${mem_total}','${mem_avail}','${mem_free}','${mem_shared}','${mem_buffered}','${mem_cached}','${mem_usage_rate}','${mem_available}','${disk_io_reads_total}','${disk_io_writes_total}','${net_in_bytes_total}','${net_out_bytes_total}')"
 
 
 else
-   $mysql_client -N -e "insert  into $dbname.os_status(ip,tags,snmp) values('${ip}','${tags}',0)"
+   $mysql_client -N -e "insert into  $dbname.os_status_history select *, DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from $dbname.os_status where ip='${ip}';"
+   $mysql_client -N -e "delete from  $dbname.os_status where ip='${ip}';"
+   $mysql_client -N -e "insert into  $dbname.os_status(ip,tags,snmp) values('${ip}','${tags}',0)"
 fi

@@ -24,15 +24,6 @@ dbname = func.get_config('monitor_server','dbname')
 
 def check_os(ip,community,filter_os_disk,tags):
 
-    func.mysql_exec("insert into os_status_history select *, LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from os_status where ip='%s';" %(ip),'')
-    func.mysql_exec("insert into os_disk_history select *, LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from os_disk where ip='%s';" %(ip),'')
-    func.mysql_exec("insert into os_diskio_history select *, LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from os_diskio where ip='%s';" %(ip),'')
-    func.mysql_exec("insert into os_net_history select *, LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from os_net where ip='%s';" %(ip),'')
-    func.mysql_exec("delete from os_status where ip='%s'" %(ip),'')
-    func.mysql_exec("delete from os_disk where ip='%s'" %(ip),'')
-    func.mysql_exec("delete from os_diskio where ip='%s'" %(ip),'')
-    func.mysql_exec("delete from os_net where ip='%s'" %(ip),'')
-
     command="sh check_os.sh"
     try :
         os.system("%s %s %s %s %s %s %s %s %s %s"%(command,ip,dbhost,dbport,dbuser,dbpasswd,dbname,community,filter_os_disk,tags))
