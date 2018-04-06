@@ -315,12 +315,15 @@ $lang['session_waits'] = '等待进程数';
 $lang['tbs'] = '表空间使用';
 $lang['fb_space'] = '闪回空间使用';
 $lang['asm_space'] = '磁盘组空间使用';
-$lang['tablespace_name'] = '表空间名称';
+$lang['tablespace_name'] = '表空间名';
 $lang['management'] = '段空间管理';
 $lang['total_size'] = '总大小';
 $lang['used_size'] = '已用空间';
 $lang['avail_size'] = '可用空间';
 $lang['used_rate'] = '使用率';
+$lang['diskgroup_name'] = '磁盘组名';
+$lang['type'] = '类型';
+$lang['free_size'] = '空闲空间';
 
 #sqlsrver
 $lang['processes'] = '进程数';

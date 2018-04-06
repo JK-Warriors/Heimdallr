@@ -34,6 +34,7 @@ $lang['_DataGuard List'] = 'DG列表';
 $lang['_DataGuard Detail'] = 'DG详细';
 $lang['_DataGuard Manage'] = 'DG管理';
 $lang['_Tablespace Monitor'] = '表空间监控';
+$lang['_DiskGroup Monitor'] = '磁盘组监控';
 $lang['_Flashback'] = '闪回';
 
 $lang['_SQLServer Monitor'] = 'SQLServer';

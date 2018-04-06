@@ -139,8 +139,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         diskgroup = oracle.get_diskgroup(conn)
         if diskgroup:
            for line in diskgroup:
-              sql="insert into oracle_diskgroup(server_id,host,diskgroup_name,state,type,total_mb,free_mb,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s)"
-              param=(server_id,host,line[0],line[1],line[2],line[3],line[4],line[5])
+              sql="insert into oracle_diskgroup(server_id,host,tags,diskgroup_name,state,type,total_mb,free_mb,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+              param=(server_id,host,tags,line[0],line[1],line[2],line[3],line[4],line[5])
               func.mysql_exec(sql,param)
               
                          

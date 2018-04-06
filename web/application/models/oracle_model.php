@@ -139,6 +139,29 @@ class Oracle_model extends CI_Model{
     }
 
 
+    function get_diskgroup_total(){
+        
+        $this->db->select('*');
+        $this->db->from('oracle_diskgroup ');
+       
+        !empty($_GET["host"]) && $this->db->like("host", $_GET["host"]);
+        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
+        
+        if(!empty($_GET["order"]) && !empty($_GET["order_type"])){
+            $this->db->order_by($_GET["order"],$_GET["order_type"]);
+        }
+        else{
+            $this->db->order_by('host, used_rate desc');
+        }
+        
+        $query = $this->db->get();
+        if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+    }
+    
+    
     function get_tablespace_by_id($id){
         $query=$this->db->query("select tablespace_name from oracle_tablespace where server_id = $id order by id; ");
         if ($query->num_rows() > 0)

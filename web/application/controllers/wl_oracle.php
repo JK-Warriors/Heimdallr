@@ -46,7 +46,23 @@ class Wl_oracle extends Front_Controller {
         $this->layout->view("oracle/tablespace",$data);
 	}
     
-    
+
+    public function diskgroup()
+	{
+        parent::check_privilege();
+        $data["datalist"]=$this->oracle->get_diskgroup_total();
+
+        $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
+        $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        
+        $setval["order"]=isset($_GET["order"]) ? $_GET["order"] : "";
+        $setval["order_type"]=isset($_GET["order_type"]) ? $_GET["order_type"] : "";
+        $data["setval"]=$setval;
+
+        $this->layout->view("oracle/diskgroup",$data);
+	}
+	
+	
 	public function dglist()
 	{
         #parent::check_privilege();
