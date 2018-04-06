@@ -20,6 +20,10 @@ from multiprocessing import Process;
 
 def check_sqlserver(host,port,username,passwd,server_id,tags):
     try:
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into sqlserver_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from sqlserver_status where server_id = %s;' %(server_id),'')
+
         conn = pymssql.connect(host=host,port=int(port),user=username,password=passwd,charset="utf8")
 
         connect = 1
@@ -56,7 +60,9 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         func.mysql_exec(sql,param)
         func.update_db_status_init(role,version,host,port,tags)
 
+        func.mysql_exec("commit;",'')
     except Exception, e:
+        func.mysql_exec("rollback;",'')
         logger_msg="check sqlserver %s:%s : %s" %(host,port,e)
         logger.warning(logger_msg)
    
@@ -78,10 +84,6 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
 
 
 def main():
-
-    func.mysql_exec("insert into sqlserver_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from sqlserver_status;",'')
-    func.mysql_exec('delete from sqlserver_status;','')
-
     servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_sqlserver where is_delete=0 and monitor=1;')
 
     logger.info("check sqlserver controller started.")

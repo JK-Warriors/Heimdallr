@@ -44,7 +44,20 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
     finally:
         func.check_db_status(server_id,host,port,tags,'oracle')   
 
+
+
+
     try:
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into oracle_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from oracle_status where server_id = %s;' %(server_id),'')
+        
+        func.mysql_exec("insert into oracle_tablespace_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_tablespace where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from oracle_tablespace where server_id = %s;' %(server_id),'')
+
+        func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_diskgroup where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from oracle_diskgroup where server_id = %s;' %(server_id),'')
+        
         #get info by v$instance
         connect = 1
         instance_name = oracle.get_instance(conn,'instance_name')
@@ -161,8 +174,11 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
             update_fb_retention(conn, server_id, flashback_retention)
 
 
+
+        func.mysql_exec("commit;",'')
     except Exception, e:
         logger.error(e)
+        func.mysql_exec("rollback;",'')
         sys.exit(1)
 
     finally:
@@ -226,112 +242,130 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         p_id = sta_id
         s_id = pri_id
 
-    p_conn = get_connect(p_id)
-    s_conn = get_connect(s_id)
-    
-    #check dataguard status
-    dg_p_curr_time = ""
-    dg_s_curr_time = ""
-    
-    if p_conn:
-        # collect primary information
-        dg_p_info = oracle.get_dg_p_info(p_conn, 1)
-        
-        dest_id = -1
-        thread = -1
-        sequence = -1
-        archived = -1
-        applied = -1
-        current_scn = -1
-        if dg_p_info:
-            # get new check_seq
-            new_check_seq=func.mysql_single_query("select ifnull(max(check_seq),0)+1 from oracle_dg_p_status where server_id=%s;" %(p_id))
-                
-            for line in dg_p_info:
-                dest_id=line[0]
-                thread=line[1]
-                sequence=line[2]
-                archived=line[3]
-                applied=line[4]
-                current_scn=line[5]
-                dg_p_curr_time=line[6]
-                
-                ##################### insert data to mysql server#############################
-                #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
-                sql = "insert into oracle_dg_p_status(server_id, check_seq, dest_id, `thread#`, `sequence#`, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s);"
-                param = (p_id, new_check_seq, dest_id, thread, sequence, current_scn, dg_p_curr_time)
-                func.mysql_exec(sql,param) 
-                
-            logger.info("Gather primary database infomation for server: %s" %(p_id))
-        else:
-            logger.warning("Get no data from primary server: %s" %(p_id))
 
+    try:
+        p_conn = get_connect(p_id)
+        s_conn = get_connect(s_id)
+    
+        #check dataguard status
+        dg_p_curr_time = ""
+        dg_s_curr_time = ""
+
+
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_dg_p_status where server_id in (%s, %s);" %(pri_id, sta_id),'')
+        func.mysql_exec('delete from oracle_dg_p_status where server_id in (%s, %s);' %(pri_id, sta_id),'')
+        
+        func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_dg_s_status where server_id in (%s, %s);" %(pri_id, sta_id),'')
+        func.mysql_exec('delete from oracle_dg_s_status where server_id in (%s, %s);' %(pri_id, sta_id),'')
+                             
+        if p_conn:
+            # collect primary information
+            dg_p_info = oracle.get_dg_p_info(p_conn, 1)
             
-    if s_conn and p_conn:
-        dg_s_ms = oracle.get_dg_s_ms(s_conn)
-        dg_s_rate = oracle.get_dg_s_rate(s_conn)
-        dg_s_mrp = oracle.get_dg_s_mrp(s_conn)
-        dg_s_scn = oracle.get_database(s_conn, 'current_scn')
+            dest_id = -1
+            thread = -1
+            sequence = -1
+            archived = -1
+            applied = -1
+            current_scn = -1
+            if dg_p_info:
+                # get new check_seq
+                new_check_seq=func.mysql_single_query("select ifnull(max(check_seq),0)+1 from oracle_dg_p_status where server_id=%s;" %(p_id))
+                    
+                for line in dg_p_info:
+                    dest_id=line[0]
+                    thread=line[1]
+                    sequence=line[2]
+                    archived=line[3]
+                    applied=line[4]
+                    current_scn=line[5]
+                    dg_p_curr_time=line[6]
+                    
+                    ##################### insert data to mysql server#############################
+                    #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
+                    sql = "insert into oracle_dg_p_status(server_id, check_seq, dest_id, `thread#`, `sequence#`, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s);"
+                    param = (p_id, new_check_seq, dest_id, thread, sequence, current_scn, dg_p_curr_time)
+                    func.mysql_exec(sql,param) 
+                    
+                logger.info("Gather primary database infomation for server: %s" %(p_id))
+            else:
+                logger.warning("Get no data from primary server: %s" %(p_id))
         
-        dg_s_al = oracle.get_dg_s_al(p_conn, dg_s_scn)
-        
-        logger.info("Tye to get timestamp by scn(%s) from primary server %s for server %s" %(dg_s_scn, p_id, s_id))
-        dg_s_curr_time = oracle.get_time_by_scn(p_conn, dg_s_scn)
-        if dg_s_curr_time == None:
-            logger.info("Try to get timestamp by scn(%s) from v$restorepoint of standby server %s" %(dg_s_scn, s_id))
-            dg_s_curr_time = oracle.get_time_from_restorepoint(s_conn, dg_s_scn)
-        #logger.info("dg_s_curr_time: %s" %(dg_s_curr_time))
+                
+        if s_conn and p_conn:
+            dg_s_ms = oracle.get_dg_s_ms(s_conn)
+            dg_s_rate = oracle.get_dg_s_rate(s_conn)
+            dg_s_mrp = oracle.get_dg_s_mrp(s_conn)
+            dg_s_scn = oracle.get_database(s_conn, 'current_scn')
             
-        
-        thread=-1
-        sequence=-1
-        block=-1
-        if dg_s_ms:
-            thread=dg_s_ms[0]
-            sequence=dg_s_ms[1]
-            block=dg_s_ms[2]
-        else:
+            dg_s_al = oracle.get_dg_s_al(p_conn, dg_s_scn)
+            
+            logger.info("Tye to get timestamp by scn(%s) from primary server %s for server %s" %(dg_s_scn, p_id, s_id))
+            dg_s_curr_time = oracle.get_time_by_scn(p_conn, dg_s_scn)
+            if dg_s_curr_time == None:
+                logger.info("Try to get timestamp by scn(%s) from v$restorepoint of standby server %s" %(dg_s_scn, s_id))
+                dg_s_curr_time = oracle.get_time_from_restorepoint(s_conn, dg_s_scn)
+            #logger.info("dg_s_curr_time: %s" %(dg_s_curr_time))
+                
+            
+            thread=-1
+            sequence=-1
+            block=-1
             if dg_s_ms:
-                thread=dg_s_al[0]
-                sequence=dg_s_al[1]
-                block=0
-
-        dg_delay=-1
-        if dg_s_curr_time ==None or dg_p_curr_time==None or dg_s_curr_time=="" or dg_p_curr_time == "":
+                thread=dg_s_ms[0]
+                sequence=dg_s_ms[1]
+                block=dg_s_ms[2]
+            else:
+                if dg_s_ms:
+                    thread=dg_s_al[0]
+                    sequence=dg_s_al[1]
+                    block=0
+        
             dg_delay=-1
-        else:
-            p_time=datetime.datetime.strptime(dg_p_curr_time,'%Y-%m-%d %H:%M:%S')
-            s_time=datetime.datetime.strptime(dg_s_curr_time,'%Y-%m-%d %H:%M:%S')
-            dg_delay_days=(p_time - s_time).days 
-            dg_delay_seconds=(p_time - s_time).seconds
-            dg_delay=dg_delay_days * 86400 + dg_delay_seconds
-            #logger.info("p_time: %s" %(p_time))
-            #logger.info("s_time: %s" %(s_time))
-            #logger.info("dg_delay_days: %s" %(dg_delay_days))
-            #logger.info("dg_delay_seconds: %s" %(dg_delay_seconds))
-            #logger.info("dg_delay: %s" %(dg_delay))
+            if dg_s_curr_time ==None or dg_p_curr_time==None or dg_s_curr_time=="" or dg_p_curr_time == "":
+                dg_delay=-1
+            else:
+                p_time=datetime.datetime.strptime(dg_p_curr_time,'%Y-%m-%d %H:%M:%S')
+                s_time=datetime.datetime.strptime(dg_s_curr_time,'%Y-%m-%d %H:%M:%S')
+                dg_delay_days=(p_time - s_time).days 
+                dg_delay_seconds=(p_time - s_time).seconds
+                dg_delay=dg_delay_days * 86400 + dg_delay_seconds
+                #logger.info("p_time: %s" %(p_time))
+                #logger.info("s_time: %s" %(s_time))
+                #logger.info("dg_delay_days: %s" %(dg_delay_days))
+                #logger.info("dg_delay_seconds: %s" %(dg_delay_seconds))
+                #logger.info("dg_delay: %s" %(dg_delay))
+                
+            avg_apply_rate = -1
+            if dg_s_mrp==0:
+                avg_apply_rate=0
+            elif dg_s_rate:
+                avg_apply_rate=dg_s_rate[0]
+        
+        
+            ##################### insert data to mysql server#############################
+            sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time, mrp_status) values(%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+            param = (s_id, thread, sequence, block, dg_delay, avg_apply_rate, dg_s_scn, dg_s_curr_time, dg_s_mrp)
+            func.mysql_exec(sql,param)  
+        
+            ##################### update data to oracle_status#############################
+            sql = "update oracle_status set dg_stats=%s, dg_delay=%s where server_id = %s;"
+            param = (dg_s_mrp, dg_delay, s_id)
+            func.mysql_exec(sql,param)  
             
-        avg_apply_rate = -1
-        if dg_s_mrp==0:
-            avg_apply_rate=0
-        elif dg_s_rate:
-            avg_apply_rate=dg_s_rate[0]
-
-
-        ##################### insert data to mysql server#############################
-        sql = "insert into oracle_dg_s_status(server_id, `thread#`, `sequence#`, `block#`, delay_mins, avg_apply_rate, curr_scn, curr_db_time, mrp_status) values(%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        param = (s_id, thread, sequence, block, dg_delay, avg_apply_rate, dg_s_scn, dg_s_curr_time, dg_s_mrp)
-        func.mysql_exec(sql,param)  
-
-        ##################### update data to oracle_status#############################
-        sql = "update oracle_status set dg_stats=%s, dg_delay=%s where server_id = %s;"
-        param = (dg_s_mrp, dg_delay, s_id)
-        func.mysql_exec(sql,param)  
+            
+            logger.info("Gather standby database infomation for server: %s" %(s_id))
         
-        
-        logger.info("Gather standby database infomation for server: %s" %(s_id))
-    
-        
+        func.mysql_exec("commit;",'')
+    except Exception, e:
+        logger.error(e)
+        func.mysql_exec("rollback;",'')
+
+    finally:
+        p_conn.close()
+        s_conn.close()
+              
 ######################################################################################################
 # function create_restore_point
 ######################################################################################################           
@@ -424,16 +458,6 @@ def update_fb_retention(conn, server_id, old_value):
 # function main
 ######################################################################################################              
 def main():
-
-    func.mysql_exec("insert into oracle_status_history SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_status;",'')
-    func.mysql_exec('delete from oracle_status;','')
-
-    func.mysql_exec("insert into oracle_tablespace_history SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_tablespace;",'')
-    func.mysql_exec('delete from oracle_tablespace;','')
-
-    func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_diskgroup;",'')
-    func.mysql_exec('delete from oracle_diskgroup;','')
-
 		
     #get oracle servers list
     servers=func.mysql_query("select id,host,port,dsn,username,password,tags from db_cfg_oracle where is_delete=0 and monitor=1;")
@@ -461,19 +485,10 @@ def main():
     else:
         logger.warning("check oracle: not found any servers")
 
-
     logger.info("check oracle controller finished.")
                    
 
-    #func.mysql_exec("insert into oracle_dg_p_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_p_status;",'')
-    #func.mysql_exec('delete from oracle_dg_p_status_tmp;','')
-    #func.mysql_exec('insert into oracle_dg_p_status_tmp select * from oracle_dg_p_status;','')
-
-    #func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%Y%m%d%H%i%s') from oracle_dg_s_status;",'')
-    #func.mysql_exec('delete from oracle_dg_s_status_tmp;','')
-    #func.mysql_exec('insert into oracle_dg_s_status_tmp select * from oracle_dg_s_status;','')
-                         
-    #get dataguard list
+    #check for dataguard group
     dg_list=func.mysql_query("select id, group_name, primary_db_id, standby_db_id, is_switch from db_cfg_oracle_dg where is_delete=0 and on_process = 0;")
 
     logger.info("check oracle dataguard start.")
@@ -494,11 +509,6 @@ def main():
 
     else:
         logger.warning("check oracle dataguard: not found any dataguard group")
-
-
-    #func.mysql_exec('DELETE FROM oracle_dg_p_status WHERE id IN (select id from oracle_dg_p_status_tmp);','')
-    #func.mysql_exec('DELETE FROM oracle_dg_s_status WHERE id IN (select id from oracle_dg_s_status_tmp);','')
-
 
     logger.info("check oracle dataguard finished.")
 

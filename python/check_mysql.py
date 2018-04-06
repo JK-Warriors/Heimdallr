@@ -19,6 +19,13 @@ from multiprocessing import Process;
 
 def check_mysql(host,port,username,password,server_id,tags):
     try:
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into mysql_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from mysql_status where server_id = %s;' %(server_id),'')
+
+        func.mysql_exec("insert into mysql_replication_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_replication where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from mysql_replication where server_id = %s;' %(server_id),'')
+    
         conn=MySQLdb.connect(host=host,user=username,passwd=password,port=int(port),connect_timeout=3,charset='utf8')
         cur=conn.cursor()
         conn.select_db('information_schema')
@@ -287,10 +294,12 @@ def check_mysql(host,port,username,password,server_id,tags):
             param=(server_id,tags,host,port,result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8],result[9],result[10],result[11],result[12],result[13])
             func.mysql_exec(sql,param)
 
+        func.mysql_exec("commit;",'')
         cur.close()
         exit
 
     except MySQLdb.Error,e:
+        func.mysql_exec("rollback;",'')
         logger_msg="check mysql %s:%s failure: %d %s" %(host,port,e.args[0],e.args[1])
         logger.warning(logger_msg)
         logger_msg="check mysql %s:%s failure: sleep 3 seconds and check again." %(host,port)
@@ -317,12 +326,6 @@ def check_mysql(host,port,username,password,server_id,tags):
    
 
 def main():
-
-    func.mysql_exec("insert into mysql_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mysql_status",'')
-    func.mysql_exec('delete from mysql_status;','')
-
-    func.mysql_exec("insert into mysql_replication_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mysql_replication",'')
-    func.mysql_exec('delete from mysql_replication;','')
     #get mysql servers list
     servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_mysql where is_delete=0 and monitor=1;')
 
