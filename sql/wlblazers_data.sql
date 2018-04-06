@@ -37,8 +37,8 @@ CREATE TABLE `admin_menu` (
 -- Records of admin_menu
 -- ----------------------------
 INSERT INTO `admin_menu` VALUES ('10', 'Servers Configure', '1', '0', 'server', 'iconfont icon-icon-test', '0', '1', '2', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('11', 'MySQL Monitor', '1', '0', 'wl_mysql', 'iconfont icon-shujuku', '0', '1', '3', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('12', 'Oracle Monitor', '1', '0', 'wl_oracle', 'iconfont icon-shujuku', '0', '1', '4', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('11', 'MySQL Monitor', '1', '0', 'wl_mysql', 'iconfont icon-shujuku', '0', '1', '4', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('12', 'Oracle Monitor', '1', '0', 'wl_oracle', 'iconfont icon-shujuku', '0', '1', '3', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlserver', 'iconfont icon-shujuku', '0', '1', '5', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('14', 'MongoDB Monitor', '1', '0', 'wl_mongodb', 'icon-dashboard', '0', '1', '6', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('15', 'Redis Monitor', '1', '0', 'wl_redis', 'icon-dashboard', '0', '1', '7', CURRENT_TIMESTAMP);
