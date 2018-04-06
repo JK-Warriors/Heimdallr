@@ -214,7 +214,7 @@ def get_alarm_oracle_status():
 									       a.session_actives >= b.threshold_warning_session_actives or
 									       a.session_waits >= b.threshold_warning_session_waits or
 									       a.flashback_space_used >= b.threshold_warning_fb_space or
-									       (a.database_role = 'PHYSICAL STANDBY' and (a.dg_stats < 1 or a.dg_delay >= 3600*3))
+									       a.database_role = 'PHYSICAL STANDBY'
 									       ) """
     result=func.mysql_query(sql)
     if result <> 0:
