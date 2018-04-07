@@ -461,7 +461,6 @@ def get_alarm_oracle_tablespace():
 										'oracle' AS db_type
 						FROM oracle_tablespace a, db_cfg_oracle b
 						WHERE a.server_id = b.id
-							and CONVERT(a.max_rate, DECIMAL(6,2)) >= b.threshold_warning_tablespace
 						ORDER BY max_rate desc """
     result=func.mysql_query(sql)
     if result <> 0:
