@@ -1423,19 +1423,19 @@ CREATE TABLE `oracle_fb_process` (
 -- ----------------------------
 -- Table structure for oracle_tables
 -- ----------------------------
--- DROP TABLE IF EXISTS `oracle_tables`;
--- CREATE TABLE `oracle_tables` (
---   `id` int(10) NOT NULL AUTO_INCREMENT,
---   `server_id` smallint(4) NOT NULL DEFAULT '0',
---   `host` varchar(50) NOT NULL DEFAULT '0',
---   `port` varchar(30) NOT NULL DEFAULT '0',
---   `tags` varchar(50) NOT NULL DEFAULT '',
---   `owner` varchar(30) NOT NULL DEFAULT '',
---   `table_name` varchar(65) NOT NULL DEFAULT '',
---  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---   PRIMARY KEY (`id`),
---   KEY `idx_server_id` (`server_id`) USING BTREE
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ DROP TABLE IF EXISTS `oracle_tables`;
+ CREATE TABLE `oracle_tables` (
+   `id` int(10) NOT NULL AUTO_INCREMENT,
+   `server_id` smallint(4) NOT NULL DEFAULT '0',
+   `host` varchar(50) NOT NULL DEFAULT '0',
+   `port` varchar(30) NOT NULL DEFAULT '0',
+   `tags` varchar(50) NOT NULL DEFAULT '',
+   `owner` varchar(30) NOT NULL DEFAULT '',
+   `table_name` varchar(65) NOT NULL DEFAULT '',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`),
+   KEY `idx_server_id` (`server_id`) USING BTREE
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 -- ----------------------------
