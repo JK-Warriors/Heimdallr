@@ -48,8 +48,8 @@ INSERT INTO `admin_menu` VALUES ('22', 'Permission System', '1', '0', 'rabc', 'i
 
 -- ------------------Configure--------------------
 INSERT INTO `admin_menu` VALUES ('1001', 'Settings', '2', '10', 'settings/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('1002', 'MySQL', '2', '10', 'cfg_mysql/index', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('1003', 'Oracle', '2', '10', 'cfg_oracle/index', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1002', 'MySQL', '2', '10', 'cfg_mysql/index', 'icon-list', '0', '1', '3', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1003', 'Oracle', '2', '10', 'cfg_oracle/index', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1004', 'SQLServer', '2', '10', 'cfg_sqlserver/index', 'icon-list', '0', '1', '4', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('1005', 'MongoDB', '2', '10', 'cfg_mongodb/index', 'icon-list', '0', '1', '5', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('1006', 'Redis', '2', '10', 'cfg_redis/index', 'icon-list', '0', '1', '6', CURRENT_TIMESTAMP);
