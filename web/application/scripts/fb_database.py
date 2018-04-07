@@ -53,6 +53,16 @@ def flashback_db(mysql_conn, server_id, conn, conn_str, restore_str):
             logger.info("The mrp process is already active, should to stop it first. ")
             sqlplus = Popen(["sqlplus", "-S", conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("alter database recover managed standby database cancel;"+os.linesep))
+            out, err = sqlplus.communicate()
+            logger.debug(out)
+            
+            if 'ORA-' in out:
+                pass
+            else:
+                str = """update oracle_dg_s_status set mrp_status='1' where server_id=%s """ %(server_id)
+                op_status = mysql.ExecuteSQL(mysql_conn, str)
+                
+            sqlplus = Popen(["sqlplus", "-S", conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes(restore_str + os.linesep))
             out, err = sqlplus.communicate()
             logger.debug(out)

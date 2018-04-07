@@ -209,13 +209,7 @@ def get_alarm_oracle_status():
 										b.tags,
 										'oracle' AS db_type
 									FROM oracle_status a, db_cfg_oracle b
-									WHERE a.server_id = b.id
-									  and (a.session_total >= b.threshold_warning_session_total or
-									       a.session_actives >= b.threshold_warning_session_actives or
-									       a.session_waits >= b.threshold_warning_session_waits or
-									       a.flashback_space_used >= b.threshold_warning_fb_space or
-									       a.database_role = 'PHYSICAL STANDBY'
-									       ) """
+									WHERE a.server_id = b.id """
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:

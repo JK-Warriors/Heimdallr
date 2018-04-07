@@ -448,7 +448,7 @@ def get_flashback_space_used(conn):
 def get_restorepoint(conn, flashback_retention):
     try:
         curs=conn.cursor()
-        curs.execute("select * from v$restore_point where time > sysdate -%s/60/24 order by name desc " %(flashback_retention));
+        curs.execute("select name from v$restore_point where time > sysdate -%s/60/24 order by name desc " %(flashback_retention));
         list = curs.fetchall()
         return list
 

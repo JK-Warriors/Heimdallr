@@ -35,9 +35,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
             
             func.mysql_exec("begin;",'')
             
-            sql="delete from oracle_status where server_id = %s "
-            param=(server_id)
-            func.mysql_exec(sql,param)
+            sql="delete from oracle_status where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
             
             sql="insert into oracle_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
             param=(server_id,host,port,tags,connect)
@@ -229,10 +228,19 @@ def get_connect(server_id):
 
         try:
             connect=0
+            
+            func.mysql_exec("begin;",'')
+            
+            sql="delete from oracle_status where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
             sql="insert into oracle_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
             param=(server_id,host,port,tags,connect)
             func.mysql_exec(sql,param)
+            
+            func.mysql_exec("commit;",'')
         except Exception, e:
+            func.mysql_exec("rollback;",'')
             logger.error(str(e).strip('\n'))
 
     finally:
@@ -373,8 +381,10 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         func.mysql_exec("rollback;",'')
 
     finally:
-        p_conn.close()
-        s_conn.close()
+        if p_conn:
+            p_conn.close()
+        if s_conn:
+            s_conn.close()
               
 ######################################################################################################
 # function create_restore_point
