@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 ip=$1
 host=$2

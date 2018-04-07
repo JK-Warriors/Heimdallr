@@ -32,10 +32,20 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
         try:
             connect=0
+            
+            func.mysql_exec("begin;",'')
+            
+            sql="delete from oracle_status where server_id = %s "
+            param=(server_id)
+            func.mysql_exec(sql,param)
+            
             sql="insert into oracle_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
             param=(server_id,host,port,tags,connect)
             func.mysql_exec(sql,param)
+            
+            func.mysql_exec("commit;",'')
         except Exception, e:
+            func.mysql_exec("rollback;",'')
             logger.error(str(e).strip('\n'))
             sys.exit(1)
         finally:
