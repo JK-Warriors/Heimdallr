@@ -523,6 +523,28 @@ function check_db_status_level($data,$data_tips="no_data"){
     return $level_img;
 }
 
+
+function check_db_status_level_new($data,$data_tips="no_data"){
+    if($data==-1){
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='no data'><img src='images/none.png' /></a>";
+    }
+    else if($data==1){
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-ziyuan'></i></a>";
+    }
+    else if($data==2){
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-icon2'></i></a>";
+    }
+    else if($data==3){
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-jinggao1'></i></a>";
+    }
+    else{
+        $level_img="<img src='images/none.png' alt='none' title='no data' />";
+    }
+    return $level_img;
+}
+
+
+
 function check_db_status_role($data){
     if($data=='m'){
         $role_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='Master/Primary'><img src='images/master.png' /></a>";

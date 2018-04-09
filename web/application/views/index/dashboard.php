@@ -12,7 +12,7 @@ body {
 }
 
 .content {
-    background: #2A2A2A
+    background: #2A2A2A;
 }
 
 footer hr {
@@ -22,7 +22,7 @@ footer hr {
 </style>
 <div class="indexpage">
     <ul class="breadcrumb">
-        <li><a href="http://localhost/index.php">主页</a> <span class="divider">/</span></li>
+        <li><a href="<?php echo site_url('index/index'); ?>">主页</a> <span class="divider">/</span></li>
         <li class="active">工作台</li>
     </ul>
     <div class="row">
@@ -31,17 +31,17 @@ footer hr {
                 <div class="col-md-4">
                     <div class="block">
                         <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>oracle</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>Oracle</div>
+                            <div class="pull-right"><a href="<?php echo site_url('wl_oracle/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                             </div>
                         </div>
                         <div class="block-content">
                             <div class="row">
-                                <div class="col-md-6 tbox1">11
+                                <div class="col-md-6 tbox1"> <?php echo $oracle_cfg_total ?> 
                                 </div>
                                 <div class="col-md-6 tbox2">
-                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i>11</p>
-                                    <p class="box_times"><i class="iconfont icon-icon2"></i>222</p>
+                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i> <?php echo $oracle_active_count ?> </p>
+                                    <p class="box_times"><i class="iconfont icon-icon2"></i> <?php echo $oracle_inactive_count ?> </p>
                                 </div>
                             </div>
                         </div>
@@ -51,16 +51,16 @@ footer hr {
                     <div class="block">
                         <div class="navbar navbar-inner block-header">
                             <div class="muted pull-left"><i class="iconfont icon-ai222"></i>MySQL</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                            <div class="pull-right"><a href="<?php echo site_url('wl_mysql/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                             </div>
                         </div>
                         <div class="block-content">
                             <div class="row">
-                                <div class="col-md-6 tbox1">99
+                                <div class="col-md-6 tbox1"> <?php echo $mysql_cfg_total ?> 
                                 </div>
                                 <div class="col-md-6 tbox2">
-                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i>11</p>
-                                    <p class="box_times"><i class="iconfont icon-icon2"></i>222</p>
+                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i> <?php echo $mysql_active_count ?> </p>
+                                    <p class="box_times"><i class="iconfont icon-icon2"></i> <?php echo $mysql_inactive_count ?> </p>
                                 </div>
                             </div>
                         </div>
@@ -70,16 +70,16 @@ footer hr {
                     <div class="block">
                         <div class="navbar navbar-inner block-header">
                             <div class="muted pull-left"><i class="iconfont icon-ai222"></i>SQLServer</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                            <div class="pull-right"><a href="<?php echo site_url('wl_sqlserver/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                             </div>
                         </div>
                         <div class="block-content">
                             <div class="row">
-                                <div class="col-md-6 tbox1">1
+                                <div class="col-md-6 tbox1"> <?php echo $sqlserver_cfg_total ?> 
                                 </div>
                                 <div class="col-md-6 tbox2">
-                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i>11</p>
-                                    <p class="box_times"><i class="iconfont icon-icon2"></i>222</p>
+                                    <p class="box_check"><i class="iconfont icon-ziyuan"></i> <?php echo $sqlserver_active_count ?> </p>
+                                    <p class="box_times"><i class="iconfont icon-icon2"></i> <?php echo $sqlserver_inactive_count ?> </p>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ footer hr {
                         <div class="block">
                             <div class="navbar navbar-inner block-header">
                                 <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库同步延迟情况</div>
-                                <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                                <div class="pull-right"><a href="<?php echo site_url('wl_oracle/dglist'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                                 </div>
                             </div>
                             <div class="block-content">
@@ -104,14 +104,14 @@ footer hr {
                         <div class="block">
                             <div class="navbar navbar-inner block-header">
                                 <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库主机资源情况</div>
-                                <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                                <div class="pull-right"><a href="<?php echo site_url('wl_os/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                                 </div>
                             </div>
                             <div class="block-content">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>数据库名</th>
+                                            <th style="width:120px;">主机IP</th>
                                             <th style="width:120px;">cpu</th>
                                             <th style="width:120px;">内存</th>
                                             <th style="width:120px;">I/O</th>
@@ -120,7 +120,7 @@ footer hr {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- √×!分别对应不同的<i>标签,参考demo -->
+                                        <!-- √×!分别对应不同的<i>标签,参考demo
                                         <tr>
                                             <td><i class="iconfont icon-ziyuan"></i>demo</td>
                                             <td><i class="iconfont icon-icon2"></i>demo</td>
@@ -128,15 +128,25 @@ footer hr {
                                             <td>demo</td>
                                             <td>demo</td>
                                             <td>demo</td>
-                                        </tr>
-                                        <tr>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                            <td><i class="iconfont icon-ziyuan"></i></td>
-                                            <td><i class="iconfont icon-icon2"></i></td>
-                                            <td><i class="iconfont icon-jinggao1"></i></td>
-                                        </tr>
+                                        </tr> -->
+                                         <?php if(!empty($db_status)) {?>
+                                         <?php foreach ($db_status  as $item):?>
+                                         	<tr style="font-size: 12px;">
+                                         		<td><?php echo $item['host'] ?></td>
+                                         		<td><?php echo check_db_status_level_new($item['cpu'],$item['cpu_tips']) ?></td>
+                                         		<td><?php echo check_db_status_level_new($item['memory'],$item['memory_tips']) ?></td>
+                                         		<td><?php echo check_db_status_level_new($item['network'],$item['network_tips']) ?></td>
+                                         		<td><?php echo check_db_status_level_new($item['disk'],$item['disk_tips']) ?></td>
+                                         		<td><?php echo check_dbtype($item['db_type']) ?></td>
+                                           </tr>
+                                         <?php endforeach;?>
+                                         <?php }else{  ?>
+                                         		<tr>
+                                         		<td colspan="16">
+                                         		<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+                                         		</td>
+                                         </tr>
+                                         <?php } ?>  
                                     </tbody>
                                 </table>
                             </div>
@@ -261,7 +271,7 @@ footer hr {
                     <div class="block">
                         <div class="navbar navbar-inner block-header">
                             <div class="muted pull-left"><i class="iconfont icon-ai222"></i>告警显示</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                            <div class="pull-right"><a href="<?php echo site_url('alarm/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                             </div>
                         </div>
                         <div class="block-content">
@@ -269,18 +279,28 @@ footer hr {
                                 <thead>
                                     <tr>
                                         <div>
-                                            <th>数据库名</th>
-                                            <th style="width:120px;">类型</th>
+                                            <th style="width:60px;">标签</th>
+                                            <th style="width:60px;">类型</th>
                                             <th>告警内容</th>
                                         </div>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                	<?php if(!empty($alarm)) {?>
+                                 	<?php foreach ($alarm  as $item):?>
                                     <tr>
-                                        <td>demo</td>
-                                        <td>demo</td>
-                                        <td>demo</td>
+                                        <td><?php echo $item['tags'] ?></td>
+                                        <td><?php echo $item['db_type'] ?></td>
+                                        <td><?php echo $item['message'] ?></td>
                                     </tr>
+                                	<?php endforeach;?>
+                                	<?php }else{  ?>
+                                			<tr>
+                                			<td colspan="16">
+                                			<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+                                			</td>
+                                			</tr>
+                                	<?php } ?>    
                                 </tbody>
                             </table>
                         </div>
@@ -294,86 +314,84 @@ footer hr {
 var dom = document.getElementById("container");
 var myChart = echarts.init(dom, 'dark');
 var app = {};
-option = null;
+var option = null;
 app.title = '多 X 轴示例';
 
 var colors = ['#5793f3', '#d14a61', '#675bba'];
 
+var url = "<?php echo site_url('index/series'); ?>";
 
-option = {
-    color: colors,
+jQuery(document).ready(function(){
+		getSeriesData(url);
+		
+		oTimer = setInterval("getSeriesData(url)",2000);
+		
+});  
 
-    tooltip: {
-        trigger: 'none',
-        axisPointer: {
-            type: 'cross'
-        }
-    },
-    legend: {
-        data: ['2015 降水量', '2016 降水量']
-    },
-    grid: {
-        top: 70,
-        bottom: 50
-    },
-    xAxis: [{
-        type: 'category',
-        axisTick: {
-            alignWithLabel: true
-        },
-        axisLine: {
-            onZero: false,
-            lineStyle: {
-                color: colors[1]
-            }
-        },
-        axisPointer: {
-            label: {
-                formatter: function(params) {
-                    return '降水量  ' + params.value + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                }
-            }
-        },
-        data: ["2016-1", "2016-2", "2016-3", "2016-4", "2016-5", "2016-6", "2016-7", "2016-8", "2016-9", "2016-10", "2016-11", "2016-12"]
-    }, {
-        type: 'category',
-        axisTick: {
-            alignWithLabel: true
-        },
-        axisLine: {
-            onZero: false,
-            lineStyle: {
-                color: colors[0]
-            }
-        },
-        axisPointer: {
-            label: {
-                formatter: function(params) {
-                    return '降水量  ' + params.value + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                }
-            }
-        },
-        data: ["2015-1", "2015-2", "2015-3", "2015-4", "2015-5", "2015-6", "2015-7", "2015-8", "2015-9", "2015-10", "2015-11", "2015-12"]
-    }],
-    yAxis: [{
-        type: 'value'
-    }],
-    series: [{
-        name: '2015 降水量',
-        type: 'line',
-        xAxisIndex: 1,
-        smooth: true,
-        data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-    }, {
-        name: '2016 降水量',
-        type: 'line',
-        smooth: true,
-        data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 46.6, 55.4, 18.4, 10.3, 0.7]
-    }]
-};;
-if (option && typeof option === "object") {
-    myChart.setOption(option, true);
-}
+function getSeriesData(url){
+    $.get(url, function(json){
+    		//alert(json.server_id);
+    		//alert(json.time);
+    		//alert(json.delay);
+
+        //var status = 1;
+				option = {
+				    color: colors,
+				
+				    tooltip: {
+				        trigger: 'none',
+				        axisPointer: {
+				            type: 'cross'
+				        }
+				    },
+				    legend: {
+				        data: json.server_id
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				                color: colors[1]
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ' 延时' + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: json.server_id,
+				        type: 'line',
+				        smooth: true,
+				        data: json.delay
+				    },{
+				        name: json.server_id,
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.delay
+				    }]
+				};;
+				if (option && typeof option === "object") {
+				    myChart.setOption(option, true);
+				}
+    },'json');  
+}  
 </script>
 <!-- pho页面代码-结束 -->
 
