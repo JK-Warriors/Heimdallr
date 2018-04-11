@@ -108,7 +108,7 @@ footer hr {
                                 </div>
                             </div>
                             <div class="block-content">
-                                <table class="table">
+                                <table class="table tooltip-wlblazers">
                                     <thead>
                                         <tr>
                                             <th style="width:120px;">主机IP</th>
@@ -135,8 +135,8 @@ footer hr {
                                          		<td><?php echo $item['host'] ?></td>
                                          		<td><?php echo check_db_status_level_new($item['cpu'],$item['cpu_tips']) ?></td>
                                          		<td><?php echo check_db_status_level_new($item['memory'],$item['memory_tips']) ?></td>
-                                         		<td><?php echo check_db_status_level_new($item['network'],$item['network_tips']) ?></td>
                                          		<td><?php echo check_db_status_level_new($item['disk'],$item['disk_tips']) ?></td>
+                                         		<td><?php echo check_db_status_level_new($item['network'],$item['network_tips']) ?></td>
                                          		<td><?php echo check_dbtype($item['db_type']) ?></td>
                                            </tr>
                                          <?php endforeach;?>
@@ -168,7 +168,7 @@ footer hr {
                             <div class="in4">
                                 <ul>
                                     <li>
-                                        <div class="in4_1">Demo</div>
+                                        <div class="in4_1">Oracle</div>
                                         <div class="cf">
                                             <div class="c1">
                                                 <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
@@ -179,19 +179,19 @@ footer hr {
                                             <div class="c2right">
                                                 <div class="c2 co1">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $oracle_high ?></p>
                                                         <p class="c4">High</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co2">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $oracle_medium ?></p>
                                                         <p class="c4">Medium</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co3">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $oracle_low ?></p>
                                                         <p class="c4">Low</p>
                                                     </div>
                                                 </div>
@@ -199,7 +199,7 @@ footer hr {
                                         </div>
                                     </li>
                                      <li>
-                                        <div class="in4_1">Demo</div>
+                                        <div class="in4_1">MySQL</div>
                                         <div class="cf">
                                             <div class="c1">
                                                 <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
@@ -210,19 +210,19 @@ footer hr {
                                             <div class="c2right">
                                                 <div class="c2 co1">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $mysql_high ?></p>
                                                         <p class="c4">High</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co2">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $mysql_medium ?></p>
                                                         <p class="c4">Medium</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co3">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $mysql_low ?></p>
                                                         <p class="c4">Low</p>
                                                     </div>
                                                 </div>
@@ -230,7 +230,7 @@ footer hr {
                                         </div>
                                     </li>
                                      <li>
-                                        <div class="in4_1">Demo</div>
+                                        <div class="in4_1">SQLServer</div>
                                         <div class="cf">
                                             <div class="c1">
                                                 <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
@@ -241,19 +241,19 @@ footer hr {
                                             <div class="c2right">
                                                 <div class="c2 co1">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $sqlserver_high ?></p>
                                                         <p class="c4">High</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co2">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $sqlserver_medium ?></p>
                                                         <p class="c4">Medium</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co3">
                                                     <div>
-                                                        <p class="c3">99</p>
+                                                        <p class="c3"><?php echo $sqlserver_low ?></p>
                                                         <p class="c4">Low</p>
                                                     </div>
                                                 </div>

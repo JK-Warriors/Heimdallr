@@ -41,6 +41,12 @@ class Index extends Front_Controller {
         $data["oracle_active_count"] = $this->wlblazers->get_oracle_active_count();
         $data["oracle_inactive_count"] = $this->wlblazers->get_oracle_inactive_count();
         
+        //for oracle delay
+        $data["oracle_high"] = $this->wlblazers->get_db_count_high('oracle');
+        $data["oracle_medium"] = $this->wlblazers->get_db_count_medium('oracle');
+        $data["oracle_low"] = $this->wlblazers->get_db_count_low('oracle');
+        
+        //for oracle delay chart
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
         
         //for mysql
@@ -48,11 +54,20 @@ class Index extends Front_Controller {
         $data["mysql_active_count"] = $this->wlblazers->get_mysql_active_count();
         $data["mysql_inactive_count"] = $this->wlblazers->get_mysql_inactive_count();
         
+        //for mysql delay
+        $data["mysql_high"] = $this->wlblazers->get_db_count_high('mysql');
+        $data["mysql_medium"] = $this->wlblazers->get_db_count_medium('mysql');
+        $data["mysql_low"] = $this->wlblazers->get_db_count_low('mysql');
+        
         //for sqlserver
         $data["sqlserver_cfg_total"] = $this->wlblazers->get_sqlserver_cfg_total();
         $data["sqlserver_active_count"] = $this->wlblazers->get_sqlserver_active_count();
         $data["sqlserver_inactive_count"] = $this->wlblazers->get_sqlserver_inactive_count();
         
+        //for sqlserver delay
+        $data["sqlserver_high"] = $this->wlblazers->get_db_count_high('sqlserver');
+        $data["sqlserver_medium"] = $this->wlblazers->get_db_count_medium('sqlserver');
+        $data["sqlserver_low"] = $this->wlblazers->get_db_count_low('sqlserver');
         
         //for os
         $data["os"] = $this->wlblazers->get_os_paging(0,5);
