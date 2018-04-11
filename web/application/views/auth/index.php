@@ -21,7 +21,12 @@
 <?php echo $this->lang->line('auth_success'); ?>
 </div>
 <?php } ?>
- 
+ <style>
+ p.block-heading{display:none}
+ .block-body h2{border-bottom:1px solid #ddd;padding:20px 0;}
+ .privilege_checkbox,.role_checkbox{font-size:12px;color:#666;border-bottom:1px solid #eee;padding:10px 0;margin:0;width:235px;}
+  .privilege_checkbox input,.role_checkbox input{position: relative;top:-2px;}
+ </style>
 <div class="row-fluid">
     <div class="block span7">
         <p class="block-heading"><?php echo $this->lang->line('privilege_assignments'); ?></p>

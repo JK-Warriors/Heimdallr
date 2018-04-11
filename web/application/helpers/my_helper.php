@@ -526,19 +526,19 @@ function check_db_status_level($data,$data_tips="no_data"){
 
 function check_db_status_level_new($data,$data_tips="no_data"){
     if($data==-1){
-        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='no data'><img src='images/none.png' /></a>";
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='no data'><i class='iconfont icon-icon2'></a>";
     }
     else if($data==1){
         $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-ziyuan'></i></a>";
     }
     else if($data==2){
-        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-icon2'></i></a>";
-    }
-    else if($data==3){
         $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-jinggao1'></i></a>";
     }
+    else if($data==3){
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-jinggao1 iconred'></i></a>";
+    }
     else{
-        $level_img="<img src='images/none.png' alt='none' title='no data' />";
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='no data'><i class='iconfont icon-icon2'></a>";
     }
     return $level_img;
 }
@@ -583,7 +583,7 @@ function format_percent_remove($data){
 
 function check_dbtype($data){  
     if($data =="mysql"){
-        $db_type_img="<img src='images/icon_mysql.png' />";
+        $db_type_img="<span class='textico i_mysql'>MySQL</span>";
     }
     else if($data =="mongodb"){
         $db_type_img="<img src='images/icon_mongo.png' />";
@@ -592,10 +592,10 @@ function check_dbtype($data){
         $db_type_img="<img src='images/icon_redis.png' />";
     }
     else if($data =="oracle"){
-        $db_type_img="<img src='images/icon_oracle.png' />";
+        $db_type_img="<span class='textico i_oracle'>Oracle</span>";
     }
     else if($data =="sqlserver"){
-        $db_type_img="<img src='images/icon_sqlserver.png' />";
+        $db_type_img="<span class='textico i_sqlserver'>SQL Server</span>";
     }
 	return  $db_type_img;
 }

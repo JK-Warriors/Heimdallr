@@ -111,7 +111,7 @@
         <td><?php echo check_db_status_level($item['memory'],$item['memory_tips']) ?></td>
         <td><?php echo check_db_status_level($item['network'],$item['network_tips']) ?></td>
         <td><?php echo check_db_status_level($item['disk'],$item['disk_tips']) ?></td>
-        <td><a href="<?php echo site_url('wl_'.$item['db_type'].'/chart/'.$item['server_id']); ?>"><img src="./images/chart.gif"/></a></td>
+        <td><a class="chartbtn" href="<?php echo site_url('wl_'.$item['db_type'].'/chart/'.$item['server_id']); ?>"><i class="icon-bar-chart"></i>查看图表</a></td>
   </tr>
  <?php endforeach;?>
  <?php }else{  ?>
@@ -123,7 +123,13 @@
 <?php } ?>      
       </tbody>
     </table>
+	
 </div>
+	
+
+	
+	
+
 
  <script type="text/javascript">
     $('#refresh').click(function(){
