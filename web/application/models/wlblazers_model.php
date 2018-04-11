@@ -112,31 +112,16 @@ class Wlblazers_model extends CI_Model{
 		}
 	}
 	
-	function get_oracle_xAxis(){
-    $sql = "SELECT server_id, time
-							FROM (SELECT server_id, date_format(create_time, '%m/%d %H') time, dg_delay
-											FROM oracle_status_history
-											WHERE database_role = 'PHYSICAL STANDBY'
-											AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
-								) t
-							GROUP BY server_id, time
-							order by server_id, time";
-		$query = $this->db->query($sql);
-		if ($query->num_rows() > 0)
-		{
-			return $query->result_array();
-		}
-	}
+
 
 	function get_oracle_yAxis(){
-    $sql = "SELECT server_id, time, max(dg_delay) delay
-							FROM (SELECT server_id, date_format(create_time, '%m/%d %H') time, dg_delay
-											FROM oracle_status_history
-											WHERE database_role = 'PHYSICAL STANDBY'
-											AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
-								) t
-							GROUP BY server_id, time
-							order by server_id, time";
+    $sql = "select *
+						  from (SELECT server_id, create_time time, dg_delay delay
+						          FROM oracle_status_history
+						         WHERE database_role = 'PHYSICAL STANDBY'
+						           AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
+						         order by server_id, time desc limit 200) t
+						 order by time";
 		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0)
 		{

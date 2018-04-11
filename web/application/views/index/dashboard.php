@@ -324,7 +324,7 @@ var url = "<?php echo site_url('index/series'); ?>";
 jQuery(document).ready(function(){
 		getSeriesData(url);
 		
-		oTimer = setInterval("getSeriesData(url)",2000);
+		oTimer = setInterval("getSeriesData(url)",60000);
 		
 });  
 
@@ -359,13 +359,13 @@ function getSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[1]
+				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
 				            label: {
 				                formatter: function(params) {
-				                    return params.value + ' 延时' + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+				                    return params.value + ' 延时' + (params.seriesData.length ? '：' + params.seriesData[0].data[1] : '');
 				                }
 				            }
 				        },
@@ -377,12 +377,7 @@ function getSeriesData(url){
 				    series: [{
 				        name: json.server_id,
 				        type: 'line',
-				        smooth: true,
-				        data: json.delay
-				    },{
-				        name: json.server_id,
-				        type: 'line',
-				        color: colors[1],
+				        color: colors[0],
 				        smooth: true,
 				        data: json.delay
 				    }]

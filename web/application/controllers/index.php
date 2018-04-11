@@ -41,7 +41,6 @@ class Index extends Front_Controller {
         $data["oracle_active_count"] = $this->wlblazers->get_oracle_active_count();
         $data["oracle_inactive_count"] = $this->wlblazers->get_oracle_inactive_count();
         
-        $data["oracle_xAxis"] = $this->wlblazers->get_oracle_xAxis();
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
         
         //for mysql
@@ -76,7 +75,6 @@ class Index extends Front_Controller {
     public function series(){
         //for oracle
         $data["oracle_lines"] = $this->wlblazers->get_oracle_lines();
-        $data["oracle_xAxis"] = $this->wlblazers->get_oracle_xAxis();
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
         
         
