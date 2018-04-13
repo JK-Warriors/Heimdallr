@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title><?php echo $this->lang->line('wlblazers'); ?> <?php echo $this->lang->line('database_monitor_system'); ?></title>
+    <title><?php echo $this->lang->line('wlblazers'); ?><?php echo $this->lang->line('database_monitor_system'); ?></title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -180,7 +180,7 @@
                         <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
                         <p class="pull-right">Power by <a href="#" target="_blank">DR&M</a></p>
 
-                        <p>&copy; 2018 <a href="#" target="_blank">DR&M Cloud</a>&nbsp;(Disaster Recovery & Monitor Cloud)</p>
+                        <p>Copyright (c) 2018. All rights reserved. <a href="#" target="_blank">DR&M Cloud</a>&nbsp;(Disaster Recovery & Monitor Cloud)</p>
                     </footer>
                     
             </div>
