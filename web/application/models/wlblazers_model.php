@@ -204,14 +204,14 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 容灾库 延时信息
 	 */
 	function get_db_count_normal($db_type){
-    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay = 1 ";
+    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl = 1 and t.repl_delay = 1 ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
 	}
 
 	function get_db_count_waring($db_type){
-    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay = 2 ";
+    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and (t.repl = 2 or t.repl_delay = 2) ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
