@@ -526,7 +526,7 @@ function check_db_status_level($data,$data_tips="no_data"){
 
 function check_db_status_level_new($data,$data_tips="no_data"){
     if($data==-1){
-        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='no data'><i class='iconfont icon-icon2'></a>";
+        $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-html='true' data-placement='top' title='no data'><i class='iconfont icon-icon2'></a>";
     }
     else if($data==1){
         $level_img="<a href='javascript::(0)' data-toggle='tooltip' data-placement='top' title='$data_tips'><i class='iconfont icon-ziyuan'></i></a>";
@@ -543,6 +543,42 @@ function check_db_status_level_new($data,$data_tips="no_data"){
     return $level_img;
 }
 
+function check_repl_color($normal_count, $waring_count, $critical_count){
+    if($critical_count > 0){
+        $repl_color=" cschedule_red";
+    }
+    else if($waring_count > 0){
+        $repl_color=" cschedule_yellow";
+    }
+    else if($normal_count > 0){
+        $repl_color=" cschedule_green";
+    }
+    else{
+        $repl_color="";
+    }
+    
+    return $repl_color;
+}
+
+
+function check_repl_rate($normal_count, $waring_count, $critical_count){
+		$total = $normal_count + $waring_count + $critical_count;
+		
+    if($critical_count > 0){
+        $repl_rate= round(($normal_count/$total) * 100) ;
+    }
+    else if($waring_count > 0){
+        $repl_rate= round(($normal_count/$total) * 100) ;
+    }
+    else if($normal_count > 0){
+        $repl_rate= round(($normal_count/$total) * 100) ;
+    }
+    else{
+        $repl_rate="0";
+    }
+    
+    return $repl_rate;
+}
 
 
 function check_db_status_role($data){

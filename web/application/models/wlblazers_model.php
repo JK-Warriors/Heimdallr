@@ -120,7 +120,7 @@ class Wlblazers_model extends CI_Model{
 						          FROM oracle_status_history
 						         WHERE database_role = 'PHYSICAL STANDBY'
 						           AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
-						         order by server_id, time desc limit 200) t
+						         order by server_id, time desc limit 5) t
 						 order by time";
 		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0)
@@ -203,21 +203,21 @@ class Wlblazers_model extends CI_Model{
    /*
 	 * 获取 容灾库 延时信息
 	 */
-	function get_db_count_high($db_type){
+	function get_db_count_normal($db_type){
     $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay < 60 ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
 	}
 
-	function get_db_count_medium($db_type){
+	function get_db_count_waring($db_type){
     $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay > 60 and t.repl_delay < 3600";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
 	}
 	
-	function get_db_count_low($db_type){
+	function get_db_count_critical($db_type){
     $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay > 3600 ";
 		$query = $this->db->query($sql);
 		

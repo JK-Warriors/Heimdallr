@@ -42,9 +42,9 @@ class Index extends Front_Controller {
         $data["oracle_inactive_count"] = $this->wlblazers->get_oracle_inactive_count();
         
         //for oracle delay
-        $data["oracle_high"] = $this->wlblazers->get_db_count_high('oracle');
-        $data["oracle_medium"] = $this->wlblazers->get_db_count_medium('oracle');
-        $data["oracle_low"] = $this->wlblazers->get_db_count_low('oracle');
+        $data["oracle_normal"] = $this->wlblazers->get_db_count_normal('oracle');
+        $data["oracle_waring"] = $this->wlblazers->get_db_count_waring('oracle');
+        $data["oracle_critical"] = $this->wlblazers->get_db_count_critical('oracle');
         
         //for oracle delay chart
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
@@ -55,9 +55,9 @@ class Index extends Front_Controller {
         $data["mysql_inactive_count"] = $this->wlblazers->get_mysql_inactive_count();
         
         //for mysql delay
-        $data["mysql_high"] = $this->wlblazers->get_db_count_high('mysql');
-        $data["mysql_medium"] = $this->wlblazers->get_db_count_medium('mysql');
-        $data["mysql_low"] = $this->wlblazers->get_db_count_low('mysql');
+        $data["mysql_normal"] = $this->wlblazers->get_db_count_normal('mysql');
+        $data["mysql_waring"] = $this->wlblazers->get_db_count_waring('mysql');
+        $data["mysql_critical"] = $this->wlblazers->get_db_count_critical('mysql');
         
         //for sqlserver
         $data["sqlserver_cfg_total"] = $this->wlblazers->get_sqlserver_cfg_total();
@@ -65,9 +65,9 @@ class Index extends Front_Controller {
         $data["sqlserver_inactive_count"] = $this->wlblazers->get_sqlserver_inactive_count();
         
         //for sqlserver delay
-        $data["sqlserver_high"] = $this->wlblazers->get_db_count_high('sqlserver');
-        $data["sqlserver_medium"] = $this->wlblazers->get_db_count_medium('sqlserver');
-        $data["sqlserver_low"] = $this->wlblazers->get_db_count_low('sqlserver');
+        $data["sqlserver_normal"] = $this->wlblazers->get_db_count_normal('sqlserver');
+        $data["sqlserver_waring"] = $this->wlblazers->get_db_count_waring('sqlserver');
+        $data["sqlserver_critical"] = $this->wlblazers->get_db_count_critical('sqlserver');
         
         //for os
         $data["os"] = $this->wlblazers->get_os_paging(0,5);

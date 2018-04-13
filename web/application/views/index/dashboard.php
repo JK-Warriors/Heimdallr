@@ -1,4 +1,5 @@
 <script src="lib/bootstrap/js/jquery.pin.js"></script>
+<script src="lib/bootstrap/js/bootstrap.min.js"></script>
 
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
@@ -107,7 +108,7 @@ footer hr {
                                 <div class="pull-right"><a href="<?php echo site_url('wl_os/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                                 </div>
                             </div>
-                            <div class="block-content">
+                            <div class="block-content" style="height: 253px;">
                                 <table class="table tooltip-wlblazers">
                                     <thead>
                                         <tr>
@@ -160,8 +161,8 @@ footer hr {
                 <div class="col-md-12">
                     <div class="block">
                         <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库容灾同步情况</div>
-                            <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>容灾</div>
+                            <div class="pull-right"> <!-- <a href="#">查看详细<i class="iconfont icon-gengduo"></i></a> -->
                             </div>
                         </div>
                         <div class="block-content">
@@ -172,27 +173,27 @@ footer hr {
                                         <div class="cf">
                                             <div class="c1">
                                                 <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
-                                                    <div class="cschedule cschedule_green" style="height:30%;"></div>
+                                                    <div class="cschedule <?php echo check_repl_color($oracle_normal, $oracle_waring, $oracle_critical) ?> >" style="height:<?php echo check_repl_rate($oracle_normal, $oracle_waring, $oracle_critical) ?>%;"></div>
                                                     <!-- 绿色cschedule_green,黄色cschedule_yellow,红色cschedule_red style="height:xx%;"里面的百分数通过实际情况计算显示不同高度 -->
                                                 </div>
                                             </div>
                                             <div class="c2right">
                                                 <div class="c2 co1">
                                                     <div>
-                                                        <p class="c3"><?php echo $oracle_high ?></p>
-                                                        <p class="c4">High</p>
+                                                        <p class="c3"><?php echo $oracle_normal ?></p>
+                                                        <p class="c4">正常</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co2">
                                                     <div>
-                                                        <p class="c3"><?php echo $oracle_medium ?></p>
-                                                        <p class="c4">Medium</p>
+                                                        <p class="c3"><?php echo $oracle_waring ?></p>
+                                                        <p class="c4">告警</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co3">
                                                     <div>
-                                                        <p class="c3"><?php echo $oracle_low ?></p>
-                                                        <p class="c4">Low</p>
+                                                        <p class="c3"><?php echo $oracle_critical ?></p>
+                                                        <p class="c4">异常</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -203,27 +204,27 @@ footer hr {
                                         <div class="cf">
                                             <div class="c1">
                                                 <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
-                                                    <div class="cschedule cschedule_yellow" style="height:60%;"></div>
+                                                    <div class="cschedule <?php echo check_repl_color($mysql_normal, $mysql_waring, $mysql_critical) ?>" style="height:<?php echo check_repl_rate($mysql_normal, $mysql_waring, $mysql_critical) ?>%;"></div>
                                                     <!-- 绿色cschedule_green,黄色cschedule_yellow,红色cschedule_red style="height:xx%;"里面的百分数通过实际情况计算显示不同高度 -->
                                                 </div>
                                             </div>
                                             <div class="c2right">
                                                 <div class="c2 co1">
                                                     <div>
-                                                        <p class="c3"><?php echo $mysql_high ?></p>
-                                                        <p class="c4">High</p>
+                                                        <p class="c3"><?php echo $mysql_normal ?></p>
+                                                        <p class="c4">正常</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co2">
                                                     <div>
-                                                        <p class="c3"><?php echo $mysql_medium ?></p>
-                                                        <p class="c4">Medium</p>
+                                                        <p class="c3"><?php echo $mysql_waring ?></p>
+                                                        <p class="c4">告警</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co3">
                                                     <div>
-                                                        <p class="c3"><?php echo $mysql_low ?></p>
-                                                        <p class="c4">Low</p>
+                                                        <p class="c3"><?php echo $mysql_critical ?></p>
+                                                        <p class="c4">异常</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -234,27 +235,27 @@ footer hr {
                                         <div class="cf">
                                             <div class="c1">
                                                 <div class="c1box"><span></span><span></span><span></span><span></span><span></span>
-                                                    <div class="cschedule cschedule_red" style="height:100%;"></div>
+                                                    <div class="cschedule <?php echo check_repl_color($sqlserver_normal, $sqlserver_waring, $sqlserver_critical) ?>" style="height:<?php echo check_repl_rate($sqlserver_normal, $sqlserver_waring, $sqlserver_critical) ?>%;"></div>
                                                     <!-- 绿色cschedule_green,黄色cschedule_yellow,红色cschedule_red style="height:xx%;"里面的百分数通过实际情况计算显示不同高度 -->
                                                 </div>
                                             </div>
                                             <div class="c2right">
                                                 <div class="c2 co1">
                                                     <div>
-                                                        <p class="c3"><?php echo $sqlserver_high ?></p>
-                                                        <p class="c4">High</p>
+                                                        <p class="c3"><?php echo $sqlserver_normal ?></p>
+                                                        <p class="c4">正常</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co2">
                                                     <div>
-                                                        <p class="c3"><?php echo $sqlserver_medium ?></p>
-                                                        <p class="c4">Medium</p>
+                                                        <p class="c3"><?php echo $sqlserver_waring ?></p>
+                                                        <p class="c4">告警</p>
                                                     </div>
                                                 </div>
                                                 <div class="c2 co3">
                                                     <div>
-                                                        <p class="c3"><?php echo $sqlserver_low ?></p>
-                                                        <p class="c4">Low</p>
+                                                        <p class="c3"><?php echo $sqlserver_critical ?></p>
+                                                        <p class="c4">异常</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -274,7 +275,7 @@ footer hr {
                             <div class="pull-right"><a href="<?php echo site_url('alarm/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                             </div>
                         </div>
-                        <div class="block-content">
+                        <div class="block-content" style="    height: 371px;">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -307,6 +308,8 @@ footer hr {
                     </div>
                 </div>
             </div>
+			<button id="view-fullscreen">全屏</button>
+                    <button id="cancel-fullscreen">退出</button>
         </div>
     </div>
 </div>
@@ -387,7 +390,103 @@ function getSeriesData(url){
 				}
     },'json');  
 }  
+
+
+//全屏JS
+(function () {
+    var viewFullScreen = document.getElementById("view-fullscreen");
+    if (viewFullScreen) {
+        viewFullScreen.addEventListener("click", function () {
+            var docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            }
+            else if (docElm.msRequestFullscreen) {
+                docElm = document.body; //overwrite the element (for IE)
+                docElm.msRequestFullscreen();
+            }
+            else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            }
+            else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            }
+        }, false);
+    }
+
+    var cancelFullScreen = document.getElementById("cancel-fullscreen");
+    if (cancelFullScreen) {
+        cancelFullScreen.addEventListener("click", function () {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            }
+            else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }, false);
+    }
+
+
+    var fullscreenState = document.getElementById("fullscreen-state");
+    if (fullscreenState) {
+        document.addEventListener("fullscreenchange", function () {
+            fullscreenState.innerHTML = (document.fullscreenElement)? "" : "not ";
+        }, false);
+        
+        document.addEventListener("msfullscreenchange", function () {
+            fullscreenState.innerHTML = (document.msFullscreenElement)? "" : "not ";
+        }, false);
+        
+        document.addEventListener("mozfullscreenchange", function () {
+            fullscreenState.innerHTML = (document.mozFullScreen)? "" : "not ";
+        }, false);
+        
+        document.addEventListener("webkitfullscreenchange", function () {
+            fullscreenState.innerHTML = (document.webkitIsFullScreen)? "" : "not ";
+        }, false);
+    }
+
+    var marioVideo = document.getElementById("mario-video")
+        videoFullscreen = document.getElementById("video-fullscreen");
+
+    if (marioVideo && videoFullscreen) {
+        videoFullscreen.addEventListener("click", function (evt) {
+            if (marioVideo.requestFullscreen) {
+                marioVideo.requestFullscreen();
+            }
+            else if (marioVideo.msRequestFullscreen) {
+                marioVideo.msRequestFullscreen();
+            }
+            else if (marioVideo.mozRequestFullScreen) {
+                marioVideo.mozRequestFullScreen();
+            }
+            else if (marioVideo.webkitRequestFullScreen) {
+                marioVideo.webkitRequestFullScreen();
+                /*
+                    *Kept here for reference: keyboard support in full screen
+                    * marioVideo.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                */
+            }
+        }, false);
+    }
+})();
+//全屏后刷新表格大小
+window.onresize = function(){
+                 myChart.resize();
+        }
+        
+        
+        
+//显示tooltip  
+$(function () { $("[data-toggle='tooltip']").tooltip(); });     
 </script>
+
 <!-- pho页面代码-结束 -->
 
 
