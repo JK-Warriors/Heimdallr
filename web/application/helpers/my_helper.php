@@ -565,10 +565,10 @@ function check_repl_rate($normal_count, $waring_count, $critical_count){
 		$total = $normal_count + $waring_count + $critical_count;
 		
     if($critical_count > 0){
-        $repl_rate= round(($normal_count/$total) * 100) ;
+        $repl_rate= round(($critical_count/$total) * 100) ;
     }
     else if($waring_count > 0){
-        $repl_rate= round(($normal_count/$total) * 100) ;
+        $repl_rate= round(($waring_count/$total) * 100) ;
     }
     else if($normal_count > 0){
         $repl_rate= round(($normal_count/$total) * 100) ;
