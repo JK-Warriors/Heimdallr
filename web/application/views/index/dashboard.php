@@ -20,7 +20,74 @@ footer hr {
     border: 0px;
     border-top: 1px solid #3c3b3b;
 }
+html{    background: #2A2A2A;}
+
 </style>
+<script type="text/javascript">
+    // 滚动效果
+    (function($) {
+        $.fn.myScroll = function(options) {
+            var defaults = {
+                speed: 40, 
+                rowHeight: 24
+            };
+
+            var opts = $.extend({}, defaults, options),
+                intId = [];
+
+            function marquee(obj, step) {
+
+                obj.find("ul").animate({
+                    marginTop: '-=1'
+                }, 0, function() {
+                    var s = Math.abs(parseInt($(this).css("margin-top")));
+                    if (s >= step) {
+                        $(this).find("li").slice(0, 1).appendTo($(this));
+                        $(this).css("margin-top", 0);
+                    }
+                });
+            }
+
+            this.each(function(i) {
+                var sh = opts["rowHeight"],
+                    speed = opts["speed"],
+                    _this = $(this);
+                intId[i] = setInterval(function() {
+                    if (_this.find("ul").height() <= _this.height()) {
+                        clearInterval(intId[i]);
+                    } else {
+                        marquee(_this, sh);
+                    }
+                }, speed);
+
+                _this.hover(function() {
+                    clearInterval(intId[i]);
+                }, function() {
+                    intId[i] = setInterval(function() {
+                        if (_this.find("ul").height() <= _this.height()) {
+                            clearInterval(intId[i]);
+                        } else {
+                            marquee(_this, sh);
+                        }
+                    }, speed);
+                });
+
+            });
+
+        }
+
+    })(jQuery);
+    $(function() {
+        $("div.list_lh").myScroll({
+            speed: 160, //数值越大，速度越慢
+            rowHeight: 37 //li的高度
+        });
+        $("div.list_lh2").myScroll({
+            speed: 160, //数值越大，速度越慢
+            rowHeight: 37 //li的高度
+        });
+    });
+    </script>
 <div class="indexpage">
     <ul class="breadcrumb">
         <li><a href="<?php echo site_url('index/index'); ?>">主页</a> <span class="divider">/</span></li>
@@ -100,60 +167,69 @@ footer hr {
                         </div>
                     </div>
                 </div>
-                <div class="">
-                    <div class="col-md-12">
-                        <div class="block">
-                            <div class="navbar navbar-inner block-header">
-                                <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库主机资源情况</div>
-                                <div class="pull-right"><a href="<?php echo site_url('wl_os/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
+				
+			
+				
+				
+<!-- 滚动部分静态代码 开始-->
+                        <div class="">
+                            <div class="col-md-12">
+                                <div class="block">
+                                    <div class="navbar navbar-inner block-header">
+                                        <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库主机资源情况</div>
+                                        <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="block-content" style="height: 253px;">
+                                        <table class="table" style="margin:0;">
+                                            <thead>
+                                                <tr>
+                                                    <th>数据库名</th>
+                                                    <th style="width:120px;">cpu</th>
+                                                    <th style="width:120px;">内存</th>
+                                                    <th style="width:120px;">I/O</th>
+                                                    <th style="width:120px;">网络</th>
+                                                    <th style="width:120px;">数据库类型</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <div class="list_lh">
+                                            <ul>
+	                                         <?php if(!empty($db_status)) {?>
+	                                         <?php foreach ($db_status  as $item):?>
+                                             <li>
+                                               <table class="table">
+			                                         	<tr style="font-size: 12px;">
+			                                         		<td><?php echo $item['host'] ?></td>
+			                                         		<td style="width:120px;"><?php echo check_db_status_level_new($item['cpu'],$item['cpu_tips']) ?></td>
+			                                         		<td style="width:120px;"><?php echo check_db_status_level_new($item['memory'],$item['memory_tips']) ?></td>
+			                                         		<td style="width:120px;"><?php echo check_db_status_level_new($item['disk'],$item['disk_tips']) ?></td>
+			                                         		<td style="width:120px;"><?php echo check_db_status_level_new($item['network'],$item['network_tips']) ?></td>
+			                                         		<td style="width:120px;"><?php echo check_dbtype($item['db_type']) ?></td>
+			                                           </tr>
+                                               </table>
+                                             </li>
+	                                         <?php endforeach;?>
+	                                         <?php }else{  ?>
+                                                <li>
+                                                    <table class="table">
+					                                         		<tr>
+						                                         		<td colspan="16">
+						                                         		<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+						                                         		</td>
+					                                         		</tr>
+                                                    </table>
+                                                </li>
+	                                         <?php } ?>  
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="block-content" style="height: 253px;">
-                                <table class="table tooltip-wlblazers">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:120px;">主机IP</th>
-                                            <th style="width:120px;">cpu</th>
-                                            <th style="width:120px;">内存</th>
-                                            <th style="width:120px;">I/O</th>
-                                            <th style="width:120px;">网络</th>
-                                            <th style="width:120px;">数据库类型</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- √×!分别对应不同的<i>标签,参考demo
-                                        <tr>
-                                            <td><i class="iconfont icon-ziyuan"></i>demo</td>
-                                            <td><i class="iconfont icon-icon2"></i>demo</td>
-                                            <td><i class="iconfont icon-jinggao1"></i>demo</td>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                            <td>demo</td>
-                                        </tr> -->
-                                         <?php if(!empty($db_status)) {?>
-                                         <?php foreach ($db_status  as $item):?>
-                                         	<tr style="font-size: 12px;">
-                                         		<td><?php echo $item['host'] ?></td>
-                                         		<td><?php echo check_db_status_level_new($item['cpu'],$item['cpu_tips']) ?></td>
-                                         		<td><?php echo check_db_status_level_new($item['memory'],$item['memory_tips']) ?></td>
-                                         		<td><?php echo check_db_status_level_new($item['disk'],$item['disk_tips']) ?></td>
-                                         		<td><?php echo check_db_status_level_new($item['network'],$item['network_tips']) ?></td>
-                                         		<td><?php echo check_dbtype($item['db_type']) ?></td>
-                                           </tr>
-                                         <?php endforeach;?>
-                                         <?php }else{  ?>
-                                         		<tr>
-                                         		<td colspan="16">
-                                         		<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
-                                         		</td>
-                                         </tr>
-                                         <?php } ?>  
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
-                    </div>
-                </div>
+				
+<!-- 滚动部分静态代码 结束-->
             </div>
         </div>
         <div class="col-md-4">
@@ -267,47 +343,64 @@ footer hr {
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="block">
-                        <div class="navbar navbar-inner block-header">
-                            <div class="muted pull-left"><i class="iconfont icon-ai222"></i>告警显示</div>
-                            <div class="pull-right"><a href="<?php echo site_url('alarm/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
+            
+			
+<!-- 滚动部分静态代码 开始-->
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left"><i class="iconfont icon-ai222"></i>告警显示</div>
+                                    <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                                    </div>
+                                </div>
+                                <div class="block-content" style="    height: 371px;">
+                                   
+                                    
+                                    <table class="table" style="margin:0;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:60px;">标签</th>
+                                                <th style="width:60px;">类型</th>
+                                                <th>告警内容</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <div class="list_lh2">
+                                        <ul>
+				                                	<?php if(!empty($alarm)) {?>
+				                                 	<?php foreach ($alarm  as $item):?>
+                                            <li>
+                                                <table class="table">
+							                                    <tr>
+							                                        <td style="width:60px;"><?php echo $item['tags'] ?></td>
+							                                        <td style="width:60px;"><?php echo $item['db_type'] ?></td>
+							                                        <td><?php echo $item['message'] ?></td>
+							                                    </tr>
+                                                </table>
+                                            </li>
+				                                	<?php endforeach;?>
+				                                	<?php }else{  ?>
+                                            <li>
+                                                <table class="table">
+				                                					<tr>
+							                                			<td colspan="16">
+							                                			<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
+							                                			</td>
+						                                			</tr>
+                                                </table>
+                                            </li>
+				                                	<?php } ?>    
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="block-content" style="    height: 371px;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <div>
-                                            <th style="width:60px;">标签</th>
-                                            <th style="width:60px;">类型</th>
-                                            <th>告警内容</th>
-                                        </div>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	<?php if(!empty($alarm)) {?>
-                                 	<?php foreach ($alarm  as $item):?>
-                                    <tr>
-                                        <td><?php echo $item['tags'] ?></td>
-                                        <td><?php echo $item['db_type'] ?></td>
-                                        <td><?php echo $item['message'] ?></td>
-                                    </tr>
-                                	<?php endforeach;?>
-                                	<?php }else{  ?>
-                                			<tr>
-                                			<td colspan="16">
-                                			<font color="red"><?php echo $this->lang->line('no_record'); ?></font>
-                                			</td>
-                                			</tr>
-                                	<?php } ?>    
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
-                </div>
-            </div>
+<!-- 滚动部分静态代码 结束-->
+			
+			
 			<button id="view-fullscreen">全屏</button>
                     <button id="cancel-fullscreen">退出</button>
         </div>

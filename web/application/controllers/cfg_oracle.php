@@ -129,7 +129,7 @@ class cfg_oracle extends Front_Controller {
 												'host'=>$this->input->post('host'),
 												'community'=> "public",
 					   					  'tags'=>$this->input->post('tags'),
-                        'monitor'=> 1,
+                        'monitor'=> 0,
                         'send_mail'=> 0,
 												'send_sms'=> 0,
                         'send_mail_to_list'=> "",
