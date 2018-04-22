@@ -371,6 +371,7 @@ $lang['fetion_pass'] = '飞信密码';
 
 #other language
 $lang['last_alarm'] = '最新告警';
+$lang['confirm_alert'] = '确认告警';
 $lang['the_latest_acquisition_time']='最新监控时间';
 $lang['the_monitoring_process_is_not_started']='监控进程未启动或异常';
 $lang['please_input_host'] = '请输入主机';

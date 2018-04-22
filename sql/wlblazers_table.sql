@@ -109,10 +109,10 @@ CREATE TABLE `admin_user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for alarm
+-- Table structure for alerts
 -- ----------------------------
-DROP TABLE IF EXISTS `alarm`;
-CREATE TABLE `alarm` (
+DROP TABLE IF EXISTS `alerts`;
+CREATE TABLE `alerts` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `tags` varchar(50) DEFAULT NULL,
@@ -120,22 +120,24 @@ CREATE TABLE `alarm` (
   `port` varchar(10) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `db_type` varchar(30) DEFAULT NULL,
-  `alarm_item` varchar(50) DEFAULT NULL,
-  `alarm_value` varchar(50) DEFAULT NULL,
+  `alert_item` varchar(50) DEFAULT NULL,
+  `alert_value` varchar(50) DEFAULT NULL,
   `level` varchar(50) DEFAULT NULL,
   `message` varchar(255) DEFAULT NULL,
   `send_mail` tinyint(2) DEFAULT NULL,
   `send_mail_to_list` varchar(255) DEFAULT NULL,
+  `send_mail_status` tinyint(2) NOT NULL DEFAULT '0',
   `send_sms` tinyint(2) DEFAULT NULL,
   `send_sms_to_list` varchar(255) DEFAULT NULL,
+  `send_sms_status` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=150229 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for alarm_history
+-- Table structure for alerts_his
 -- ----------------------------
-DROP TABLE IF EXISTS `alarm_history`;
-CREATE TABLE `alarm_history` (
+DROP TABLE IF EXISTS `alerts_his`;
+CREATE TABLE `alerts_his` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `tags` varchar(50) DEFAULT NULL,
@@ -143,20 +145,21 @@ CREATE TABLE `alarm_history` (
   `port` varchar(10) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `db_type` varchar(30) DEFAULT NULL,
-  `alarm_item` varchar(50) DEFAULT NULL,
-  `alarm_value` varchar(50) DEFAULT NULL,
+  `alert_item` varchar(50) DEFAULT NULL,
+  `alert_value` varchar(50) DEFAULT NULL,
   `level` varchar(50) DEFAULT NULL,
   `message` varchar(255) DEFAULT NULL,
   `send_mail` tinyint(2) DEFAULT NULL,
   `send_mail_to_list` varchar(255) DEFAULT NULL,
+  `send_mail_status` tinyint(2) NOT NULL DEFAULT '0',
   `send_sms` tinyint(2) DEFAULT NULL,
   `send_sms_to_list` varchar(255) DEFAULT NULL,
-  `send_mail_status` tinyint(2) NOT NULL DEFAULT '0',
   `send_sms_status` tinyint(2) NOT NULL DEFAULT '0',
+  `current_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_server_id` (`server_id`),
   KEY `idx_host` (`host`),
-  KEY `idx_alarm_type` (`alarm_item`),
+  KEY `idx_alert_item` (`alert_item`),
   KEY `idx_level` (`level`),
   KEY `idx_create_time` (`create_time`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=315790 DEFAULT CHARSET=utf8;
@@ -175,6 +178,15 @@ CREATE TABLE `alarm_temp` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3624365 DEFAULT CHARSET=utf8;
+
+
+
+
+
+
+
+
+
 
 -- ----------------------------
 -- Table structure for db_cfg_mongodb

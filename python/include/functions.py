@@ -84,26 +84,26 @@ def mysql_single_query(sql):
         curs.close()
         conn.close()    
     
-def add_alarm(server_id,tags,db_host,db_port,create_time,db_type,alarm_item,alarm_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+def add_alarm(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
    try: 
        conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
        conn.select_db(dbname)
        curs = conn.cursor()
-       sql="insert into alarm(server_id,tags,host,port,create_time,db_type,alarm_item,alarm_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-       param=(server_id,tags,db_host,db_port,create_time,db_type,alarm_item,alarm_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+       sql="insert into alarm(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+       param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
        curs.execute(sql,param)
 
        if send_mail == 1:
-           temp_sql = "insert into alarm_temp(server_id,ip,db_type,alarm_item,alarm_type) values(%s,%s,%s,%s,%s);"
-           temp_param = (server_id,db_host,db_type,alarm_item,'mail')
+           temp_sql = "insert into alarm_temp(server_id,ip,db_type,alert_item,alarm_type) values(%s,%s,%s,%s,%s);"
+           temp_param = (server_id,db_host,db_type,alert_item,'mail')
            curs.execute(temp_sql,temp_param)
        if send_sms == 1:
-           temp_sql = "insert into alarm_temp(server_id,ip,db_type,alarm_item,alarm_type) values(%s,%s,%s,%s,%s);"
-           temp_param = (server_id,db_host,db_type,alarm_item,'sms')
+           temp_sql = "insert into alarm_temp(server_id,ip,db_type,alert_item,alarm_type) values(%s,%s,%s,%s,%s);"
+           temp_param = (server_id,db_host,db_type,alert_item,'sms')
            curs.execute(temp_sql,temp_param)
        if (send_mail ==0 and send_sms==0):
-           temp_sql = "insert into alarm_temp(server_id,ip,db_type,alarm_item,alarm_type) values(%s,%s,%s,%s,%s);"
-           temp_param = (server_id,db_host,db_type,alarm_item,'none')
+           temp_sql = "insert into alarm_temp(server_id,ip,db_type,alert_item,alarm_type) values(%s,%s,%s,%s,%s);"
+           temp_param = (server_id,db_host,db_type,alert_item,'none')
            curs.execute(temp_sql,temp_param)
        conn.commit()
        curs.close()
@@ -112,34 +112,60 @@ def add_alarm(server_id,tags,db_host,db_port,create_time,db_type,alarm_item,alar
        print "Add alarm: " + str(e)     
 
 
-def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alarm_item,alarm_value,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+   try: 
+       conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
+       conn.select_db(dbname)
+       curs = conn.cursor()
+       
+       sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+       param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+       curs.execute(sql,param)
+
+       conn.commit()
+       curs.close()
+       conn.close()
+   except Exception,e:
+       print "Add alert: " + str(e)   
+       
+       
+def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
     conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
     conn.select_db(dbname)
     curs = conn.cursor()
     if db_type=='os':
-        alarm_count=curs.execute("select id from alarm_temp where ip='%s' and alarm_item='%s' ;" %(db_host,alarm_item))
-        mysql_exec("delete from alarm_temp where ip='%s'  and alarm_item='%s' ;" %(db_host,alarm_item),'')
+        alert_count=curs.execute("select id from alerts where host='%s' and alert_item='%s' ;" %(db_host,alert_item))
+        
+        if int(alert_count) > 0 :
+            sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where host='%s' and alert_item='%s' ;" %(db_host,alert_item)
+            mysql_exec(sql,'')
+        
+            mysql_exec("delete from alerts where host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
     else:
-        alarm_count=curs.execute("select id from alarm_temp where server_id=%s and db_type='%s' and alarm_item='%s' ;" %(server_id,db_type,alarm_item))                    
-        mysql_exec("delete from alarm_temp where server_id=%s and db_type='%s' and alarm_item='%s' ;" %(server_id,db_type,alarm_item),'')
+        alert_count=curs.execute("select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item))  
+        if int(alert_count) > 0 :
+            sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item) 
+            mysql_exec(sql,'')
+                          
+            mysql_exec("delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item),'')
 
-    if int(alarm_count) > 0 :
-        sql="insert into alarm(server_id,tags,host,port,create_time,db_type,alarm_item,alarm_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        param=(server_id,tags,db_host,db_port,create_time,db_type,alarm_item,alarm_value,'ok',message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+    if int(alert_count) > 0 :
+        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,'ok',message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
         mysql_exec(sql,param)
 
     curs.close()
     conn.close()
     
     
-def update_send_mail_status(server,db_type,alarm_item,send_mail,send_mail_max_count):
+def update_send_mail_status(server,db_type,alert_item,send_mail,send_mail_max_count):
     conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
     conn.select_db(dbname)
     curs = conn.cursor()
     if db_type == "os":
-        alarm_count=curs.execute("select id from alarm_temp where ip='%s' and db_type='%s' and alarm_item='%s' and alarm_type='mail' ;" %(server,db_type,alarm_item))
+        alarm_count=curs.execute("select id from alerts where ip='%s' and db_type='%s' and alert_item='%s' and send_mail='1' ;" %(server,db_type,alert_item))
     else:
-        alarm_count=curs.execute("select id from alarm_temp where server_id=%s and db_type='%s' and alarm_item='%s' and alarm_type='mail' ;" %(server,db_type,alarm_item)) 
+        alarm_count=curs.execute("select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' and send_mail='1' ;" %(server,db_type,alert_item)) 
     if int(alarm_count) >= int(send_mail_max_count) :
         send_mail = 0
     else:
@@ -148,14 +174,14 @@ def update_send_mail_status(server,db_type,alarm_item,send_mail,send_mail_max_co
     curs.close()
     conn.close()
 
-def update_send_sms_status(server,db_type,alarm_item,send_sms,send_sms_max_count):
+def update_send_sms_status(server,db_type,alert_item,send_sms,send_sms_max_count):
     conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
     conn.select_db(dbname)
     curs = conn.cursor()
     if db_type == "os":
-        alarm_count=curs.execute("select id from alarm_temp where ip='%s' and db_type='%s' and alarm_item='%s' and alarm_type='sms' ;" %(server,db_type,alarm_item))
+        alarm_count=curs.execute("select id from alerts where ip='%s' and db_type='%s' and alert_item='%s' and send_sms='1' ;" %(server,db_type,alert_item))
     else:
-        alarm_count=curs.execute("select id from alarm_temp where server_id=%s and db_type='%s' and alarm_item='%s' and alarm_type='sms' ;" %(server,db_type,alarm_item))
+        alarm_count=curs.execute("select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' and send_sms='1' ;" %(server,db_type,alert_item))
 
     if int(alarm_count) >= int(send_sms_max_count) :
         send_sms = 0
@@ -241,7 +267,7 @@ def update_db_status_init(role,version,db_host,db_port,tags):
       conn.close()
 
 
-def update_db_status(field,value,db_host,db_port,alarm_time,alarm_item,alarm_value,alarm_level):
+def update_db_status(field,value,db_host,db_port,alarm_time,alert_item,alert_value,alarm_level):
     try:
         field_tips=field+'_tips'
         if value==-1:
@@ -252,7 +278,7 @@ def update_db_status(field,value,db_host,db_port,alarm_time,alarm_item,alarm_val
                          value: %s\n<br/> 
                           level: %s\n<br/>
                           time: %s\n<br/> 
-                    """ %(alarm_item,alarm_value,alarm_level,alarm_time)
+                    """ %(alert_item,alert_value,alarm_level,alarm_time)
 
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)

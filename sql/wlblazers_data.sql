@@ -94,7 +94,8 @@ INSERT INTO `admin_menu` VALUES ('2003', 'Disk IO', '2', '20', 'wl_os/disk_io', 
 
 
 -- ------------------Alarm Panel--------------------
-INSERT INTO `admin_menu` VALUES ('2101', 'Alarm List', '2', '21', 'alarm/index', '', '0', '1', '0', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2101', 'Alarm List', '2', '21', 'alarm/index', '', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2102', 'Alarm His List', '2', '21', 'alarm/history', '', '0', '1', '2', CURRENT_TIMESTAMP);
 
 
 -- ------------------Permission System--------------------
@@ -153,6 +154,7 @@ INSERT INTO `admin_privilege` VALUES ('1062', 'Settings Save', '1001', 'settings
 INSERT INTO `admin_privilege` VALUES ('1071', 'Login System', '0', 'index/index', '71');
 
 INSERT INTO `admin_privilege` VALUES ('1081', 'Alarm View', '2101', 'alarm/index', '81');
+INSERT INTO `admin_privilege` VALUES ('1082', 'Alarm His View', '2102', 'alarm/history', '82');
 
 -- -------------------------------------------------- MySQL -------------------------------------------------------
 INSERT INTO `admin_privilege` VALUES ('1101', 'MySQL Config View', '1002', 'cfg_mysql/index', '101');
@@ -300,6 +302,7 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1061');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1062');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1071');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1081');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1082');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1101');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1102');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1103');
@@ -391,6 +394,9 @@ CREATE TABLE `admin_user_role` (
 -- Records of admin_user_role
 -- ----------------------------
 INSERT INTO `admin_user_role` VALUES ('1', '1');
+
+
+
 
 -- ----------------------------
 -- Table structure for wlblazers_status

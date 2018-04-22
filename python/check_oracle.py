@@ -15,6 +15,7 @@ path='./include'
 sys.path.insert(0,path)
 import functions as func
 import wl_oracle as oracle
+import alert_oracle as alert
 from multiprocessing import Process;
 
 
@@ -146,7 +147,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         param = (server_id,host,port,tags,connect,db_name,instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond,flashback_on,flashback_earliest_time,flashback_space_used)
         func.mysql_exec(sql,param) 
         func.update_db_status_init(database_role_new,version,host,port,tags)
-
+        alert.gen_alert_oracle_tablespace(server_id)     # generate oracle instance alert
 
         #check tablespace
         tablespace = oracle.get_tablespace(conn)
@@ -156,6 +157,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               param=(server_id,host,port,tags,line[0],line[1],line[2],line[3],line[4],line[5])
               func.mysql_exec(sql,param)
               
+           alert.gen_alert_oracle_tablespace(server_id)    # generate tablespace alert
+              
               
         #check diskgroup 
         diskgroup = oracle.get_diskgroup(conn)
@@ -164,6 +167,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               sql="insert into oracle_diskgroup(server_id,host,tags,diskgroup_name,state,type,total_mb,free_mb,used_rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
               param=(server_id,host,tags,line[0],line[1],line[2],line[3],line[4],line[5])
               func.mysql_exec(sql,param)
+              
+           alert.gen_alert_oracle_diskgroup(server_id)    # generate diskgroup alert
               
                          
         #check restore point
@@ -372,6 +377,9 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
             param = (dg_s_mrp, dg_delay, s_id)
             func.mysql_exec(sql,param)  
             
+            # generate diskgroup alert
+            logger.info("Generate dg alert for server: %s begin:" %(s_id))
+            alert.gen_alert_oracle_dg(s_id)    
             
             logger.info("Gather standby database infomation for server: %s" %(s_id))
         

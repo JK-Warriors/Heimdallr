@@ -50,7 +50,8 @@ $lang['_Redis Monitor'] = 'Redis监控';
 $lang['_Persistence Monitor'] = '持久化监控';
 
 $lang['_Alarm Panel'] = '告警面板';
-$lang['_Alarm List'] = '告警事件列表';
+$lang['_Alarm List'] = '当前告警列表';
+$lang['_Alarm His List'] = '历史告警列表';
 
 $lang['_OS Panel'] = '主机';
 $lang['_OS Monitor'] = '主机';
