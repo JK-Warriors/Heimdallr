@@ -203,7 +203,7 @@ class cfg_os extends Front_Controller {
     }
     
     /**
-     * 加入回收站
+     * 删除
      */
     function delete($id){
         parent::check_privilege();
@@ -214,11 +214,7 @@ class cfg_os extends Front_Controller {
 		}
         else
 		{
-            $data = array(
-				'is_delete'=>1
-			);
-		    $this->os->update($data,$id);
-			$this->os->remove_hosts($host);
+            $this->os->delete($id);
             redirect(site_url('cfg_os/index'));
         }
     }

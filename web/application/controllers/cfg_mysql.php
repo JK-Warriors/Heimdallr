@@ -202,16 +202,12 @@ class cfg_mysql extends Front_Controller {
     }
     
     /**
-     * 加入回收站
+     * 删除
      */
     function delete($id){
         parent::check_privilege();
         if($id){
-            $data = array(
-				'is_delete'=>1
-            );
-		    $this->mysql->update($data,$id);
-			$this->mysql->db_status_remove($id);
+            $this->mysql->delete($id);
             redirect(site_url('cfg_mysql/index'));
         }
     }

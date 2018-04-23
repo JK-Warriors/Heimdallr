@@ -180,16 +180,12 @@ class cfg_sqlserver extends Front_Controller {
     }
     
     /**
-     * 加入回收站
+     * 删除
      */
     function delete($id){
         parent::check_privilege();
         if($id){
-            $data = array(
-				'is_delete'=>1
-            );
-		    $this->sqlserver->update($data,$id);
-			$this->sqlserver->db_status_remove($id);
+            $this->sqlserver->delete($id);
             redirect(site_url('cfg_sqlserver/index'));
         }
     }

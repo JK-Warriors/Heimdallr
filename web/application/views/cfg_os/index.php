@@ -12,7 +12,7 @@
 <div class="btn-toolbar">
     <a class="btn btn-primary " href="<?php echo site_url('cfg_os/add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('add'); ?></a>
     <a class="btn btn-primary " href="<?php echo site_url('cfg_os/batch_add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('batch_add'); ?></a>
-    <a class="btn btn " href="<?php echo site_url('cfg_os/trash') ?>"><i class="icon-trash"></i> <?php echo $this->lang->line('trash'); ?></a>
+    
 </div>
 
 <div class="well">
@@ -69,7 +69,7 @@
 		<td><?php echo check_on_off($item['alarm_os_disk']) ?></td>
 		<td><?php echo check_on_off($item['alarm_os_memory']) ?></td>
         <td><a href="<?php echo site_url('cfg_os/edit/'.$item['id']) ?>"  title="<?php echo $this->lang->line('edit'); ?>" ><i class="icon-pencil"></i></a>&nbsp;&nbsp;&nbsp;
-        <a href="<?php echo site_url('cfg_os/delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('add_trash'); ?>" ><i class="icon-trash"></i></a>
+        <a href="<?php echo site_url('cfg_os/delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('delete'); ?>" ><i class="icon-remove"></i></a>
         </td>
 	</tr>
  <?php endforeach;?>
@@ -92,6 +92,6 @@
 
 <script type="text/javascript">
 	$(' .confirm_delete').click(function(){
-		return confirm("<?php echo $this->lang->line('add_to_trash_confirm'); ?>");	
+		return confirm("<?php echo $this->lang->line('delete_confirm'); ?>");	
 	});
 </script>
