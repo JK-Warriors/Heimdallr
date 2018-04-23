@@ -163,10 +163,29 @@ def check_send_alarm_sleep():
         func.mysql_exec(sql,param)
 
 
+##############################################################################
+# function used to move alerts to history which create 3 days before
+##############################################################################
+def alert_to_history():
+    sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where create_time > date_add(sysdate(), interval -3 day);"
+    mysql_exec(sql,'')
+    
+    
+    sql="delete from alerts where id in(select id from alerts_his);"
+    mysql_exec(sql,'')
+    
+
+
+##############################################################################
+# function main  
+##############################################################################
 def main():
 
     logger.info("Send alert controller started.")
+    # move alert to history 3 days before
+    alert_to_history()
     
+    # send mail and sms
     send_alert_media()
     
     func.update_check_time() 
