@@ -122,6 +122,7 @@ class cfg_oracle extends Front_Controller {
 						'threshold_critical_tablespace'=>$this->input->post('threshold_critical_tablespace'),
 						'threshold_critical_fb_space'=>$this->input->post('threshold_critical_fb_space'),
 						'threshold_critical_asm_space'=>$this->input->post('threshold_critical_asm_space'),
+						'filter_tbs'=>$this->input->post('filter_tbs'),
 					);
                     $this->oracle->insert($data);
                     
@@ -234,6 +235,7 @@ class cfg_oracle extends Front_Controller {
 						'threshold_critical_tablespace'=>$this->input->post('threshold_critical_tablespace'),
 						'threshold_critical_fb_space'=>$this->input->post('threshold_critical_fb_space'),
 						'threshold_critical_asm_space'=>$this->input->post('threshold_critical_asm_space'),
+						'filter_tbs'=>$this->input->post('filter_tbs'),
 					);
 					$this->oracle->update($data,$id);
 					if($this->input->post('monitor')!=1){
@@ -257,16 +259,12 @@ class cfg_oracle extends Front_Controller {
     }
     
     /**
-     * 加入回收站
+     * 删除
      */
     function delete($id){
         parent::check_privilege();
         if($id){
-            $data = array(
-				'is_delete'=>1
-            );
-		    $this->oracle->update($data,$id);
-			$this->oracle->db_status_remove($id);
+            $this->oracle->delete($id);
             redirect(site_url('cfg_oracle/index'));
         }
     }

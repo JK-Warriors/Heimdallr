@@ -145,7 +145,7 @@
          <option value="0" <?php echo set_selected(0,$record['alarm_os_disk']) ?>   ><?php echo $this->lang->line('off'); ?></option>
         </select>
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_os_disk" class="input-small" placeholder="" name="threshold_warning_os_disk" value="<?php echo $record['threshold_warning_os_disk']; ?>" >%
-        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_os_disk" class="input-small" placeholder="" name="threshold_critical_os_disk" value="<?php echo $record['threshold_critical_os_disk']; ?>" >% &nbsp;&nbsp;<?php echo $this->lang->line('filter'); ?> <?php echo $this->lang->line('disk'); ?>&nbsp;<input type="text" id="filter_os_disk" class="input-large" placeholder="" name="filter_os_disk" value="<?php echo $record['filter_os_disk']; ?>" >
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_os_disk" class="input-small" placeholder="" name="threshold_critical_os_disk" value="<?php echo $record['threshold_critical_os_disk']; ?>" >% &nbsp;&nbsp;<?php echo $this->lang->line('filter'); ?><?php echo $this->lang->line('disk'); ?>&nbsp;<input type="text" id="filter_os_disk" class="input-large" placeholder="" name="filter_os_disk" value="<?php echo $record['filter_os_disk']; ?>" >
     </div>
    </div>
    <div class="control-group">

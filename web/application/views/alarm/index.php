@@ -69,8 +69,8 @@
         <td><?php echo $item['message'] ?></td>
         <td><span class="label label-info"><?php echo $item['alert_value']  ?></span></td>
         <td><?php echo $item['create_time'] ?></td>
-        <td><?php echo check_mail($item['send_mail']) ?></td>
-        <td><?php echo check_mail($item['send_sms']) ?></td>
+        <td><?php echo check_mail($item['send_mail_status']) ?></td>
+        <td><?php echo check_mail($item['send_sms_status']) ?></td>
  
 	</tr>
  <?php endforeach;?>
@@ -110,12 +110,12 @@
 			
 		function confirm_alert(e){
 				var alert_ids = ""
-				$.each($('input:checkbox:checked'),function(){
+				$.each($('input:checkbox[name=chkb]:checked'),function(){
                 alert_ids = alert_ids + $(this).val() + ",";
          });
          
         alert_ids=alert_ids.substring(0, alert_ids.lastIndexOf(','));  
-        
+        alert(alert_ids);
         var direct_url = "<?php echo site_url('alarm/index') ?>";
 
         bootbox.dialog({

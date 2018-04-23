@@ -13,7 +13,7 @@
     <a class="btn btn-primary " href="<?php echo site_url('cfg_oracle/add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('add'); ?></a>
     <!-- <a class="btn btn-primary " href="<?php echo site_url('cfg_oracle/batch_add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('batch_add'); ?></a> -->
     <a class="btn btn-primary " href="<?php echo site_url('cfg_oracle/add_dg') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('add_dg'); ?></a>
-  	<a class="btn btn " href="<?php echo site_url('cfg_oracle/trash') ?>"><i class="icon-trash"></i> <?php echo $this->lang->line('trash'); ?></a>
+ 
 <div class="btn-group"></div>
 </div>
 
@@ -70,7 +70,7 @@
         <td><?php echo check_on_off($item['alarm_session_waits']) ?></td>
         <td><?php echo check_on_off($item['alarm_tablespace']) ?></td>
         <td><a href="<?php echo site_url('cfg_oracle/edit/'.$item['id']) ?>"  title="<?php echo $this->lang->line('edit'); ?>" ><i class="icon-pencil"></i></a>&nbsp;
-        <a href="<?php echo site_url('cfg_oracle/delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('add_trash'); ?>" ><i class="icon-trash"></i></a>
+        <a href="<?php echo site_url('cfg_oracle/delete/'.$item['id']) ?>" class="confirm_delete" title="<?php echo $this->lang->line('delete'); ?>" ><i class="icon-remove"></i></a>
         </td>
 	</tr>
  <?php endforeach;?>
@@ -93,6 +93,6 @@
 
 <script type="text/javascript">
 	$(' .confirm_delete').click(function(){
-		return confirm("<?php echo $this->lang->line('add_to_trash_confirm'); ?>");	
+		return confirm("<?php echo $this->lang->line('delete_confirm'); ?>");	
 	});
 </script>

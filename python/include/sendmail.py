@@ -6,6 +6,10 @@ import sys
 reload(sys) 
 sys.setdefaultencoding('utf8')
 import ConfigParser
+import logging
+import logging.config
+logging.config.fileConfig("etc/logger.ini")
+logger = logging.getLogger("wlblazers")
 import smtplib
 from email.mime.text import MIMEText
 from email.message import Message
@@ -27,6 +31,9 @@ def send_mail(to_list,sub,content):
     content:内容
     send_mail("aaa@126.com","sub","content")
     '''
+    #logger.info("to_list: %s" %(to_list))
+    #logger.info("sub: %s" %(sub))
+    #logger.info("content: %s" %(content))
     #me=mail_user+"<</span>"+mail_user+"@"+mail_postfix+">"
     me=mail_send_from
     msg = MIMEText(content, _subtype='html', _charset='utf8')

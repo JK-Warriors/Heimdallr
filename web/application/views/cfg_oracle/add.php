@@ -203,7 +203,7 @@
          <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
         </select>
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_tablespace" class="input-small" placeholder="" name="threshold_warning_tablespace" value="85" >%
-        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_tablespace" class="input-small" placeholder="" name="threshold_critical_tablespace" value="95" >%
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_tablespace" class="input-small" placeholder="" name="threshold_critical_tablespace" value="95" >% &nbsp;&nbsp;<?php echo $this->lang->line('filter'); ?><?php echo $this->lang->line('tbs'); ?>&nbsp;<input type="text" id="filter_tbs" class="input-large" placeholder="" name="filter_tbs" value="" >
     </div>
    </div>
     <div class="control-group">

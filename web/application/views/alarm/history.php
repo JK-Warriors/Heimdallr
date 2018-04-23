@@ -68,8 +68,8 @@
         <td><?php echo $item['message'] ?></td>
         <td><span class="label label-info"><?php echo $item['alert_value']  ?></span></td>
         <td><?php echo $item['create_time'] ?></td>
-        <td><?php echo check_mail($item['send_mail']) ?></td>
-        <td><?php echo check_mail($item['send_sms']) ?></td>
+        <td><?php echo check_mail($item['send_mail_status']) ?></td>
+        <td><?php echo check_mail($item['send_sms_status']) ?></td>
  
 	</tr>
  <?php endforeach;?>

@@ -201,15 +201,15 @@
          <option value="0" <?php echo set_selected(0,$record['alarm_tablespace']) ?>><?php echo $this->lang->line('off'); ?></option>
         </select>
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_tablespace" class="input-small" placeholder="" name="threshold_warning_tablespace" value="<?php echo $record['threshold_warning_tablespace']; ?>" >%
-        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_tablespace" class="input-small" placeholder="" name="threshold_critical_tablespace" value="<?php echo $record['threshold_critical_tablespace']; ?>" >%
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_tablespace" class="input-small" placeholder="" name="threshold_critical_tablespace" value="<?php echo $record['threshold_critical_tablespace']; ?>" >% &nbsp;&nbsp;<?php echo $this->lang->line('filter'); ?><?php echo $this->lang->line('tbs'); ?>&nbsp;<input type="text" id="filter_tbs" class="input-large" placeholder="" name="filter_tbs" value="<?php echo $record['filter_tbs']; ?>" >
     </div>
    </div>
     <div class="control-group">
     <label class="control-label" for=""><?php echo $this->lang->line('fb_space'); ?>  <?php echo $this->lang->line('alarm'); ?></label>
     <div class="controls">
         <select name="alarm_fb_space" id="alarm_fb_space" class="input-small">
-         <option value="1"  ><?php echo $this->lang->line('on'); ?></option>
-         <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
+         <option value="1"  <?php echo set_selected(1,$record['alarm_fb_space']) ?>><?php echo $this->lang->line('on'); ?></option>
+         <option value="0"  <?php echo set_selected(0,$record['alarm_fb_space']) ?>><?php echo $this->lang->line('off'); ?></option>
         </select>
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_fb_space" class="input-small" placeholder="" name="threshold_warning_fb_space" value="<?php echo $record['threshold_warning_fb_space']; ?>" >%
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_fb_space" class="input-small" placeholder="" name="threshold_critical_fb_space" value="<?php echo $record['threshold_critical_fb_space']; ?>" >%
@@ -219,8 +219,8 @@
     <label class="control-label" for=""><?php echo $this->lang->line('asm_space'); ?>  <?php echo $this->lang->line('alarm'); ?></label>
     <div class="controls">
         <select name="alarm_asm_space" id="alarm_asm_space" class="input-small">
-         <option value="1"  ><?php echo $this->lang->line('on'); ?></option>
-         <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
+         <option value="1"  <?php echo set_selected(1,$record['alarm_asm_space']) ?>><?php echo $this->lang->line('on'); ?></option>
+         <option value="0"  <?php echo set_selected(0,$record['alarm_asm_space']) ?>><?php echo $this->lang->line('off'); ?></option>
         </select>
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_warning'); ?>&nbsp;<input type="text" id="threshold_warning_asm_space" class="input-small" placeholder="" name="threshold_warning_asm_space" value="<?php echo $record['threshold_warning_asm_space']; ?>" >%
         &nbsp;&nbsp;<?php echo $this->lang->line('threshold_critical'); ?>&nbsp;<input type="text" id="threshold_critical_asm_space" class="input-small" placeholder="" name="threshold_critical_asm_space" value="<?php echo $record['threshold_critical_asm_space']; ?>" >%

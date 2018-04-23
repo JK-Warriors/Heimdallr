@@ -24,7 +24,7 @@ class Alarm extends Front_Controller {
 				$this->load->library('pagination');
 				$config['base_url'] = $current_url;
 				$config['total_rows'] = $this->alarm->get_alert_total_rows();
-				$config['per_page'] = 30;
+				$config['per_page'] = 10;
 				$config['num_links'] = 5;
 				$config['page_query_string'] = TRUE;
 				$config['use_page_numbers'] = TRUE;
@@ -70,7 +70,7 @@ class Alarm extends Front_Controller {
 				$this->load->library('pagination');
 				$config['base_url'] = $current_url;
 				$config['total_rows'] = $this->alarm->get_his_total_rows();
-				$config['per_page'] = 30;
+				$config['per_page'] = 20;
 				$config['num_links'] = 5;
 				$config['page_query_string'] = TRUE;
 				$config['use_page_numbers'] = TRUE;
