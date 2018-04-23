@@ -77,17 +77,17 @@
 						$model = $this->uri->segment(1);
 						$view = $this->uri->segment(2);
 					?>
-                    <li <?php if($model=='index' && ($view=='index' || $view=='')){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('home'); ?></a></li>
-                    <li <?php if($model=='index' && $view=='dashboard'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/dashboard'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('dashboard'); ?></a></li>
+                    <!-- <li <?php if($model=='index' && ($view=='index' || $view=='')){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('home'); ?></a></li> -->
+                    <!-- <li <?php if($model=='index' && $view=='dashboard'){ echo "class='active'";} ?> ><a href="<?php echo site_url('index/dashboard'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('dashboard'); ?></a></li> -->
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="icon-th-large"></i><?php echo $this->lang->line('database'); ?>
+                            <i class="icon-th-large"></i><?php echo $this->lang->line('disaster_recovery'); ?>
                             <i class="icon-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li <?php if($model=='wl_oracle'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_oracle/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li>
+                            <li <?php if($model=='wl_oracle'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_oracle/dglist'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Oracle</a></li>
                             <li class="divider"></li>
-                            <li <?php if($model=='wl_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mysql/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li>
+                            <li <?php if($model=='wl_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mysql/replication'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li>
                             <li class="divider"></li>
                             <li <?php if($model=='wl_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li>
                         </ul>
@@ -100,9 +100,9 @@
                     <!-- <li <?php if($model=='wl_mongodb'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_mongodb/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MongoDB</a></li> -->
                     <!-- <li <?php if($model=='wl_sqlserver'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li> -->
                     <!-- <li <?php if($model=='wl_redis'){ echo "class='action'";} ?>><a href="<?php echo site_url('wl_redis/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">Redis</a></li> -->
-                    <li <?php if($model=='wl_os'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_os/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('_OS'); ?></a></li>
+                    <!-- <li <?php if($model=='wl_os'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_os/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('_OS'); ?></a></li> -->
                     <li <?php if($model=='alarm'){ echo "class='active'";} ?>><a href="<?php echo site_url('alarm/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('alarm'); ?></a></li>
-                    <li <?php if($model=='settings'){ echo "class='active'";} ?>><a href="<?php echo site_url('settings/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('settings'); ?></a></li>
+                    <!-- <li <?php if($model=='settings'){ echo "class='active'";} ?>><a href="<?php echo site_url('settings/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo $this->lang->line('settings'); ?></a></li> -->
                     
 
                     

@@ -7,6 +7,7 @@ $lang['db'] = '数据库';
 $lang['sid'] = 'SID';
 $lang['dsn'] = '数据源';
 $lang['database'] = '数据库';
+$lang['disaster_recovery'] = '容灾';
 $lang['application'] = '应用';
 $lang['application_id'] = '应用';
 $lang['ip_address'] = 'IP地址';
