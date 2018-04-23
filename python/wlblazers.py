@@ -71,7 +71,12 @@ def main():
             job = Process(target = job_run, args = ('check_os',frequency_monitor))
             joblist.append(job)
             job.start()
-  
+            
+        time.sleep(3)
+        if alarm=="1":
+            job = Process(target = job_run, args = ('alert_main',frequency_monitor_alarm))
+            joblist.append(job)
+            job.start()     
 
         for job in joblist:
             job.join();

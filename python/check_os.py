@@ -13,6 +13,7 @@ logger = logging.getLogger("wlblazers")
 path='./include'
 sys.path.insert(0,path)
 import functions as func
+import alert_os as alert
 import thread
 from multiprocessing import Process;
 
@@ -28,10 +29,14 @@ def check_os(ip,community,filter_os_disk,tags):
     try :
         os.system("%s %s %s %s %s %s %s %s %s %s"%(command,ip,dbhost,dbport,dbuser,dbpasswd,dbname,community,filter_os_disk,tags))
         logger.info("%s:%s statspack complete."%(dbhost,dbport))
-   
+        
+        # generate OS alert
+        alert.gen_alert_os_status(ip)    
+        alert.gen_alert_os_disk(ip)    
+        alert.gen_alert_os_network(ip)     
     except Exception, e:
             print e
-            logger.info("%s:%s statspack error: %s"%(dbhost,dbport,e))
+            logger.error("%s:%s statspack error: %s"%(dbhost,dbport,e))
             sys.exit(1)
     finally:
             sys.exit(1)

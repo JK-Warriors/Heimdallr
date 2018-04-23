@@ -14,6 +14,7 @@ path='./include'
 sys.path.insert(0,path)
 import functions as func
 import wl_mysql as mysql
+import alert_mysql as alert
 from multiprocessing import Process;
 
 
@@ -189,6 +190,10 @@ def check_mysql(host,port,username,password,server_id,tags):
         func.mysql_exec(sql,param)
         func.update_db_status_init(role_new,version,host,port,tags)
 
+        # generate mysql status alert
+        alert.gen_alert_mysql_status(server_id)    
+        
+        
         #check mysql process
         processlist=cur.execute("select * from information_schema.processlist where DB !='information_schema' and command !='Sleep';")
         if processlist:
@@ -294,6 +299,9 @@ def check_mysql(host,port,username,password,server_id,tags):
             param=(server_id,tags,host,port,result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8],result[9],result[10],result[11],result[12],result[13])
             func.mysql_exec(sql,param)
 
+            # generate mysql replication alert
+            alert.gen_alert_mysql_replcation(server_id)   
+             
         func.mysql_exec("commit;",'')
         cur.close()
         exit

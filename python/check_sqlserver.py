@@ -14,6 +14,7 @@ path='./include'
 sys.path.insert(0,path)
 import functions as func
 import wl_sqlserver as sqlserver
+import alert_sqlserver as alert
 from multiprocessing import Process;
 
      
@@ -60,6 +61,10 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         func.mysql_exec(sql,param)
         func.update_db_status_init(role,version,host,port,tags)
 
+        # generate sqlserver status alert
+        alert.gen_alert_sqlserver_status(server_id)   
+        
+        
         func.mysql_exec("commit;",'')
     except Exception, e:
         func.mysql_exec("rollback;",'')
