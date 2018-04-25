@@ -31,9 +31,9 @@ def main():
     monitor_redis = str(func.get_option('monitor_redis'))
     monitor_sqlserver = str(func.get_option('monitor_sqlserver'))
     monitor_os = str(func.get_option('monitor_os'))
-    alarm = str(func.get_option('alarm'))
+    alert = str(func.get_option('alert'))
     frequency_monitor = func.get_option('frequency_monitor')
-    frequency_monitor_alarm = int(frequency_monitor)+10
+    frequency_alert = 60
 
     joblist = []
     if monitor=="1":
@@ -73,8 +73,8 @@ def main():
             job.start()
             
         time.sleep(3)
-        if alarm=="1":
-            job = Process(target = job_run, args = ('alert_main',frequency_monitor_alarm))
+        if alert=="1":
+            job = Process(target = job_run, args = ('alert_main',frequency_alert))
             joblist.append(job)
             job.start()     
 

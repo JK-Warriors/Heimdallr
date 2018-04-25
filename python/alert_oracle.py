@@ -22,11 +22,10 @@ send_mail_sleep_time = func.get_option('send_mail_sleep_time')
 mail_to_list_common = func.get_option('send_mail_to_list')
 
 send_sms_max_count = func.get_option('send_sms_max_count')
-send_mail_sleep_time = func.get_option('send_mail_sleep_time')
 send_sms_sleep_time = func.get_option('send_sms_sleep_time')
 sms_to_list_common = func.get_option('send_sms_to_list')
 
-g_alert = str(func.get_option('alarm'))
+g_alert = str(func.get_option('alert'))
     
     
 #################################################################################################    
@@ -109,6 +108,8 @@ def gen_alert_oracle_status(server_id):
                 send_sms_to_list = sms_to_list_common
                 
             if connect <> 1:
+                send_mail = func.update_send_mail_status(server_id,db_type,'connect',send_mail,send_mail_max_count)
+                send_sms  = func.update_send_sms_status(server_id,db_type,'connect',send_sms,send_sms_max_count)
                 func.add_alert(server_id,tags,host,port,create_time,db_type,'connect','down','critical','oracle server down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                 func.update_db_status('connect','3',host,port,create_time,'connect','down','critical')
                 func.update_db_status('sessions','-1',host,port,'','','','')
@@ -126,6 +127,8 @@ def gen_alert_oracle_status(server_id):
                 if last_role:
                     if last_role != database_role:
                         msg = "database role changed from %s to %s" %(last_role, database_role)
+                        send_mail = func.update_send_mail_status(server_id,db_type,'role_changed',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'role_changed',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'role_changed',session_total,'warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                     
 
@@ -134,15 +137,21 @@ def gen_alert_oracle_status(server_id):
                 last_startup=func.mysql_single_query(sql)
                 if last_startup:
                     if last_startup != startup_time:
-                        msg = "database on %s has been restarted" %(host)
+                        msg = "database on %s has been restarted" %(host)   
+                        send_mail = func.update_send_mail_status(server_id,db_type,'db_restarted',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'db_restarted',send_sms,send_sms_max_count)                                             
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'db_restarted',session_total,'warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         
                         
                 if int(alarm_session_total)==1:
                     if int(session_total) >= int(threshold_critical_session_total):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'session_total',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_total',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'critical','too many sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('sessions',3,host,port,create_time,'session_total',session_total,'critical')
                     elif int(session_total) >= int(threshold_warning_session_total):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'session_total',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_total',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'warning','too many sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('sessions',2,host,port,create_time,'session_total',session_total,'warning')
                     else:
@@ -151,9 +160,13 @@ def gen_alert_oracle_status(server_id):
         
                 if int(alarm_session_actives)==1:
                     if int(session_actives) >= int(threshold_critical_session_actives):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'session_actives',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_actives',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'critical','too many active sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('actives',3,host,port,create_time,'session_actives',session_actives,'critical')
                     elif int(session_actives) >= int(threshold_warning_session_actives): 
+                        send_mail = func.update_send_mail_status(server_id,db_type,'session_actives',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_actives',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'warning','too many active sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('actives',2,host,port,create_time,'session_actives',session_actives,'warning')
                     else:
@@ -162,9 +175,13 @@ def gen_alert_oracle_status(server_id):
 
                 if int(alarm_session_waits)==1:
                     if int(session_waits) >= int(threshold_critical_session_waits):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'session_waits',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_waits',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'critical','too many waits sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('waits',3,host,port,create_time,'session_waits',session_waits,'critical')
                     elif int(session_waits) >= int(threshold_warning_session_waits):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'session_waits',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_waits',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'warning','too many waits sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('waits',2,host,port,create_time,'session_waits',session_waits,'warning')
                     else:                        
@@ -173,9 +190,13 @@ def gen_alert_oracle_status(server_id):
 	
                 if int(alarm_fb_space)==1:
                     if int(flashback_space_used) >= int(threshold_critical_fb_space):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'flashback_space_used',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'flashback_space_used',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'flashback_space_used',flashback_space_used,'critical','flashback space usage reach %s'%(flashback_space_used),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('waits',3,host,port,create_time,'flashback_space_used',flashback_space_used,'critical')
                     elif int(flashback_space_used) >= int(threshold_warning_fb_space):
+                        send_mail = func.update_send_mail_status(server_id,db_type,'flashback_space_used',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'flashback_space_used',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'flashback_space_used',flashback_space_used,'warning','flashback space usage reach %s'%(flashback_space_used),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('flashback_space',2,host,port,create_time,'flashback_space_used',flashback_space_used,'warning')
                     else:                        
@@ -246,19 +267,26 @@ def gen_alert_oracle_dg(server_id):
                 func.update_db_status('connect','1',host,port,create_time,'connect','up','ok')
                 
                 if database_role=="PHYSICAL STANDBY":
-                    if int(dg_delay) >= 3600*3:
+                    #print "dg_delay: %s" %(dg_delay)
+                    if int(dg_delay) >= 1800:
                         if int(dg_delay) >= 3600*3:
+                            send_mail = func.update_send_mail_status(server_id,db_type,'repl_delay',send_mail,send_mail_max_count)
+                            send_sms  = func.update_send_sms_status(server_id,db_type,'repl_delay',send_sms,send_sms_max_count)
                             func.add_alert(server_id,tags,host,port,create_time,db_type,'repl_delay',dg_delay,'critical','replication delay more than 3 hours',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                             func.update_db_status('repl_delay',3,host,port,create_time,'repl_delay',dg_delay,'critical')
                         elif int(dg_delay) >= 1800:
+                            send_mail = func.update_send_mail_status(server_id,db_type,'repl_delay',send_mail,send_mail_max_count)
+                            send_sms  = func.update_send_sms_status(server_id,db_type,'repl_delay',send_sms,send_sms_max_count)
                             func.add_alert(server_id,tags,host,port,create_time,db_type,'repl_delay',dg_delay,'warning','replication delay more than 30 minutes',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                             func.update_db_status('repl_delay',3,host,port,create_time,'repl_delay',dg_delay,'warning')
-                        else:    
-                            func.check_if_ok(server_id,tags,host,port,create_time,db_type,'repl_delay',dg_delay,'replication delay ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                            func.update_db_status('repl_delay',1,host,port,create_time,'repl_delay',dg_delay,'ok')
+                    else:    
+                        func.check_if_ok(server_id,tags,host,port,create_time,db_type,'repl_delay',dg_delay,'replication delay ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        func.update_db_status('repl_delay',1,host,port,create_time,'repl_delay',dg_delay,'ok')
                         	
                         	   
                     if int(mrp_status) < 1:
+                        send_mail = func.update_send_mail_status(server_id,db_type,'mrp_status',send_mail,send_mail_max_count)
+                        send_sms  = func.update_send_sms_status(server_id,db_type,'mrp_status',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'mrp_status',mrp_status,'warning','MRP process is down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('repl',2,host,port,create_time,'mrp_status',mrp_status,'warning')
                     else:
@@ -336,9 +364,13 @@ def gen_alert_oracle_tablespace(server_id):
 
             if int(alarm_tablespace)==1 and is_skip == 0:
                 if int(max_rate) >= int(threshold_critical_tablespace):
+                    send_mail = func.update_send_mail_status(server_id,db_type,'tablespace(%s)' %(tablespace_name),send_mail,send_mail_max_count)
+                    send_sms  = func.update_send_sms_status(server_id,db_type,'tablespace(%s)' %(tablespace_name),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'tablespace(%s)' %(tablespace_name),max_rate,'critical','tablespace %s usage reach %s' %(tablespace_name,max_rate),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                     func.update_db_status('tablespace',3,host,port,create_time,'tablespace(%s)' %(tablespace_name),max_rate,'critical')
                 elif int(max_rate) >= int(threshold_warning_tablespace):
+                    send_mail = func.update_send_mail_status(server_id,db_type,'tablespace(%s)' %(tablespace_name),send_mail,send_mail_max_count)
+                    send_sms  = func.update_send_sms_status(server_id,db_type,'tablespace(%s)' %(tablespace_name),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'tablespace(%s)' %(tablespace_name),max_rate,'warning','tablespace %s usage reach %s' %(tablespace_name,max_rate),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                     func.update_db_status('tablespace',2,host,port,create_time,'tablespace(%s)' %(tablespace_name),max_rate,'warning')
                 else:
@@ -404,9 +436,13 @@ def gen_alert_oracle_diskgroup(server_id):
                 
             if int(alarm_asm_space)==1:
                 if int(used_rate) >= int(threshold_critical_asm_space):
+                    send_mail = func.update_send_mail_status(server_id,db_type,'diskgroup(%s)' %(diskgroup_name),send_mail,send_mail_max_count)
+                    send_sms  = func.update_send_sms_status(server_id,db_type,'diskgroup(%s)' %(diskgroup_name),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'diskgroup(%s)' %(diskgroup_name),used_rate,'critical','diskgroup %s usage reach %s' %(diskgroup_name,used_rate),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                     func.update_db_status('diskgroup',3,host,port,create_time,'diskgroup(%s)' %(diskgroup_name),used_rate,'critical')
                 elif int(used_rate) >= int(threshold_warning_asm_space):
+                    send_mail = func.update_send_mail_status(server_id,db_type,'diskgroup(%s)' %(diskgroup_name),send_mail,send_mail_max_count)
+                    send_sms  = func.update_send_sms_status(server_id,db_type,'diskgroup(%s)' %(diskgroup_name),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'diskgroup(%s)' %(diskgroup_name),used_rate,'warning','diskgroup %s usage reach %s' %(diskgroup_name,used_rate),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                     func.update_db_status('diskgroup',2,host,port,create_time,'diskgroup(%s)' %(diskgroup_name),used_rate,'warning')
                 else:

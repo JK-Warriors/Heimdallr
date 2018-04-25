@@ -69,8 +69,8 @@
         <td><?php echo $item['message'] ?></td>
         <td><span class="label label-info"><?php echo $item['alert_value']  ?></span></td>
         <td><?php echo $item['create_time'] ?></td>
-        <td><?php echo check_mail($item['send_mail_status']) ?></td>
-        <td><?php echo check_mail($item['send_sms_status']) ?></td>
+        <td><?php echo check_mail($item['send_mail']) ?></td>
+        <td><?php echo check_mail($item['send_sms']) ?></td>
  
 	</tr>
  <?php endforeach;?>
@@ -115,7 +115,7 @@
          });
          
         alert_ids=alert_ids.substring(0, alert_ids.lastIndexOf(','));  
-        alert(alert_ids);
+        //alert(alert_ids);
         var direct_url = "<?php echo site_url('alarm/index') ?>";
 
         bootbox.dialog({

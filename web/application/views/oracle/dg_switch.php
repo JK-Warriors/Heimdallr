@@ -20,7 +20,11 @@
 <link href="lib/bootstrap/css/bootstrap-switch.css" rel="stylesheet"/>
 
 
+<style>
 
+.layblack {background:#000 !important;}
+.layblack .layui-layer-content{padding:20px !important;color:#fff !important;}
+</style>
 
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
@@ -285,7 +289,7 @@ function checkUser(e){
 																	$('#div_layer').html("");			//初始化div
 																	mylay = layer.open({
 																	  type: 1,
-																	  skin: 'layui-layer-demo', //样式类名
+																	  skin: 'layui-layer-demo layblack', //样式类名
 																	  closeBtn: 0, //不显示关闭按钮
 																	  anim: 1,
 																	  title: '详细步骤',

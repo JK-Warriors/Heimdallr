@@ -15,6 +15,7 @@ sys.path.insert(0,path)
 import functions as func
 import wl_mysql as mysql
 import alert_mysql as alert
+import alert_main as mail
 from multiprocessing import Process;
 
 
@@ -302,9 +303,13 @@ def check_mysql(host,port,username,password,server_id,tags):
             # generate mysql replication alert
             alert.gen_alert_mysql_replcation(server_id)   
              
+         
         func.mysql_exec("commit;",'')
+        
+        #send mail
+        mail.send_alert_mail(server_id, host)   
+        
         cur.close()
-        exit
 
     except MySQLdb.Error,e:
         func.mysql_exec("rollback;",'')

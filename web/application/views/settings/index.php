@@ -146,7 +146,7 @@
  </div>
  
  
- <div class="control-group error">
+ <div class="control-group error" style="display:none">
   <label class="control-label" for="">*<?php echo $this->lang->line('send_mail_max_count'); ?></label>
   <div class="controls">
       <select name="send_mail_max_count" id="send_mail_max_count" class="input-medium">
@@ -163,15 +163,10 @@
   <label class="control-label" for="">*<?php echo $this->lang->line('send_mail_sleep_time'); ?></label>
   <div class="controls">
       <select name="send_mail_sleep_time" id="send_mail_sleep_time" class="input-medium">
-       <option value="15" <?php echo set_selected(15,$settings['send_mail_sleep_time']) ?>>15 <?php echo $this->lang->line('date_minutes'); ?></option>
-       <option value="30" <?php echo set_selected(30,$settings['send_mail_sleep_time']) ?>>30 <?php echo $this->lang->line('date_minutes'); ?></option>
-       <option value="60" <?php echo set_selected(60,$settings['send_mail_sleep_time']) ?>>1 <?php echo $this->lang->line('date_hours'); ?></option>
-       <option value="120" <?php echo set_selected(120,$settings['send_mail_sleep_time']) ?>>2 <?php echo $this->lang->line('date_hours'); ?></option>
-       <option value="180" <?php echo set_selected(180,$settings['send_mail_sleep_time']) ?>>3 <?php echo $this->lang->line('date_hours'); ?></option>
-       <option value="360" <?php echo set_selected(360,$settings['send_mail_sleep_time']) ?>>6 <?php echo $this->lang->line('date_hours'); ?></option>
-       <option value="720" <?php echo set_selected(720,$settings['send_mail_sleep_time']) ?>>12 <?php echo $this->lang->line('date_hours'); ?></option>
-       <option value="1440" <?php echo set_selected(1440,$settings['send_mail_sleep_time']) ?>>24 <?php echo $this->lang->line('date_hours'); ?></option>
-       <option value="2880" <?php echo set_selected(2880,$settings['send_mail_sleep_time']) ?>>48 <?php echo $this->lang->line('date_hours'); ?></option>
+       <option value="300" <?php echo set_selected(300,$settings['send_mail_sleep_time']) ?>>5 <?php echo $this->lang->line('date_minutes'); ?></option>
+       <option value="600" <?php echo set_selected(600,$settings['send_mail_sleep_time']) ?>>10 <?php echo $this->lang->line('date_minutes'); ?></option>
+       <option value="900" <?php echo set_selected(900,$settings['send_mail_sleep_time']) ?>>15 <?php echo $this->lang->line('date_minutes'); ?></option>
+       <option value="1800" <?php echo set_selected(1800,$settings['send_mail_sleep_time']) ?>>30 <?php echo $this->lang->line('date_minutes'); ?></option>
       </select>
   </div>
  </div>
@@ -185,7 +180,7 @@
  </div>
  
  
-  <div class="control-group error" style="display:none">
+  <div class="control-group error" >
   <label class="control-label" for="">*<?php echo $this->lang->line('send_alarm_sms'); ?></label>
   <div class="controls">
       <select name="send_alarm_sms" id="send_alarm_sms" class="input-small">
@@ -227,7 +222,7 @@
   </div>
  </div>
 
- <div class="control-group error" style="display:none">
+ <div class="control-group error">
   <label class="control-label" for=""><?php echo $this->lang->line('alarm_sms_to_list'); ?></label>
   <div class="controls">
     <input type="text" id="send_sms_to_list"  name="send_sms_to_list" value="<?php echo $settings['send_sms_to_list'] ?>" class="input-xxlarge">

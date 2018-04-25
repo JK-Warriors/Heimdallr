@@ -22,11 +22,10 @@ send_mail_sleep_time = func.get_option('send_mail_sleep_time')
 mail_to_list_common = func.get_option('send_mail_to_list')
 
 send_sms_max_count = func.get_option('send_sms_max_count')
-send_mail_sleep_time = func.get_option('send_mail_sleep_time')
 send_sms_sleep_time = func.get_option('send_sms_sleep_time')
 sms_to_list_common = func.get_option('send_sms_to_list')
 
-g_alert = str(func.get_option('alarm'))
+g_alert = str(func.get_option('alert'))
     
     
 ################################################################################################# 
@@ -93,7 +92,7 @@ def gen_alert_sqlserver_status(server_id):
             if connect <> 1:
                 send_mail = func.update_send_mail_status(server_id,db_type,'connect',send_mail,send_mail_max_count)
                 send_sms  = func.update_send_sms_status(server_id,db_type,'connect',send_sms,send_sms_max_count)
-                func.add_alarm(server_id,tags,host,port,create_time,db_type,'connect','down','critical','sqlserver server down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                func.add_alert(server_id,tags,host,port,create_time,db_type,'connect','down','critical','sqlserver server down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                 func.update_db_status('connect','3',host,port,create_time,'connect','down','critical')
                 func.update_db_status('sessions','-1',host,port,'','','','')
                 func.update_db_status('actives','-1',host,port,'','','','')
@@ -108,12 +107,12 @@ def gen_alert_sqlserver_status(server_id):
                     if int(processes)>=int(threshold_critical_processes):
                         send_mail = func.update_send_mail_status(server_id,db_type,'processes',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(server_id,db_type,'processes',send_sms,send_sms_max_count)
-                        func.add_alarm(server_id,tags,host,port,create_time,db_type,'processes',processes,'critical','too many processes',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        func.add_alert(server_id,tags,host,port,create_time,db_type,'processes',processes,'critical','too many processes',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('sessions',3,host,port,create_time,'processes',processes,'critical')
                     elif int(processes)>=int(threshold_warning_processes):
                         send_mail = func.update_send_mail_status(server_id,db_type,'processes',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(server_id,db_type,'processes',send_sms,send_sms_max_count)
-                        func.add_alarm(server_id,tags,host,port,create_time,db_type,'processes',processes,'warning','too many processes',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        func.add_alert(server_id,tags,host,port,create_time,db_type,'processes',processes,'warning','too many processes',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('sessions',2,host,port,create_time,'processes',processes,'warning')
                     else:
                         func.update_db_status('sessions',1,host,port,create_time,'processes',processes,'ok')
@@ -123,12 +122,12 @@ def gen_alert_sqlserver_status(server_id):
                     if int(processes_running)>=int(threshold_critical_processes_running):
                         send_mail = func.update_send_mail_status(server_id,db_type,'processes_running',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(server_id,db_type,'processes_running',send_sms,send_sms_max_count)
-                        func.add_alarm(server_id,tags,host,port,create_time,db_type,'processes_running',processes_runnging,'critical','too many processes running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        func.add_alert(server_id,tags,host,port,create_time,db_type,'processes_running',processes_runnging,'critical','too many processes running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('actives',3,host,port,create_time,'processes_running',processes_running,'critical')
                     elif int(processes_running)>=int(threshold_warning_processes_running):
                          send_mail = func.update_send_mail_status(server_id,db_type,'processes_running',send_mail,send_mail_max_count)
                          send_sms = func.update_send_sms_status(server_id,db_type,'processes_running',send_sms,send_sms_max_count)
-                         func.add_alarm(server_id,tags,host,port,create_time,db_type,'processes_running',processes_running,'critical','too many processes running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                         func.add_alert(server_id,tags,host,port,create_time,db_type,'processes_running',processes_running,'critical','too many processes running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                          func.update_db_status('actives',2,host,port,create_time,'processes_running',processes_running,'warning')
                     else:
                          func.update_db_status('actives',1,host,port,create_time,'processes_running',processes_running,'ok')
@@ -138,12 +137,12 @@ def gen_alert_sqlserver_status(server_id):
                     if int(processes_waits)>=int(threshold_critical_processes_waits):
                         send_mail = func.update_send_mail_status(server_id,db_type,'processes_waits',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(server_id,db_type,'processes_waits',send_sms,send_sms_max_count)
-                        func.add_alarm(server_id,tags,host,port,create_time,db_type,'processes_waits',processes_waits,'critical','too many processes waits',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        func.add_alert(server_id,tags,host,port,create_time,db_type,'processes_waits',processes_waits,'critical','too many processes waits',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('waits',3,host,port,create_time,'processes_waits',processes_waits,'critical')
                     elif int(processes_waits)>=int(threshold_warning_processes_waits):
                          send_mail = func.update_send_mail_status(server_id,db_type,'processes_waits',send_mail,send_mail_max_count)
                          send_sms = func.update_send_sms_status(server_id,db_type,'processes_waits',send_sms,send_sms_max_count)
-                         func.add_alarm(server_id,tags,host,port,create_time,db_type,'processes_waits',processes_waits,'warning','too many processes waits',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                         func.add_alert(server_id,tags,host,port,create_time,db_type,'processes_waits',processes_waits,'warning','too many processes waits',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                          func.update_db_status('waits',2,host,port,create_time,'processes_waits',processes_waits,'warning')
                     else:
                          func.update_db_status('waits',1,host,port,create_time,'processes_waits',processes_waits,'ok')

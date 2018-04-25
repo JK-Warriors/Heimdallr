@@ -15,6 +15,7 @@ sys.path.insert(0,path)
 import functions as func
 import wl_sqlserver as sqlserver
 import alert_sqlserver as alert
+import alert_main as mail
 from multiprocessing import Process;
 
      
@@ -64,8 +65,10 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         # generate sqlserver status alert
         alert.gen_alert_sqlserver_status(server_id)   
         
-        
         func.mysql_exec("commit;",'')
+        
+        #send mail
+        mail.send_alert_mail(server_id, host)   
     except Exception, e:
         func.mysql_exec("rollback;",'')
         logger_msg="check sqlserver %s:%s : %s" %(host,port,e)

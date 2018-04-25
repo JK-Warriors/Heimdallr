@@ -165,16 +165,16 @@ CREATE TABLE `alerts_his` (
 ) ENGINE=InnoDB AUTO_INCREMENT=315790 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for alarm_temp
+-- Table structure for alerts_temp
 -- ----------------------------
-DROP TABLE IF EXISTS `alarm_temp`;
-CREATE TABLE `alarm_temp` (
+DROP TABLE IF EXISTS `alerts_temp`;
+CREATE TABLE `alerts_temp` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `ip` varchar(50) DEFAULT NULL,
   `db_type` varchar(30) DEFAULT NULL,
-  `alarm_item` varchar(50) DEFAULT NULL,
-  `alarm_type` varchar(30) DEFAULT NULL,
+  `alert_item` varchar(50) DEFAULT NULL,
+  `alert_type` varchar(30) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3624365 DEFAULT CHARSET=utf8;
@@ -1566,7 +1566,7 @@ CREATE TABLE `os_status` (
   `snmp` tinyint(2) NOT NULL DEFAULT '0',
   `tags` varchar(100) DEFAULT NULL,
   `hostname` varchar(100) NOT NULL DEFAULT '-1',
-  `kernel` varchar(50) NOT NULL DEFAULT '-1',
+  `kernel` varchar(100) NOT NULL DEFAULT '-1',
   `system_date` varchar(50) NOT NULL DEFAULT '-1',
   `system_uptime` varchar(50) NOT NULL DEFAULT '-1',
   `process` smallint(4) NOT NULL DEFAULT '-1',
@@ -1606,7 +1606,7 @@ CREATE TABLE `os_status_history` (
   `snmp` tinyint(2) NOT NULL DEFAULT '0',
   `tags` varchar(100) DEFAULT NULL,
   `hostname` varchar(100) NOT NULL DEFAULT '-1',
-  `kernel` varchar(50) NOT NULL DEFAULT '-1',
+  `kernel` varchar(100) NOT NULL DEFAULT '-1',
   `system_date` varchar(50) NOT NULL DEFAULT '-1',
   `system_uptime` varchar(50) NOT NULL DEFAULT '-1',
   `process` smallint(4) NOT NULL DEFAULT '-1',
