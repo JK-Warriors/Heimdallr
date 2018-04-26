@@ -84,7 +84,7 @@ def send_alert_media():
             else:
                 send_sms=0
 
-            logger.info("alert_id: %s" %(alert_id))
+            #logger.info("alert_id: %s" %(alert_id))
             if int(send_alarm_mail)==1:
                 if int(send_mail)==1:
                     mail_subject='['+level+'] '+db_type+'-'+tags+'-'+server+' '+message+' Time:'+create_time.strftime('%Y-%m-%d %H:%M:%S')

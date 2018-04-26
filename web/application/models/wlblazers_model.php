@@ -119,8 +119,9 @@ class Wlblazers_model extends CI_Model{
 						  from (SELECT server_id, create_time time, dg_delay delay
 						          FROM oracle_status_history
 						         WHERE database_role = 'PHYSICAL STANDBY'
+                       AND server_id in (select id from db_cfg_oracle)
 						           AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
-						         order by server_id, time desc limit 5) t
+						         order by server_id, time desc limit 1440) t
 						 order by time";
 		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0)
@@ -218,7 +219,7 @@ class Wlblazers_model extends CI_Model{
 	}
 	
 	function get_db_count_critical($db_type){
-    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay = 3  ";
+    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay in(-1, 3) ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
@@ -229,7 +230,7 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 主机 相关信息
 	 */
 	function get_os_paging($limit,$offset){
-    $sql = "select tags, db_type, message from alarm_history t where server_id = 0 limit 0,5";
+    $sql = "select tags, db_type, message from alerts_his t where server_id = 0 limit 0,5";
 		$query = $this->db->query($sql);
 		
 		if ($query->num_rows() > 0)
@@ -243,7 +244,12 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 告警 相关信息
 	 */
 	function get_alarm_paging($limit,$offset){
-    $sql = "select tags, db_type, message from alarm_history t where server_id = 0 limit 0,5";
+    $sql = "select tags, db_type, message 
+    						from alerts t 
+							where (t.db_type = 'os' and t.host in (select host from db_cfg_os))
+							or (t.db_type = 'oracle' and t.server_id in (select id from db_cfg_oracle))
+							or (t.db_type = 'mysql' and t.server_id in (select id from db_cfg_mysql))
+							or (t.db_type = 'sqlserver' and t.server_id in (select id from db_cfg_sqlserver)); ";
 		$query = $this->db->query($sql);
 		
 		if ($query->num_rows() > 0)

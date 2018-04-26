@@ -117,6 +117,7 @@ def gen_alert_oracle_status(server_id):
                 func.update_db_status('waits','-1',host,port,'','','','')
                 func.update_db_status('repl','-1',host,port,'','','','')
                 func.update_db_status('repl_delay','-1',host,port,'','','','')
+                func.update_db_status('tablespace','-1',host,port,'','','','')
             else:
                 func.check_if_ok(server_id,tags,host,port,create_time,db_type,'connect','up','oracle server up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                 func.update_db_status('connect','1',host,port,create_time,'connect','up','ok')
@@ -262,6 +263,7 @@ def gen_alert_oracle_dg(server_id):
                 func.update_db_status('waits','-1',host,port,'','','','')
                 func.update_db_status('repl','-1',host,port,'','','','')
                 func.update_db_status('repl_delay','-1',host,port,'','','','')
+                func.update_db_status('tablespace','-1',host,port,'','','','')
             else:
                 func.check_if_ok(server_id,tags,host,port,create_time,db_type,'connect','up','oracle server up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                 func.update_db_status('connect','1',host,port,create_time,'connect','up','ok')
@@ -451,3 +453,18 @@ def gen_alert_oracle_diskgroup(server_id):
     else:
        pass
        
+       
+##############################################################################
+# function main  
+##############################################################################
+def main():
+
+    logger.info("test alert started.")
+    #gen_alert_oracle_status(96)
+    #gen_alert_oracle_status(96)
+    #gen_alert_oracle_tablespace(96)
+    #gen_alert_oracle_diskgroup(96)
+    logger.info("test alert end.")
+
+if __name__ == '__main__':
+    main()

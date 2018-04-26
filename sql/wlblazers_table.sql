@@ -1249,7 +1249,7 @@ CREATE TABLE `oracle_status` (
   `db_block_gets_persecond` int(10) NOT NULL DEFAULT '-1',
   `flashback_on` varchar(10) NOT NULL DEFAULT 'NO',
   `flashback_earliest_time` varchar(20) NOT NULL DEFAULT 'null',
-  `flashback_space_used` varchar(10) NOT NULL DEFAULT '0%',
+  `flashback_space_used` varchar(10) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_server_id` (`server_id`) USING BTREE

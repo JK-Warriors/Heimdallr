@@ -370,8 +370,7 @@ def get_pri_id_by_server(conn, id):
     finally:
         curs.close()
         
-                 
-        
+
 
 def get_earliest_fbscn(conn):
     try:
@@ -388,6 +387,8 @@ def get_earliest_fbscn(conn):
         curs.close()
 
 
+        
+        
 def get_earliest_fbtime(conn,flashback_retention):
     try:
         curs=conn.cursor()

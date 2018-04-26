@@ -44,6 +44,10 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
             param=(server_id,host,port,tags,connect)
             func.mysql_exec(sql,param)
             
+            logger.info("Generate oracle instance alert for server: %s begin:" %(server_id))
+            alert.gen_alert_oracle_status(server_id)     # generate oracle instance alert
+            logger.info("Generate oracle instance alert for server: %s end." %(server_id))
+            
             func.mysql_exec("commit;",'')
         except Exception, e:
             func.mysql_exec("rollback;",'')
@@ -150,7 +154,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         func.update_db_status_init(database_role_new,version,host,port,tags)
         
         logger.info("Generate oracle instance alert for server: %s begin:" %(server_id))
-        alert.gen_alert_oracle_tablespace(server_id)     # generate oracle instance alert
+        alert.gen_alert_oracle_status(server_id)     # generate oracle instance alert
         logger.info("Generate oracle instance alert for server: %s end." %(server_id))
 
         #check tablespace
@@ -196,11 +200,11 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
             update_fb_retention(conn, server_id, flashback_retention)
 
 
-        func.mysql_exec("commit;",'')
-        
 				#send mail
         mail.send_alert_mail(server_id, host)     
-         
+        
+        
+        func.mysql_exec("commit;",'')
     except Exception, e:
         logger.error(e)
         func.mysql_exec("rollback;",'')
@@ -269,6 +273,8 @@ def get_connect(server_id):
 def check_dataguard(dg_id, pri_id, sta_id, is_switch):
     p_id = ""
     s_id = ""
+    p_conn = ""
+    s_conn = ""
     if is_switch == 0:
         p_id = pri_id
         s_id = sta_id
@@ -325,8 +331,13 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
                 logger.info("Gather primary database infomation for server: %s" %(p_id))
             else:
                 logger.warning("Get no data from primary server: %s" %(p_id))
-        
-                
+        else:  
+            ##################### update data to db_status#############################
+            func.mysql_exec("update db_status set repl_delay=-1 where server_id = %s;" %(s_id),'')  
+        	
+        	
+        	
+        	     
         if s_conn and p_conn:
             dg_s_ms = oracle.get_dg_s_ms(s_conn)
             dg_s_rate = oracle.get_dg_s_rate(s_conn)
@@ -387,6 +398,7 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
             sql = "update oracle_status set dg_stats=%s, dg_delay=%s where server_id = %s;"
             param = (dg_s_mrp, dg_delay, s_id)
             func.mysql_exec(sql,param)  
+            
             
             # generate dataguard alert
             logger.info("Generate dataguard alert for server: %s begin:" %(s_id))
@@ -498,7 +510,23 @@ def update_fb_retention(conn, server_id, old_value):
         if cur:
             cur.close()
             
+
+######################################################################################################
+# function clean_invalid_db_status
+######################################################################################################   
+def clean_invalid_db_status():
+    try:
+        func.mysql_exec("insert into oracle_status_history SELECT *,sysdate() from oracle_status where server_id not in(select id from  db_cfg_oracle);",'')
+        func.mysql_exec('delete from oracle_status where server_id not in(select id from  db_cfg_oracle);','')
+        
+        func.mysql_exec("delete from db_status where db_type = 'oracle' and server_id not in(select id from  db_cfg_oracle);",'')
+        
+    except Exception, e:
+        logger.error(e)
+    finally:
+        pass
             
+                     
 ######################################################################################################
 # function main
 ######################################################################################################              
@@ -531,7 +559,12 @@ def main():
         logger.warning("check oracle: not found any servers")
 
     logger.info("check oracle controller finished.")
-                   
+
+
+    logger.info("Clean invalid oracle status start.")   
+    clean_invalid_db_status()
+    logger.info("Clean invalid oracle status finished.")       
+
 
     #check for dataguard group
     dg_list=func.mysql_query("select id, group_name, primary_db_id, standby_db_id, is_switch from db_cfg_oracle_dg where is_delete=0 and on_process = 0;")

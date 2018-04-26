@@ -76,6 +76,20 @@ class cfg_oracle_model extends CI_Model{
 		}
     }
     
+    
+    function check_if_os_exists($host){
+				$sql="select * from db_cfg_os where is_delete=0 and host='" . $host . "' ";
+        $query = $this->db->query($sql);
+				if ($query->num_rows() > 0){
+					return 1;
+				}
+				else{
+					return 0;
+				}
+				
+    }
+    
+        
     /*
     * 插入数据
     */
@@ -97,6 +111,10 @@ class cfg_oracle_model extends CI_Model{
 	public function delete($id){
 		$this->db->where('id', $id);
 		$this->db->delete($this->table);
+		
+		#修改dataguard配置表相关条目的is_delete
+		$sql = "update db_cfg_oracle_dg t set t.is_delete = 1 where primary_db_id = $id or standby_db_id = $id";
+		$this->db->query($sql);
 	}
 	
     /*

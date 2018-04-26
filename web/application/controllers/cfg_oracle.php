@@ -126,36 +126,41 @@ class cfg_oracle extends Front_Controller {
 					);
                     $this->oracle->insert($data);
                     
-                    $os_data = array(
-												'host'=>$this->input->post('host'),
-												'community'=> "public",
-					   					  'tags'=>$this->input->post('tags'),
-                        'monitor'=> 0,
-                        'send_mail'=> 0,
-												'send_sms'=> 0,
-                        'send_mail_to_list'=> "",
-												'send_sms_to_list'=> "",
-												'alarm_os_process'=> 1,
-												'alarm_os_load'=> 1,
-												'alarm_os_cpu'=> 1,
-												'alarm_os_network'=> 1,
-												'alarm_os_disk'=> 1,
-												'alarm_os_memory'=> 1,
-												'threshold_warning_os_process'=> 300,
-												'threshold_warning_os_load'=> 3,
-												'threshold_warning_os_cpu'=> 70,
-												'threshold_warning_os_network'=> 2,
-												'threshold_warning_os_disk'=> 75,
-												'threshold_warning_os_memory'=> 85,
-												'threshold_critical_os_process'=> 500,
-												'threshold_critical_os_load'=> 10,
-												'threshold_critical_os_cpu'=> 80,
-												'threshold_critical_os_network'=> 10,
-												'threshold_critical_os_disk'=> 90,
-												'threshold_critical_os_memory'=> 90,
-                        'filter_os_disk'=> "",
-					);
-                    $this->cfg_os->insert($os_data);
+                    
+                    $host=$this->input->post('host');
+                    $result = $this->oracle->check_if_os_exists($host);
+                    if($result == 0)
+										{   $os_data = array(
+														'host'=>$this->input->post('host'),
+														'community'=> "public",
+							   					  'tags'=>$this->input->post('tags'),
+		                        'monitor'=> 0,
+		                        'send_mail'=> 0,
+														'send_sms'=> 0,
+		                        'send_mail_to_list'=> "",
+														'send_sms_to_list'=> "",
+														'alarm_os_process'=> 1,
+														'alarm_os_load'=> 1,
+														'alarm_os_cpu'=> 1,
+														'alarm_os_network'=> 1,
+														'alarm_os_disk'=> 1,
+														'alarm_os_memory'=> 1,
+														'threshold_warning_os_process'=> 300,
+														'threshold_warning_os_load'=> 3,
+														'threshold_warning_os_cpu'=> 70,
+														'threshold_warning_os_network'=> 2,
+														'threshold_warning_os_disk'=> 75,
+														'threshold_warning_os_memory'=> 85,
+														'threshold_critical_os_process'=> 500,
+														'threshold_critical_os_load'=> 10,
+														'threshold_critical_os_cpu'=> 80,
+														'threshold_critical_os_network'=> 10,
+														'threshold_critical_os_disk'=> 90,
+														'threshold_critical_os_memory'=> 90,
+		                        'filter_os_disk'=> "",
+												);
+                    		$this->cfg_os->insert($os_data);
+										}
                     
                     redirect(site_url('cfg_oracle/index'));
             }
