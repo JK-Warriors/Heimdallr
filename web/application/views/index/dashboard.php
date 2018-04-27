@@ -177,7 +177,7 @@ html{    background: #2A2A2A;}
                                 <div class="block">
                                     <div class="navbar navbar-inner block-header">
                                         <div class="muted pull-left"><i class="iconfont icon-ai222"></i>数据库主机资源情况</div>
-                                        <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                                        <div class="pull-right"><a href="<?php echo site_url('wl_os/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                                         </div>
                                     </div>
                                     <div class="block-content" style="height: 253px;">
@@ -352,7 +352,7 @@ html{    background: #2A2A2A;}
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
                                     <div class="muted pull-left"><i class="iconfont icon-ai222"></i>告警显示</div>
-                                    <div class="pull-right"><a href="#">查看详细<i class="iconfont icon-gengduo"></i></a>
+                                    <div class="pull-right"><a href="<?php echo site_url('alarm/index'); ?>">查看详细<i class="iconfont icon-gengduo"></i></a>
                                     </div>
                                 </div>
                                 <div class="block-content" style="    height: 371px;">
