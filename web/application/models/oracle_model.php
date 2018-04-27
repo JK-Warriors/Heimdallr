@@ -106,7 +106,9 @@ class Oracle_model extends CI_Model{
     
     
     function get_standby_total(){
-        $sql = "select * from oracle_dg_s_status where (server_id, id) in (select server_id, max(id) from oracle_dg_s_status t group by server_id)";
+        $sql = "select * from oracle_dg_s_status 
+				        where server_id in (select id from db_cfg_oracle)
+				          and (server_id, id) in (select server_id, max(id) from oracle_dg_s_status t group by server_id)";
 										
         $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
@@ -118,47 +120,53 @@ class Oracle_model extends CI_Model{
     
     function get_tablespace_total_record(){
         
-        $this->db->select('*');
-        $this->db->from('oracle_tablespace ');
-       
-        !empty($_GET["host"]) && $this->db->like("host", $_GET["host"]);
-        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
-        
-        if(!empty($_GET["order"]) && !empty($_GET["order_type"])){
-            $this->db->order_by($_GET["order"],$_GET["order_type"]);
-        }
-        else{
-            $this->db->order_by('host, max_rate desc');
-        }
-        
-        $query = $this->db->get();
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        $sql = "SELECT t.*
+									FROM oracle_tablespace t,
+										db_cfg_oracle o
+									WHERE t.server_id = o.id";
+				if($host != ""){
+						$sql = $sql . " AND t.`host` like '%" . $host . "%'";
+				}
+				if($tags != ""){
+						$sql = $sql . " AND t.`tags` like '%" . $tags . "%'";
+				}
+				
+				$sql = $sql . " order by host, max_rate desc";
+				
+																
+        $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
-		{
-			return $query->result_array();
-		}
+        {
+           return $query->result_array(); 
+        }
     }
 
 
     function get_diskgroup_total(){
         
-        $this->db->select('*');
-        $this->db->from('oracle_diskgroup ');
-       
-        !empty($_GET["host"]) && $this->db->like("host", $_GET["host"]);
-        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
-        
-        if(!empty($_GET["order"]) && !empty($_GET["order_type"])){
-            $this->db->order_by($_GET["order"],$_GET["order_type"]);
-        }
-        else{
-            $this->db->order_by('host, used_rate desc');
-        }
-        
-        $query = $this->db->get();
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        $sql = "SELECT t.*
+									FROM oracle_diskgroup t,
+										db_cfg_oracle o
+									WHERE t.server_id = o.id";
+				if($host != ""){
+						$sql = $sql . " AND t.`host` like '%" . $host . "%'";
+				}
+				if($tags != ""){
+						$sql = $sql . " AND t.`tags` like '%" . $tags . "%'";
+				}
+				
+				$sql = $sql . " order by host, used_rate desc";
+				
+																
+        $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
-		{
-			return $query->result_array();
-		}
+        {
+           return $query->result_array(); 
+        }
     }
     
     

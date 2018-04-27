@@ -52,7 +52,7 @@
 <td><?php echo $item['type'] ?></td>
 <td><?php echo $item['total_mb'] ?>MB</td>
 <td><?php echo $item['free_mb'] ?>MB</td>
-<td><?php echo $item['used_rate'] ?></td>
+<td><?php echo $item['used_rate'] ?>%</td>
 
 </tr>
 <?php endforeach;?>
