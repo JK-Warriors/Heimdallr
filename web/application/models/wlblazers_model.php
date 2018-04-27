@@ -212,7 +212,7 @@ class Wlblazers_model extends CI_Model{
 	}
 
 	function get_db_count_waring($db_type){
-    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and (t.repl = 2 or t.repl_delay = 2) ";
+    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and ((t.repl = 2 and t.repl_delay not in(-1, 3)) or t.repl_delay = 2) ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
