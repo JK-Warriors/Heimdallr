@@ -61,7 +61,7 @@
   </div>
  </div>
 
-  <div class="control-group success" style="display:none">
+  <div class="control-group success">
       <label class="control-label" for="">*<?php echo $this->lang->line('monitor_sqlserver'); ?></label>
       <div class="controls">
           <select name="monitor_sqlserver" id="monitor_oracle" class="input-small">
