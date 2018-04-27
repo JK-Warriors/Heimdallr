@@ -9,7 +9,7 @@ import MySQLdb
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("wlblazers")
+logger = logging.getLogger("alert_os")
 path='./include'
 sys.path.insert(0,path)
 import functions as func
@@ -236,6 +236,7 @@ def gen_alert_os_disk(os_ip):
                 send_sms_to_list = sms_to_list_common
                 
             if int(alarm_os_disk)==1:
+                #logger.info('disk_usage(%s)' %(mounted))
                 if int(used_rate_int) >= int(threshold_critical_os_disk):
                     send_mail = func.update_send_mail_status(host,db_type,'disk_usage(%s)' %(mounted),send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(host,db_type,'disk_usage(%s)' %(mounted),send_sms,send_sms_max_count)

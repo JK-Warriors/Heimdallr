@@ -9,7 +9,7 @@ import MySQLdb
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("wlblazers")
+logger = logging.getLogger("check_os")
 path='./include'
 sys.path.insert(0,path)
 import functions as func

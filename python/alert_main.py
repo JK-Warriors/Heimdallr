@@ -9,7 +9,7 @@ import MySQLdb
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("wlblazers")
+logger = logging.getLogger("alert_main")
 path='./include'
 sys.path.insert(0,path)
 import functions as func
@@ -199,7 +199,7 @@ def send_alert_mail(server_id, host):
             else:
                 send_sms=0
 
-            logger.info("alert_id: %s" %(alert_id))
+            #logger.info("alert_id: %s" %(alert_id))
             if int(send_alarm_mail)==1:
                 if int(send_mail)==1:
                     mail_subject='['+level+'] '+db_type+'-'+tags+'-'+server+' '+message+' Time:'+create_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -240,12 +240,18 @@ def send_alert_mail(server_id, host):
 # function used to move alerts to history which create 3 days before
 ##############################################################################
 def alert_to_history():
-    sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where create_time > date_add(sysdate(), interval -3 day);"
-    mysql_exec(sql,'')
+    try:
+        sql="insert into alerts_his select *,sysdate() from alerts where create_time > date_add(sysdate(), interval -3 day);"
+        func.mysql_exec(sql,'')
     
     
-    sql="delete from alerts where id in(select id from alerts_his);"
-    mysql_exec(sql,'')
+        sql="delete from alerts where id in(select id from alerts_his);"
+        func.mysql_exec(sql,'')
+    except Exception, e:
+        logger_msg="alert_to_history: %s" %(str(e).strip('\n'))
+        logger.warning(logger_msg)
+    finally:
+        pass
     
 
 
@@ -256,11 +262,16 @@ def main():
 
     logger.info("Send alert controller started.")
     # move alert to history 3 days before
+    logger.info("Move alert to history 3 days before started.")
     alert_to_history()
+    logger.info("Move alert to history 3 days before end.")
     
     # send mail and sms
+    logger.info("Send email started.")
     send_alert_media()
+    logger.info("Send email end.")
     
+    logger.info("Update check time started.")
     func.update_check_time() 
     logger.info("Send alert controller finished.")
 
