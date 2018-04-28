@@ -1663,10 +1663,10 @@ CREATE TABLE `redis_replication` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for redis_replication_history
+-- Table structure for redis_replication_his
 -- ----------------------------
-DROP TABLE IF EXISTS `redis_replication_history`;
-CREATE TABLE `redis_replication_history` (
+DROP TABLE IF EXISTS `redis_replication_his`;
+CREATE TABLE `redis_replication_his` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `tags` varchar(50) NOT NULL DEFAULT '',

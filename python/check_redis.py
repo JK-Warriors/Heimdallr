@@ -171,7 +171,7 @@ def main():
 
     func.mysql_exec("insert into redis_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_status;",'')
     func.mysql_exec('delete from redis_status;','')
-    func.mysql_exec("insert into redis_replication_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_replication;",'')
+    func.mysql_exec("insert into redis_replication_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_replication;",'')
     func.mysql_exec('delete from redis_replication;','')
 
     servers = func.mysql_query('select id,host,port,password,tags from db_cfg_redis where is_delete=0 and monitor=1;')
