@@ -23,7 +23,7 @@ from multiprocessing import Process;
 def check_sqlserver(host,port,username,passwd,server_id,tags):
     try:
         func.mysql_exec("begin;",'')
-        func.mysql_exec("insert into sqlserver_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec("insert into sqlserver_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from sqlserver_status where server_id = %s;' %(server_id),'')
 
         conn = pymssql.connect(host=host,port=int(port),user=username,password=passwd,charset="utf8")

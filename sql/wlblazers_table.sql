@@ -1863,10 +1863,10 @@ CREATE TABLE `sqlserver_status` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for sqlserver_status_history
+-- Table structure for sqlserver_status_his
 -- ----------------------------
-DROP TABLE IF EXISTS `sqlserver_status_history`;
-CREATE TABLE `sqlserver_status_history` (
+DROP TABLE IF EXISTS `sqlserver_status_his`;
+CREATE TABLE `sqlserver_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `host` varchar(30) NOT NULL,
