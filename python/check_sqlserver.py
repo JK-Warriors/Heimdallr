@@ -60,7 +60,7 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         sql = "insert into sqlserver_status(server_id,tags,host,port,connect,role,uptime,version,lock_timeout,trancount,max_connections,processes,processes_running,processes_waits,connections_persecond,pack_received_persecond,pack_sent_persecond,packet_errors_persecond) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
         param = (server_id,tags,host,port,connect,role,uptime,version,lock_timeout,trancount,max_connections,processes,processes_running,processes_waits,connections_persecond,pack_received_persecond,pack_sent_persecond,packet_errors_persecond)
         func.mysql_exec(sql,param)
-        func.update_db_status_init(role,version,host,port,tags)
+        func.update_db_status_init(server_id,'sqlserver',role,version,tags)
 
         # generate sqlserver status alert
         alert.gen_alert_sqlserver_status(server_id)   

@@ -93,29 +93,29 @@ def gen_alert_mysql_status(server_id):
                 send_mail = func.update_send_mail_status(server_id,db_type,'connect',send_mail,send_mail_max_count)
                 send_sms  = func.update_send_sms_status(server_id,db_type,'connect',send_sms,send_sms_max_count)
                 func.add_alert(server_id,tags,host,port,create_time,db_type,'connect','down','critical','mysql server down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                func.update_db_status('connect','3',host,port,create_time,'connect','down','critical')
-                func.update_db_status('sessions','-1',host,port,'','','','')
-                func.update_db_status('actives','-1',host,port,'','','','')
-                func.update_db_status('waits','-1',host,port,'','','','')
-                func.update_db_status('repl','-1',host,port,'','','','')
-                func.update_db_status('repl_delay','-1',host,port,'','','','')
+                func.update_db_status('connect','3',server_id, host, db_type,create_time,'connect','down','critical')
+                func.update_db_status('sessions','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('actives','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('waits','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('repl','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('repl_delay','-1',server_id, host, db_type,'','','','')
             else:
                 func.check_if_ok(server_id,tags,host,port,create_time,db_type,'connect','up','mysql server up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                func.update_db_status('connect','1',host,port,create_time,'connect','up','ok')
+                func.update_db_status('connect','1',server_id, host, db_type, create_time,'connect','up','ok')
 
                 if int(alarm_threads_connected)==1:
                     if int(threads_connected)>=int(threshold_critical_threads_connected):
                         send_mail = func.update_send_mail_status(server_id,db_type,'threads_connected',send_mail,send_mail_max_count) 
                         send_sms = func.update_send_sms_status(server_id,db_type,'threads_connected',send_sms,send_sms_max_count) 
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'threads_connected',threads_connected,'critical','too many threads connected',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('sessions',3,host,port,create_time,'threads_connected',threads_connected,'critical')
+                        func.update_db_status('sessions',3,server_id, host, db_type,create_time,'threads_connected',threads_connected,'critical')
                     elif int(threads_connected)>=int(threshold_warning_threads_connected):
                         send_mail = func.update_send_mail_status(server_id,db_type,'threads_connected',send_mail,send_mail_max_count) 
                         send_sms = func.update_send_sms_status(server_id,db_type,'threads_connected',send_sms,send_sms_max_count) 
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'threads_connected',threads_connected,'warning','too many threads connected',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('sessions',2,host,port,create_time,'threads_connected',threads_connected,'warning')
+                        func.update_db_status('sessions',2,server_id, host, db_type,create_time,'threads_connected',threads_connected,'warning')
                     else:
-                        func.update_db_status('sessions',1,host,port,create_time,'threads_connected',threads_connected,'ok')
+                        func.update_db_status('sessions',1,server_id, host, db_type,create_time,'threads_connected',threads_connected,'ok')
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'threads_connected',threads_connected,'threads connected ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
 
                 if int(alarm_threads_running)==1:
@@ -123,14 +123,14 @@ def gen_alert_mysql_status(server_id):
                         send_mail = func.update_send_mail_status(server_id,db_type,'threads_running',send_mail,send_mail_max_count) 
                         send_sms = func.update_send_sms_status(server_id,db_type,'threads_running',send_sms,send_sms_max_count) 
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'threads_running',threads_running,'critical','too many threads running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('actives',3,host,port,create_time,'threads_running',threads_running,'critical')
+                        func.update_db_status('actives',3,server_id, host, db_type,create_time,'threads_running',threads_running,'critical')
                     elif int(threads_running)>=int(threshold_warning_threads_running):
                          send_mail = func.update_send_mail_status(server_id,db_type,'threads_running',send_mail,send_mail_max_count) 
                          send_sms = func.update_send_sms_status(server_id,db_type,'threads_running',send_sms,send_sms_max_count) 
                          func.add_alert(server_id,tags,host,port,create_time,db_type,'threads_running',threads_running,'warning','too many threads running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                         func.update_db_status('actives',2,host,port,create_time,'threads_running',threads_running,'warning')
+                         func.update_db_status('actives',2,server_id, host, db_type,create_time,'threads_running',threads_running,'warning')
                     else:
-                         func.update_db_status('actives',1,host,port,create_time,'threads_running',threads_running,'ok')
+                         func.update_db_status('actives',1,server_id, host, db_type,create_time,'threads_running',threads_running,'ok')
                          func.check_if_ok(server_id,tags,host,port,create_time,db_type,'threads_running',threads_running,'threads running ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                          
                 if int(alarm_threads_waits)==1:
@@ -138,14 +138,14 @@ def gen_alert_mysql_status(server_id):
                         send_mail = func.update_send_mail_status(server_id,db_type,'threads_waits',send_mail,send_mail_max_count) 
                         send_sms = func.update_send_sms_status(server_id,db_type,'threads_waits',send_sms,send_sms_max_count) 
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'threads_waits',threads_waits,'critical','too many threads waits',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('waits',3,host,port,create_time,'threads_waits',threads_waits,'critical')
+                        func.update_db_status('waits',3,server_id, host, db_type,create_time,'threads_waits',threads_waits,'critical')
                     elif int(threads_waits)>=int(threshold_warning_threads_running):
                          send_mail = func.update_send_mail_status(server_id,db_type,'threads_waits',send_mail,send_mail_max_count) 
                          send_sms = func.update_send_sms_status(server_id,db_type,'threads_waits',send_sms,send_sms_max_count) 
                          func.add_alert(server_id,tags,host,port,create_time,db_type,'threads_waits',threads_waits,'warning','too many threads waits',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                         func.update_db_status('waits',2,host,port,create_time,'threads_waits',threads_waits,'warning')
+                         func.update_db_status('waits',2,server_id, host, db_type,create_time,'threads_waits',threads_waits,'warning')
                     else:
-                         func.update_db_status('waits',1,host,port,create_time,'threads_waits',threads_waits,'ok')
+                         func.update_db_status('waits',1,server_id, host, db_type,create_time,'threads_waits',threads_waits,'ok')
                          func.check_if_ok(server_id,tags,host,port,create_time,db_type,'threads_waits',threads_waits,'threads waits ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
 
     else:
@@ -206,27 +206,27 @@ def gen_alert_mysql_replcation(server_id):
             if int(alarm_repl_status)==1:
                 if (slave_io_run== "Yes") and (slave_sql_run== "Yes"):
                     func.check_if_ok(server_id,tags,host,port,create_time,db_type,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'replication ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('repl',1,host,port,create_time,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'ok')
+                    func.update_db_status('repl',1,server_id, host, db_type,create_time,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'ok')
                     if int(alarm_repl_delay)==1:
                         if int(delay)>=int(threshold_critical_repl_delay):
                             send_mail = func.update_send_mail_status(server_id,db_type,'repl_delay',send_mail,send_mail_max_count) 
                             send_sms = func.update_send_sms_status(server_id,db_type,'repl_delay',send_sms,send_sms_max_count) 
                             func.add_alert(server_id,tags,host,port,create_time,db_type,'repl_delay',delay,'critical','replication has delay',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                            func.update_db_status('repl_delay',3,host,port,create_time,'repl_delay',delay,'critical')
+                            func.update_db_status('repl_delay',3,server_id, host, db_type,create_time,'repl_delay',delay,'critical')
                         elif int(delay)>=int(threshold_warning_repl_delay):
                             send_mail = func.update_send_mail_status(server_id,db_type,'repl_delay',send_mail,send_mail_max_count) 
                             send_sms = func.update_send_sms_status(server_id,db_type,'repl_delay',send_sms,send_sms_max_count) 
                             func.add_alert(server_id,tags,host,port,create_time,db_type,'repl_delay',delay,'warning','replication has delay',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                            func.update_db_status('repl_delay',2,host,port,create_time,'repl_delay',delay,'warning')
+                            func.update_db_status('repl_delay',2,server_id, host, db_type,create_time,'repl_delay',delay,'warning')
                         else:
                             func.check_if_ok(server_id,tags,host,port,create_time,db_type,'repl_delay',delay,'replication delay ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                            func.update_db_status('repl_delay',1,host,port,create_time,'repl_delay',delay,'ok')
+                            func.update_db_status('repl_delay',1,server_id, host, db_type,create_time,'repl_delay',delay,'ok')
 		else:
                     send_mail = func.update_send_mail_status(server_id,db_type,'replication',send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(server_id,db_type,'replication',send_sms,send_sms_max_count) 
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'critical','replication stop',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('repl',3,host,port,create_time,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'critical')
-                    func.update_db_status('repl_delay','-1',host,port,'','','','')
+                    func.update_db_status('repl',3,server_id, host, db_type,create_time,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'critical')
+                    func.update_db_status('repl_delay','-1',server_id, host, db_type,'','','','')
     else:
        pass
 

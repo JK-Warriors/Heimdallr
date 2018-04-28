@@ -182,13 +182,13 @@ def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alert_item,al
     conn.select_db(dbname)
     curs = conn.cursor()
     if db_type=='os':
-        alert_count=curs.execute("select id from alerts where host='%s' and alert_item='%s' and alert_value!='ok';" %(db_host,alert_item))
+        alert_count=curs.execute("select id from alerts where server_id = 0 and host='%s' and alert_item='%s' and alert_value!='ok';" %(db_host,alert_item))
         
         if int(alert_count) > 0 :
-            sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where host='%s' and alert_item='%s' ;" %(db_host,alert_item)
+            sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id = 0 and host='%s' and alert_item='%s' ;" %(db_host,alert_item)
             mysql_exec(sql,'')
         
-            mysql_exec("delete from alerts where host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
+            mysql_exec("delete from alerts where server_id = 0 and host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
     else:
         alert_count=curs.execute("select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' and alert_value!='ok';" %(server_id,db_type,alert_item))  
         if int(alert_count) > 0 :
@@ -306,12 +306,12 @@ def check_db_status(server_id,db_host,db_port,tags,db_type):
         conn.close()          
         
 
-def update_db_status_init(role,version,db_host,db_port,tags):
+def update_db_status_init(server_id,db_type,role,version,tags):
     try:
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)
         curs = conn.cursor()
-        curs.execute("update db_status set role='%s',version='%s',tags='%s' where host='%s' and tags='%s';" %(role,version,tags,db_host,tags))
+        curs.execute("update db_status set role='%s',version='%s',tags='%s' where server_id='%s' and db_type='%s';" %(role,version,tags,server_id,db_type))
         conn.commit()
     except Exception, e:
         print "update db status init: " + str(e)
@@ -320,7 +320,7 @@ def update_db_status_init(role,version,db_host,db_port,tags):
       conn.close()
 
 
-def update_db_status(field,value,db_host,db_port,alarm_time,alert_item,alert_value,alarm_level):
+def update_db_status(field,value,server_id, db_host, db_tpye, alert_time,alert_item,alert_value,alert_level):
     try:
         field_tips=field+'_tips'
         if value==-1:
@@ -331,15 +331,15 @@ def update_db_status(field,value,db_host,db_port,alarm_time,alert_item,alert_val
                          value: %s\n<br/> 
                           level: %s\n<br/>
                           time: %s\n<br/> 
-                    """ %(alert_item,alert_value,alarm_level,alarm_time)
+                    """ %(alert_item,alert_value,alert_level,alert_time)
 
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)
         curs = conn.cursor()
-        if db_port:
-            curs.execute("update db_status set %s='%s',%s='%s' where host='%s' and port='%s';" %(field,value,field_tips,value_tips,db_host,db_port))
-        else:
+        if db_tpye == 'os':
             curs.execute("update db_status set %s='%s',%s='%s' where host='%s';" %(field,value,field_tips,value_tips,db_host))
+        else:
+            curs.execute("update db_status set %s='%s',%s='%s' where server_id='%s' and db_tpye='%s';" %(field,value,field_tips,value_tips,server_id,db_tpye))
         conn.commit()
     except Exception, e:
         print "update db status: " + str(e)

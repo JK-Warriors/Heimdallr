@@ -104,30 +104,30 @@ def gen_alert_os_status(os_ip):
                 send_mail = func.update_send_mail_status(host,db_type,'snmp_server',send_mail,send_mail_max_count)
                 send_sms = func.update_send_sms_status(host,db_type,'snmp_server',send_sms,send_sms_max_count)
                 func.add_alert(server_id,tags,host,port,create_time,db_type,'snmp_server','down','critical','snmp server down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                func.update_db_status('snmp','3',host,'',create_time,'snmp_server','down','critical')
-                func.update_db_status('process','-1',host,'','','','','')
-                func.update_db_status('load_1','-1',host,'','','','','')
-                func.update_db_status('cpu','-1',host,'','','','','')
-                func.update_db_status('memory','-1',host,'','','','','')
-                func.update_db_status('network','-1',host,'','','','','')
-                func.update_db_status('disk','-1',host,'','','','','')
+                func.update_db_status('snmp','3',server_id, host, db_type,create_time,'snmp_server','down','critical')
+                func.update_db_status('process','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('load_1','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('cpu','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('memory','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('network','-1',server_id, host, db_type,'','','','')
+                func.update_db_status('disk','-1',server_id, host, db_type,'','','','')
             else:
                 func.check_if_ok(server_id,tags,host,port,create_time,db_type,'snmp_server','up','snmp server up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                func.update_db_status('snmp',1,host,'',create_time,'snmp_server','up','ok')
+                func.update_db_status('snmp',1,server_id, host, db_type,create_time,'snmp_server','up','ok')
 
                 if int(alarm_os_process)==1:
                     if int(process) >= int(threshold_critical_os_process):
                         send_mail = func.update_send_mail_status(host,db_type,'process',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'process',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'process',process,'critical','too more process running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('process',3,host,'',create_time,'process',process,'critical')
+                        func.update_db_status('process',3,server_id, host, db_type,create_time,'process',process,'critical')
                     elif int(process) >= int(threshold_warning_os_process):
                         send_mail = func.update_send_mail_status(host,db_type,'process',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'process',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'process',process,'warning','too more process running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('process',2,host,'',create_time,'process',process,'warning')
+                        func.update_db_status('process',2,server_id, host, db_type,create_time,'process',process,'warning')
                     else:
-                        func.update_db_status('process',1,host,'',create_time,'process',process,'ok')
+                        func.update_db_status('process',1,server_id, host, db_type,create_time,'process',process,'ok')
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'process',process,'process running ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
 
                 if int(alarm_os_load)==1:
@@ -135,15 +135,15 @@ def gen_alert_os_status(os_ip):
                         send_mail = func.update_send_mail_status(host,db_type,'load',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'load',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'load',load_1,'critical','too high load',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('load_1',3,host,'',create_time,'load',load_1,'critical')
+                        func.update_db_status('load_1',3,server_id, host, db_type,create_time,'load',load_1,'critical')
                     elif int(load_1) >= int(threshold_warning_os_load):
                         send_mail = func.update_send_mail_status(server_id,db_type,'load',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'load',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'load',load_1,'warning','too high load',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('load_1',2,host,'',create_time,'load',load_1,'warning')
+                        func.update_db_status('load_1',2,server_id, host, db_type,create_time,'load',load_1,'warning')
                     else:
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'load',load_1,'load ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('load_1',1,host,'',create_time,'load',load_1,'ok')
+                        func.update_db_status('load_1',1,server_id, host, db_type,create_time,'load',load_1,'ok')
 
                 if int(alarm_os_cpu)==1:
                     threshold_critical_os_cpu = int(100-threshold_critical_os_cpu)
@@ -152,15 +152,15 @@ def gen_alert_os_status(os_ip):
                         send_mail = func.update_send_mail_status(host,db_type,'cpu_idle',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'cpu_idle',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'cpu_idle',str(cpu_idle)+'%','critical','too little cpu idle',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('cpu',3,host,'',create_time,'cpu_idle',str(cpu_idle)+'%','critical')
+                        func.update_db_status('cpu',3,server_id, host, db_type,create_time,'cpu_idle',str(cpu_idle)+'%','critical')
                     elif int(cpu_idle) <= int(threshold_warning_os_cpu):
                         send_mail = func.update_send_mail_status(host,db_type,'cpu_idle',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'cpu_idle',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'cpu_idle',str(cpu_idle)+'%','warning','too little cpu idle',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('cpu',2,host,'',create_time,'cpu_idle',str(cpu_idle)+'%','warning')
+                        func.update_db_status('cpu',2,server_id, host, db_type,create_time,'cpu_idle',str(cpu_idle)+'%','warning')
                     else:
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'cpu_idle',str(cpu_idle)+'%','cpu idle ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('cpu',1,host,'',create_time,'cpu_idle',str(cpu_idle)+'%','ok')
+                        func.update_db_status('cpu',1,server_id, host, db_type,create_time,'cpu_idle',str(cpu_idle)+'%','ok')
 
                 if int(alarm_os_memory)==1:
                     if memory_usage:
@@ -171,15 +171,15 @@ def gen_alert_os_status(os_ip):
                         send_mail = func.update_send_mail_status(host,db_type,'memory',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'memory',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'memory',memory_usage,'critical','too more memory usage',send_mail,send_mail_to_list,send_sms,send_sms_to_list) 
-                        func.update_db_status('memory',3,host,'',create_time,'memory',memory_usage,'critical')
+                        func.update_db_status('memory',3,server_id, host, db_type,create_time,'memory',memory_usage,'critical')
                     elif int(memory_usage_int) >= int(threshold_warning_os_memory):
                         send_mail = func.update_send_mail_status(host,db_type,'memory',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'memory',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'memory',memory_usage,'warning','too more memory usage',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('memory',2,host,'',create_time,'memory',memory_usage,'warning')
+                        func.update_db_status('memory',2,server_id, host, db_type,create_time,'memory',memory_usage,'warning')
                     else:
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'memory',memory_usage,'memory usage ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('memory',1,host,'',create_time,'memory',memory_usage,'ok') 
+                        func.update_db_status('memory',1,server_id, host, db_type,create_time,'memory',memory_usage,'ok') 
 
 
     else:
@@ -241,15 +241,15 @@ def gen_alert_os_disk(os_ip):
                     send_mail = func.update_send_mail_status(host,db_type,'disk_usage(%s)' %(mounted),send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(host,db_type,'disk_usage(%s)' %(mounted),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'disk_usage(%s)' %(mounted),used_rate,'critical','disk %s usage reach %s' %(mounted,used_rate),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('disk',3,host,'',create_time,'disk_usage(%s)' %(mounted),used_rate,'critical')
+                    func.update_db_status('disk',3,server_id, host, db_type,create_time,'disk_usage(%s)' %(mounted),used_rate,'critical')
                 elif int(used_rate_int) >= int(threshold_warning_os_disk):
                     send_mail = func.update_send_mail_status(host,db_type,'disk_usage(%s)' %(mounted),send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(host,db_type,'disk_usage(%s)' %(mounted),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'disk_usage(%s)' %(mounted),used_rate,'warning','disk %s usage reach %s' %(mounted,used_rate),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('disk',2,host,'',create_time,'disk_usage(%s)' %(mounted),used_rate,'warning')
+                    func.update_db_status('disk',2,server_id, host, db_type,create_time,'disk_usage(%s)' %(mounted),used_rate,'warning')
                 else:
                     func.check_if_ok(server_id,tags,host,port,create_time,db_type,'disk_usage(%s)' %(mounted),used_rate,'disk %s usage ok' %(mounted),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('disk',1,host,'',create_time,'disk_usage','max(%s:%s)' %(mounted,used_rate),'ok')
+                    func.update_db_status('disk',1,server_id, host, db_type,create_time,'disk_usage','max(%s:%s)' %(mounted,used_rate),'ok')
     else:
        pass
 
@@ -310,15 +310,15 @@ def gen_alert_os_network(os_ip):
                     send_mail = func.update_send_mail_status(host,db_type,'network(%s)' %(if_descr),send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(host,db_type,'network(%s)' %(if_descr),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'network(%s)' %(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'critical','network %s bytes reach %s' %(if_descr,sum_bytes),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('network',3,host,'',create_time,'network(%s)'%(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'critical')
+                    func.update_db_status('network',3,server_id, host, db_type,create_time,'network(%s)'%(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'critical')
                 elif int(sum_bytes) >= int(threshold_warning_os_network):
                     send_mail = func.update_send_mail_status(host,db_type,'network(%s)' %(if_descr),send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(host,db_type,'network(%s)' %(if_descr),send_sms,send_sms_max_count)
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'network(%s)'%(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'warning','network %s bytes reach %s' %(if_descr,sum_bytes),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('network',2,host,'',create_time,'network(%s)'%(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'warning')
+                    func.update_db_status('network',2,server_id, host, db_type,create_time,'network(%s)'%(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'warning')
                 else:
                     func.check_if_ok(server_id,tags,host,port,create_time,db_type,'network(%s)'%(if_descr),'in:%s,out:%s' %(in_bytes,out_bytes),'network %s bytes ok' %(if_descr),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('network',1,host,'',create_time,'network','max(%s-in:%s,out:%s)' %(if_descr,in_bytes,out_bytes),'ok')
+                    func.update_db_status('network',1,server_id, host, db_type,create_time,'network','max(%s-in:%s,out:%s)' %(if_descr,in_bytes,out_bytes),'ok')
     else:
        pass
 
