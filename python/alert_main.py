@@ -241,7 +241,7 @@ def send_alert_mail(server_id, host):
 ##############################################################################
 def alert_to_history():
     try:
-        sql="insert into alerts_his select *,sysdate() from alerts where create_time > date_add(sysdate(), interval -3 day);"
+        sql="insert into alerts_his select *,sysdate() from alerts where create_time < date_add(sysdate(), interval -3 day);"
         func.mysql_exec(sql,'')
     
     

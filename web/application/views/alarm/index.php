@@ -61,7 +61,7 @@
  <?php foreach ($datalist  as $item):?>
     <tr class="warning">
       	<td><input type='checkbox' name='chkb' value='<?php echo $item['id'] ?>' /></td>
-				<td><?php echo $item['host'].":".$item['port'] ?></td>
+				<td><?php if($item['db_type'] =='os'){echo $item['host'];} else{echo $item['host'].":".$item['port'];} ?></td>
         <td><?php echo $item['tags'] ?></td>
         <td><?php echo $item['db_type'] ?></td>
         <td><?php echo $item['alert_item'] ?></td>
