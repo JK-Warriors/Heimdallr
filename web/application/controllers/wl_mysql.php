@@ -69,12 +69,12 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
         //饼状图表
         $data=array();   
 
-        $max_connections = $this->db->query("select max_connections as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $threads_connected = $this->db->query("select threads_connected as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $open_files_limit = $this->db->query("select open_files_limit as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $open_files = $this->db->query("select open_files as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $table_open_cache = $this->db->query("select table_open_cache as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $open_tables = $this->db->query("select open_tables as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $max_connections = $this->db->query("select max_connections as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $threads_connected = $this->db->query("select threads_connected as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $open_files_limit = $this->db->query("select open_files_limit as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $open_files = $this->db->query("select open_files as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $table_open_cache = $this->db->query("select table_open_cache as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $open_tables = $this->db->query("select open_tables as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
         
         $data['connections_used'] = $threads_connected;
         $data['connections_unused'] = $max_connections - $threads_connected;
@@ -288,12 +288,12 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
         
         //图表
         $data=array();              
-        $max_connections = $this->db->query("select max_connections as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $threads_connected = $this->db->query("select threads_connected as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $open_files_limit = $this->db->query("select open_files_limit as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $open_files = $this->db->query("select open_files as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $table_open_cache = $this->db->query("select table_open_cache as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $open_tables = $this->db->query("select open_tables as num from mysql_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $max_connections = $this->db->query("select max_connections as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $threads_connected = $this->db->query("select threads_connected as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $open_files_limit = $this->db->query("select open_files_limit as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $open_files = $this->db->query("select open_files as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $table_open_cache = $this->db->query("select table_open_cache as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $open_tables = $this->db->query("select open_tables as num from mysql_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
         
         $data['connections_used'] = $threads_connected;
         $data['connections_unused'] = $max_connections - $threads_connected;

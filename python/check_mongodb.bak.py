@@ -115,7 +115,7 @@ def check_mongodb(host,port,user,passwd,server_id,tags):
 
 def main():
 
-    func.mysql_exec("insert into mongodb_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mongodb_status;",'')
+    func.mysql_exec("insert into mongodb_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mongodb_status;",'')
     func.mysql_exec('delete from mongodb_status;','')
 
     #get mongodb servers list

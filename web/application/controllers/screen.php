@@ -44,7 +44,7 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
 
     function ajax_get_cpu(){
          $data = $this->db->query("SELECT os.tags, (100-SUBSTRING_INDEX(avg(cpu_idle_time),'.',1)) cpu_used_time,SUBSTRING_INDEX(avg(cpu_idle_time),'.',1) cpu_idle_time 
-FROM (SELECT * FROM os_status_history WHERE create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) order BY create_time DESC) his
+FROM (SELECT * FROM os_status_his WHERE create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) order BY create_time DESC) his
 JOIN db_cfg_os os ON his.ip=os.host and his.snmp=1
 group by ip order by cpu_idle_time asc limit 10;")->result_array();
          $result = array();
@@ -62,12 +62,12 @@ group by ip order by cpu_idle_time asc limit 10;")->result_array();
 
     function ajax_get_net(){
         /*$data = $this->db->query("select os.tags,TRUNCATE(avg(his.in_bytes+his.out_bytes)/1024,0) bytes
-FROM os_net_history  his
+FROM os_net_his  his
 JOIN db_cfg_os os ON his.ip=os.host
 WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE)
 GROUP BY os.tags
 ORDER BY bytes DESC limit 10")->result_array();*/
-        $data = $this->db->query("select his.ip as tags,TRUNCATE(avg(his.in_bytes+his.out_bytes)/1024,0) bytes FROM os_net_history  his WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) GROUP BY his.ip ORDER BY bytes DESC limit 10;")->result_array();
+        $data = $this->db->query("select his.ip as tags,TRUNCATE(avg(his.in_bytes+his.out_bytes)/1024,0) bytes FROM os_net_his  his WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) GROUP BY his.ip ORDER BY bytes DESC limit 10;")->result_array();
 
         $result = array();
          foreach($data as $item){
@@ -83,12 +83,12 @@ ORDER BY bytes DESC limit 10")->result_array();*/
 
     function ajax_get_diskio(){
         /*$data = $this->db->query("select os.tags,TRUNCATE(sum(his.disk_io_writes),0) io_writes,TRUNCATE(avg(his.disk_io_reads),0) io_reads
-FROM os_diskio_history  his
+FROM os_diskio_his  his
 JOIN db_cfg_os os ON his.ip=os.host
 WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE)
 GROUP BY os.tags
 ORDER BY io_writes DESC limit 10;")->result_array();*/
-        $data=$this->db->query("select his.ip as tags,TRUNCATE(sum(his.disk_io_writes),0) io_writes,TRUNCATE(avg(his.disk_io_reads),0) io_reads FROM os_diskio_history  his WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) GROUP BY his.ip ORDER BY io_writes DESC limit 10;")->result_array();
+        $data=$this->db->query("select his.ip as tags,TRUNCATE(sum(his.disk_io_writes),0) io_writes,TRUNCATE(avg(his.disk_io_reads),0) io_reads FROM os_diskio_his  his WHERE his.create_time>=ADDDATE(NOW(),INTERVAL -5 MINUTE) GROUP BY his.ip ORDER BY io_writes DESC limit 10;")->result_array();
         $result = array();
          foreach($data as $item){
                 $result['category'][] = $item['tags'];
@@ -156,17 +156,17 @@ ORDER BY io_writes DESC limit 10;")->result_array();*/
      
             $result['category'][] = date('H:i',$timestamp);
 
-            $mysql_result = $this->db->query("select temp.sums from (select ymdhi,sum(threads_running) sums from mysql_status_history where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
+            $mysql_result = $this->db->query("select temp.sums from (select ymdhi,sum(threads_running) sums from mysql_status_his where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
 			if($mysql_result){
                 $mysql_data=$mysql_result->sums;
             }
 
-            $oracle_result = $this->db->query("select temp.sums from (select ymdhi,sum(session_actives) sums from oracle_status_history where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
+            $oracle_result = $this->db->query("select temp.sums from (select ymdhi,sum(session_actives) sums from oracle_status_his where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
             if($oracle_result){
                 $oracle_data=$oracle_result->sums;
             }
 
-            $mongodb_result = $this->db->query("select temp.sums from (select ymdhi,sum(globalLock_activeClients) sums from mongodb_status_history where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
+            $mongodb_result = $this->db->query("select temp.sums from (select ymdhi,sum(globalLock_activeClients) sums from mongodb_status_his where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
             if($mongodb_result){
                 $mongodb_data=$mongodb_result->sums;
             }

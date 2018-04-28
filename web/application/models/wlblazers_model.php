@@ -102,7 +102,7 @@ class Wlblazers_model extends CI_Model{
 
 	function get_oracle_lines(){
     $sql = "SELECT DISTINCT server_id
-							FROM oracle_status_history
+							FROM oracle_status_his
 							WHERE database_role = 'PHYSICAL STANDBY'
 							AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)";
 		$query = $this->db->query($sql);
@@ -117,7 +117,7 @@ class Wlblazers_model extends CI_Model{
 	function get_oracle_yAxis(){
     $sql = "select *
 						  from (SELECT server_id, create_time time, dg_delay delay
-						          FROM oracle_status_history
+						          FROM oracle_status_his
 						         WHERE database_role = 'PHYSICAL STANDBY'
                        AND server_id in (select id from db_cfg_oracle)
 						           AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)

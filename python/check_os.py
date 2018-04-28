@@ -186,7 +186,7 @@ def check_os(ip,community,filter_os_disk,tags):
             disk_all=os.popen(command)
             result=disk_all.readlines()
             if result:
-                func.mysql_exec("insert into os_disk_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_disk where ip = '%s';" %(ip),'')
+                func.mysql_exec("insert into os_disk_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_disk where ip = '%s';" %(ip),'')
                 func.mysql_exec("delete from os_disk where ip = '%s';" %(ip),'')
                 for i in range(len(result)):
                     line=result[i].split()
@@ -216,7 +216,7 @@ def check_os(ip,community,filter_os_disk,tags):
             res_tab_1=res_file_1.readlines()
             res_tab_2=res_file_2.readlines()
             if res_tab_2:
-                func.mysql_exec("insert into os_diskio_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_diskio where ip = '%s';" %(ip),'')
+                func.mysql_exec("insert into os_diskio_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_diskio where ip = '%s';" %(ip),'')
                 func.mysql_exec("delete from os_diskio where ip = '%s';" %(ip),'')
                 for i in range(len(res_tab_2)):
                     line_2=res_tab_2[i].split()
@@ -262,7 +262,7 @@ def check_os(ip,community,filter_os_disk,tags):
             res_net_file=os.popen(command)
             net_str=res_net_file.readlines()
             if net_str:
-                func.mysql_exec("insert into os_net_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
+                func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
                 func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
                 for i in range(len(net_str)):
                     line_2=net_str[i].split()
@@ -310,13 +310,13 @@ def check_os(ip,community,filter_os_disk,tags):
         
         
             ##################### insert data to mysql server#############################
-            func.mysql_exec("insert into os_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
+            func.mysql_exec("insert into os_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
             func.mysql_exec("delete from os_status where ip = '%s';" %(ip),'')
             sql = "insert into os_status(ip,snmp,tags,hostname,kernel,system_date,system_uptime,process,load_1,load_5,load_15,cpu_user_time,cpu_system_time,cpu_idle_time,swap_total,swap_avail,mem_total,mem_avail,mem_free,mem_shared,mem_buffered,mem_cached,mem_usage_rate,mem_available,disk_io_reads_total,disk_io_writes_total,net_in_bytes_total,net_out_bytes_total) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             param = (ip,1,tags, hostname, kernel, system_date,system_uptime,process,load_1,load_5,load_15,cpu_user_time,cpu_system_time,cpu_idle_time,swap_total,swap_avail,mem_total,mem_avail,mem_free,mem_shared,mem_buffered,mem_cached,mem_usage_rate,mem_available,disk_io_reads_total,disk_io_writes_total,net_in_bytes_total,net_out_bytes_total)
             func.mysql_exec(sql,param) 
         else:
-            func.mysql_exec("insert into os_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
+            func.mysql_exec("insert into os_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
             func.mysql_exec("delete from os_status where ip = '%s';" %(ip),'')
             sql = "insert into os_status(ip,snmp,tags) values(%s,%s,%s)"
             param = (ip,0,tags)

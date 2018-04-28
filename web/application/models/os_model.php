@@ -30,7 +30,7 @@ class Os_model extends CI_Model{
 
     
     function get_os_chart_record($host,$time){
-        $query=$this->db->query("select * from os_status_history where ip='$host' and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select * from os_status_his where ip='$host' and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -38,7 +38,7 @@ class Os_model extends CI_Model{
     }
     
     function get_os_diskio_chart_record($host,$time){
-        $query=$this->db->query("select * from os_diskio_history where ip='$host' and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select * from os_diskio_his where ip='$host' and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -46,7 +46,7 @@ class Os_model extends CI_Model{
     }
     
     function get_last_record($host){
-        $query=$this->db->query("select * from os_status_history where ip='$host' order by id desc limit 1; ");
+        $query=$this->db->query("select * from os_status_his where ip='$host' order by id desc limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -106,7 +106,7 @@ class Os_model extends CI_Model{
 	}
 
 	function check_has_record($host,$time){
-        $query=$this->db->query("select id from os_status_history where ip='$host' and YmdHi=$time");
+        $query=$this->db->query("select id from os_status_his where ip='$host' and YmdHi=$time");
         if ($query->num_rows() > 0)
         {
            return true; 

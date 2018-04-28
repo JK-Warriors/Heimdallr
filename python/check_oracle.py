@@ -64,10 +64,10 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
     try:
         func.mysql_exec("begin;",'')
-        func.mysql_exec("insert into oracle_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec("insert into oracle_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from oracle_status where server_id = %s;' %(server_id),'')
         
-        func.mysql_exec("insert into oracle_tablespace_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_tablespace where server_id = %s;" %(server_id),'')
+        func.mysql_exec("insert into oracle_tablespace_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_tablespace where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from oracle_tablespace where server_id = %s;' %(server_id),'')
 
         func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_diskgroup where server_id = %s;" %(server_id),'')
@@ -516,7 +516,7 @@ def update_fb_retention(conn, server_id, old_value):
 ######################################################################################################   
 def clean_invalid_db_status():
     try:
-        func.mysql_exec("insert into oracle_status_history SELECT *,sysdate() from oracle_status where server_id not in(select id from  db_cfg_oracle);",'')
+        func.mysql_exec("insert into oracle_status_his SELECT *,sysdate() from oracle_status where server_id not in(select id from  db_cfg_oracle);",'')
         func.mysql_exec('delete from oracle_status where server_id not in(select id from  db_cfg_oracle);','')
         
         func.mysql_exec("delete from db_status where db_type = 'oracle' and server_id not in(select id from  db_cfg_oracle);",'')

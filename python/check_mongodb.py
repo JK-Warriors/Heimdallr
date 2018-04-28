@@ -20,7 +20,7 @@ from multiprocessing import Process;
 
 def check_mongodb(host,port,user,passwd,server_id,tags):
     try:
-        func.mysql_exec("insert into mongodb_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mongodb_status where server_id='%s';" %(server_id),'')
+        func.mysql_exec("insert into mongodb_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from mongodb_status where server_id='%s';" %(server_id),'')
         func.mysql_exec("delete from mongodb_status where server_id='%s';" %(server_id),'')
 
         #connect = pymongo.Connection(host,int(port))

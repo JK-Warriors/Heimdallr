@@ -25,7 +25,7 @@ class Task extends CI_Controller {
                 else{
                     $ext_where='';
                 }
-                $query_slowquery = $this->db->query("select review.*,history.* from mysql_slow_query_review review join mysql_slow_query_review_history history on review.`checksum`=history.checksum and serverid_max=$server_id and db_max!='information_schema' and fingerprint!='commit' and user_max!='root' $ext_where order by query_time_sum desc limit 20;");
+                $query_slowquery = $this->db->query("select review.*,history.* from mysql_slow_query_review review join mysql_slow_query_review_his history on review.`checksum`=history.checksum and serverid_max=$server_id and db_max!='information_schema' and fingerprint!='commit' and user_max!='root' $ext_where order by query_time_sum desc limit 20;");
                 if ($query_slowquery->num_rows() > 0)
 		        {
 			         $slowquery = $query_slowquery->result_array();

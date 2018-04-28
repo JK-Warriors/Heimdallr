@@ -44,7 +44,7 @@ def check_mysql_bigtable(host,port,username,password,server_id,tags,bigtable_siz
 
 
 def main():
-    func.mysql_exec("insert into mysql_bigtable_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),8) from mysql_bigtable",'')
+    func.mysql_exec("insert into mysql_bigtable_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),8) from mysql_bigtable",'')
     func.mysql_exec('delete from mysql_bigtable;','')
     #get mysql servers list
     servers = func.mysql_query('select id,host,port,username,password,tags,bigtable_size from db_cfg_mysql where is_delete=0 and monitor=1 and bigtable_monitor=1;')

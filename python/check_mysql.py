@@ -22,10 +22,10 @@ from multiprocessing import Process;
 def check_mysql(host,port,username,password,server_id,tags):
     try:
         func.mysql_exec("begin;",'')
-        func.mysql_exec("insert into mysql_status_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec("insert into mysql_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from mysql_status where server_id = %s;' %(server_id),'')
 
-        func.mysql_exec("insert into mysql_replication_history SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_replication where server_id = %s;" %(server_id),'')
+        func.mysql_exec("insert into mysql_replication_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_replication where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from mysql_replication where server_id = %s;' %(server_id),'')
     
         conn=MySQLdb.connect(host=host,user=username,passwd=password,port=int(port),connect_timeout=3,charset='utf8')

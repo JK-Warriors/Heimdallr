@@ -29,7 +29,7 @@ pt_query_digest="/usr/bin/pt-query-digest"
 wlblazers_server_id=1
 
 #collect mysql slowquery log into wlblazers database
-$pt_query_digest --user=$wlblazers_db_user --password=$wlblazers_db_password --port=$wlblazers_db_port --review h=$wlblazers_db_host,D=$wlblazers_db_database,t=mysql_slow_query_review  --history h=$wlblazers_db_host,D=$wlblazers_db_database,t=mysql_slow_query_review_history  --no-report --limit=100% --filter=" \$event->{add_column} = length(\$event->{arg}) and \$event->{serverid}=$wlblazers_server_id " $slowquery_file > /tmp/wlblazers_slowquery.log
+$pt_query_digest --user=$wlblazers_db_user --password=$wlblazers_db_password --port=$wlblazers_db_port --review h=$wlblazers_db_host,D=$wlblazers_db_database,t=mysql_slow_query_review  --history h=$wlblazers_db_host,D=$wlblazers_db_database,t=mysql_slow_query_review_his  --no-report --limit=100% --filter=" \$event->{add_column} = length(\$event->{arg}) and \$event->{serverid}=$wlblazers_server_id " $slowquery_file > /tmp/wlblazers_slowquery.log
 
 ##### set a new slow query log ###########
 tmp_log=`$mysql_client -h$mysql_host -P$mysql_port -u$mysql_user -p$mysql_password -e "select concat('$slowquery_dir','slowquery_',date_format(now(),'%Y%m%d%H'),'.log');"|grep log|sed -n -e '2p'`

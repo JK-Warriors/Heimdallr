@@ -34,7 +34,7 @@ class Grapha extends Front_Controller {
             $time=$start + $i * 60;
             $xdata[$i] = $time;
             $date_min=date('YmdHi',$time);
-            $query = $this->db->query("select active from mysql_status_history where server_id='$server_id' and YmdHi = '".$date_min."'; ");
+            $query = $this->db->query("select active from mysql_status_his where server_id='$server_id' and YmdHi = '".$date_min."'; ");
             if ($query->num_rows() > 0)
             {
                $row = $query->row(); 
@@ -105,7 +105,7 @@ class Grapha extends Front_Controller {
             $time=$start + $i * 60;
             $xdata[$i] = $time;
             $date_min=date('YmdHi',$time);
-            $query = $this->db->query("select connections from mysql_status_history where server_id='$server_id' and YmdHi = '".$date_min."'; ");
+            $query = $this->db->query("select connections from mysql_status_his where server_id='$server_id' and YmdHi = '".$date_min."'; ");
             if ($query->num_rows() > 0)
             {
                $row = $query->row(); 

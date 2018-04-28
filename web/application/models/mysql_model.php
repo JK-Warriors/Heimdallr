@@ -146,7 +146,7 @@ class MySQL_model extends CI_Model{
         
 		$this->db->select('*');
         $this->db->from("mysql_slow_query_review a");
-        $this->db->join("mysql_slow_query_review_history b", "a.checksum=b.checksum $ext ",'');
+        $this->db->join("mysql_slow_query_review_his b", "a.checksum=b.checksum $ext ",'');
 		return $this->db->count_all_results();
 	}
     
@@ -164,7 +164,7 @@ class MySQL_model extends CI_Model{
 b.serverid_max,b.db_max,b.user_max,b.ts_min,b.ts_max,sum(b.ts_cnt) ts_cnt, sum(b.Query_time_sum)/sum(b.ts_cnt) Query_time_avg, max(b.Query_time_max) Query_time_max, min(b.Query_time_min) Query_time_min,b.Query_time_sum Query_time_sum,
 max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Lock_time_sum) Lock_time_sum');
         $this->db->from("mysql_slow_query_review a");
-        $this->db->join("mysql_slow_query_review_history b", "a.checksum=b.checksum $ext ",'');
+        $this->db->join("mysql_slow_query_review_his b", "a.checksum=b.checksum $ext ",'');
 		$this->db->group_by('a.checksum');
         $this->db->order_by('Query_time_sum','desc');
         
@@ -183,7 +183,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
         $this->db->where("last_seen <=", $end_time);
         $this->db->select('s.*,sh.*');
         $this->db->from("mysql_slow_query_review s");
-        $this->db->join("mysql_slow_query_review_history sh", "s.checksum=sh.checksum and sh.serverid_max=$server_id",'');
+        $this->db->join("mysql_slow_query_review_his sh", "s.checksum=sh.checksum and sh.serverid_max=$server_id",'');
         $this->db->group_by('s.checksum');
         $this->db->order_by('Query_time_sum','desc');
         $this->db->limit(10);
@@ -203,7 +203,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
 	   
 	    $this->db->select('s.*,sh.*');
         $this->db->from("mysql_slow_query_review s");
-        $this->db->join("mysql_slow_query_review_history sh", 's.checksum=sh.checksum');
+        $this->db->join("mysql_slow_query_review_his sh", 's.checksum=sh.checksum');
 		$this->db->where('s.checksum',$checksum);
         $query = $this->db->get();
 		if ($query->num_rows() > 0)
@@ -244,7 +244,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
     }
 
 	function get_status_chart_record($server_id,$time){
-        $query=$this->db->query("select * from mysql_status_history  where server_id=$server_id and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select * from mysql_status_his  where server_id=$server_id and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -255,7 +255,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
 
     
     function get_replication_chart_record($server_id,$time){
-        $query=$this->db->query("select slave_io_run,slave_sql_run,delay from mysql_replication_history where server_id=$server_id and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select slave_io_run,slave_sql_run,delay from mysql_replication_his where server_id=$server_id and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -263,7 +263,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
     }
     
     function get_mysql_info_by_server_id($server_id){
-        $query=$this->db->query("select * from mysql_status_history where server_id=$server_id order by id desc limit 1;");
+        $query=$this->db->query("select * from mysql_status_his where server_id=$server_id order by id desc limit 1;");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -271,7 +271,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
     }
     
     function get_bigtable_chart_record($server_id,$table_name,$time){
-        $query=$this->db->query("select table_size from mysql_bigtable_history where server_id=$server_id and table_name='$table_name' and Ymd=$time order by id desc limit 1; ");
+        $query=$this->db->query("select table_size from mysql_bigtable_his where server_id=$server_id and table_name='$table_name' and Ymd=$time order by id desc limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -279,7 +279,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
     }
 
     function check_has_record($server_id,$time){
-        $query=$this->db->query("select id from mysql_status_history where server_id=$server_id and YmdHi=$time");
+        $query=$this->db->query("select id from mysql_status_his where server_id=$server_id and YmdHi=$time");
         if ($query->num_rows() > 0)
         {
            return true; 

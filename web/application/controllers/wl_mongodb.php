@@ -81,8 +81,8 @@ on `status`.server_id=`server`.id order by opcounters_query_persecond desc limit
         //饼状图表
         $data=array();   
 
-        $connections_current = $this->db->query("select connections_current as num from mongodb_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
-        $connections_available = $this->db->query("select connections_available as num from mongodb_status_history where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $connections_current = $this->db->query("select connections_current as num from mongodb_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
+        $connections_available = $this->db->query("select connections_available as num from mongodb_status_his where connect=1 and server_id=$server_id order by id desc limit 1")->row()->num;
         
         $data['connections_used'] = $connections_current;
         $data['connections_unused'] = $connections_available;

@@ -129,7 +129,7 @@ def gen_alert_oracle_status(server_id):
                 	
                 	
                 # 数据库角色变化告警
-                sql= "select database_role from oracle_status_history s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)
+                sql= "select database_role from oracle_status_his s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)
                 last_role=func.mysql_single_query(sql)
                 if last_role:
                     if last_role != database_role:
@@ -140,7 +140,7 @@ def gen_alert_oracle_status(server_id):
                     
 
                 # 数据库重启告警
-                sql= "select startup_time from oracle_status_history s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)
+                sql= "select startup_time from oracle_status_his s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)
                 last_startup=func.mysql_single_query(sql)
                 if last_startup:
                     if last_startup != startup_time:

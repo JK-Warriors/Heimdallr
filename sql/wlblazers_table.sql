@@ -654,10 +654,10 @@ CREATE TABLE `mongodb_status` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for mongodb_status_history
+-- Table structure for mongodb_status_his
 -- ----------------------------
-DROP TABLE IF EXISTS `mongodb_status_history`;
-CREATE TABLE `mongodb_status_history` (
+DROP TABLE IF EXISTS `mongodb_status_his`;
+CREATE TABLE `mongodb_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `host` varchar(50) NOT NULL,
@@ -717,10 +717,10 @@ CREATE TABLE `mysql_bigtable` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for mysql_bigtable_history
+-- Table structure for mysql_bigtable_his
 -- ----------------------------
-DROP TABLE IF EXISTS `mysql_bigtable_history`;
-CREATE TABLE `mysql_bigtable_history` (
+DROP TABLE IF EXISTS `mysql_bigtable_his`;
+CREATE TABLE `mysql_bigtable_his` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) DEFAULT NULL,
   `host` varchar(30) NOT NULL,
@@ -809,10 +809,10 @@ CREATE TABLE `mysql_replication` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for mysql_replication_history
+-- Table structure for mysql_replication_his
 -- ----------------------------
-DROP TABLE IF EXISTS `mysql_replication_history`;
-CREATE TABLE `mysql_replication_history` (
+DROP TABLE IF EXISTS `mysql_replication_his`;
+CREATE TABLE `mysql_replication_his` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL,
   `tags` varchar(50) NOT NULL DEFAULT '',
@@ -860,10 +860,10 @@ CREATE TABLE `mysql_slow_query_review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for mysql_slow_query_review_history
+-- Table structure for mysql_slow_query_review_his
 -- ----------------------------
-DROP TABLE IF EXISTS `mysql_slow_query_review_history`;
-CREATE TABLE `mysql_slow_query_review_history` (
+DROP TABLE IF EXISTS `mysql_slow_query_review_his`;
+CREATE TABLE `mysql_slow_query_review_his` (
   `serverid_max` smallint(4) NOT NULL DEFAULT '0',
   `db_max` varchar(100) DEFAULT NULL,
   `user_max` varchar(100) DEFAULT NULL,
@@ -1084,10 +1084,10 @@ CREATE TABLE `mysql_status` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for mysql_status_history
+-- Table structure for mysql_status_his
 -- ----------------------------
-DROP TABLE IF EXISTS `mysql_status_history`;
-CREATE TABLE `mysql_status_history` (
+DROP TABLE IF EXISTS `mysql_status_his`;
+CREATE TABLE `mysql_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `host` varchar(30) NOT NULL,
@@ -1256,10 +1256,10 @@ CREATE TABLE `oracle_status` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for oracle_status_history
+-- Table structure for oracle_status_his
 -- ----------------------------
-DROP TABLE IF EXISTS `oracle_status_history`;
-CREATE TABLE `oracle_status_history` (
+DROP TABLE IF EXISTS `oracle_status_his`;
+CREATE TABLE `oracle_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `host` varchar(50) NOT NULL,
@@ -1332,10 +1332,10 @@ CREATE TABLE `oracle_tablespace` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for oracle_tablespace_history
+-- Table structure for oracle_tablespace_his
 -- ----------------------------
-DROP TABLE IF EXISTS `oracle_tablespace_history`;
-CREATE TABLE `oracle_tablespace_history` (
+DROP TABLE IF EXISTS `oracle_tablespace_his`;
+CREATE TABLE `oracle_tablespace_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) NOT NULL DEFAULT '0',
   `host` varchar(50) NOT NULL DEFAULT '0',
@@ -1470,10 +1470,10 @@ CREATE TABLE `os_disk` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for os_disk_history
+-- Table structure for os_disk_his
 -- ----------------------------
-DROP TABLE IF EXISTS `os_disk_history`;
-CREATE TABLE `os_disk_history` (
+DROP TABLE IF EXISTS `os_disk_his`;
+CREATE TABLE `os_disk_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `ip` varchar(50) NOT NULL,
   `tags` varchar(100) DEFAULT NULL,
@@ -1504,10 +1504,10 @@ CREATE TABLE `os_diskio` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for os_diskio_history
+-- Table structure for os_diskio_his
 -- ----------------------------
-DROP TABLE IF EXISTS `os_diskio_history`;
-CREATE TABLE `os_diskio_history` (
+DROP TABLE IF EXISTS `os_diskio_his`;
+CREATE TABLE `os_diskio_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `ip` varchar(50) NOT NULL,
   `tags` varchar(100) DEFAULT NULL,
@@ -1540,10 +1540,10 @@ CREATE TABLE `os_net` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for os_net_history
+-- Table structure for os_net_his
 -- ----------------------------
-DROP TABLE IF EXISTS `os_net_history`;
-CREATE TABLE `os_net_history` (
+DROP TABLE IF EXISTS `os_net_his`;
+CREATE TABLE `os_net_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `ip` varchar(50) NOT NULL,
   `tags` varchar(100) DEFAULT NULL,
@@ -1597,10 +1597,10 @@ CREATE TABLE `os_status` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for os_status_history
+-- Table structure for os_status_his
 -- ----------------------------
-DROP TABLE IF EXISTS `os_status_history`;
-CREATE TABLE `os_status_history` (
+DROP TABLE IF EXISTS `os_status_his`;
+CREATE TABLE `os_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `ip` varchar(50) NOT NULL,
   `snmp` tinyint(2) NOT NULL DEFAULT '0',
