@@ -17,8 +17,8 @@
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form" class="form-inline" method="get" action="<?php echo site_url('wl_oracle/dglist') ?>" >
  
-  <input type="text" id="host"  name="host" value="" placeholder="<?php echo $this->lang->line('please_input_ip'); ?>" class="input-medium" >
-  <input type="text" id="dsn"  name="dsn" value="" placeholder="<?php echo $this->lang->line('please_input_inst_name'); ?>" class="input-medium" >
+  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_ip'); ?>" class="input-medium" >
+  <input type="text" id="dsn"  name="dsn" value="<?php echo $setval['dsn']; ?>" placeholder="<?php echo $this->lang->line('please_input_inst_name'); ?>" class="input-medium" >
   
 
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>

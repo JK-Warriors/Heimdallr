@@ -122,6 +122,12 @@ def gen_alert_oracle_status(server_id):
                 func.check_if_ok(server_id,tags,host,port,create_time,db_type,'connect','up','oracle server up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                 func.update_db_status('connect','1',host,port,create_time,'connect','up','ok')
                 
+                # 数据库从备库切换为primary时，需要更新repl和repl_delay
+                if database_role=="PRIMARY":
+                    func.update_db_status('repl','-1',host,port,'','','','')
+                    func.update_db_status('repl_delay','-1',host,port,'','','','')
+                	
+                	
                 # 数据库角色变化告警
                 sql= "select database_role from oracle_status_history s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)
                 last_role=func.mysql_single_query(sql)

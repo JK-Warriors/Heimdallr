@@ -72,29 +72,51 @@ class Oracle_model extends CI_Model{
         
         $host=isset($_GET["host"]) ? $_GET["host"] : "";
         $dsn=isset($_GET["dsn"]) ? $_GET["dsn"] : "";
-        $sql = "SELECT
-										dg.id as group_id,
-										dg.group_name,
-										pdb.`id`  as p_id,
-										pdb.`host`  as p_host,
-										pdb.`port`  as p_port,
-										pdb.dsn		as p_dsn,
-										pdb.tags  as p_tags,
-										sdb.`id`  as s_id,
-										sdb.`host`  as s_host,
-										sdb.`port`  as s_port,
-										sdb.dsn    as s_dsn,
-										sdb.tags   as s_tags
-									FROM db_cfg_oracle_dg dg,
-										db_cfg_oracle pdb,
-										db_cfg_oracle sdb
-									WHERE dg.primary_db_id = pdb.id
-									AND dg.standby_db_id = sdb.id";
+        $sql = "SELECT * from(SELECT
+																	dg.id as group_id,
+																	dg.group_name,
+																	pdb.`id`  as p_id,
+																	pdb.`host`  as p_host,
+																	pdb.`port`  as p_port,
+																	pdb.dsn		as p_dsn,
+																	pdb.tags  as p_tags,
+																	sdb.`id`  as s_id,
+																	sdb.`host`  as s_host,
+																	sdb.`port`  as s_port,
+																	sdb.dsn    as s_dsn,
+																	sdb.tags   as s_tags
+																FROM db_cfg_oracle_dg dg,
+																	db_cfg_oracle pdb,
+																	db_cfg_oracle sdb
+																WHERE dg.primary_db_id = pdb.id
+																AND dg.standby_db_id = sdb.id
+																AND dg.is_switch = 0
+														union ALL
+															SELECT
+																	dg.id as group_id,
+																	dg.group_name,
+																	pdb.`id`  as p_id,
+																	pdb.`host`  as p_host,
+																	pdb.`port`  as p_port,
+																	pdb.dsn		as p_dsn,
+																	pdb.tags  as p_tags,
+																	sdb.`id`  as s_id,
+																	sdb.`host`  as s_host,
+																	sdb.`port`  as s_port,
+																	sdb.dsn    as s_dsn,
+																	sdb.tags   as s_tags
+																FROM db_cfg_oracle_dg dg,
+																	db_cfg_oracle pdb,
+																	db_cfg_oracle sdb
+																WHERE dg.primary_db_id = sdb.id
+																AND dg.standby_db_id = pdb.id
+																AND dg.is_switch = 1) t
+													where 1=1 ";
 				if($host != ""){
-						$sql = $sql . "AND (pdb.`host` like '%" . $host . "%' or sdb.`host` like '%" . $host . "%')";
+						$sql = $sql . " AND (t.`p_host` like '%" . $host . "%' or t.`s_host` like '%" . $host . "%')";
 				}
 				if($dsn != ""){
-						$sql = $sql . "AND (pdb.`dsn` like '%" . $dsn . "%' or sdb.`dsn` like '%" . $dsn . "%')";
+						$sql = $sql . " AND (t.`p_dsn` like '%" . $dsn . "%' or t.`s_dsn` like '%" . $dsn . "%')";
 				}
 																
         $query=$this->db->query($sql);

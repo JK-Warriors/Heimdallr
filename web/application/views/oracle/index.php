@@ -17,8 +17,8 @@
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form" class="form-inline" method="get" action="<?php echo site_url('wl_oracle/index') ?>" >
  
-  <input type="text" id="host"  name="host" value="" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
-  <input type="text" id="tags"  name="tags" value="" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
+  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
+  <input type="text" id="tags"  name="tags" value="<?php echo $setval['tags']; ?>" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
   
   
   <select name="session_total" class="input-small" style="width: 120px;">
