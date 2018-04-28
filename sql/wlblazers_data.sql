@@ -16,22 +16,10 @@ Date: 2016-05-01 09:55:52
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for admin_menu
+-- Table for admin_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_menu`;
-CREATE TABLE `admin_menu` (
-  `menu_id` smallint(4) NOT NULL AUTO_INCREMENT,
-  `menu_title` varchar(30) NOT NULL,
-  `menu_level` tinyint(2) NOT NULL DEFAULT '0',
-  `parent_id` tinyint(2) NOT NULL,
-  `menu_url` varchar(255) DEFAULT NULL,
-  `menu_icon` varchar(50) DEFAULT NULL,
-  `system` tinyint(2) NOT NULL DEFAULT '0',
-  `status` tinyint(2) NOT NULL DEFAULT '1',
-  `display_order` smallint(4) NOT NULL DEFAULT '0',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+DELETE FROM `admin_menu`;
+
 
 -- ----------------------------
 -- Records of admin_menu
@@ -108,17 +96,10 @@ INSERT INTO `admin_menu` VALUES ('2205', 'Authorization', '2', '22', 'auth/index
 
 
 -- ----------------------------
--- Table structure for admin_privilege
+-- Table for admin_privilege
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_privilege`;
-CREATE TABLE `admin_privilege` (
-  `privilege_id` smallint(4) NOT NULL AUTO_INCREMENT,
-  `privilege_title` varchar(30) DEFAULT NULL,
-  `menu_id` smallint(4) DEFAULT NULL,
-  `action` varchar(100) DEFAULT NULL,
-  `display_order` smallint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`privilege_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8;
+DELETE FROM `admin_privilege`;
+
 
 -- ----------------------------
 -- Records of admin_privilege
@@ -251,14 +232,9 @@ INSERT INTO `admin_privilege` VALUES ('1452', 'SQLServer Health Chart', '1301', 
 
 
 -- ----------------------------
--- Table structure for admin_role
+-- Table for admin_role
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_role`;
-CREATE TABLE `admin_role` (
-  `role_id` smallint(6) NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(30) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+DELETE FROM `admin_role`;
 
 -- ----------------------------
 -- Records of admin_role
@@ -267,14 +243,9 @@ INSERT INTO `admin_role` VALUES ('1', 'Administrator');
 INSERT INTO `admin_role` VALUES ('7', 'guest_group');
 
 -- ----------------------------
--- Table structure for admin_role_privilege
+-- Table for admin_role_privilege
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_role_privilege`;
-CREATE TABLE `admin_role_privilege` (
-  `role_id` smallint(4) NOT NULL,
-  `privilege_id` smallint(4) NOT NULL,
-  PRIMARY KEY (`role_id`,`privilege_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELETE FROM `admin_role_privilege`;
 
 -- ----------------------------
 -- Records of admin_role_privilege
@@ -358,37 +329,18 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1452');
 
 
 -- ----------------------------
--- Table structure for admin_user
+-- Table for admin_user
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_user`;
-CREATE TABLE `admin_user` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `realname` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `mobile` varchar(50) DEFAULT NULL,
-  `login_count` int(11) DEFAULT '0',
-  `last_login_ip` varchar(100) DEFAULT NULL,
-  `last_login_time` datetime DEFAULT NULL,
-  `status` tinyint(2) DEFAULT '1',
-  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+DELETE FROM `admin_user`;
 
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
 INSERT INTO `admin_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'admin@mail.com', '', '0', '192.168.129.1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP);
 -- ----------------------------
--- Table structure for admin_user_role
+-- Table for admin_user_role
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_user_role`;
-CREATE TABLE `admin_user_role` (
-  `user_id` int(10) NOT NULL,
-  `role_id` smallint(4) NOT NULL,
-  PRIMARY KEY (`user_id`,`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELETE FROM `admin_user_role`;
 
 -- ----------------------------
 -- Records of admin_user_role
@@ -399,13 +351,9 @@ INSERT INTO `admin_user_role` VALUES ('1', '1');
 
 
 -- ----------------------------
--- Table structure for wlblazers_status
+-- Table for wlblazers_status
 -- ----------------------------
-DROP TABLE IF EXISTS `wlblazers_status`;
-CREATE TABLE `wlblazers_status` (
-  `wl_variables` varchar(255) NOT NULL,
-  `wl_value` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELETE FROM `wlblazers_status`;
 
 -- ----------------------------
 -- Records of wlblazers_status
@@ -415,15 +363,9 @@ INSERT INTO `wlblazers_status` VALUES ('wlblazers_version', '1.0.0 Beta');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_checktime', '2017-05-01 09:56:10');
 
 -- ----------------------------
--- Table structure for options
+-- Table for options
 -- ----------------------------
-DROP TABLE IF EXISTS `options`;
-CREATE TABLE `options` (
-  `name` varchar(50) DEFAULT NULL,
-  `value` varchar(255) DEFAULT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  KEY `idx_name` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELETE FROM `options`;
 
 -- ----------------------------
 -- Records of options
