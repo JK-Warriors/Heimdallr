@@ -171,7 +171,7 @@ ORDER BY io_writes DESC limit 10;")->result_array();*/
                 $mongodb_data=$mongodb_result->sums;
             }
 
-            $redis_result = $this->db->query("select ymdhi,temp.sums from (select ymdhi,sum(current_commands_processed) sums from redis_status_history where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
+            $redis_result = $this->db->query("select ymdhi,temp.sums from (select ymdhi,sum(current_commands_processed) sums from redis_status_his where connect=1 group by ymdhi order by ymdhi desc limit 10) temp where temp.ymdhi='".$time."'  ")->row();
             if($redis_result){
                 $redis_data=$redis_result->sums;
             }

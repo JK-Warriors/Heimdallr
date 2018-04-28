@@ -169,7 +169,7 @@ def check_redis(host,port,passwd,server_id,tags):
 
 def main():
 
-    func.mysql_exec("insert into redis_status_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_status;",'')
+    func.mysql_exec("insert into redis_status_his SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_status;",'')
     func.mysql_exec('delete from redis_status;','')
     func.mysql_exec("insert into redis_replication_history SELECT *,LEFT(REPLACE(REPLACE(REPLACE(create_time,'-',''),' ',''),':',''),12) from redis_replication;",'')
     func.mysql_exec('delete from redis_replication;','')

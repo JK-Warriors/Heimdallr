@@ -42,7 +42,7 @@ class Redis_model extends CI_Model{
 
 
 	function get_status_chart_record($server_id,$time){
-        $query=$this->db->query("select * from redis_status_history  where server_id=$server_id and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select * from redis_status_his  where server_id=$server_id and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -50,7 +50,7 @@ class Redis_model extends CI_Model{
     }
     
     function check_has_record($server_id,$time){
-        $query=$this->db->query("select id from redis_status_history where server_id=$server_id and YmdHi=$time");
+        $query=$this->db->query("select id from redis_status_his where server_id=$server_id and YmdHi=$time");
         if ($query->num_rows() > 0)
         {
            return true; 
