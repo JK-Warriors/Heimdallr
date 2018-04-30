@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 
 wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`

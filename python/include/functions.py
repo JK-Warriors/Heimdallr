@@ -339,7 +339,7 @@ def update_db_status(field,value,server_id, db_host, db_tpye, alert_time,alert_i
         if db_tpye == 'os':
             curs.execute("update db_status set %s='%s',%s='%s' where host='%s';" %(field,value,field_tips,value_tips,db_host))
         else:
-            curs.execute("update db_status set %s='%s',%s='%s' where server_id='%s' and db_tpye='%s';" %(field,value,field_tips,value_tips,server_id,db_tpye))
+            curs.execute("update db_status set %s='%s',%s='%s' where server_id='%s' and db_type='%s';" %(field,value,field_tips,value_tips,server_id,db_tpye))
         conn.commit()
     except Exception, e:
         print "update db status: " + str(e)
