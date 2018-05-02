@@ -336,7 +336,7 @@ class Wl_oracle extends Front_Controller {
         $begin_time=!empty($begin_time) ? $begin_time : "30";
         
 
-        if($server_id!="-1"){
+        if($server_id!="0"){
         		$data['chart_data']=$this->oracle->get_chart_data($server_id, $begin_time);
         }
 				

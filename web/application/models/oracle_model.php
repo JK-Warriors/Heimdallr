@@ -464,7 +464,7 @@ class Oracle_model extends CI_Model{
         $query=$this->db->query("SELECT *
 																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
 																					FROM oracle_status_his h
-																				 WHERE server_id = 100
+																				 WHERE server_id = $server_id
 																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
 																		) t
 																	GROUP BY time");
