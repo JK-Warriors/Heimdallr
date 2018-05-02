@@ -1,6 +1,6 @@
 
         
-        <ul class="breadcrumb">
+		<ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('_Oracle'); ?> <?php echo $this->lang->line('_Health Monitor'); ?></a></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('chart'); ?></li>
@@ -120,7 +120,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['Sessions',''],
+				        data:['sessions',''],
 				        x: 'left'
 				    },
 				    grid: {
@@ -165,7 +165,7 @@ function getChartSeriesData(url){
 				//=========================Actives/Waits=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> Actives/Waits <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> actives/waits <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -195,7 +195,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['Actives','Waits'],
+				        data:['actives','waits'],
 				        x: 'left'
 				    },
 				    grid: {
@@ -226,13 +226,13 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "Actives",
+				        name: "actives",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
 				        data: json.session_actives
 				    },{
-				        name: "Waits",
+				        name: "waits",
 				        type: 'line',
 				        color: colors[1],
 				        smooth: true,
@@ -245,7 +245,7 @@ function getChartSeriesData(url){
 				//=========================session_logical_reads=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> session_logical_reads <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> logical reads <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -306,7 +306,7 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "Actives",
+				        name: "logical reads",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
@@ -429,7 +429,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['read_io_requests','write_io_requests'],
+				        data:['read io requests','write io requests'],
 				        x: 'left'
 				    },
 				    grid: {
@@ -460,13 +460,13 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "read_io_requests",
+				        name: "read io requests",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
 				        data: json.read_io
 				    },{
-				        name: "write_io_requests",
+				        name: "write io requests",
 				        type: 'line',
 				        color: colors[1],
 				        smooth: true,
@@ -479,7 +479,7 @@ function getChartSeriesData(url){
 				//=========================db_block_changes=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> db_block_changes <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> db block changes <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -509,7 +509,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['db_block_changes',''],
+				        data:['db block changes',''],
 				        x: 'left'
 				    },
 				    grid: {
@@ -540,7 +540,7 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "db_block_changes",
+				        name: "db block changes",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
@@ -553,7 +553,7 @@ function getChartSeriesData(url){
 				//=========================os_cpu_wait_time=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> os_cpu_wait_time <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> os cpu wait time <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -583,7 +583,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['os_cpu_wait_time',''],
+				        data:['os cpu wait time',''],
 				        x: 'left'
 				    },
 				    grid: {
@@ -614,7 +614,7 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "os_cpu_wait_time",
+				        name: "os cpu wait time",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
@@ -627,7 +627,7 @@ function getChartSeriesData(url){
 				//=========================opened_cursors=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> opened_cursors <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> opened cursors <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -657,7 +657,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['opened_cursors',''],
+				        data:['opened cursors',''],
 				        x: 'left'
 				    },
 				    grid: {
@@ -688,7 +688,7 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "opened_cursors",
+				        name: "opened cursors",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
@@ -731,7 +731,7 @@ function getChartSeriesData(url){
 				        }
 				    ],
 				    legend: {
-				        data:['user_commits','user_rollbacks'],
+				        data:['user commits','user rollbacks'],
 				        x: 'left'
 				    },
 				    grid: {
@@ -762,13 +762,13 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "user_commits",
+				        name: "user commits",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
 				        data: json.user_commits
 				    },{
-				        name: "user_rollbacks",
+				        name: "user rollbacks",
 				        type: 'line',
 				        color: colors[1],
 				        smooth: true,
