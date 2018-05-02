@@ -161,7 +161,7 @@ def check_os(ip,community,filter_os_disk,tags):
             
 
             # get mem_usage_rate
-            command="""/usr/bin/snmpdf -v1 -c %s %s |grep "Real Memory"|awk '{print $6}' """ %(community, ip)
+            command="""/usr/bin/snmpdf -v1 -c %s %s |grep "Real Memory"|awk '{print $6}' | awk -F '%%' '{print $1}' """ %(community, ip)
             mem_file=os.popen(command)
             mem_usage_rate=mem_file.read()
             #print mem_usage_rate
