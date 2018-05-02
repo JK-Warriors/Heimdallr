@@ -440,6 +440,20 @@ function getSeriesData(url){
 				            type: 'cross'
 				        }
 				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
 				    legend: {
 				        data: json.server_id
 				    },
@@ -477,7 +491,7 @@ function getSeriesData(url){
 				        smooth: true,
 				        data: json.delay
 				    }]
-				};;
+				};
 				if (option && typeof option === "object") {
 				    myChart.setOption(option, true);
 				}
