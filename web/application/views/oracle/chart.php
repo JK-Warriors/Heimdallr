@@ -42,31 +42,31 @@
 var url = "<?php echo site_url('wl_oracle/chart_data') . '/' . $this->uri->segment(3) . '/' . $this->uri->segment(4); ?>";
 
 var d_sessions = document.getElementById("sessions");
-var c_sessions = echarts.init(d_sessions, 'dark');
+var c_sessions = echarts.init(d_sessions, 'infographic');
 
 var d_actives = document.getElementById("actives");
-var c_actives = echarts.init(d_actives, 'dark');
+var c_actives = echarts.init(d_actives, 'infographic');
 
 var d_logical_reads = document.getElementById("logical_reads");
-var c_logical_reads = echarts.init(d_logical_reads, 'dark');
+var c_logical_reads = echarts.init(d_logical_reads, 'infographic');
 
 var d_physical_wr = document.getElementById("physical_wr");
-var c_physical_wr = echarts.init(d_physical_wr, 'dark');
+var c_physical_wr = echarts.init(d_physical_wr, 'infographic');
 
 var d_io_requests = document.getElementById("io_requests");
-var c_io_requests = echarts.init(d_io_requests, 'dark');
+var c_io_requests = echarts.init(d_io_requests, 'infographic');
 
 var d_db_block_changes = document.getElementById("db_block_changes");
-var c_db_block_changes = echarts.init(d_db_block_changes, 'dark');
+var c_db_block_changes = echarts.init(d_db_block_changes, 'infographic');
 
 var d_os_cpu_wait_time = document.getElementById("os_cpu_wait_time");
-var c_os_cpu_wait_time = echarts.init(d_os_cpu_wait_time, 'dark');
+var c_os_cpu_wait_time = echarts.init(d_os_cpu_wait_time, 'infographic');
 
 var d_opened_cursors = document.getElementById("opened_cursors");
-var c_opened_cursors = echarts.init(d_opened_cursors, 'dark');
+var c_opened_cursors = echarts.init(d_opened_cursors, 'infographic');
 
 var d_transactions = document.getElementById("transactions");
-var c_transactions = echarts.init(d_transactions, 'dark');
+var c_transactions = echarts.init(d_transactions, 'infographic');
 
 
 var option = null;
@@ -133,10 +133,7 @@ function getChartSeriesData(url){
 				            alignWithLabel: true
 				        },
 				        axisLine: {
-				            onZero: false,
-				            lineStyle: {
-				                color: colors[0]
-				            }
+				            onZero: false
 				        },
 				        axisPointer: {
 				            label: {
@@ -151,7 +148,7 @@ function getChartSeriesData(url){
 				        type: 'value'
 				    }],
 				    series: [{
-				        name: "Sessions",
+				        name: "sessions",
 				        type: 'line',
 				        color: colors[0],
 				        smooth: true,
@@ -210,7 +207,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -290,7 +286,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -364,7 +359,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -444,7 +438,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -524,7 +517,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -598,7 +590,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -672,7 +663,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
@@ -746,7 +736,6 @@ function getChartSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
