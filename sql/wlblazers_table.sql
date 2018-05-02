@@ -1483,7 +1483,7 @@ CREATE TABLE `os_disk_his` (
   `avail_size` bigint(18) NOT NULL DEFAULT '0',
   `used_rate` varchar(255) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `YmdHi` bigint(18) NOT NULL DEFAULT '0',
+  `YmdHi` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_ip` (`ip`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
@@ -1515,7 +1515,7 @@ CREATE TABLE `os_diskio_his` (
   `disk_io_reads` bigint(18) NOT NULL DEFAULT '0',
   `disk_io_writes` bigint(18) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `YmdHi` bigint(10) NOT NULL DEFAULT '0',
+  `YmdHi` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_ymdhi` (`YmdHi`) USING BTREE,
   KEY `idx_ip_ymdhi` (`ip`,`YmdHi`),
@@ -1551,7 +1551,7 @@ CREATE TABLE `os_net_his` (
   `in_bytes` bigint(18) NOT NULL DEFAULT '0',
   `out_bytes` bigint(18) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `YmdHi` bigint(18) NOT NULL DEFAULT '0',
+  `YmdHi` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_ip` (`ip`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
@@ -1631,7 +1631,7 @@ CREATE TABLE `os_status_his` (
   `net_in_bytes_total` bigint(18) NOT NULL DEFAULT '-1',
   `net_out_bytes_total` bigint(18) NOT NULL DEFAULT '-1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `YmdHi` bigint(18) NOT NULL DEFAULT '0',
+  `YmdHi` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_host_ymdhi` (`ip`,`YmdHi`),
   KEY `idx_ymdhi` (`YmdHi`) USING BTREE,

@@ -116,7 +116,40 @@ class Os_model extends CI_Model{
         }
     }
     
-
+    
+    function get_diskio_data($host,$fdisk, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM os_diskio_his h
+																				 WHERE ip = '$host'
+                                           AND fdisk = '$fdisk'
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    
+    function get_chart_data($host, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, ip, process, load_1, load_5, load_15, 
+																							cpu_user_time, cpu_system_time, cpu_idle_time, 
+																							mem_usage_rate, round((swap_avail/swap_total)*100,0) as swap_avail_rate, 
+																							disk_io_reads_total, disk_io_writes_total, 
+																							net_in_bytes_total, net_out_bytes_total
+																					FROM os_status_his h
+																				 WHERE ip = '$host'
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
 }
 
 /* End of file os_model.php */

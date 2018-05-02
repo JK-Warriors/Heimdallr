@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_OS Monitor'); ?></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Health Monitor'); ?></li>
@@ -81,7 +81,7 @@
         <td><?php echo $item['disk_io_writes_total'] ?></td>
 		<td><?php echo format_bytes($item['net_in_bytes_total']) ?></td>
         <td><?php echo format_bytes($item['net_out_bytes_total']) ?></td>
-        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('wl_os/chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('wl_os/chart/'.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

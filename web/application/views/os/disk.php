@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_OS Monitor'); ?></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Disk'); ?></li>
@@ -46,7 +46,7 @@
         <?php endforeach;?>
         <?php } ?>
         </td>
-        <td><a href="<?php echo site_url('wl_os/disk_chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a></a></td>
+        <td><a href="<?php echo site_url('wl_os/disk_chart/'.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

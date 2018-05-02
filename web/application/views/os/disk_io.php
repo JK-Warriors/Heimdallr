@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
 <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
 <li class="active"><?php echo $this->lang->line('_OS Monitor'); ?></li><span class="divider">/</span></li>
 <li class="active"><?php echo $this->lang->line('_Disk IO'); ?></li>
@@ -56,7 +56,7 @@
     <td><?php echo $item['fdisk'] ?></td>
 <td><?php echo $item['disk_io_reads'] ?></td>
 <td><?php echo $item['disk_io_writes'] ?></td>
-<td><a href="<?php echo site_url('wl_os/disk_io_chart/'.$item['ip']) ?>"><img src="./images/chart.gif"/></a></a></td>
+<td><a href="<?php echo site_url('wl_os/disk_io_chart/'.$item['ip'] . "/" . $item['fdisk']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
 </tr>
 <?php endforeach;?>
 <?php }else{  ?>

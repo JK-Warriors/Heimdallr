@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_OS Monitor'); ?></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Chart'); ?></li>
@@ -23,596 +23,610 @@
                 </div>
 </div> <!-- /toolbar -->             
 <hr/>
-<div id="cpu" style="margin-top:5px; margin-left:10px; width:32%; height:240px; float: left;"></div>
-<div id="disk_memory" style="margin-top:5px; margin-left:10px; width:32%; height:240px; float: left;"></div>
-<div id="disk_swap" style="margin-top:5px; margin-left:10px; width:32%; height:240px;float: left;"></div>
-<?php if(!empty($diskinfo)) {?>
-<?php foreach ($diskinfo  as $disk):?>
-<div id="disk_<?php echo $disk['id']; ?>" style="margin-top:5px; margin-left:10px; width:32%; height:240px; float: left;"></div>
-<?php endforeach;?>
-<?php } ?>
-<div style="clear:both;"></div>
 <div id="cpu_load" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
 <div id="cpu_utilization" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
+<div id="memory" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
+<div id="swap" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
 <div id="process" style="margin-top:5px; margin-left:10px; width:96%; height:300px; "></div>
 <div id="network" style="margin-top:5px; margin-left:10px; width:96%; height:300px; "></div>
 <div id="diskio" style="margin-top:5px; margin-left:10px; width:96%; height:300px; "></div>
 
 
-<script type="text/javascript" src="./lib/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.highlighter.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.cursor.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.donutRenderer.min.js"></script>
-<link href="./lib/jqplot/jquery.jqplot.min.css"  rel="stylesheet">
+<script src="lib/echarts4/echarts.min.js"></script>
+<script src="lib/echarts4/dark.js"></script>
 
-<script>
 
-$(document).ready(function(){
-  var data1=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['load_1']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['load_5']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data3=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['load_15']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('cpu_load', [data1,data2,data3], {
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域  
-              shadowAngle: 45,    // 参考grid中相同参数  
-              shadowOffset: 1.25, // 参考grid中相同参数  
-              shadowDepth: 3,     // 参考grid中相同参数  
-              shadowAlpha: 0.1,   // 参考grid中相同参数  
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'load 1'},{label: 'load 5'},{label: 'load 15'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'123', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 12,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 12,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },  
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色  
-    title:{
-         text:"<?php echo $cur_host; ?> <?php echo $this->lang->line('load'); ?> <?php echo $this->lang->line('chart'); ?>",
-         show:true,
-         fontSize:'13px',
-         textColor:'#666',
-    },
+<script type="text/javascript">
+var url = "<?php echo site_url('wl_os/chart_data') . '/' . $this->uri->segment(3) . '/' . $this->uri->segment(4); ?>";
+var d_cpu_load = document.getElementById("cpu_load");
+var c_cpu_load = echarts.init(d_cpu_load, 'infographic');
+
+var d_cpu_utilization = document.getElementById("cpu_utilization");
+var c_cpu_utilization = echarts.init(d_cpu_utilization, 'infographic');
+
+var d_memory = document.getElementById("memory");
+var c_memory = echarts.init(d_memory, 'infographic');
+
+var d_swap = document.getElementById("swap");
+var c_swap = echarts.init(d_swap, 'infographic');
+
+var d_process = document.getElementById("process");
+var c_process = echarts.init(d_process, 'infographic');
+
+var d_network = document.getElementById("network");
+var c_network = echarts.init(d_network, 'infographic');
+
+var d_diskio = document.getElementById("diskio");
+var c_diskio = echarts.init(d_diskio, 'infographic');
+
+var option = null;
+
+var colors = ['#5793f3', '#d14a61', '#675bba'];
+
+
+$(document).ready(function(){  
+
+		getChartSeriesData(url);
+});
+
+function getChartSeriesData(url){
+    $.get(url, function(json){
+    		//alert(json.server_id);
+    		//alert(json.time);
+    		//alert(json.delay);
+        //var status = 1;
+
+				//=========================System Load=========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> Load <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['load_1','load_5','load_15'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "load_1",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.load_1
+				    },{
+				        name: "load_5",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.load_5
+				    },{
+				        name: "load_15",
+				        type: 'line',
+				        color: colors[2],
+				        smooth: true,
+				        data: json.load_15
+				    }]
+				};
+				
+				c_cpu_load.setOption(option, true);
+				
+				
+				//=========================CPU =========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> CPU <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['user time','system time','idle time'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "user time",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.cpu_user_time
+				    },{
+				        name: "system time",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.cpu_system_time
+				    },{
+				        name: "idle time",
+				        type: 'line',
+				        color: colors[2],
+				        smooth: true,
+				        data: json.cpu_idle_time
+				    }]
+				};
+				
+				c_cpu_utilization.setOption(option, true);
+				
+				
+				
+				
+				//========================= Memory =========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> Memory <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['mem usage rate',''],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "mem usage rate",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.mem_usage_rate
+				    }]
+				};
+				
+				c_memory.setOption(option, true);
+				
+				
+				
+				
+				
+				//========================= Swap =========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> Swap <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['swap avail rate',''],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "swap avail rate",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.swap_avail_rate
+				    }]
+				};
+				
+				c_swap.setOption(option, true);
+				
+				
+				//========================= Process =========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> Process <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['process',''],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "process",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.process
+				    }]
+				};
+				
+				c_process.setOption(option, true);
+				
+				
+				
+				//========================= Network =========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> Network <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['net in bytes','net out bytes'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "net in bytes",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.net_in_bytes
+				    },{
+				        name: "net out bytes",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.net_out_bytes
+				    }]
+				};
+				
+				c_network.setOption(option, true);
+				
+				
+				
+				//========================= Disk IO =========================================//
+				option = {
+				    title : {
+				        text: "<?php echo $cur_host; ?> Disk IO <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['io reads','io writes'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "io reads",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.disk_io_reads
+				    },{
+				        name: "io writes",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.disk_io_writes
+				    }]
+				};
+				
+				c_diskio.setOption(option, true);
+ },'json');  
     
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            tickOptions:{formatString:"<?php echo $chart_option['formatString']; ?>"},
-            tickInterval:"",
-            label: "",
-        },
-        yaxis: {  
-                renderer: $.jqplot.LogAxisRenderer,
-                tickOptions:{ suffix: '' } 
-        } 
-    },
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 7.5 , tooltipLocation : 'ne'
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }
-   
-  });
-});
-
-
-$(document).ready(function(){
-  var data1=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['cpu_user_time']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['cpu_system_time']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data3=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['cpu_idle_time']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('cpu_utilization', [data1,data2,data3], {
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域  
-              shadowAngle: 45,    // 参考grid中相同参数  
-              shadowOffset: 1.25, // 参考grid中相同参数  
-              shadowDepth: 3,     // 参考grid中相同参数  
-              shadowAlpha: 0.1,   // 参考grid中相同参数  
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: '<?php echo $this->lang->line('user'); ?>'},{label: '<?php echo $this->lang->line('system'); ?>'},{label: '<?php echo $this->lang->line('idle'); ?>'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'123', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 12,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 12,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },  
-    seriesColors: [ "#ff5800", "#EAA228", "#00CC00", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色  
-    title:{
-         text:"<?php echo $cur_host; ?> <?php echo $this->lang->line('cpu'); ?> <?php echo $this->lang->line('chart'); ?>",
-         show:true,
-         fontSize:'13px',
-         textColor:'#666',
-    },
-    
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            tickOptions:{formatString:"<?php echo $chart_option['formatString']; ?>"},
-            tickInterval:"",
-            label: "",
-        },
-        yaxis: {  
-                renderer: $.jqplot.LogAxisRenderer,
-                tickOptions:{ suffix: '' } 
-        } 
-    },
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 7.5 , tooltipLocation : 'ne'
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }
-   
-  });
-});
-
-
-$(document).ready(function(){
-  var data1=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['process']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('process', [data1], {
-    seriesDefaults: {
-          rendererOptions: {
-              smooth: true
-          }
-    },
-    seriesColors: [ "#4bb2c5", "#EAA228", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    title:{
-         text:"<?php echo $cur_host; ?> <?php echo $this->lang->line('process'); ?> <?php echo $this->lang->line('chart'); ?>",
-         show:true,
-         fontSize:'13px',
-         textColor:'#666',
-    },
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            tickOptions:{formatString:"<?php echo $chart_option['formatString']; ?>"},
-            tickInterval:"",
-            label: "",
-        },
-        yaxis: {  
-                renderer: $.jqplot.LogAxisRenderer,
-                tickOptions:{ suffix: '' } 
-        } 
-    },
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 7.5 , tooltipLocation : 'ne'
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-    series:[{showMarker:false, lineWidth:2, markerOptions:{style:'filledCircle'}}]
-  });
-});
-
-
-$(document).ready(function(){
-  var data1=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo number_format($item['net_in_bytes_total']/1024)?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo number_format($item['net_out_bytes_total']/1024) ?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('network', [data1,data2], {
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域  
-              shadowAngle: 45,    // 参考grid中相同参数  
-              shadowOffset: 1.25, // 参考grid中相同参数  
-              shadowDepth: 3,     // 参考grid中相同参数  
-              shadowAlpha: 0.1,   // 参考grid中相同参数  
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: '<?php echo $this->lang->line('in'); ?> <?php echo $this->lang->line('flow'); ?> '},{label: '<?php echo $this->lang->line('out'); ?> <?php echo $this->lang->line('flow'); ?>'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'123', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 12,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 12,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },  
-    seriesColors: [ "#6699FF", "#FF9933", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色   
-    title:{
-         text:"<?php echo $cur_host; ?> <?php echo $this->lang->line('network'); ?> <?php echo $this->lang->line('flow'); ?> <?php echo $this->lang->line('chart'); ?>",
-         show:true,
-         fontSize:'13px',
-         textColor:'#666',
-    },
-    
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            tickOptions:{formatString:"<?php echo $chart_option['formatString']; ?>"},
-            tickInterval:"",
-            label: "",
-        },
-        yaxis: {  
-                renderer: $.jqplot.LogAxisRenderer,
-                tickOptions:{ suffix: 'kb' } 
-        } 
-    },
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 7.5 , tooltipLocation : 'ne'
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }
-   
-  });
-});
-
-
-$(document).ready(function(){
-  var data1=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo number_format($item['disk_io_reads_total'])?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($chart_reslut)) { foreach($chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo number_format($item['disk_io_writes_total']) ?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('diskio', [data1,data2], {
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域  
-              shadowAngle: 45,    // 参考grid中相同参数  
-              shadowOffset: 1.25, // 参考grid中相同参数  
-              shadowDepth: 3,     // 参考grid中相同参数  
-              shadowAlpha: 0.1,   // 参考grid中相同参数  
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: '<?php echo $this->lang->line('read'); ?> <?php echo $this->lang->line('io'); ?>'},{label: '<?php echo $this->lang->line('write'); ?> <?php echo $this->lang->line('io'); ?>'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'123', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 12,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 12,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },  
-    seriesColors: [ "#6699FF", "#FF9933", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色   
-    title:{
-         text:"<?php echo $cur_host; ?> <?php echo $this->lang->line('disk_io'); ?> <?php echo $this->lang->line('chart'); ?>",
-         show:true,
-         fontSize:'13px',
-         textColor:'#666',
-    },
-    
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            tickOptions:{formatString:"<?php echo $chart_option['formatString']; ?>"},
-            tickInterval:"",
-            label: "",
-        },
-        yaxis: {  
-                renderer: $.jqplot.LogAxisRenderer,
-                tickOptions:{ suffix: '' } 
-        } 
-    },
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 7.5 , tooltipLocation : 'ne'
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }
-   
-  });
-});
+}  
 
 
 
 </script>
 
 
-
-
-<script>
-
-$(document).ready(function(){
-  var data = [
-    ["<?php echo $this->lang->line('used'); ?>(<?php echo (100-$last_record['cpu_idle_time']) ?>%)",<?php echo (100-$last_record['cpu_idle_time']) ?>],
-    ["<?php echo $this->lang->line('idle'); ?>(<?php echo $last_record['cpu_idle_time'] ?>%)",<?php echo $last_record['cpu_idle_time'] ?>]
-  ];
-  var plot1 = jQuery.jqplot ('cpu', [data], 
-    { 
-      seriesColors: [ "#6699FF", "#FF9933", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色，    
-      title: {  
-        text: "<?php echo $cur_host; ?> <?php echo $this->lang->line('cpu'); ?> <?php echo $this->lang->line('usage_rate'); ?> <?php echo $this->lang->line('chart'); ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示
-        fontSize:'13px',
-        textColor:'#666',  
-      },  
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          showDataLabels: true,
-          diameter: undefined, // 设置饼的直径  
-          padding: 5,        // 饼距离其分类名称框或者图表边框的距离，变相该表饼的直径  
-          sliceMargin:0,     // 饼的每个部分之间的距离  
-          fill:true,         // 设置饼的每部分被填充的状态  
-          shadow:true,       //为饼的每个部分的边框设置阴影，以突出其立体效果  
-          shadowOffset: 2,    //设置阴影区域偏移出饼的每部分边框的距离  
-          shadowDepth: 5,     // 设置阴影区域的深度  
-          shadowAlpha: 0.07   // 设置阴影区域的透明度  
-        }
-      }, 
-      legend: { show:true, location: 'e' }
-    }
-  );
-});
-
-
-$(document).ready(function(){
-  var data = [
-    ["mem_used(<?php echo check_memory(($last_record['mem_total']-$last_record['mem_avail']-$last_record['mem_buffered']-$last_record['mem_cached']))?>)",<?php echo $last_record['mem_total']-$last_record['mem_avail']-$last_record['mem_buffered']-$last_record['mem_cached'] ?>],
-    ["mem_avail(<?php echo check_memory($last_record['mem_avail'])?>)",<?php echo $last_record['mem_avail'] ?>],
-    ["mem_shared(<?php echo check_memory($last_record['mem_shared'])?>)",<?php echo $last_record['mem_shared'] ?>],
-    ["mem_buffered(<?php echo check_memory($last_record['mem_buffered'])?>)",<?php echo $last_record['mem_buffered'] ?>],
-    ["mem_cached(<?php echo check_memory($last_record['mem_cached'])?>)",<?php echo $last_record['mem_cached'] ?>]
-  ];
-  var plot1 = jQuery.jqplot ('disk_memory', [data], 
-    { 
-      seriesColors: [ "#6699FF", "#FF9933", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色，    
-      title: {  
-        text: "<?php echo $cur_host; ?> <?php echo $this->lang->line('memory'); ?> <?php echo $this->lang->line('usage_rate'); ?> <?php echo $this->lang->line('chart'); ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示
-        fontSize:'13px',
-        textColor:'#666',  
-      },  
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          showDataLabels: true,
-          diameter: undefined, // 设置饼的直径  
-          padding: 5,        // 饼距离其分类名称框或者图表边框的距离，变相该表饼的直径  
-          sliceMargin:0,     // 饼的每个部分之间的距离  
-          fill:true,         // 设置饼的每部分被填充的状态  
-          shadow:true,       //为饼的每个部分的边框设置阴影，以突出其立体效果  
-          shadowOffset: 2,    //设置阴影区域偏移出饼的每部分边框的距离  
-          shadowDepth: 5,     // 设置阴影区域的深度  
-          shadowAlpha: 0.07   // 设置阴影区域的透明度  
-        }
-      }, 
-      legend: { show:true, location: 'e' }
-    }
-  );
-});
-
-$(document).ready(function(){
-  var data = [
-    ["<?php echo $this->lang->line('used'); ?>(<?php echo check_memory($last_record['swap_total']-$last_record['swap_avail'])?>)",<?php echo $last_record['swap_total']-$last_record['swap_avail'] ?>],
-    ["<?php echo $this->lang->line('avail'); ?>(<?php echo check_memory($last_record['swap_avail'])?>)",<?php echo $last_record['swap_avail'] ?>]
-  ];
-  var plot1 = jQuery.jqplot ('disk_swap', [data], 
-    { 
-      seriesColors: [ "#6699FF", "#FF9933", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色，    
-      title: {  
-        text: "<?php echo $cur_host; ?> <?php echo $this->lang->line('swap'); ?> <?php echo $this->lang->line('usage_rate'); ?> <?php echo $this->lang->line('chart'); ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示
-        fontSize:'13px',
-        textColor:'#666',  
-      },  
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          showDataLabels: true,
-          diameter: undefined, // 设置饼的直径  
-          padding: 5,        // 饼距离其分类名称框或者图表边框的距离，变相该表饼的直径  
-          sliceMargin:0,     // 饼的每个部分之间的距离  
-          fill:true,         // 设置饼的每部分被填充的状态  
-          shadow:true,       //为饼的每个部分的边框设置阴影，以突出其立体效果  
-          shadowOffset: 2,    //设置阴影区域偏移出饼的每部分边框的距离  
-          shadowDepth: 5,     // 设置阴影区域的深度  
-          shadowAlpha: 0.07   // 设置阴影区域的透明度  
-        }
-      }, 
-      legend: { show:true, location: 'e' }
-    }
-  );
-});
-
-
-</script>
-
-
-<?php if(!empty($diskinfo)) {?>
-<?php foreach ($diskinfo  as $disk):?>
-<script>
-$(document).ready(function(){
-  var data = [
-    ["used(<?php echo format_kbytes($disk['used_size']); ?>)",  <?php echo $disk['used_size'] ?>],
-    ["avail(<?php echo format_kbytes($disk['avail_size']); ?>)",<?php echo $disk['avail_size'] ?>],
-  ];
-  var plot1 = jQuery.jqplot ("disk_<?php echo $disk['id']; ?>", [data], 
-    { 
-      seriesColors: [ "#6699FF", "#FF9933", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色    
-      title: {  
-        text: "<?php echo $cur_host; ?> <?php echo $this->lang->line('disk'); ?> <?php echo $disk['mounted'] ?> <?php echo $this->lang->line('usage_rate'); ?> <?php echo $this->lang->line('chart'); ?> ",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示
-        fontSize:'13px',
-        textColor:'#666',  
-      },  
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          showDataLabels: true,
-          diameter: undefined, // 设置饼的直径  
-          padding: 5,        // 饼距离其分类名称框或者图表边框的距离，变相该表饼的直径  
-          sliceMargin:5,     // 饼的每个部分之间的距离  
-          fill:true,         // 设置饼的每部分被填充的状态  
-          shadow:true,       //为饼的每个部分的边框设置阴影，以突出其立体效果  
-          shadowOffset: 2,    //设置阴影区域偏移出饼的每部分边框的距离  
-          shadowDepth: 5,     // 设置阴影区域的深度  
-          shadowAlpha: 0.07   // 设置阴影区域的透明度  
-        }
-      }, 
-      legend: { show:true, location: 'e' }
-    }
-  );
-});
-
-</script>
-<?php endforeach;?>
-<?php } ?>

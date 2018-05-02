@@ -112,33 +112,12 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
         parent::check_privilege();
         $host = $this->uri->segment(3);
         $host=!empty($host) ? $host : "";
-        $begin_time = $this->uri->segment(4);
-        $begin_time=!empty($begin_time) ? $begin_time : "30";
-        $time_span = $this->uri->segment(5);
-        $time_span=!empty($time_span) ? $time_span : "hour";
-        
-        //图表
-        $chart_reslut=array();              
-        for($i=$begin_time;$i>=0;$i--){
-            $timestamp=time()-60*$i;
-            $time= date('YmdHi',$timestamp);
-            $chart_reslut[$i]['time']=date('Y-m-d H:i',$timestamp);
-            $dbdata=$this->os->get_os_diskio_chart_record($host,$time);
-            $chart_reslut[$i]['disk_io_reads'] = $dbdata['disk_io_reads'];
-            $chart_reslut[$i]['disk_io_writes'] = $dbdata['disk_io_writes'];
-
-        }
-        $data['chart_reslut']=$chart_reslut;
+        $fdisk = $this->uri->segment(4);
+        $begin_time = $this->uri->segment(5);
+        $begin_time=!empty($begin_time) ? $begin_time : "60";
     
-        $chart_option=array();
-        if($time_span=='hour'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='day'){
-            $chart_option['formatString']='%m/%d %H:%M';
-        }
-        
-        $data['chart_option']=$chart_option;
+
+        $data['fdisk']=$fdisk;
       
         $data['begin_time']=$begin_time;
         $data['cur_host']=$host;
@@ -146,7 +125,26 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
     }
     
     
-    
+
+    public function disk_io_data(){
+        
+        $host = $this->uri->segment(3);
+        $host=!empty($host) ? $host : "";
+        $fdisk = $this->uri->segment(4);
+        
+        $begin_time = $this->uri->segment(5);
+        $begin_time=!empty($begin_time) ? $begin_time : "60";
+        
+        if($host!=""){
+        		$data['disk_io_data']=$this->os->get_diskio_data($host, $fdisk, $begin_time);
+        }
+				
+        $data['begin_time']=$begin_time;
+        $data['fdisk']=$fdisk;
+        $data['cur_host']=$host;
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("os/disk_io_data",$data);
+    }
     
     public function chart(){
         
@@ -155,56 +153,31 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
         $host=!empty($host) ? $host : "";
         $begin_time = $this->uri->segment(4);
         $begin_time=!empty($begin_time) ? $begin_time : "30";
-        $time_span = $this->uri->segment(5);
-        $time_span=!empty($time_span) ? $time_span : "min";
         
-        //连接数图表
-        $chart_reslut=array();              
-        for($i=$begin_time;$i>=0;$i--){
-            $timestamp=time()-60*$i;
-            $time= date('YmdHi',$timestamp);
-			$has_record = $this->os->check_has_record($host,$time);
-			if($has_record){
-            	$chart_reslut[$i]['time']=date('Y-m-d H:i',$timestamp);
-            	$dbdata=$this->os->get_os_chart_record($host,$time);
-            	$chart_reslut[$i]['process'] = $dbdata['process'];
-            	$chart_reslut[$i]['load_1'] = $dbdata['load_1'];
-            	$chart_reslut[$i]['load_5'] = $dbdata['load_5'];
-            	$chart_reslut[$i]['load_15'] = $dbdata['load_15'];
-            	$chart_reslut[$i]['cpu_user_time'] = $dbdata['cpu_user_time'];
-            	$chart_reslut[$i]['cpu_system_time'] = $dbdata['cpu_system_time'];
-            	$chart_reslut[$i]['cpu_idle_time'] = $dbdata['cpu_idle_time'];
-				$chart_reslut[$i]['mem_usage_rate'] = $dbdata['mem_usage_rate'];
-				$chart_reslut[$i]['disk_io_reads_total'] = $dbdata['disk_io_reads_total'];
-				$chart_reslut[$i]['disk_io_writes_total'] = $dbdata['disk_io_writes_total'];
-				$chart_reslut[$i]['net_in_bytes_total'] = $dbdata['net_in_bytes_total'];
-				$chart_reslut[$i]['net_out_bytes_total'] = $dbdata['net_out_bytes_total'];
-			}
- 
-        }
-        $data['chart_reslut']=$chart_reslut;
-    
-        $chart_option=array();
-        if($time_span=='min'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='hour'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='day'){
-            $chart_option['formatString']='%m/%d %H:%M';
-        }
-        
-        $data['chart_option']=$chart_option;
       
         $data['begin_time']=$begin_time;
         $data['cur_host']=$host;
-        $data['last_record'] = $this->os->get_last_record($host);
-		$data['diskinfo'] = $this->os->get_disk_record($host);
         $this->layout->view('os/chart',$data);
     }
     
     
+    public function chart_data(){
+        
+        $host = $this->uri->segment(3);
+        $host=!empty($host) ? $host : "";
+        
+        $begin_time = $this->uri->segment(4);
+        $begin_time=!empty($begin_time) ? $begin_time : "60";
+        
+        if($host!=""){
+        		$data['chart_data']=$this->os->get_chart_data($host, $begin_time);
+        }
+				
+        $data['begin_time']=$begin_time;
+        $data['cur_host']=$host;
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("os/chart_data",$data);
+    }
     
 }
 
