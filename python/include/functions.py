@@ -182,7 +182,7 @@ def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alert_item,al
     conn.select_db(dbname)
     curs = conn.cursor()
     if db_type=='os':
-        alert_count=curs.execute("select id from alerts where server_id = 0 and host='%s' and alert_item='%s' and alert_value!='ok';" %(db_host,alert_item))
+        alert_count=curs.execute("select id from alerts where server_id = 0 and host='%s' and alert_item='%s' and level !='ok';" %(db_host,alert_item))
         
         if int(alert_count) > 0 :
             sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id = 0 and host='%s' and alert_item='%s' ;" %(db_host,alert_item)
@@ -190,13 +190,15 @@ def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alert_item,al
         
             mysql_exec("delete from alerts where server_id = 0 and host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
     else:
-        alert_count=curs.execute("select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' and alert_value!='ok';" %(server_id,db_type,alert_item))  
+        sql="select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' and level !='ok';" %(server_id,db_type,alert_item)
+        #print sql
+        alert_count=curs.execute(sql)  
         if int(alert_count) > 0 :
             sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item) 
             mysql_exec(sql,'')
                           
             mysql_exec("delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item),'')
-
+    print alert_count
     if int(alert_count) > 0 :
         sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
         param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,'ok',message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
