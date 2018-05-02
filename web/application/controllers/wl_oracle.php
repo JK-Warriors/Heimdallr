@@ -320,67 +320,29 @@ class Wl_oracle extends Front_Controller {
         $time_span = $this->uri->segment(5);
         $time_span=!empty($time_span) ? $time_span : "min";
 
-
-        //饼状图表
-        $data=array();   
         
-        //线性图表
-        $chart_reslut=array();
-
-        for($i=$begin_time;$i>=0;$i--){
-            $timestamp=time()-60*$i;
-            $time= date('YmdHi',$timestamp);
-            $has_record = $this->oracle->check_has_record($server_id,$time);
-            if($has_record){
-                    $chart_reslut[$i]['time']=date('Y-m-d H:i',$timestamp);
-                    $dbdata=$this->oracle->get_status_chart_record($server_id,$time);
-                    $chart_reslut[$i]['session_total'] = $dbdata['session_total'];
-                    $chart_reslut[$i]['session_actives'] = $dbdata['session_actives'];
-                    $chart_reslut[$i]['session_waits'] = $dbdata['session_waits'];
-                    $chart_reslut[$i]['processes'] = $dbdata['processes'];
-                    $chart_reslut[$i]['session_logical_reads_persecond'] = $dbdata['session_logical_reads_persecond'];
-                    $chart_reslut[$i]['physical_reads_persecond'] = $dbdata['physical_reads_persecond'];
-                    $chart_reslut[$i]['physical_writes_persecond'] = $dbdata['physical_writes_persecond'];
-                    $chart_reslut[$i]['physical_read_io_requests_persecond'] = $dbdata['physical_read_io_requests_persecond'];
-                    $chart_reslut[$i]['physical_write_io_requests_persecond'] = $dbdata['physical_write_io_requests_persecond'];
-                    $chart_reslut[$i]['db_block_changes_persecond'] = $dbdata['db_block_changes_persecond'];
-                    $chart_reslut[$i]['os_cpu_wait_time'] = $dbdata['os_cpu_wait_time'];
-                    $chart_reslut[$i]['logons_persecond'] = $dbdata['logons_persecond'];
-                    $chart_reslut[$i]['logons_current'] = $dbdata['logons_current'];
-                    $chart_reslut[$i]['opened_cursors_persecond'] = $dbdata['opened_cursors_persecond'];
-                    $chart_reslut[$i]['opened_cursors_current'] = $dbdata['opened_cursors_current'];
-                    $chart_reslut[$i]['user_commits_persecond'] = $dbdata['user_commits_persecond'];
-                    $chart_reslut[$i]['user_rollbacks_persecond'] = $dbdata['user_rollbacks_persecond'];
-                    $chart_reslut[$i]['user_calls_persecond'] = $dbdata['user_calls_persecond'];
-
-            }
-            
-        }
-        $data['chart_reslut']=$chart_reslut;
-        //print_r($chart_reslut);
-    
-        $chart_option=array();
-        if($time_span=='min'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='hour'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='day'){
-            $chart_option['formatString']='%m/%d %H:%M';
-        }
-        
-        $data['chart_option']=$chart_option;
-      
         $data['begin_time']=$begin_time;
-        $data['cur_nav']='chart_index';
-        $data["server"]=$servers=$this->server->get_total_record_usage();
         $data['cur_server_id']=$server_id;
         $data["cur_server"] = $this->server->get_servers($server_id);
         $this->layout->view('oracle/chart',$data);
     }
     
-   
+    
+    public function chart_data()
+	{
+        $server_id = $this->uri->segment(3);
+        $server_id=!empty($server_id) ? $server_id : "0";
+        $begin_time = $this->uri->segment(4);
+        $begin_time=!empty($begin_time) ? $begin_time : "30";
+        
+
+        if($server_id!="-1"){
+        		$data['chart_data']=$this->oracle->get_chart_data($server_id, $begin_time);
+        }
+				
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("oracle/chart_data",$data);
+    }
     
     
 }

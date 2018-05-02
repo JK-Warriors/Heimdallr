@@ -1304,7 +1304,7 @@ CREATE TABLE `oracle_status_his` (
   `flashback_earliest_time` varchar(20) NOT NULL DEFAULT 'null',
   `flashback_space_used` varchar(10) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ymdhi` bigint(10) NOT NULL DEFAULT '0',
+  `ymdhi` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_server_id` (`server_id`) USING BTREE,
   KEY `idx_ymdhi` (`ymdhi`) USING BTREE

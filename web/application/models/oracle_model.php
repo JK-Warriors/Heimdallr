@@ -460,11 +460,17 @@ class Oracle_model extends CI_Model{
         }
     }
 
-	function get_status_chart_record($server_id,$time){
-        $query=$this->db->query("select * from oracle_status_his  where server_id=$server_id and YmdHi=$time limit 1; ");
+	function get_chart_data($server_id, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM oracle_status_his h
+																				 WHERE server_id = 100
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
         if ($query->num_rows() > 0)
         {
-           return $query->row_array(); 
+           return $query->result_array(); 
         }
     }
     
@@ -473,7 +479,7 @@ class Oracle_model extends CI_Model{
     
    
     function check_has_record($server_id,$time){
-        $query=$this->db->query("select id from oracle_status_his where server_id=$server_id and YmdHi=$time");
+        $query=$this->db->query("select id from oracle_status_his where server_id=$server_id and YmdHi>$time");
         if ($query->num_rows() > 0)
         {
            return true; 

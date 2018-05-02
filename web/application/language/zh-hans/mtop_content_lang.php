@@ -379,6 +379,7 @@ $lang['please_input_host'] = '请输入主机';
 $lang['please_input_tags'] = '请输入标签';
 $lang['please_input_ip'] = '请输入IP';
 $lang['please_input_inst_name'] = '请输入实例名称';
+$lang['view_chart'] = '查看图表';
 
 
 /* End of file mtop_content_lang.php */

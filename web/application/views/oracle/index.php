@@ -103,7 +103,7 @@
         <td><?php echo check_active(check_value($item['session_actives'])) ?></td>
         <td><?php echo check_active(check_value($item['session_waits'])) ?></td>
    
-        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('wl_oracle/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('wl_oracle/chart/'.$item['server_id']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>
