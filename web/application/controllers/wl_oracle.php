@@ -242,6 +242,9 @@ class Wl_oracle extends Front_Controller {
         
         $setval["id"] = $id;
         
+        #获取flashback on
+        $setval["fb_status"] = $this->oracle->get_fb_status_by_id($id);
+        
         if($id != ""){
         		$pri_id = $this->oracle->get_pri_id_by_sta_id($id);
         		$group_id = $this->oracle->get_dg_id_by_id($id);

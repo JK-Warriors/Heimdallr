@@ -44,6 +44,12 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取数据库角色成功', 20, 2)
     logger.info("The current database role is: " + role)
 	
+    # get flashback status
+    str='select flashback_on from v$database'
+    fb_status=oracle.GetSingleValue(s_conn, str)
+    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取数据库闪回状态成功', 20, 2)
+    logger.info("The current flashback status is: " + fb_status)
+	
     # get database version
     str="""select substr(version, 0, instr(version, '.')-1) from v$instance"""
     version=oracle.GetSingleValue(s_conn, str)
@@ -55,6 +61,10 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     
     if version <=10:
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '开启快照模式失败，当前数据库版本不支持', 90, 2)
+        return result;
+        
+    if fb_status == "NO":
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '开启快照模式失败，当前数据库没有开启闪回', 90, 2)
         return result;
         
     if role=="PHYSICAL STANDBY":

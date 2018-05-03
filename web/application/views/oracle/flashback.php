@@ -206,6 +206,8 @@ var test_order = "<?php echo $setval['order'] ?>";
 var oTimer = null; 
 var process_url = base_url.toString() + '_process?server_id=' + server_id.toString();
 
+var fb_status = "<?php echo $setval['fb_status'] ?>";
+
 function checkUser(e){
 		var fb_type = $('#flashback_type option:selected').val();
 		var fb_method = $('#fb_method option:selected').val();
@@ -219,6 +221,21 @@ function checkUser(e){
 		if(fb_method == "1" && typeof(fb_point) == "undefined"){
 				bootbox.alert({
 		        		message: "闪回点名称不能为空!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+		        	
+		    return false;
+		}
+		
+		//flashback 状态检查
+		if(fb_status != "YES"){
+				bootbox.alert({
+		        		message: "该数据库没有开启闪回!",
 		        		buttons: {
 							        ok: {
 							            label: '确定',

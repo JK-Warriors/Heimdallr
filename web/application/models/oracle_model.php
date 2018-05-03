@@ -212,6 +212,16 @@ class Oracle_model extends CI_Model{
         }
     }
     
+    function get_fb_status_by_id($id){
+        $query=$this->db->query("select flashback_on from oracle_status t where server_id = $id; ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->flashback_on;
+        }
+    }
+    
+    
     function get_users_by_id($id){
         $query=$this->db->query("select distinct owner from oracle_tables where server_id = $id order by 1; ");
         if ($query->num_rows() > 0)

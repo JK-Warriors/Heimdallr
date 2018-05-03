@@ -117,6 +117,7 @@ var user_pwd = "<?php echo $userdata['password'] ?>" ;
 var sta_version = "<?php echo $standby_db[0]['db_version'] ?>" ;
 var sta_db_role = "<?php echo $standby_db[0]['database_role'] ?>" ;
 var mrp_status = "<?php echo $standby_db[0]['s_mrp_status'] ?>" ;
+var fb_status = "<?php echo $standby_db[0]['flashback_on'] ?>" ;
 
 var mylay = null;
 var oTimer = null; 
@@ -181,6 +182,20 @@ function checkUser(e){
 		  if(sta_db_role=="SNAPSHOT STANDBY" && e.value == "SnapshotStart"){
 					bootbox.alert({
 			        		message: "数据库已经处于快照模式！",
+			        		buttons: {
+								        ok: {
+								            label: '确定',
+								            className: 'btn-success'
+								        }
+								    }
+			        	});
+			        	
+			    return false;
+		  }
+		  
+		  if(fb_status=="NO" && e.value == "SnapshotStart"){
+					bootbox.alert({
+			        		message: "数据库没有开启闪回，无法进入快照模式！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
