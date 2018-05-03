@@ -54,6 +54,18 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
     str="""select substr(version, 0, instr(version, '.')-1) from v$instance"""
     version=oracle.GetSingleValue(p_conn, str)
 	
+    # get standby redo log
+    str='select count(1) from v$standby_log'
+    log_count=oracle.GetSingleValue(p_conn, str)
+    logger.info("The current database has %s standby log" %(log_count)) 
+    
+    recover_str = ""
+    if log_count > 0:
+        recover_str = "alter database recover managed standby database using current logfile disconnect from session;"
+    else:
+        recover_str = "alter database recover managed standby database disconnect from session;"
+    	
+    
     if role=="PRIMARY":
         common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功', 20, 2)
         logger.info("Now we are going to switch database %s to physical standby." %(pri_id))
@@ -64,7 +76,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
             sqlplus.stdin.write(bytes("alter database commit to switchover to physical standby with session shutdown;"+os.linesep))
             sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
             sqlplus.stdin.write(bytes("startup mount"+os.linesep))
-            sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
+            sqlplus.stdin.write(bytes(recover_str + os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
             #logger.error(err)
@@ -78,7 +90,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
                 sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
                 sqlplus.stdin.write(bytes("alter database recover managed standby database cancel;"+os.linesep))
                 sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
-                sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
+                sqlplus.stdin.write(bytes(recover_str + os.linesep))
                 out, err = sqlplus.communicate()
                 logger.info(out)
                 #logger.error(err)
