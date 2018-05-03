@@ -64,20 +64,14 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
     public function disk()
 	{
         parent::check_privilege();
-        $result=$this->os->get_total_host();
-        if(!empty($result)){
-            foreach($result as $key=>$item)
-            {
-                $host = $item['ip'];
-                $result[$key]['diskinfo'] = $this->os->get_diskinfo_record($host);
-            }
-        }
+        //$result=$this->os->get_total_host();
         
-        //print_r($result);
-        $data['datalist']=$result;
     
         $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
         $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        
+        $data['datalist']=$this->os->get_total_disk_record();
+        
         $data["setval"]=$setval;
         $this->layout->view("os/disk",$data);
 	}
@@ -85,12 +79,33 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
     public function disk_chart(){
         
         parent::check_privilege();
-        $host = $this->uri->segment(3);
-        $host=!empty($host) ? $host : "";
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $disk=isset($_GET["disk"]) ? $_GET["disk"] : "";
+        $begin_time=isset($_GET["begin_time"]) ? $_GET["begin_time"] : "30";
+        
         $data['diskinfo'] = $this->os->get_disk_record($host);
-        $data['cur_host']=$host;
+        
+        $setval["host"] = $host;
+        $setval["disk"]= $disk;
+        $setval["begin_time"] = $begin_time;
+        $data["setval"]=$setval;
         $this->layout->view('os/disk_chart',$data);
     }
+    
+    public function disk_data(){
+        
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $disk=isset($_GET["disk"]) ? $_GET["disk"] : "";
+        $begin_time=isset($_GET["begin_time"]) ? $_GET["begin_time"] : "30";
+    
+        if($host!=""){
+        		$data['disk_data']=$this->os->get_disk_data($host, $disk, $begin_time);
+        }
+        
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view('os/disk_data',$data);
+    }
+    
     
     public function disk_io()
 	{
@@ -110,38 +125,31 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
     public function disk_io_chart(){
         
         parent::check_privilege();
-        $host = $this->uri->segment(3);
-        $host=!empty($host) ? $host : "";
-        $fdisk = $this->uri->segment(4);
-        $begin_time = $this->uri->segment(5);
-        $begin_time=!empty($begin_time) ? $begin_time : "60";
+        $host = isset($_GET["host"]) ? $_GET["host"] : "";
+        $fdisk = isset($_GET["fdisk"]) ? $_GET["fdisk"] : "";
+        $begin_time=isset($_GET["begin_time"]) ? $_GET["begin_time"] : "30";
     
+				$setval["host"] = $host;
+        $setval['fdisk']=$fdisk;
+				$setval["begin_time"] = $begin_time;
 
-        $data['fdisk']=$fdisk;
       
-        $data['begin_time']=$begin_time;
         $data['cur_host']=$host;
+        $data['setval']=$setval;
         $this->layout->view('os/disk_io_chart',$data);
     }
     
     
 
     public function disk_io_data(){
-        
-        $host = $this->uri->segment(3);
-        $host=!empty($host) ? $host : "";
-        $fdisk = $this->uri->segment(4);
-        
-        $begin_time = $this->uri->segment(5);
-        $begin_time=!empty($begin_time) ? $begin_time : "60";
+        $host = isset($_GET["host"]) ? $_GET["host"] : "";
+        $fdisk = isset($_GET["fdisk"]) ? $_GET["fdisk"] : "";
+        $begin_time=isset($_GET["begin_time"]) ? $_GET["begin_time"] : "30";
         
         if($host!=""){
         		$data['disk_io_data']=$this->os->get_diskio_data($host, $fdisk, $begin_time);
         }
 				
-        $data['begin_time']=$begin_time;
-        $data['fdisk']=$fdisk;
-        $data['cur_host']=$host;
 				$this->layout->setLayout("layout_blank");
         $this->layout->view("os/disk_io_data",$data);
     }
@@ -149,32 +157,26 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
     public function chart(){
         
         parent::check_privilege();
-        $host = $this->uri->segment(3);
-        $host=!empty($host) ? $host : "";
-        $begin_time = $this->uri->segment(4);
-        $begin_time=!empty($begin_time) ? $begin_time : "30";
+        $host = isset($_GET["host"]) ? $_GET["host"] : "";
+        $begin_time=isset($_GET["begin_time"]) ? $_GET["begin_time"] : "30";
         
-      
-        $data['begin_time']=$begin_time;
-        $data['cur_host']=$host;
+				$setval["host"] = $host;
+				$setval["begin_time"] = $begin_time;
+				
+        $data['setval']=$setval;
         $this->layout->view('os/chart',$data);
     }
     
     
     public function chart_data(){
+        $host =  isset($_GET["host"]) ? $_GET["host"] : "";
+        $begin_time=isset($_GET["begin_time"]) ? $_GET["begin_time"] : "30";
         
-        $host = $this->uri->segment(3);
-        $host=!empty($host) ? $host : "";
-        
-        $begin_time = $this->uri->segment(4);
-        $begin_time=!empty($begin_time) ? $begin_time : "60";
         
         if($host!=""){
         		$data['chart_data']=$this->os->get_chart_data($host, $begin_time);
         }
 				
-        $data['begin_time']=$begin_time;
-        $data['cur_host']=$host;
 				$this->layout->setLayout("layout_blank");
         $this->layout->view("os/chart_data",$data);
     }

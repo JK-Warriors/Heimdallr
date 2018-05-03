@@ -56,7 +56,7 @@
     <td><?php echo $item['fdisk'] ?></td>
 <td><?php echo $item['disk_io_reads'] ?></td>
 <td><?php echo $item['disk_io_writes'] ?></td>
-<td><a href="<?php echo site_url('wl_os/disk_io_chart/'.$item['ip'] . "/" . $item['fdisk']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
+<td><a href="<?php echo site_url('wl_os/disk_io_chart?host='.$item['ip'] . "&fdisk=" . $item['fdisk']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
 </tr>
 <?php endforeach;?>
 <?php }else{  ?>

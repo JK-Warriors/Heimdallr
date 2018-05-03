@@ -7,58 +7,121 @@
 
 <div class="container-fluid">
 <div class="row-fluid">
+<div class="btn-toolbar">
+                <div class="btn-group">
+                   <a class="btn btn-default <?php if($setval['begin_time']=='30') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=30';  ?>"><i class="fui-calendar-16"></i>&nbsp;30 <?php echo $this->lang->line('date_minutes'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='60') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=60';  ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='180') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=180';  ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='360') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=360';  ?>"><i class="fui-calendar-16"></i>&nbsp;6 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='720') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=720';  ?>"><i class="fui-calendar-16"></i>&nbsp;12 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='1440') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=1440';  ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_days'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='4320') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=4320';  ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_days'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='10080') echo 'active'; ?>" href="<?php echo site_url('wl_os/disk_chart?host='). $setval['host'] . '&disk=' . $setval['disk']. '&begin_time=10080';  ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_weeks'); ?></a>
+                </div>
+</div> <!-- /toolbar -->             
+<hr/>
+<div id="disk" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
 
-<?php if(!empty($diskinfo)) {?>
-<?php foreach ($diskinfo  as $disk):?>
-<div id="disk_<?php echo $disk['id']; ?>" style="margin-top:5px; margin-left:10px; width:500px; height:300px; float: left;"></div>
-<?php endforeach;?>
-<?php } ?>
-<div class="clear"></div>
 
-<script type="text/javascript" src="./lib/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.donutRenderer.min.js"></script>
-<link href="./lib/jqplot/jquery.jqplot.min.css"  rel="stylesheet">
+<script src="lib/echarts4/echarts.min.js"></script>
+<script src="lib/echarts4/dark.js"></script>
 
 
-<?php if(!empty($diskinfo)) {?>
-<?php foreach ($diskinfo  as $disk):?>
-<script>
-$(document).ready(function(){
-  var data = [
-    ["used(<?php echo format_kbytes($disk['used_size']); ?>)",  <?php echo $disk['used_size'] ?>],
-    ["avail(<?php echo format_kbytes($disk['avail_size']); ?>)",<?php echo $disk['avail_size'] ?>],
-  ];
-  var plot1 = jQuery.jqplot ("disk_<?php echo $disk['id']; ?>", [data], 
-    { 
-      seriesColors: [ "#4bb2c5", "#EAA228", "#579575", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色    
-      title: {  
-        text: "<?php echo $cur_host; ?> disk <?php echo $disk['mounted'] ?> usage rate",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示
-        fontSize:'13px',
-        textColor:'#666',  
-      },  
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          showDataLabels: true,
-          diameter: undefined, // 设置饼的直径  
-          padding: 5,        // 饼距离其分类名称框或者图表边框的距离，变相该表饼的直径  
-          sliceMargin:5,     // 饼的每个部分之间的距离  
-          fill:true,         // 设置饼的每部分被填充的状态  
-          shadow:true,       //为饼的每个部分的边框设置阴影，以突出其立体效果  
-          shadowOffset: 2,    //设置阴影区域偏移出饼的每部分边框的距离  
-          shadowDepth: 5,     // 设置阴影区域的深度  
-          shadowAlpha: 0.07   // 设置阴影区域的透明度  
-        }
-      }, 
-      legend: { show:true, location: 'e' }
-    }
-  );
+<script type="text/javascript">
+
+var url = "<?php echo site_url('wl_os/disk_data?host=') . $setval['host'] . '&disk=' . $setval['disk'] . '&begin_time=' . $setval['begin_time']; ?>";
+var d_disk = document.getElementById("disk");
+var c_disk = echarts.init(d_disk, 'infographic');
+var option = null;
+
+var colors = ['#5793f3', '#d14a61', '#675bba'];
+
+
+$(document).ready(function(){  
+
+		getChartSeriesData(url);
 });
 
+
+function getChartSeriesData(url){
+    $.get(url, function(json){
+    		//alert(json.server_id);
+    		//alert(json.time);
+    		//alert(json.delay);
+        //var status = 1;
+
+				option = {
+				    title : {
+				        text: "<?php echo $setval['host']; ?> <?php echo $setval['disk']; ?> <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['disk rate',''],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "disk rate",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.used_rate
+				    }]
+				};
+				
+				c_disk.setOption(option, true);
+ },'json');  
+    
+}  
+
+
 </script>
-<?php endforeach;?>
-<?php } ?>

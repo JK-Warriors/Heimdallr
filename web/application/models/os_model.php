@@ -19,11 +19,11 @@ class Os_model extends CI_Model{
         $this->db->order_by('ip asc');
         $query = $this->db->get();
         if ($query->num_rows() > 0)
-		{
-			$result['datalist']=$query->result_array();
+				{
+						$result['datalist']=$query->result_array();
             $result['datacount']=$query->num_rows();
             return $result;
-		}
+				}
 	}
     
 
@@ -75,6 +75,45 @@ class Os_model extends CI_Model{
         }
     }
 
+    function get_total_disk_record(){
+        $this->db->select('*');
+        $this->db->from('os_disk');
+
+        !empty($_GET["host"]) && $this->db->like("ip", $_GET["host"]);
+        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
+        
+        if(!empty($_GET["order"]) && !empty($_GET["order_type"])){
+            $this->db->order_by($_GET["order"],$_GET["order_type"]);
+        }
+        else{
+            $this->db->order_by('id asc');
+        }
+        
+        $query = $this->db->get();
+        if ($query->num_rows() > 0)
+				{
+            return $query->result_array();
+				}
+				
+    }
+
+ 
+    function get_disk_data($host,$disk, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM os_disk_his h
+																				 WHERE ip = '$host'
+                                           AND mounted = '$disk'
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    
     function get_diskinfo_record($host){
         $query=$this->db->query("select * from os_disk where ip='$host';");
         if ($query->num_rows() > 0)
@@ -98,11 +137,11 @@ class Os_model extends CI_Model{
         }
         $query = $this->db->get();
         if ($query->num_rows() > 0)
-		{
-			$result['datalist']=$query->result_array();
+				{
+						$result['datalist']=$query->result_array();
             $result['datacount']=$query->num_rows();
             return $result;
-		}
+				}
 	}
 
 	function check_has_record($host,$time){

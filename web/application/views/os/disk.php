@@ -9,7 +9,7 @@
 
 <div class="container-fluid">
 <div class="row-fluid">
- 
+
 <div class="ui-state-default ui-corner-all" style="height: 45px;" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form" class="form-inline" method="get" action="<?php site_url('wl_os/disk') ?>" >
@@ -23,6 +23,8 @@
 </form>                
 </div>
 
+<?php echo $datacount ?>
+
 <div class="well">
     <table class="table table-hover table-condensed ">
       <thead>
@@ -30,6 +32,8 @@
         <th><?php echo $this->lang->line('host'); ?></th>
         <th><?php echo $this->lang->line('tags'); ?></th>  
         <th><?php echo $this->lang->line('disk'); ?></th> 
+        <th><?php echo $this->lang->line('total'); ?></th> 
+        <th><?php echo $this->lang->line('rate'); ?></th> 
         <th><?php echo $this->lang->line('chart'); ?></th>
 	    </tr>
       </thead>
@@ -39,14 +43,10 @@
     <tr style="font-size: 12px;">
         <td><?php echo $item['ip'] ?></td>
         <td><?php echo $item['tags'] ?></td>
-        <td>
-        <?php if(!empty($item['diskinfo'])) {?>
-        <?php foreach ($item['diskinfo']  as $disk):?>
-		      <div style="margin-right:40px; float:left;">[<?php echo $disk['mounted']; ?> Total:<?php echo format_kbytes($disk['total_size']); ?> Used_Rate:<?php echo $disk['used_rate']; ?>]</div>
-        <?php endforeach;?>
-        <?php } ?>
-        </td>
-        <td><a href="<?php echo site_url('wl_os/disk_chart/'.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></a></td>
+        <td><?php echo $item['mounted'] ?></td>
+        <td><?php echo check_memory($item['total_size']) ?></td>
+        <td><?php echo $item['used_rate'] ?></td>
+        <td><a href="<?php echo site_url('wl_os/disk_chart?host='.$item['ip']). '&disk=' . $item['mounted'] ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

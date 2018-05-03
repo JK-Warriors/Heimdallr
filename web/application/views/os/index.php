@@ -49,12 +49,12 @@
         <th><?php echo $this->lang->line('idle'); ?></th>
         <th><?php echo $this->lang->line('total'); ?></th>
         <th><?php echo $this->lang->line('avail'); ?></th>
-            <th><?php echo $this->lang->line('cached'); ?></th>
+        <th><?php echo $this->lang->line('cached'); ?></th>
         <th><?php echo $this->lang->line('total'); ?></th>
         <th><?php echo $this->lang->line('avail'); ?></th>
-		<th><?php echo $this->lang->line('read'); ?></th>
+				<th><?php echo $this->lang->line('read'); ?></th>
         <th><?php echo $this->lang->line('write'); ?></th>
-		<th><?php echo $this->lang->line('in'); ?></th>
+				<th><?php echo $this->lang->line('in'); ?></th>
         <th><?php echo $this->lang->line('out'); ?></th>
         <th><?php echo $this->lang->line('chart'); ?></th>
 	    </tr>
@@ -77,11 +77,11 @@
         <td><?php echo check_memory($item['mem_cached']) ?></td>
         <td><?php echo check_memory($item['swap_total']) ?></td>
         <td><?php echo check_memory($item['swap_avail']) ?></td>
-		<td><?php echo $item['disk_io_reads_total'] ?></td>
+				<td><?php echo $item['disk_io_reads_total'] ?></td>
         <td><?php echo $item['disk_io_writes_total'] ?></td>
-		<td><?php echo format_bytes($item['net_in_bytes_total']) ?></td>
+				<td><?php echo format_bytes($item['net_in_bytes_total']) ?></td>
         <td><?php echo format_bytes($item['net_out_bytes_total']) ?></td>
-        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('wl_os/chart/'.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('wl_os/chart?host='.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

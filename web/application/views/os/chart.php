@@ -1,6 +1,6 @@
 
         
-        <ul class="breadcrumb">
+		<ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_OS Monitor'); ?></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Chart'); ?></li>
@@ -12,14 +12,14 @@
 
 <div class="btn-toolbar">
                 <div class="btn-group">
-                   <a class="btn btn-default <?php if($begin_time=='30') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/30/min') ?>"><i class="fui-calendar-16"></i>&nbsp;30 <?php echo $this->lang->line('date_minutes'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='60') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/60/hour') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_hours'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='180') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/180/hour') ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_hours'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='360') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/360/hour') ?>"><i class="fui-calendar-16"></i>&nbsp;6 <?php echo $this->lang->line('date_hours'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='720') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/720/hour') ?>"><i class="fui-calendar-16"></i>&nbsp;12 <?php echo $this->lang->line('date_hours'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='1440') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/1440/day') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_days'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='4320') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/4320/day') ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_days'); ?></a>
-                  <a class="btn btn-default <?php if($begin_time=='10080') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart/'.$cur_host.'/10080/day') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_weeks'); ?></a>
+                   <a class="btn btn-default <?php if($setval['begin_time']=='30') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='. $setval['host'] . '&begin_time=30') ?>"><i class="fui-calendar-16"></i>&nbsp;30 <?php echo $this->lang->line('date_minutes'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='60') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=60') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='180') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=180') ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='360') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=360') ?>"><i class="fui-calendar-16"></i>&nbsp;6 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='720') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=720') ?>"><i class="fui-calendar-16"></i>&nbsp;12 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='1440') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=1440') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_days'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='4320') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=4320') ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_days'); ?></a>
+                  <a class="btn btn-default <?php if($setval['begin_time']=='10080') echo 'active'; ?>" href="<?php echo site_url('wl_os/chart?host='.$setval['host'] . '&begin_time=10080') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_weeks'); ?></a>
                 </div>
 </div> <!-- /toolbar -->             
 <hr/>
@@ -37,7 +37,7 @@
 
 
 <script type="text/javascript">
-var url = "<?php echo site_url('wl_os/chart_data') . '/' . $this->uri->segment(3) . '/' . $this->uri->segment(4); ?>";
+var url = "<?php echo site_url('wl_os/chart_data?host=') . $setval['host'] . '&begin_time=' . $setval['begin_time']; ?>";
 var d_cpu_load = document.getElementById("cpu_load");
 var c_cpu_load = echarts.init(d_cpu_load, 'infographic');
 
@@ -79,7 +79,7 @@ function getChartSeriesData(url){
 				//=========================System Load=========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> Load <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> Load <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -163,7 +163,7 @@ function getChartSeriesData(url){
 				//=========================CPU =========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> CPU <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> CPU <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -249,7 +249,7 @@ function getChartSeriesData(url){
 				//========================= Memory =========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> Memory <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> Memory <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -324,7 +324,7 @@ function getChartSeriesData(url){
 				//========================= Swap =========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> Swap <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> Swap <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -396,7 +396,7 @@ function getChartSeriesData(url){
 				//========================= Process =========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> Process <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> Process <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -469,7 +469,7 @@ function getChartSeriesData(url){
 				//========================= Network =========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> Network <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> Network <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -548,7 +548,7 @@ function getChartSeriesData(url){
 				//========================= Disk IO =========================================//
 				option = {
 				    title : {
-				        text: "<?php echo $cur_host; ?> Disk IO <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $setval['host']; ?> Disk IO <?php echo $this->lang->line('chart'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
