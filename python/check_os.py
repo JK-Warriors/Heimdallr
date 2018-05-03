@@ -194,7 +194,7 @@ def check_os(ip,community,filter_os_disk,tags):
                     total_size=line[1]
                     used_size=line[2]
                     avail_size=line[3]
-                    used_rate=line[4]
+                    used_rate=line[4][:-1]
                     print mounted, total_size, used_size, avail_size, used_rate
                 
                     ##################### insert data to mysql server#############################
