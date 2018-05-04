@@ -100,11 +100,13 @@ class Wlblazers_model extends CI_Model{
 		return $count;
 	}
 
-	function get_oracle_lines(){
-    $sql = "SELECT DISTINCT server_id
-							FROM oracle_status_his
-							WHERE database_role = 'PHYSICAL STANDBY'
-							AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)";
+	function get_oracle_chart_server(){
+    $sql = "select o.*, @rownum:=@rownum+1 rownum 
+							from(SELECT DISTINCT server_id, tags
+										FROM oracle_status_his
+										WHERE database_role = 'PHYSICAL STANDBY'
+										AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
+			) o, (select @rownum:=-1) t";
 		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0)
 		{
@@ -116,12 +118,12 @@ class Wlblazers_model extends CI_Model{
 
 	function get_oracle_yAxis(){
     $sql = "select *
-						  from (SELECT server_id, create_time time, dg_delay delay
+						  from (SELECT server_id, host, port, tags, DATE_FORMAT(create_time, '%Y-%m-%d %H:%i') time, dg_delay delay
 						          FROM oracle_status_his
 						         WHERE database_role = 'PHYSICAL STANDBY'
                        AND server_id in (select id from db_cfg_oracle)
 						           AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
-						         order by server_id, time desc limit 1440) t
+						         order by server_id, time desc) t
 						 order by time";
 		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0)
@@ -219,7 +221,19 @@ class Wlblazers_model extends CI_Model{
 	}
 	
 	function get_db_count_critical($db_type){
-    $sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay in(-1, 3) ";
+		if($db_type == 'oracle'){
+				$sql = "select t.id 
+		    				 from db_status t, db_cfg_oracle_dg d 
+								where t.db_type = 'oracle' 
+									and t.role = 's'
+									and (t.server_id = d.primary_db_id or t.server_id = d.standby_db_id)
+									and d.is_delete = 0
+									and t.repl_delay in(-1, 3) ";
+		}
+		else{
+				$sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay in(-1, 3) ";
+		}
+		
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();

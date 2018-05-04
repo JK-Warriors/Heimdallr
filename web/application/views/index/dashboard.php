@@ -424,6 +424,7 @@ jQuery(document).ready(function(){
 		
 });  
 
+
 function getSeriesData(url){
     $.get(url, function(json){
     		//alert(json.server_id);
@@ -435,10 +436,7 @@ function getSeriesData(url){
 				    color: colors,
 				
 				    tooltip: {
-				        trigger: 'none',
-				        axisPointer: {
-				            type: 'cross'
-				        }
+        				trigger: 'axis'
 				    },
 				    dataZoom: [
 				        {
@@ -469,13 +467,12 @@ function getSeriesData(url){
 				        axisLine: {
 				            onZero: false,
 				            lineStyle: {
-				                color: colors[0]
 				            }
 				        },
 				        axisPointer: {
 				            label: {
 				                formatter: function(params) {
-				                    return params.value + ' 延时' + (params.seriesData.length ? '：' + params.seriesData[0].data[1] : '');
+				                    return params.value + ' 延时:';
 				                }
 				            }
 				        },
@@ -484,13 +481,19 @@ function getSeriesData(url){
 				    yAxis: [{
 				        type: 'value'
 				    }],
-				    series: [{
-				        name: json.server_id,
-				        type: 'line',
-				        color: colors[0],
-				        smooth: true,
-				        data: json.delay
-				    }]
+				    series: [
+						<?php if(!empty($chart_server)) {?>
+						<?php foreach ($chart_server  as $item):?>
+										{
+										name: "<?php echo $item['tags'] ?>",
+				        		type: 'line',
+				        		color: colors[<?php echo $item['rownum'] ?>],
+				        		smooth: true,
+				        		data: json.server_<?php echo $item['server_id'] ?>
+				        	},
+						<?php endforeach;?>
+						<?php } ?>
+				    ]
 				};
 				if (option && typeof option === "object") {
 				    myChart.setOption(option, true);

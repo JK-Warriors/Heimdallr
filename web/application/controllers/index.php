@@ -47,6 +47,7 @@ class Index extends Front_Controller {
         $data["oracle_critical"] = $this->wlblazers->get_db_count_critical('oracle');
         
         //for oracle delay chart
+        $data["chart_server"] = $this->wlblazers->get_oracle_chart_server();
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
         
         //for mysql
@@ -89,7 +90,7 @@ class Index extends Front_Controller {
     
     public function series(){
         //for oracle
-        $data["oracle_lines"] = $this->wlblazers->get_oracle_lines();
+        $data["oracle_chart_server"] = $this->wlblazers->get_oracle_chart_server();
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
         
         

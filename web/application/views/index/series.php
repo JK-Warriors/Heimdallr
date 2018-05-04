@@ -1,17 +1,18 @@
 <?php 
 header('Content-type:text/json');
 
+$arr['time'] = array();
 
-$arr['delay'] = array();
 
-foreach ($oracle_lines as $lines) {
-	$arr['server_id'] = $lines['server_id'];
+foreach ($oracle_chart_server as $lines) {
+	$name = "server_" . $lines['server_id'];
+	$arr[$name] = array();
 	
+	$arr['time'] = array();													//清空time数组，只需要保留最后一组数据即可
 	foreach ($oracle_yAxis as $y) {
-		if($lines['server_id'] == $lines['server_id']){
-			
-			array_push($arr['delay'], [$y[time],$y[delay]]);
-		
+		if($y['server_id'] == $lines['server_id']){
+			array_push($arr['time'], $y['time']);
+			array_push($arr[$name], $y['delay']);
 		}
 	}
 	
