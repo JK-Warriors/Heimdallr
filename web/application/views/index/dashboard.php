@@ -599,6 +599,14 @@ $(function () { $("[data-toggle='tooltip']").tooltip(); });
 
 <!-- pho页面代码-结束 -->
 
+<script type="text/javascript">
+function refresh()
+{
+       window.location.reload();
+}
+setTimeout('refresh()',60000); //指定60秒刷新一次
+</script>
+
 
 
 
