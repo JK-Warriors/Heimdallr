@@ -519,6 +519,12 @@ def clean_invalid_db_status():
         func.mysql_exec("insert into oracle_status_his SELECT *,sysdate() from oracle_status where server_id not in(select id from  db_cfg_oracle);",'')
         func.mysql_exec('delete from oracle_status where server_id not in(select id from  db_cfg_oracle);','')
         
+        func.mysql_exec("insert into oracle_tablespace_his SELECT *,sysdate() from oracle_tablespace where server_id not in(select id from  db_cfg_oracle);",'')
+        func.mysql_exec('delete from oracle_tablespace where server_id not in(select id from  db_cfg_oracle);','')
+        
+        func.mysql_exec("insert into oracle_diskgroup_his SELECT *,sysdate() from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle);",'')
+        func.mysql_exec('delete from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle);','')
+        
         func.mysql_exec("delete from db_status where db_type = 'oracle' and server_id not in(select id from  db_cfg_oracle);",'')
         
     except Exception, e:

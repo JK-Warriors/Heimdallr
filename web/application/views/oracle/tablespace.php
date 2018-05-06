@@ -66,6 +66,9 @@
       </tbody>
     </table>
 </div>
+<div class="" style="margin-top: 8px;padding: 8px;">
+<center><?php echo $this->pagination->create_links(); ?></center>
+</div>
 
  <script type="text/javascript">
     $('#refresh').click(function(){

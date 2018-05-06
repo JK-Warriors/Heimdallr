@@ -164,6 +164,27 @@ class Oracle_model extends CI_Model{
            return $query->result_array(); 
         }
     }
+    
+    function get_tablespace_total_rows(){
+        !empty($_GET["host"]) && $this->db->where("host", $_GET["host"]);
+        !empty($_GET["tags"]) && $this->db->where("tags", $_GET["tags"]);
+        
+				$this->db->from('oracle_tablespace');
+        return $this->db->count_all_results();
+    }
+    
+    function get_tablespace_total_record_paging($limit,$offset){
+        !empty($_GET["host"]) && $this->db->like("host", $_GET["host"]);
+        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
+        $this->db->order_by("host, max_rate", "desc");
+        
+        $this->db->limit($limit,$offset);
+        $query = $this->db->get('oracle_tablespace');
+				if ($query->num_rows() > 0)
+				{
+					return $query->result_array();
+				}
+    }
 
 
     function get_diskgroup_total(){

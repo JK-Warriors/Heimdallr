@@ -34,15 +34,32 @@ class Wl_oracle extends Front_Controller {
     public function tablespace()
 	{
         parent::check_privilege();
-        $data["datalist"]=$this->oracle->get_tablespace_total_record();
+        #$data["datalist"]=$this->oracle->get_tablespace_total_record();
 
         $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
         $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
         
-        $setval["order"]=isset($_GET["order"]) ? $_GET["order"] : "";
-        $setval["order_type"]=isset($_GET["order_type"]) ? $_GET["order_type"] : "";
         $data["setval"]=$setval;
 
+        if(!empty($_GET["host"])){
+            $current_url= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        }
+        else{
+            $current_url= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'?noparam=1';
+        }
+        
+        //分页
+				$this->load->library('pagination');
+				$config['base_url'] = $current_url;
+				$config['total_rows'] = $this->oracle->get_tablespace_total_rows();
+				$config['per_page'] = 10;
+				$config['num_links'] = 5;
+				$config['page_query_string'] = TRUE;
+				$config['use_page_numbers'] = TRUE;
+				$this->pagination->initialize($config);
+				$offset = !empty($_GET['per_page']) ? $_GET['per_page'] : 1;
+				
+        $data['datalist'] = $this->oracle->get_tablespace_total_record_paging($config['per_page'],($offset-1)*$config['per_page']);
         $this->layout->view("oracle/tablespace",$data);
 	}
     
