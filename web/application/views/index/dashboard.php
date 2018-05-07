@@ -485,7 +485,7 @@ function getSeriesData(url){
 						<?php if(!empty($chart_server)) {?>
 						<?php foreach ($chart_server  as $item):?>
 										{
-										name: "<?php echo $item['tags'] ?>",
+										name: "<?php echo $item['group_name'] ?>",
 				        		type: 'line',
 				        		color: colors[<?php echo $item['rownum'] ?>],
 				        		smooth: true,
