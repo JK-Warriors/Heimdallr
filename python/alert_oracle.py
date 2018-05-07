@@ -200,7 +200,7 @@ def gen_alert_oracle_status(server_id):
                         send_mail = func.update_send_mail_status(server_id,db_type,'flashback_space_used',send_mail,send_mail_max_count)
                         send_sms  = func.update_send_sms_status(server_id,db_type,'flashback_space_used',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'flashback_space_used',flashback_space_used,'critical','flashback space usage reach %s'%(flashback_space_used),send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('waits',3,server_id, host, db_type,create_time,'flashback_space_used',flashback_space_used,'critical')
+                        func.update_db_status('flashback_space',3,server_id, host, db_type,create_time,'flashback_space_used',flashback_space_used,'critical')
                     elif int(flashback_space_used) >= int(threshold_warning_fb_space):
                         send_mail = func.update_send_mail_status(server_id,db_type,'flashback_space_used',send_mail,send_mail_max_count)
                         send_sms  = func.update_send_sms_status(server_id,db_type,'flashback_space_used',send_sms,send_sms_max_count)
