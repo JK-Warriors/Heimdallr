@@ -391,6 +391,7 @@ function queryHandle(url){
         	current_time = json.process_time;
         	if(current_time != last_time){
         			$("#div_layer").append("<p>" + json.process_time + ": " + json.process_desc + "</p>");
+        			$(".layui-layer-content").scrollTop($(".layui-layer-content")[0].scrollHeight);
         	}
         	last_time = current_time;
         }  
