@@ -1,6 +1,7 @@
 <script src="lib/bootstrap/js/jquery.pin.js"></script>
+<!--
 <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-
+-->
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
         
@@ -21,6 +22,7 @@ footer hr {
     border-top: 1px solid #3c3b3b;
 }
 html{    background: #2A2A2A;}
+.indexpage .navbar{z-index:1;}
 
 </style>
 <script type="text/javascript">
