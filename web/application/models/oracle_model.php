@@ -166,8 +166,8 @@ class Oracle_model extends CI_Model{
     }
     
     function get_tablespace_total_rows(){
-        !empty($_GET["host"]) && $this->db->where("host", $_GET["host"]);
-        !empty($_GET["tags"]) && $this->db->where("tags", $_GET["tags"]);
+        !empty($_GET["host"]) && $this->db->like("host", $_GET["host"]);
+        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
         
 				$this->db->from('oracle_tablespace');
         return $this->db->count_all_results();
