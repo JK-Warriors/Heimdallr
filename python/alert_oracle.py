@@ -330,7 +330,7 @@ def gen_alert_oracle_tablespace(server_id):
 						FROM oracle_tablespace a, db_cfg_oracle b
 						WHERE a.server_id = b.id
 							and a.server_id = %s
-						ORDER BY max_rate desc """ %(server_id)
+						ORDER BY max_rate """ %(server_id)
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -414,7 +414,7 @@ def gen_alert_oracle_diskgroup(server_id):
 						WHERE a.server_id = b.id
 							and a.server_id = %s
 							and CONVERT(a.used_rate, DECIMAL(5,2)) >= b.threshold_warning_asm_space
-						ORDER BY used_rate desc """ %(server_id)
+						ORDER BY used_rate """ %(server_id)
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
