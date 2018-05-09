@@ -101,7 +101,7 @@ class Wlblazers_model extends CI_Model{
 	}
 
 	function get_oracle_chart_server(){
-		$sql = "select o.*, @rownum:=@rownum+1 rownum 
+    $sql = "select o.*, @rownum:=@rownum+1 rownum 
 		from(SELECT DISTINCT s.server_id, s.tags, d.group_name
 					FROM oracle_status_his h, oracle_status s, db_cfg_oracle_dg d
 					WHERE h.server_id = s.server_id
@@ -116,15 +116,31 @@ class Wlblazers_model extends CI_Model{
 		}
 	}
 	
-
+	function get_oracle_xAxis(){
+    $sql = "select distinct time
+						  from (SELECT h.server_id, h.host, h.port, h.tags, DATE_FORMAT(h.create_time, '%Y-%m-%d %H:%i') time, h.dg_delay delay
+						          FROM oracle_status_his h, db_cfg_oracle_dg d
+						         WHERE h.database_role = 'PHYSICAL STANDBY'
+                       AND h.server_id in (select id from db_cfg_oracle)
+                       AND (h.server_id = d.primary_db_id or h.server_id = d.standby_db_id)
+						           AND h.create_time > date_add(sysdate(), INTERVAL - 1 DAY)
+						         order by server_id, time desc) t
+						 order by time";
+		$query = $this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
 
 	function get_oracle_yAxis(){
     $sql = "select *
-						  from (SELECT server_id, host, port, tags, DATE_FORMAT(create_time, '%Y-%m-%d %H:%i') time, dg_delay delay
-						          FROM oracle_status_his
-						         WHERE database_role = 'PHYSICAL STANDBY'
-                       AND server_id in (select id from db_cfg_oracle)
-						           AND create_time > date_add(sysdate(), INTERVAL - 1 DAY)
+						  from (SELECT h.server_id, h.host, h.port, h.tags, DATE_FORMAT(h.create_time, '%Y-%m-%d %H:%i') time, h.dg_delay delay
+						          FROM oracle_status_his h, db_cfg_oracle_dg d
+						         WHERE h.database_role = 'PHYSICAL STANDBY'
+                       AND h.server_id in (select id from db_cfg_oracle)
+                       AND (h.server_id = d.primary_db_id or h.server_id = d.standby_db_id)
+						           AND h.create_time > date_add(sysdate(), INTERVAL - 1 DAY)
 						         order by server_id, time desc) t
 						 order by time";
 		$query = $this->db->query($sql);

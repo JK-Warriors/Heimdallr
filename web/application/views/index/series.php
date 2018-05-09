@@ -3,19 +3,40 @@ header('Content-type:text/json');
 
 $arr['time'] = array();
 
+foreach ($oracle_xAxis as $lines) {
+	array_push($arr['time'], $lines['time']);
+}
 
 foreach ($oracle_chart_server as $lines) {
-	$name = "server_" . $lines['server_id'];
+	$server_id = $lines['server_id'];
+	$name = "server_" . $server_id;
+	
+	$arr[$server_id] = array();
 	$arr[$name] = array();
 	
-	$arr['time'] = array();													//清空time数组，只需要保留最后一组数据即可
 	foreach ($oracle_yAxis as $y) {
 		if($y['server_id'] == $lines['server_id']){
-			array_push($arr['time'], $y['time']);
-			array_push($arr[$name], $y['delay']);
+			$key = $y["time"];
+			$arr[$server_id][$key] = $y['delay'];
 		}
 	}
 	
+	#
+	#print_r($arr[$server_id]);;
+	
+	for($n=0; $n < count($arr['time']); $n++){
+		#echo $arr['time'][$n] . "\n";
+		$time_key = $arr['time'][$n];
+		if(array_key_exists($time_key, $arr[$server_id])){
+				#echo $time_key . "\n";
+				#echo $arr[$server_id][$time_key] . "\n";
+				array_push($arr[$name], $arr[$server_id][$time_key]);
+		}else{
+				array_push($arr[$name], '');
+		} 
+	}
+	
+	#print_r($arr[$name]);
 }
 
 

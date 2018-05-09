@@ -91,6 +91,7 @@ class Index extends Front_Controller {
     public function series(){
         //for oracle
         $data["oracle_chart_server"] = $this->wlblazers->get_oracle_chart_server();
+        $data["oracle_xAxis"] = $this->wlblazers->get_oracle_xAxis();
         $data["oracle_yAxis"] = $this->wlblazers->get_oracle_yAxis();
         
         
