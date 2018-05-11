@@ -21,6 +21,10 @@ class Error extends Front_Controller {
         $this->layout->view("error/no_license");
     }
     
+    public function out_quota(){
+
+        $this->layout->view("error/out_quota");
+    }
 }
 
 /* End of file error.php */

@@ -383,6 +383,7 @@ $lang['view_chart'] = '查看图表';
 $lang['license_exprie'] = 'License到期时间';
 $lang['license_statement'] = '您的license已经到期，请重新导入合法的license！';
 $lang['no_license'] = '您的系统中没有license或者导入的license不合法，请重新导入合法的license！';
+$lang['out_quota'] = '创建失败，您的容灾组数量已经达到license上限！';
 
 
 /* End of file mtop_content_lang.php */

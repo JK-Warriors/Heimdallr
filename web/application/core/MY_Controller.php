@@ -64,9 +64,9 @@ abstract class Front_Controller extends CI_Controller
                 return ;
         }
     }
-
+    
     public function check_privilege($action=''){
-        //验证license
+				//验证license
         $this->check_license();
 			
 	  

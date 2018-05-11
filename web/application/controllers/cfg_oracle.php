@@ -6,7 +6,8 @@ class cfg_oracle extends Front_Controller {
         $this->load->model('cfg_oracle_model','oracle');
         $this->load->model('cfg_oracle_dg_model','oracle_dgs');
         $this->load->model('cfg_os_model','cfg_os');
-		$this->load->library('form_validation');
+        $this->load->model("wlblazers_model","wlblazers");
+        $this->load->library('form_validation');
 	
 	}
     
@@ -403,6 +404,20 @@ class cfg_oracle extends Front_Controller {
 			}
 			else
 			{
+        //验证license
+        $license_quota = $this->wlblazers->get_license_quota();
+        $sql="select * from db_cfg_oracle_dg where is_delete=0";
+        $query = $this->db->query($sql);
+        $dg_count = $query->num_rows();
+      
+        if(empty($license_quota)){
+            redirect(site_url('error/no_license'));
+                return ;
+        }else if($dg_count >= $license_quota){
+            redirect(site_url('error/out_quota'));
+                return ;
+        }
+        
 					$data['error_code']=0;
 					$data = array(
 						'group_name'=>$this->input->post('group_name'),
