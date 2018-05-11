@@ -8,7 +8,7 @@ class Index extends Front_Controller {
 	}
     
     public function index(){
-        parent::check_privilege();
+        parent::check_license();
         
         //for mysql
         $mysql_statistics = array();
@@ -38,7 +38,7 @@ class Index extends Front_Controller {
     
     
 		public function dashboard(){
-        parent::check_privilege();
+        parent::check_license();
         
         //for oracle
         $data["oracle_cfg_total"] = $this->wlblazers->get_oracle_cfg_total();

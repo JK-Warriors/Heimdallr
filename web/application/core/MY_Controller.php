@@ -49,20 +49,25 @@ abstract class Front_Controller extends CI_Controller
             return ;
 		}
 	}
-    
-    public function check_privilege($action=''){
-				//验证license
+
+    public function check_license(){
+        //验证license
         $this->load->model("wlblazers_model","wlblazers");
-	  		$exprie_date = $this->wlblazers->get_license_exprie_date();
-	  		$current_date = date('Y-m-d');
-	  		
-				if(empty($exprie_date)){
+        $exprie_date = $this->wlblazers->get_license_exprie_date();
+        $current_date = date('Y-m-d');
+      
+        if(empty($exprie_date)){
             redirect(site_url('error/no_license'));
-						return ;
-				}else if(strtotime($current_date) > strtotime($exprie_date)){
+                return ;
+        }else if(strtotime($current_date) > strtotime($exprie_date)){
             redirect(site_url('error/exprie'));
-						return ;
-	      }
+                return ;
+        }
+    }
+
+    public function check_privilege($action=''){
+        //验证license
+        $this->check_license();
 			
 	  
 				//验证权限
