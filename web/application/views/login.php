@@ -112,7 +112,8 @@
             </div>
         </div>
         <!-- <p class="pull-right" style=""><a href="http://www.wlblazers.com" target="blank"><?php echo $this->lang->line('get_support'); ?></a></p> -->
-        <p style="text-align:right:font-size:12px;color:#aaa;">&nbsp;<?php echo $this->lang->line('version'); ?>:<?php echo $wlblazers_status['wlblazers_version']; ?></p>
+        <p style="text-align:right:font-size:12px;color:#aaa;">&nbsp;<?php echo $this->lang->line('version'); ?>: <?php echo $wlblazers_status['wlblazers_version']; ?></p>
+        <p style="text-align:right:font-size:12px;color:red;">&nbsp;<?php echo $this->lang->line('license_exprie'); ?>: <?php echo $wlb_license; ?></p>
     </div>
 </div>
   

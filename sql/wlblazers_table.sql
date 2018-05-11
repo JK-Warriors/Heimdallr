@@ -612,6 +612,20 @@ CREATE TABLE `wlblazers_status` (
   `wl_value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for wlblazers_license
+-- ----------------------------
+DROP TABLE IF EXISTS `wlblazers_license`;
+CREATE TABLE `wlblazers_license` (
+  `product_id` varchar(100) NOT NULL,
+  `serial_id` varchar(50) NOT NULL,
+  `license_info` varchar(1000) NOT NULL,
+  `create_time` timestamp NOT NULL,
+  `update_time` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ----------------------------
 -- Table structure for mongodb_status
 -- ----------------------------

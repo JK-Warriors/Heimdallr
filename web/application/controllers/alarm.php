@@ -7,6 +7,8 @@ class Alarm extends Front_Controller {
 	}
     
     public function index(){
+        parent::check_privilege();
+        
         if(!empty($_POST["alert_ids"])){
             $alert_ids = $_POST["alert_ids"];
             $this->alarm->move_alerts_to_history($alert_ids);
@@ -53,6 +55,7 @@ class Alarm extends Front_Controller {
 
 
     public function history(){
+        parent::check_privilege();
         
         $stime = !empty($_GET["stime"])? $_GET["stime"]: date('Y-m-d H:i',time()-3600*24*30);
         $etime = !empty($_GET["etime"])? $_GET["etime"]: date('Y-m-d H:i',time()+60);

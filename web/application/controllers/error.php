@@ -10,6 +10,16 @@ class Error extends Front_Controller {
 
         $this->layout->view("error/permission_denied");
     }
+
+    public function exprie(){
+
+        $this->layout->view("error/exprie");
+    }
+    
+    public function no_license(){
+
+        $this->layout->view("error/no_license");
+    }
     
 }
 

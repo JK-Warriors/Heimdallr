@@ -5,6 +5,7 @@ class Login extends CI_Controller  {
 	    parent::__construct();
         self::__init_language();
         $this->load->model("user_model","user");
+        $this->load->model("wlblazers_model","wlblazers");
         $this->load->library('form_validation');
         
         
@@ -40,7 +41,7 @@ class Login extends CI_Controller  {
 	public function index(){
 		//检查是否已经登录，如果已登录直接跳转首页
 		if( ($this->session->userdata('logged_in') == 1) ){
-			redirect(base_url());
+				redirect(base_url());
 		}
 		
 		/*
@@ -85,8 +86,11 @@ class Login extends CI_Controller  {
                             'client_ip'=>get_client_ip(),
                         );   
 	                    $this->db->insert('admin_log',$log_data);
+	                    
+	          
 						//登录成功,跳转至登录前页面
 						redirect($this->input->post('return_url'));
+	                    
 					}	
 				
 			}
@@ -98,10 +102,14 @@ class Login extends CI_Controller  {
 		$data['cur_nav']='login';
 		$data['site_title']='用户登录';
 	 	$data['return_url'] = isset($_GET['return_url']) ? $_GET['return_url'] : base_url();	 //登录后返回url
-		$this->load->model("wlblazers_model","wlblazers"); 
-        $wlblazers_status=$this->wlblazers->get_wlblazers_status();
-        $data['wlblazers_status']=$wlblazers_status;
-        $this->load->view('login',$data);
+    $wlblazers_status=$this->wlblazers->get_wlblazers_status();
+    $data['wlblazers_status']=$wlblazers_status;
+    
+    
+    $exprie_date = $this->wlblazers->get_license_exprie_date();
+    $data['wlb_license'] = $exprie_date;
+    
+    $this->load->view('login',$data);
 		
 	}
     

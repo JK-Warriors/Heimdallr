@@ -82,7 +82,7 @@ class Wl_oracle extends Front_Controller {
 	
 	public function dglist()
 	{
-        #parent::check_privilege();
+        parent::check_privilege();
         $data["datalist"]=$this->oracle->get_dg_status_total();
         $data["sta_list"]=$this->oracle->get_standby_total();
 

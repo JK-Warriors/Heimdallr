@@ -362,6 +362,12 @@ INSERT INTO `wlblazers_status` VALUES ('wlblazers_running', '1');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_version', '1.0.0 Beta');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_checktime', '2017-05-01 09:56:10');
 
+
+-- ----------------------------
+-- Records of wlblazers_license
+-- ----------------------------
+INSERT INTO `wlblazers_license` VALUES ('wlblazers', '001', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 -- ----------------------------
 -- Table for options
 -- ----------------------------

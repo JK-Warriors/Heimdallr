@@ -380,6 +380,9 @@ $lang['please_input_tags'] = '请输入标签';
 $lang['please_input_ip'] = '请输入IP';
 $lang['please_input_inst_name'] = '请输入实例名称';
 $lang['view_chart'] = '查看图表';
+$lang['license_exprie'] = 'License到期时间';
+$lang['license_statement'] = '您的license已经到期，请重新导入合法的license！';
+$lang['no_license'] = '您的系统中没有license或者导入的license不合法，请重新导入合法的license！';
 
 
 /* End of file mtop_content_lang.php */

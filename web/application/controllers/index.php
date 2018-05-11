@@ -8,6 +8,8 @@ class Index extends Front_Controller {
 	}
     
     public function index(){
+        parent::check_privilege();
+        
         //for mysql
         $mysql_statistics = array();
         $data["cfg_mysql_count"] = $this->db->query("select count(*) as num from db_cfg_mysql where is_delete=0")->row()->num;
@@ -36,6 +38,8 @@ class Index extends Front_Controller {
     
     
 		public function dashboard(){
+        parent::check_privilege();
+        
         //for oracle
         $data["oracle_cfg_total"] = $this->wlblazers->get_oracle_cfg_total();
         $data["oracle_active_count"] = $this->wlblazers->get_oracle_active_count();

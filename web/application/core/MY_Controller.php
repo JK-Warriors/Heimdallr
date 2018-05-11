@@ -51,16 +51,31 @@ abstract class Front_Controller extends CI_Controller
 	}
     
     public function check_privilege($action=''){
+				//验证license
+        $this->load->model("wlblazers_model","wlblazers");
+	  		$exprie_date = $this->wlblazers->get_license_exprie_date();
+	  		$current_date = date('Y-m-d');
+	  		
+				if(empty($exprie_date)){
+            redirect(site_url('error/no_license'));
+						return ;
+				}else if(strtotime($current_date) > strtotime($exprie_date)){
+            redirect(site_url('error/exprie'));
+						return ;
+	      }
+			
+	  
+				//验证权限
         $this->load->model("user_model","user");
         $this->load->model("auth_model","auth");
         $username = $this->user->get_username();
         $action = !empty($action) ? $action : $this->user->get_user_current_action();
         //echo $action;exit;
         if($this->auth->check_user_privilege($username,$action) == false)
-		{
+				{
             redirect(site_url('error/permission_denied'));
-			return ;
-		}        
+						return ;
+				}        
     }
     
     public function sys_logging($action){

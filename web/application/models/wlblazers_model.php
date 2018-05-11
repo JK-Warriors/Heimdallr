@@ -290,6 +290,54 @@ class Wlblazers_model extends CI_Model{
 		}
 	}
 	
+	 /*
+	 * 获取 license 信息
+	 */
+	function get_license_exprie_date(){
+		$key = 'qZe60QZFxuirub2ey4+7+Q==';
+		
+    $sql = "select license_info from wlblazers_license; ";
+		$query = $this->db->query($sql);
+		
+		if ($query->num_rows() > 0)
+		{
+			$result=$query->row();
+      $license_info = $result->license_info;
+      
+    	$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
+    	$iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+    	mcrypt_generic_init($td, $key, $iv);
+    	$text = mdecrypt_generic($td, hex2bin($license_info));
+    	mcrypt_generic_deinit($td);
+    	mcrypt_module_close($td);
+    	
+    	return substr($text,0,10);
+		}
+	}
+	
+	
+	function get_license_quota(){
+		$key = 'qZe60QZFxuirub2ey4+7+Q==';
+		
+    $sql = "select license_info from wlblazers_license limit 1; ";
+		$query = $this->db->query($sql);
+		
+		if ($query->num_rows() > 0)
+		{
+			$result=$query->row();
+      $license_info = $result->license_info;
+      
+    	$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
+    	$iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+    	mcrypt_generic_init($td, $key, $iv);
+    	$text = mdecrypt_generic($td, hex2bin($license_info));
+    	mcrypt_generic_deinit($td);
+    	mcrypt_module_close($td);
+    	
+    	return substr($text,strpos($text, '|')+1);
+		}
+	}
+	
 	
 }
 
