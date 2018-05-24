@@ -166,8 +166,8 @@ class Oracle_model extends CI_Model{
     }
     
     function get_tablespace_total_rows(){
-        !empty($_GET["host"]) && $this->db->like("host", $_GET["host"]);
-        !empty($_GET["tags"]) && $this->db->like("tags", $_GET["tags"]);
+        !empty($_GET["host"]) && $this->db->where("host", $_GET["host"]);
+        !empty($_GET["tags"]) && $this->db->where("tags", $_GET["tags"]);
         
 				$this->db->from('oracle_tablespace');
         return $this->db->count_all_results();
@@ -337,6 +337,14 @@ class Oracle_model extends CI_Model{
         }
     }
     
+    function get_dg_opration($group_id, $type){
+        $query=$this->db->query("select * from oracle_dg_opration where group_id = $group_id and op_type = '$type' order by id desc limit 1; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }        
+
     function get_mrp_status_by_id($id){
         $query=$this->db->query("select mrp_status from oracle_dg_s_status where server_id = '$id' order by id desc limit 1; ");
         if ($query->num_rows() > 0)

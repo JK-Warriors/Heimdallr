@@ -119,6 +119,47 @@ def operation_unlock(mysql_conn, dg_id, process_type):
         
 
 
+###############################################################################
+# function init_op_instance
+###############################################################################
+def init_op_instance(mysql_conn, group_id, op_type):
+    logger.info("Initialize switch instance for group %s." %(group_id))
+    
+    str="""insert into oracle_dg_opration(group_id, op_type) values('%s', '%s') """%(group_id, op_type)
+    is_succ = mysql.ExecuteSQL(mysql_conn, str)
+
+
+
+###############################################################################
+# function update_op_result
+###############################################################################
+def update_op_result(mysql_conn, group_id, op_type, result):
+    logger.info("update switch result for group %s." %(group_id))
+	
+    # get max inst id
+    str="""select max(id) from oracle_dg_opration where group_id= %s and op_type = '%s' """ %(group_id, op_type)
+    max_id=mysql.GetSingleValue(mysql_conn, str)
+    
+    str="""update oracle_dg_opration set result = '%s' where id = %s and op_type = '%s' """%(result, max_id, op_type)
+    is_succ = mysql.ExecuteSQL(mysql_conn, str)
+    
+
+
+###############################################################################
+# function update_op_reason
+###############################################################################
+def update_op_reason(mysql_conn, group_id, op_type, reason):
+    logger.info("update switch fail reason for group %s." %(group_id))
+	
+    # get max inst id
+    str="""select max(id) from oracle_dg_opration where group_id= %s and op_type = '%s' """ %(group_id, op_type)
+    max_id=mysql.GetSingleValue(mysql_conn, str)
+    
+    str="""update oracle_dg_opration set reason = '%s'  where id = %s and op_type = '%s' """%(reason, max_id, op_type)
+    is_succ = mysql.ExecuteSQL(mysql_conn, str)
+    
+    
+
 ################################################################################################################################
 # function kill_sessions
 # 该函数主要实现2个功能：

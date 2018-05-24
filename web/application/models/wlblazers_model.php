@@ -319,7 +319,7 @@ class Wlblazers_model extends CI_Model{
 	function get_license_quota(){
 		$key = 'qZe60QZFxuirub2ey4+7+Q==';
 		
-    $sql = "select license_info from wlblazers_license limit 1; ";
+		$sql = "select license_info from wlblazers_license order by serial_id desc limit 1; ";
 		$query = $this->db->query($sql);
 		
 		if ($query->num_rows() > 0)

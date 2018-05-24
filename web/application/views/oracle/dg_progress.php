@@ -11,6 +11,11 @@ $arr = array('on_process' => $dg_group[0]['on_process'],
 						 'process_type' => $dg_process[0]['process_type'],
 						 'process_desc' => $dg_process[0]['process_desc'],
 						 'process_time' => $dg_process[0]['create_time'],
+						 
+						 'op_type' => $dg_opration[0]['op_type'],
+						 'op_result' => $dg_opration[0]['result'],
+						 'op_reason' => $dg_opration[0]['reason'],
+						 
 						 'rate' => $dg_process[0]['rate'],
 						 'mrp_status' => $items['mrp_status'],
 						 'sta_role' => $items['sta_role']);

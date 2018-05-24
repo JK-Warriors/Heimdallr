@@ -201,33 +201,40 @@ class Wl_oracle extends Front_Controller {
 
     public function dg_progress()
 	{
-        $group_id=isset($_POST["group_id"]) ? $_POST["group_id"] : "-1";
+        $group_id=isset($_GET["group_id"]) ? $_GET["group_id"] : "-1";
+		    $op_action = isset($_GET["op_action"]) ? $_GET["op_action"] : "-1";
+		    
+				$setval["group_id"] = $group_id;
+				$setval["op_action"] = $op_action;
+						
         $dg_group=$this->oracle->get_dg_group_by_id($group_id);
         $data["dg_group"]=$dg_group;
         
         #get log from oracle_dg_process
         $type="";
-        if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_switchover'] == '1'){
+        if($op_action == "Switchover"){
         		$type="SWITCHOVER";
         }
-        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_failover'] == '1'){
+        else if($op_action == "Failover"){
         		$type="FAILOVER";
         }
-        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_startmrp'] == '1'){
+        else if($op_action == "MRPStart"){
         		$type="MRP_START";
         }
-        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopmrp'] == '1'){
+        else if($op_action == "MRPStop"){
         		$type="MRP_STOP";
         }
-        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_startsnapshot'] == '1'){
+        else if($op_action == "SnapshotStart"){
         		$type="SNAPSHOT_START";
         }
-        else if($dg_group[0]['on_process'] == 1 && $dg_group[0]['on_stopsnapshot'] == '1'){
+        else if($op_action == "SnapshotStop"){
         		$type="SNAPSHOT_STOP";
         }
         
         if($group_id!="-1"){
 		        $data["dg_process"]=$this->oracle->get_dg_process_info($group_id, $type);
+		        
+		        $data["dg_opration"]=$this->oracle->get_dg_opration($group_id, $type);
 						
 						# get mrp status by group id
 						$sta_id = $this->oracle->get_sta_id_by_group_id($group_id);
@@ -236,10 +243,10 @@ class Wl_oracle extends Front_Controller {
 						
 						$setval["mrp_status"] = $mrp_status;
 						$setval["sta_role"] = $sta_role;
-		        $data["items"] = $setval;
         }
 				
 
+		    $data["items"] = $setval;
 				$this->layout->setLayout("layout_blank");
         $this->layout->view("oracle/dg_progress",$data);
     }

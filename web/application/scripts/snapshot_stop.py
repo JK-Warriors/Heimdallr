@@ -94,6 +94,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         out, err = sqlplus.communicate()
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '开启MRP进程成功', 90, 0)
     else:
+        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止快照')
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是SNAPSHOT STANDBY，不能停止快照', 90)
 	 
     return result;
@@ -165,20 +166,25 @@ if __name__=="__main__":
     s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
 	
 		
-    if s_conn is None:
-        logger.error("Connect to standby database error, exit!!!")
-        sys.exit(2)
-    else:
-        try:
-            common.operation_lock(mysql_conn, group_id, 'SNAPSHOT_STOP')
-            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '准备停止快照模式', 10, 2)
-            res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
-            if res ==0:
-                update_mrp_status(mysql_conn, sta_id)
-                
-        finally:
-            common.operation_unlock(mysql_conn, group_id, 'SNAPSHOT_STOP')
-            None
+    try:
+        common.operation_lock(mysql_conn, group_id, 'SNAPSHOT_STOP')
+
+        common.init_op_instance(mysql_conn, group_id, 'SNAPSHOT_STOP')					#初始化切换实例
+        
+        if s_conn is None:
+            logger.error("Connect to standby database error, exit!!!")
+            common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_STOP', '连接数据库失败')
+            common.update_op_result(mysql_conn, group_id, 'SNAPSHOT_STOP', '-1')
+            sys.exit(2)
+        
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '准备停止快照模式', 10, 2)
+        res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
+        if res ==0:
+            update_mrp_status(mysql_conn, sta_id)
+            common.update_op_result(mysql_conn, group_id, 'SNAPSHOT_STOP', '0')
+            
+    finally:
+        common.operation_unlock(mysql_conn, group_id, 'SNAPSHOT_STOP')
 		
 
 	

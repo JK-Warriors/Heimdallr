@@ -116,6 +116,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
                 result=-1
             
     else:
+        common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是主库，不能切换到备库')
         common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是主库，不能切换到备库', 90, 2)
         logger.error("You can not switchover a standby database to physical standby!")
         
@@ -208,6 +209,7 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             result = -1
         	
     else:
+        common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，无法切换到Primary')
         logger.error("You can not switchover primary database to primary!")
 
     return result
@@ -257,12 +259,7 @@ def update_switch_flag(mysql_conn, group_id):
         logger.info("Update switch flag in db_cfg_oracle_dg for group %s failed." %(group_id))
 	
 
-
-    
-
-
-
-         	
+ 	
 ###############################################################################
 # main function
 ###############################################################################
@@ -315,17 +312,25 @@ if __name__=="__main__":
 
     try:
         common.operation_lock(mysql_conn, group_id, 'SWITCHOVER')			# 加锁
-
+        
+        common.init_op_instance(mysql_conn, group_id, 'SWITCHOVER')					#初始化切换实例
+	
         # connect to oracle
         p_conn = oracle.ConnectOracleAsSysdba(p_conn_str)
         s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
         if p_conn is None:
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '连接主库失败，请根据相应日志查看原因', 10, 5)
             logger.error("Connect to primary database error, exit!!!")
+            
+            common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '连接主库失败')
+            common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '-1')
             sys.exit(2)
         if s_conn is None:
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '连接备库失败，请根据相应日志查看原因', 10, 5)
             logger.error("Connect to standby database error, exit!!!")
+            
+            common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '连接备库失败')
+            common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '-1')
             sys.exit(2)
         
         str='select count(1) from gv$instance'
@@ -356,16 +361,25 @@ if __name__=="__main__":
             show_msg='关闭实例失败，主库端依然有 %s 个存活实例，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换' %(p_count, s_count)
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_msg, 10, 5)
             logger.error("Shutdown instance failed. There are still more than one instance active both in primary and standby.")
+            
+            common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', show_msg)
+            common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '-1')
             sys.exit(2)
         elif p_count > 1:
             show_msg='关闭实例失败，主库端依然有 %s 个存活实例，请手工关闭后重新尝试切换' %(p_count)
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_msg, 10, 5)
             logger.error("Shutdown instance failed. There are still more than one instance active in primary.")
+            
+            common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', show_msg)
+            common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '-1')
             sys.exit(2)
         elif s_count > 1:
             show_msg='关闭实例失败，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换' %(s_count)
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', show_msg, 10, 5)
             logger.error("Shutdown instance failed. There are still more than one instance active in standby.")
+            
+            common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', show_msg)
+            common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '-1')
             sys.exit(2)
     	
     	
@@ -383,9 +397,12 @@ if __name__=="__main__":
 
                 if res_2p == 0:
                     update_switch_flag(mysql_conn, group_id)
+                    common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '0')
                 else:
+                    common.update_op_result(mysql_conn, group_id, res_2p)
                     common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '切换失败，请通过相关日志查看原因！', 90, 2)
             else:
+                common.update_op_result(mysql_conn, group_id, res_2s)
                 common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '切换失败，请通过相关日志查看原因！', 50, 2)
         except Exception,e:
             pass

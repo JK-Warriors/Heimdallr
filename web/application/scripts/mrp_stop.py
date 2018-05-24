@@ -70,6 +70,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证MRP进程，已经是停止状态', 70, 2)
             logger.info("The MRP process is already stopped!!! ")
     else:
+        common.update_op_reason(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止MRP')
         common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止MRP', 90)
 	 
     return result;
@@ -140,21 +141,28 @@ if __name__=="__main__":
 	
     s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
 	
-		
-    if s_conn is None:
-        logger.error("Connect to standby database error, exit!!!")
-        sys.exit(2)
-    else:
-        try:
-            common.operation_lock(mysql_conn, group_id, 'MRP_STOP')
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '准备开始停止MRP进程', 10, 2)
-            res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
-            if res ==0:
-                update_mrp_status(mysql_conn, sta_id)
-                
-        finally:
-            common.operation_unlock(mysql_conn, group_id, 'MRP_STOP')
-            None
+	
+    try:
+        common.operation_lock(mysql_conn, group_id, 'MRP_STOP')
+    
+        common.init_op_instance(mysql_conn, group_id, 'MRP_STOP')					#初始化切换实例
+        
+        if s_conn is None:
+            logger.error("Connect to standby database error, exit!!!")
+            
+            common.update_op_reason(mysql_conn, group_id, 'MRP_STOP', '连接数据库失败')
+            common.update_op_result(mysql_conn, group_id, 'MRP_STOP', '-1')
+            sys.exit(2)
+        
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '准备开始停止MRP进程', 10, 2)
+        res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
+        if res ==0:
+            update_mrp_status(mysql_conn, sta_id)
+            common.update_op_result(mysql_conn, group_id, 'MRP_STOP', '0')
+            
+    finally:
+        common.operation_unlock(mysql_conn, group_id, 'MRP_STOP')
+        None
 		
 
 	

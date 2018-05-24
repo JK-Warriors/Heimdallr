@@ -126,7 +126,8 @@ var current_time = null;
 
 var last_switchover = null;
 var warningDiv = document.getElementById("mrp_warning");
-var query_url="<?php echo site_url('wl_oracle/dg_progress') ?>";
+var div_layer = document.getElementById("div_layer");
+var query_url="<?php echo site_url('wl_oracle/dg_progress?group_id=') ?>" + group_id.toString();
 var on_process="<?php echo $dg_group[0]['on_process'] ?>" ;
 var on_switchover="<?php echo $dg_group[0]['on_switchover'] ?>" ;
 var on_failover="<?php echo $dg_group[0]['on_failover'] ?>" ;
@@ -313,7 +314,8 @@ function checkUser(e){
 																	  content: $('#div_layer')
 																	});
 																	
-																	oTimer = setInterval("queryHandle(query_url)",2000);
+																	query_act_url = query_url + "&op_action=" + e.value;
+																	oTimer = setInterval("queryHandle(query_act_url)",2000);
 		                        }
 							        },
 							        cancel: {
@@ -379,12 +381,101 @@ function queryHandle(url){
 						warningDiv.style.display="none";
         }
         
-        if(json.on_process==='0'){ 
-        		if(mylay!=null){
-        			layer.close(mylay);
-        			//setTimeout(function(){layer.close(mylay);}, 3000);
-        			//window.clearInterval(oTimer);
+        if(json.on_process == '0'){
+        		if(json.op_type != ""){
+		        		if(json.op_type == "SWITCHOVER"){
+		    						if(json.op_reason == ''){
+		    								error_message = "主备切换失败，原因请查看相关日志";
+		    						}else{
+		    								error_message = "主备切换失败，原因是：" + json.op_reason;
+		    						}
+		    						
+		    						ok_message = "主备切换成功";
+		        		}else if(json.op_type == "FAILOVER"){
+		    						if(json.op_reason == ''){
+		    								error_message = "灾难切换失败，原因请查看相关日志";
+		    						}else{
+		    								error_message = "灾难切换失败，原因是：" + json.op_reason;
+		    						}
+		    						
+		    						ok_message = "灾难切换成功";
+		        		}else if(json.op_type == "MRP_START"){
+		    						if(json.op_reason == ''){
+		    								error_message = "开启MRP失败，原因请查看相关日志";
+		    						}else{
+		    								error_message = "开启MRP失败，原因是：" + json.op_reason;
+		    						}
+		    						
+		    						ok_message = "开启MRP成功";
+		        		}else if(json.op_type == "MRP_STOP"){
+		    						if(json.op_reason == ''){
+		    								error_message = "停止MRP失败，原因请查看相关日志";
+		    						}else{
+		    								error_message = "停止MRP失败，原因是：" + json.op_reason;
+		    						}
+		    						
+		    						ok_message = "停止MRP成功";
+		        		}else if(json.op_type == "SNAPSHOT_START"){
+		    						if(json.op_reason == ''){
+		    								error_message = "进入快照模式失败，原因请查看相关日志";
+		    						}else{
+		    								error_message = "进入快照模式失败，原因是：" + json.op_reason;
+		    						}
+		    						
+		    						ok_message = "进入快照模式成功";
+		        		}else if(json.op_type == "SNAPSHOT_STOP"){
+		    						if(json.op_reason == ''){
+		    								error_message = "退出快照模式失败，原因请查看相关日志";
+		    						}else{
+		    								error_message = "退出快照模式失败，原因是：" + json.op_reason;
+		    						}
+		    						
+		    						ok_message = "退出快照模式成功";
+		        		}
+        		
+        				if(json.op_result == '-1'){
+				        		bootbox.alert({
+						        		message: error_message,
+						        		buttons: {
+											        ok: {
+											            label: '确定',
+											            className: 'btn-success'
+											        }
+											    },
+										    callback: function () {
+										        window.location.reload();
+										    }
+						        	});
+						        	
+				        		if(mylay!=null){
+				        			layer.close(mylay);
+				        		}
+		        				clearInterval(oTimer); 
+						        	
+        				}else if(json.op_result == '0'){
+				        		bootbox.alert({
+						        		message: ok_message,
+						        		buttons: {
+											        ok: {
+											            label: '确定',
+											            className: 'btn-success'
+											        }
+											    },
+										    callback: function () {
+										        window.location.reload();
+										    }
+						        	});
+						        	
+				        		if(mylay!=null){
+				        			layer.close(mylay);
+				        		}
+		        				clearInterval(oTimer); 
+        				}
         		}
+        			
+        		
+        		
+        		
             
         }else{
 
@@ -392,6 +483,7 @@ function queryHandle(url){
         	if(current_time != last_time){
         			$("#div_layer").append("<p>" + json.process_time + ": " + json.process_desc + "</p>");
         			$(".layui-layer-content").scrollTop($(".layui-layer-content")[0].scrollHeight);
+
         	}
         	last_time = current_time;
         }  

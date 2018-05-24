@@ -88,6 +88,7 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
                 logger.info("Start the MRP process successfully.")
                 result=0
     else:
+        common.update_op_reason(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP')
         common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP', 90)
 	
     return result;
@@ -130,6 +131,8 @@ def enable_rfs(mysql_conn, p_conn):
     
     str="alter system archive log current "
     res=oracle.ExecuteSQL(p_conn, str)
+
+
 
 ###############################################################################
 # main function
@@ -180,18 +183,25 @@ if __name__=="__main__":
     s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
 	
 		
-    if s_conn is None:
-        logger.error("Connect to standby database error, exit!!!")
-        sys.exit(2)
-    else:
-        try:
-            common.operation_lock(mysql_conn, group_id, 'MRP_START')
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '准备开始启动MRP进程', 10, 2)
-            res = start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
-            if res ==0:
-                update_mrp_status(mysql_conn, sta_id)
-                
-            enable_rfs(mysql_conn, p_conn)    
-        finally:
-            common.operation_unlock(mysql_conn, group_id, 'MRP_START')
-
+    try:
+        common.operation_lock(mysql_conn, group_id, 'MRP_START')
+    
+        common.init_op_instance(mysql_conn, group_id, 'MRP_START')					#初始化操作实例
+    
+        if s_conn is None:
+            logger.error("Connect to standby database error, exit!!!")
+            
+            common.update_op_reason(mysql_conn, group_id, 'MRP_START', '连接数据库失败')
+            common.update_op_result(mysql_conn, group_id, 'MRP_START', '-1')
+            sys.exit(2)
+        
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '准备开始启动MRP进程', 10, 2)
+        res = start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
+        if res ==0:
+            update_mrp_status(mysql_conn, sta_id)
+            common.update_op_result(mysql_conn, group_id, 'MRP_START', '0')
+            
+        enable_rfs(mysql_conn, p_conn)    
+    finally:
+        common.operation_unlock(mysql_conn, group_id, 'MRP_START')
+        None

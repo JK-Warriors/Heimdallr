@@ -36,6 +36,8 @@ logger = logging.getLogger('WLBlazers')
 ###############################################################################
 def failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     logger.info("Failover database to primary in progress...")
+    result=-1
+    
 	# get database role
     str='select database_role from v$database'
     role=oracle.GetSingleValue(s_conn, str)
@@ -110,15 +112,18 @@ def failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         if db_role=="PRIMARY":
             common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '数据库灾难切换成功', 90, 2)
             logger.info("Failover standby database to primary successfully.")
+            result = 0
         else:
             common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '数据库灾难切换失败，请根据相关日志查看原因', 90, 2)
             logger.info("Failover standby database to primary failed.")
+            result = -1
 
     else:
-        common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP', 90)
+        common.update_op_reason(mysql_conn, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，无法切换到Primary')
+        common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，无法切换到Primary', 90)
         logger.error("You can not failover primary database to primary!")
-        return 2
-
+        
+    return result
 
 ###############################################################################
 # function failover2primary
@@ -159,7 +164,8 @@ def update_switch_flag(mysql_conn, group_id):
         logger.info("Update switch flag in db_cfg_oracle_dg for group %s failed." %(group_id))
 	
 
-	
+
+    
 ###############################################################################
 # main function
 ###############################################################################
@@ -202,10 +208,16 @@ if __name__=="__main__":
 	
     try:
         common.operation_lock(mysql_conn, group_id, 'FAILOVER')
+        
+        common.init_op_instance(mysql_conn, group_id, 'FAILOVER')					#初始化切换实例
+        
         s_conn = oracle.ConnectOracleAsSysdba(s_conn_str)
         if s_conn is None:
             common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '连接备库失败，请根据相应日志查看原因', 5, 5)
             logger.error("Connect to standby database error, exit!!!")
+            
+            common.update_op_reason(mysql_conn, group_id, 'FAILOVER', '连接备库失败')
+            common.update_op_result(mysql_conn, group_id, 'FAILOVER', '-1')
             sys.exit(2)
         str='select count(1) from gv$instance'
         s_count=oracle.GetSingleValue(s_conn, str)
@@ -233,6 +245,9 @@ if __name__=="__main__":
             show_msg="关闭实例失败，备库端依然有 %s 个存活实例，请手工关闭后重新尝试切换"
             common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', show_msg, 10, 2)
             logger.error(show_msg)
+            common.update_op_reason(mysql_conn, group_id, 'FAILOVER', show_msg)
+            common.update_op_result(mysql_conn, group_id, 'FAILOVER', '-1')
+            
             sys.exit(2)
         
            
@@ -241,6 +256,7 @@ if __name__=="__main__":
             res = failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
             if res ==0:
                 update_switch_flag(mysql_conn, group_id)
+                common.update_op_result(mysql_conn, group_id, 'FAILOVER', '0')
         except Exception,e:
             pass
     except Exception,e:

@@ -1447,6 +1447,22 @@ CREATE TABLE `oracle_fb_process` (
   KEY `idx_server_id` (`server_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for oracle_dg_opration
+-- ----------------------------
+DROP TABLE IF EXISTS `oracle_dg_opration`;
+CREATE TABLE `oracle_dg_opration` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `group_id` int(10) NOT NULL,
+  `op_type` varchar(20),
+  `result` varchar(2),
+  `reason` varchar(1000),
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- ----------------------------
 -- Table structure for oracle_tables
 -- ----------------------------
