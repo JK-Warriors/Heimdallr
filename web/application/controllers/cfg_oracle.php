@@ -424,6 +424,9 @@ class cfg_oracle extends Front_Controller {
 						'primary_db_id'=>$this->input->post('primary_db'),
 						'standby_db_id'=>$this->input->post('standby_db'),
 						'fb_retention'=>$this->input->post('fb_retention'),
+						'shift_vip'=>$this->input->post('shift_vip'),
+						'node_vips'=>$this->input->post('node_vips'),
+						'network_card'=>$this->input->post('network_card'),
 					);
 					$this->oracle_dgs->insert($data);
                     redirect(site_url('cfg_oracle/add_dg'));
@@ -463,6 +466,9 @@ class cfg_oracle extends Front_Controller {
 							'primary_db_id'=>$this->input->post('primary_db'),
 							'standby_db_id'=>$this->input->post('standby_db'),
 							'fb_retention'=>$this->input->post('fb_retention'),
+							'shift_vip'=>$this->input->post('shift_vip'),
+							'node_vips'=>$this->input->post('node_vips'),
+							'network_card'=>$this->input->post('network_card'),
 						);
 						
 						$this->oracle_dgs->update($data,$id);

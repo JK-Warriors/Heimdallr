@@ -80,10 +80,31 @@
    </div>
   </div>
 
+  
+  <div class="control-group">
+   <label class="control-label" for="">切换时漂移IP：</label>
+   <div class="controls">
+     <input type="checkbox" id="shift_vip"  name="shift_vip" value="1">
+   </div>
+  </div>
+  <div id="div_node_vips" class="control-group">
+   <label class="control-label" for="">漂移IP：</label>
+   <div class="controls">
+     <input type="text" id="node_vips"  name="node_vips" style="width: 300px;">
+   </div>
+  </div>
+  <div id="div_network_card" class="control-group">
+   <label class="control-label" for="">备库网卡名称：</label>
+   <div class="controls">
+     <input type="text" id="network_card"  name="network_card" style="width: 300px;">
+   </div>
+  </div>
+
   <div class="controls">
    <button type="submit" id="btn_save" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
   <div class="btn-group"></div>
   </div>
+  
   
   <hr />
   
@@ -155,6 +176,9 @@
  var primary_db = "<?php echo $dg[0]['primary_db_id'] ?>";
  var standby_db = "<?php echo $dg[0]['standby_db_id'] ?>";
  var fb_retention = "<?php echo $dg[0]['fb_retention'] ?>";
+ var shift_vip = "<?php echo $dg[0]['shift_vip'] ?>";
+ var node_vips = "<?php echo $dg[0]['node_vips'] ?>";
+ var network_card = "<?php echo $dg[0]['network_card'] ?>";
  var error_code = "<?php echo $error_code ?>";
  
  $(' .confirm_delete').click(function(){
@@ -178,13 +202,42 @@
      $("#primary_db").val(primary_db);
      $("#standby_db").val(standby_db);
      $("#fb_retention").val(fb_retention);
+     
+     if(shift_vip == 1){
+     		$("#shift_vip").attr("checked","checked");
+     		
+				$("#div_node_vips").show();
+				$("#div_network_card").show();
+     		$("#node_vips").val(node_vips);
+     		$("#network_card").val(network_card);
+     }else{
+				$("#div_node_vips").hide();
+				$("#div_network_card").hide();
+     }
+     
    }
    else{
      $("#fb_retention").val("5");
+		 $("#div_node_vips").hide();
+		 $("#div_network_card").hide();
    }
    
+
  });
  
+ $("#shift_vip").change(function() { 
+		//alert($("#is_vip_shift").is(':checked'));
+		if($("#shift_vip").is(':checked') == true){
+				$("#div_node_vips").show();
+				$("#div_network_card").show();
+		}else{
+				$("#div_node_vips").hide();
+				$("#div_network_card").hide();
+				$("#node_vips").val("");
+				$("#network_card").val("");
+		}
+		
+ });
  
 
 </script>
