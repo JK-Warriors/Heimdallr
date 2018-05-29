@@ -383,49 +383,52 @@ function queryHandle(url){
         
         if(json.on_process == '0'){
         		if(json.op_type != ""){
+		        		var l_reason = JSON.stringify(json.op_reason)
+		        		//alert(l_reason);
+		        		
 		        		if(json.op_type == "SWITCHOVER"){
-		    						if(json.op_reason == ''){
-		    								error_message = "主备切换失败，原因请查看相关日志";
+		    						if(l_reason == 'null'){
+		    								error_message = "主备切换失败，详细原因请查看相关日志";
 		    						}else{
 		    								error_message = "主备切换失败，原因是：" + json.op_reason;
 		    						}
 		    						
 		    						ok_message = "主备切换成功";
 		        		}else if(json.op_type == "FAILOVER"){
-		    						if(json.op_reason == ''){
-		    								error_message = "灾难切换失败，原因请查看相关日志";
+		    						if(l_reason == 'null'){
+		    								error_message = "灾难切换失败，详细原因请查看相关日志";
 		    						}else{
 		    								error_message = "灾难切换失败，原因是：" + json.op_reason;
 		    						}
 		    						
 		    						ok_message = "灾难切换成功";
 		        		}else if(json.op_type == "MRP_START"){
-		    						if(json.op_reason == ''){
-		    								error_message = "开启MRP失败，原因请查看相关日志";
+		    						if(l_reason == 'null'){
+		    								error_message = "开启MRP失败，详细原因请查看相关日志";
 		    						}else{
 		    								error_message = "开启MRP失败，原因是：" + json.op_reason;
 		    						}
 		    						
 		    						ok_message = "开启MRP成功";
 		        		}else if(json.op_type == "MRP_STOP"){
-		    						if(json.op_reason == ''){
-		    								error_message = "停止MRP失败，原因请查看相关日志";
+		    						if(l_reason == 'null'){
+		    								error_message = "停止MRP失败，详细原因请查看相关日志";
 		    						}else{
 		    								error_message = "停止MRP失败，原因是：" + json.op_reason;
 		    						}
 		    						
 		    						ok_message = "停止MRP成功";
 		        		}else if(json.op_type == "SNAPSHOT_START"){
-		    						if(json.op_reason == ''){
-		    								error_message = "进入快照模式失败，原因请查看相关日志";
+		    						if(l_reason == 'null'){
+		    								error_message = "进入快照模式失败，详细原因请查看相关日志";
 		    						}else{
 		    								error_message = "进入快照模式失败，原因是：" + json.op_reason;
 		    						}
 		    						
 		    						ok_message = "进入快照模式成功";
 		        		}else if(json.op_type == "SNAPSHOT_STOP"){
-		    						if(json.op_reason == ''){
-		    								error_message = "退出快照模式失败，原因请查看相关日志";
+		    						if(l_reason == 'null'){
+		    								error_message = "退出快照模式失败，详细原因请查看相关日志";
 		    						}else{
 		    								error_message = "退出快照模式失败，原因是：" + json.op_reason;
 		    						}
