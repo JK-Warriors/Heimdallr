@@ -18,9 +18,11 @@
 
 import os
 import string
+import datetime
 from subprocess import Popen, PIPE
 import sys, getopt
 import traceback
+import paramiko
 
 import mysql_handle as mysql
 import oracle_handle as oracle
@@ -259,7 +261,228 @@ def update_switch_flag(mysql_conn, group_id):
         logger.info("Update switch flag in db_cfg_oracle_dg for group %s failed." %(group_id))
 	
 
- 	
+
+################################################################################################################################
+# function disable_vip
+# 函数功能：启动或停止vip，scan
+################################################################################################################################
+def disable_vip(mysql_conn, group_id, server_id, op_type):
+    host_ip=""
+    host_type=""
+    host_user=""
+    host_pwd=""
+    host_protocol=""
+    shift_vip=""
+    node_vips=""
+    network_card=""
+    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card
+										from db_cfg_oracle t, db_cfg_oracle_dg d
+										where d.is_delete = 0
+										and t.is_delete = 0
+										and d.id = %s
+										and t.id = %s """ %(group_id, server_id)
+    res = mysql.GetMultiValue(mysql_conn, query_str)
+    for row in res:
+        host_ip = row[0]
+        host_type = row[1]
+        host_user = row[2]
+        host_pwd = row[3]
+        host_protocol = row[4]
+        shift_vip = row[5]
+        node_vips = row[6]
+        network_card = row[7]
+        
+    logger.info("The database host type is %s" %(host_type))
+    
+		# check host username
+    if host_user is None or host_user == "":
+        logger.info("The host user name is None, connect failed.")
+        return
+
+
+		# check shift vip
+    if shift_vip is None or shift_vip == 0:
+        logger.info("This DG Group have no request for shift vip.")
+        return
+        
+       
+    paramiko.util.log_to_file("paramiko.log") 
+    if host_type==0:                                    			#host type: 0:Linux; 1:AIX; 2:HP-UX; 3:Solaris
+        if host_protocol ==0:			#protocol is ssh2
+            try:
+                ssh = paramiko.SSHClient()  
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  
+      
+                ssh.connect(hostname=host_ip, port=22, username=host_user, password=host_pwd) 
+                stdin, stdout, stderr = ssh.exec_command("su - grid -c 'which srvctl' ")   
+                stdin.write("Y")  # Generally speaking, the first connection, need a simple interaction.  
+                srvctl_cmd = stdout.read().strip("\n")
+                print srvctl_cmd
+                
+                #scan
+                if op_type == "start":
+                    stdin, stdout, stderr = ssh.exec_command("%s enable scan " %(srvctl_cmd))  
+                    out_str=stdout.read()																				# read一定要有，不然可能命令没执行完进程就关了
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl start scan_listener' ")   
+                    out_str=stdout.read()
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl start scan' ") 
+                    out_str=stdout.read()
+                elif op_type == "stop":
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl stop scan_listener' ")   
+                    out_str=stdout.read()
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl stop scan' ")  
+                    out_str=stdout.read()
+                    stdin, stdout, stderr = ssh.exec_command("%s disable scan " %(srvctl_cmd))  
+                    out_str=stdout.read()
+                
+                #vip
+                exec_cmd = """su - grid -c "crs_stat | grep vip  | grep NAME | grep -v scan" | awk -F '.' '{print $2}' """
+                stdin, stdout, stderr = ssh.exec_command(exec_cmd) 
+                host_list = stdout.read().split("\n")
+                print host_list
+                
+                for node in host_list:
+                    if node != "":
+                        if op_type == "start":
+                            print srvctl_cmd
+                            print "%s enable vip -i %s " %(srvctl_cmd, node) 
+                            stdin, stdout, stderr = ssh.exec_command("%s enable vip -i %s' " %(srvctl_cmd, node))  
+                            out_str=stdout.read()
+                            stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl start vip -i %s' " %(node))  
+                            out_str=stdout.read()
+                            stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl start listener -n %s' " %(node))  
+                            out_str=stdout.read()
+                        elif op_type == "stop":
+                            stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl stop listener -n %s' " %(node)) 
+                            out_str=stdout.read() 
+                            stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl stop vip -i %s' " %(node))  
+                            out_str=stdout.read()
+                            stdin, stdout, stderr = ssh.exec_command("%s disable vip -i %s' " %(srvctl_cmd, node))  
+                            out_str=stdout.read()
+                        
+            		
+            except:
+            		pass
+            finally:
+            		ssh.close() 
+        elif host_protocol ==1:   				#protocol is telnet
+            pass
+    elif host_type==4:		#host type: 4:Windows
+        logger.info("The database host type is Windows, Exit!")      
+      
+  
+      
+################################################################################################################################
+# function bind_ip
+# 函数功能：绑定或者解绑IP
+################################################################################################################################
+def bind_ip(mysql_conn, group_id, server_id, op_type):
+    host_ip=""
+    host_type=""
+    host_user=""
+    host_pwd=""
+    host_protocol=""
+    shift_vip=""
+    node_vips=""
+    network_card=""
+    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card
+										from db_cfg_oracle t, db_cfg_oracle_dg d
+										where d.is_delete = 0
+										and t.is_delete = 0
+										and d.id = %s
+										and t.id = %s """ %(group_id, server_id)
+    res = mysql.GetMultiValue(mysql_conn, query_str)
+    for row in res:
+        host_ip = row[0]
+        host_type = row[1]
+        host_user = row[2]
+        host_pwd = row[3]
+        host_protocol = row[4]
+        shift_vip = row[5]
+        node_vips = row[6]
+        network_card = row[7]
+        
+    logger.info("The database host type is %s" %(host_type))
+    
+		# check host username
+    if host_user is None or host_user == "":
+        logger.info("The host user name is None, connect failed.")
+        return
+
+		# check shift vip
+    if shift_vip is None or shift_vip == 0:
+        logger.info("This DG Group have no request for shift vip, no need to unbind ip.")
+        return
+        
+    paramiko.util.log_to_file("paramiko.log")  
+    if host_type==0:                                    			#host type: 0:Linux; 1:AIX; 2:HP-UX; 3:Solaris
+        if host_protocol ==0:			#protocol is ssh2
+            try:
+                ssh = paramiko.SSHClient()  
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  
+      
+                ssh.connect(hostname=host_ip, port=22, username=host_user, password=host_pwd) 
+                stdin, stdout, stderr = ssh.exec_command("hostname")   
+                stdin.write("Y")  # Generally speaking, the first connection, need a simple interaction. 
+                print stdout.read()
+                
+                ip_list = node_vips.split(',')
+                i = 100
+                print ip_list
+                for ip in ip_list:
+                    ip_cmd = ""
+                    if op_type == "bind":
+                        ip_cmd = "ifconfig %s:%s %s netmask 255.255.255.0" %(network_card, i, ip)
+                    elif op_type == "unbind":
+                        ip_cmd = "ifconfig %s:%s down" %(network_card, i)
+                        
+                    print ip_cmd
+                    stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
+                    out_str=stdout.read()
+                    i = i + 1
+            		
+            except:
+            		pass
+            finally:
+            		ssh.close() 
+            		pass
+        elif host_protocol ==1:   				#protocol is telnet
+            pass
+    elif host_type==4:		#host type: 4:Windows
+        logger.info("The database host type is Windows, Exit!")   
+              
+
+################################################################################################################################
+# function shift_vip
+# 函数功能：绑定或者解绑IP
+################################################################################################################################
+def shift_vip(mysql_conn, group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, dg_sid):
+    try:
+        #切换
+        logger.info("group_id: %s, is_p_rac: %s, is_s_rac: %s, pri_id: %s, sta_id: %s, dg_pid: %s, dg_sid: %s" %(group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, dg_sid))   
+        #logger.info("%s, %s, %s, %s" %(type(pri_id),type(sta_id),type(dg_pid),type(dg_sid)))  
+        if is_p_rac == "TRUE" and int(pri_id) == int(dg_pid):
+            logger.info("stop vip on %s..." %(pri_id))   
+            disable_vip(mysql_conn, group_id, pri_id, "stop")
+        if int(dg_sid) == int(sta_id):										#配置表里面的备库正是现在的备库
+            logger.info("bind ip on %s..." %(sta_id))   
+            bind_ip(mysql_conn, group_id, sta_id, "bind")
+        
+        #回切
+        if int(dg_sid) == int(pri_id):									#配置表里面的备库已然是现在的主库，切换实际上是回切
+            logger.info("unbind ip from %s..." %(pri_id))   
+            bind_ip(mysql_conn, group_id, pri_id, "unbind")
+            
+        if is_s_rac == "TRUE" and int(sta_id) == int(dg_pid):
+            logger.info("start vip on %s..." %(sta_id))   
+            disable_vip(mysql_conn, group_id, sta_id, "start")
+        
+    except Exception,e:
+        print e.message
+    finally:
+        pass
+	
+	      
 ###############################################################################
 # main function
 ###############################################################################
@@ -306,7 +529,15 @@ if __name__=="__main__":
     logger.info("The primary database is: " + p_nopass_str + ", the id is: " + str(pri_id))
     logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 
-	
+		#是否需要漂移IP
+    shift_vip_str = """select t.shift_vip from db_cfg_oracle_dg t where id = %s """ %(group_id)
+    is_shift = mysql.GetSingleValue(mysql_conn, shift_vip_str)
+    
+    dg_pid_str = """select t.primary_db_id from db_cfg_oracle_dg t where id = %s """ %(group_id)
+    dg_pid = mysql.GetSingleValue(mysql_conn, dg_pid_str)
+    
+    dg_sid_str = """select t.standby_db_id from db_cfg_oracle_dg t where id = %s """ %(group_id)
+    dg_sid = mysql.GetSingleValue(mysql_conn, dg_sid_str)
 
 
 
@@ -332,6 +563,12 @@ if __name__=="__main__":
             common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '连接备库失败')
             common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '-1')
             sys.exit(2)
+        
+        #判断主备库是否是RAC
+        str="select value from v$option a where a.PARAMETER='Real Application Clusters' "
+        is_p_rac=oracle.GetSingleValue(p_conn, str)
+        is_s_rac=oracle.GetSingleValue(s_conn, str)
+        
         
         str='select count(1) from gv$instance'
         p_count=oracle.GetSingleValue(p_conn, str)
@@ -396,13 +633,21 @@ if __name__=="__main__":
                 res_2p=standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
 
                 if res_2p == 0:
+                    #shift vip
+                    if is_shift == 1:
+                        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '开始切换IP...', 92, 2)
+                        logger.info("开始切换IP...")   
+                        shift_vip(mysql_conn, group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, dg_sid)
+                        common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', 'IP切换结束', 95, 2)
+                    
+                    
                     update_switch_flag(mysql_conn, group_id)
                     common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '0')
                 else:
-                    common.update_op_result(mysql_conn, group_id, res_2p)
+                    common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', res_2p)
                     common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '切换失败，请通过相关日志查看原因！', 90, 2)
             else:
-                common.update_op_result(mysql_conn, group_id, res_2s)
+                common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', res_2s)
                 common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '切换失败，请通过相关日志查看原因！', 50, 2)
         except Exception,e:
             pass

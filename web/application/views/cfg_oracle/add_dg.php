@@ -82,7 +82,7 @@
 
   
   <div class="control-group">
-   <label class="control-label" for="">切换时漂移IP：</label>
+   <label class="control-label" for="">切换时是否漂移IP：</label>
    <div class="controls">
      <input type="checkbox" id="shift_vip"  name="shift_vip" value="1">
    </div>
@@ -92,6 +92,9 @@
    <div class="controls">
      <input type="text" id="node_vips"  name="node_vips" style="width: 300px;">
    </div>
+   <div class="controls">
+   	<label>注：多个IP请使用逗号分割</label>
+  	</div>
   </div>
   <div id="div_network_card" class="control-group">
    <label class="control-label" for="">备库网卡名称：</label>
