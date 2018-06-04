@@ -267,6 +267,8 @@ def update_switch_flag(mysql_conn, group_id):
 # 函数功能：启动或停止vip，scan
 ################################################################################################################################
 def disable_vip(mysql_conn, group_id, server_id, op_type):
+    result=0
+    
     host_ip=""
     host_type=""
     host_user=""
@@ -297,13 +299,13 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
 		# check host username
     if host_user is None or host_user == "":
         logger.info("The host user name is None, connect failed.")
-        return
+        return -1
 
 
 		# check shift vip
     if shift_vip is None or shift_vip == 0:
         logger.info("This DG Group have no request for shift vip.")
-        return
+        return -1
         
        
     paramiko.util.log_to_file("paramiko.log") 
@@ -335,6 +337,7 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
                     stdin, stdout, stderr = ssh.exec_command("%s disable scan " %(srvctl_cmd))  
                     out_str=stdout.read()
                 
+                
                 #vip
                 exec_cmd = """su - grid -c "crs_stat | grep vip  | grep NAME | grep -v scan" | awk -F '.' '{print $2}' """
                 stdin, stdout, stderr = ssh.exec_command(exec_cmd) 
@@ -361,15 +364,65 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
                             out_str=stdout.read()
                         
             		
+                #check vip and listener
+                if op_type == "start":
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'crs_stat -t | grep vip' | awk '{print $4}' | grep OFFLINE | wc -l ") 
+                    out_str=stdout.read().strip("\n")
+                    logger.info("there still are %s vip OFFLINE" %(out_str))   
+                    if out_str.isdigit():
+                        if int(out_str) > 0:
+                            logger.info("start vip error: position 1")   
+                            result = -1
+                    else:
+                        logger.info("start vip error: position 2")   
+                        result = -1
+                        
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'crs_stat -t | grep lsnr' | awk '{print $4}' | grep OFFLINE | wc -l ") 
+                    out_str=stdout.read().strip("\n")
+                    logger.info("there still are %s listener OFFLINE" %(out_str))   
+                    if out_str.isdigit():
+                        if int(out_str) > 0:
+                            logger.info("start listener error: position 1")   
+                            result = -1
+                    else:
+                        logger.info("start listener error: position 2")   
+                        result = -1
+                elif op_type == "stop":
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'crs_stat -t | grep vip' | awk '{print $4}' | grep ONLINE | wc -l ") 
+                    out_str=stdout.read().strip("\n")
+                    logger.info("there still are %s vip ONLINE" %(out_str))   
+                    if out_str.isdigit():
+                        if int(out_str) > 0:
+                            logger.info("stop vip error: position 1")  
+                            result = -1
+                    else:
+                        logger.info("stop vip error: position 2")   
+                        result = -1
+                        
+                    stdin, stdout, stderr = ssh.exec_command("su - grid -c 'crs_stat -t | grep lsnr' | awk '{print $4}' | grep ONLINE | wc -l ") 
+                    out_str=stdout.read().strip("\n")
+                    logger.info("there still are %s listener ONLINE" %(out_str))   
+                    if out_str.isdigit():
+                        if int(out_str) > 0:
+                            logger.info("stop listener error: position 1")  
+                            result = -1
+                    else:
+                        logger.info("stop listener error: position 2")   
+                        result = -1
+                
+                
             except:
             		pass
             finally:
             		ssh.close() 
         elif host_protocol ==1:   				#protocol is telnet
+            result = -1
             pass
     elif host_type==4:		#host type: 4:Windows
+        result = -1
         logger.info("The database host type is Windows, Exit!")      
       
+    return result
   
       
 ################################################################################################################################
@@ -377,6 +430,8 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
 # 函数功能：绑定或者解绑IP
 ################################################################################################################################
 def bind_ip(mysql_conn, group_id, server_id, op_type):
+    result=0
+    
     host_ip=""
     host_type=""
     host_user=""
@@ -407,12 +462,12 @@ def bind_ip(mysql_conn, group_id, server_id, op_type):
 		# check host username
     if host_user is None or host_user == "":
         logger.info("The host user name is None, connect failed.")
-        return
+        return -1
 
 		# check shift vip
     if shift_vip is None or shift_vip == 0:
         logger.info("This DG Group have no request for shift vip, no need to unbind ip.")
-        return
+        return -1
         
     paramiko.util.log_to_file("paramiko.log")  
     if host_type==0:                                    			#host type: 0:Linux; 1:AIX; 2:HP-UX; 3:Solaris
@@ -433,12 +488,29 @@ def bind_ip(mysql_conn, group_id, server_id, op_type):
                     ip_cmd = ""
                     if op_type == "bind":
                         ip_cmd = "ifconfig %s:%s %s netmask 255.255.255.0" %(network_card, i, ip)
+                        ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
                     elif op_type == "unbind":
                         ip_cmd = "ifconfig %s:%s down" %(network_card, i)
+                        ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
                         
                     print ip_cmd
                     stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
                     out_str=stdout.read()
+                    
+                    ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
+                    stdin, stdout, stderr = ssh.exec_command(ck_cmd + "\n")  
+                    out_str=stdout.read().strip("\n")
+                    if out_str.isdigit():
+                        if op_type == "bind" and out_str == "0":
+                            result = -1
+                        if op_type == "unbind" and out_str == "1":
+                            result = -1
+                    else:
+                        result = -1
+                        
+                    
+                    
+                    
                     i = i + 1
             		
             except:
@@ -447,11 +519,15 @@ def bind_ip(mysql_conn, group_id, server_id, op_type):
             		ssh.close() 
             		pass
         elif host_protocol ==1:   				#protocol is telnet
+            result = -1
             pass
     elif host_type==4:		#host type: 4:Windows
+        result = -1
         logger.info("The database host type is Windows, Exit!")   
               
-
+    return result
+    
+    
 ################################################################################################################################
 # function shift_vip
 # 函数功能：绑定或者解绑IP
@@ -463,19 +539,35 @@ def shift_vip(mysql_conn, group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, 
         #logger.info("%s, %s, %s, %s" %(type(pri_id),type(sta_id),type(dg_pid),type(dg_sid)))  
         if is_p_rac == "TRUE" and int(pri_id) == int(dg_pid):
             logger.info("stop vip on %s..." %(pri_id))   
-            disable_vip(mysql_conn, group_id, pri_id, "stop")
+            res = disable_vip(mysql_conn, group_id, pri_id, "stop")
+            if res == -1:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '停止VIP失败', 95, 2)
+            else:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '停止VIP成功', 95, 2)
         if int(dg_sid) == int(sta_id):										#配置表里面的备库正是现在的备库
             logger.info("bind ip on %s..." %(sta_id))   
-            bind_ip(mysql_conn, group_id, sta_id, "bind")
+            res = bind_ip(mysql_conn, group_id, sta_id, "bind")
+            if res == -1:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '绑定IP失败', 95, 2)
+            else:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '绑定IP成功', 95, 2)
         
         #回切
         if int(dg_sid) == int(pri_id):									#配置表里面的备库已然是现在的主库，切换实际上是回切
             logger.info("unbind ip from %s..." %(pri_id))   
-            bind_ip(mysql_conn, group_id, pri_id, "unbind")
+            res = bind_ip(mysql_conn, group_id, pri_id, "unbind")
+            if res == -1:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '解除IP绑定失败', 95, 2)
+            else:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '解除IP绑定成功', 95, 2)
             
         if is_s_rac == "TRUE" and int(sta_id) == int(dg_pid):
             logger.info("start vip on %s..." %(sta_id))   
-            disable_vip(mysql_conn, group_id, sta_id, "start")
+            res = disable_vip(mysql_conn, group_id, sta_id, "start")
+            if res == -1:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '启动VIP失败', 95, 2)
+            else:
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '启动VIP成功', 95, 2)
         
     except Exception,e:
         print e.message

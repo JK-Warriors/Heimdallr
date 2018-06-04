@@ -600,7 +600,7 @@ CREATE TABLE `oracle_dg_process_his` (
   `process_desc` varchar(1000),
   `rate` tinyint(1) DEFAULT 0,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `history_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `current_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_group_type` (`group_id`, `process_type`,`create_time`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;

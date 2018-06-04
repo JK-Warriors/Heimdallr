@@ -80,6 +80,9 @@ def operation_lock(mysql_conn, dg_id, process_type):
     else:
         logger.error("Lock the process status for dataguard group: %s failed." %(dg_id))
         
+    # 清理操作日志 
+    str='delete from oracle_dg_process '
+    op_status=mysql.ExecuteSQL(mysql_conn, str)
 
 ###############################################################################
 # function operation_unlock
@@ -108,14 +111,14 @@ def operation_unlock(mysql_conn, dg_id, process_type):
     op_status=mysql.ExecuteSQL(mysql_conn, str)
     logger.info(str)
     
-    # 清理操作日志 
-    str='delete from oracle_dg_process '
-    op_status=mysql.ExecuteSQL(mysql_conn, str)
-    
     if op_status == 1:
         logger.info("Unlock process status for dataguard group: %s successfully." %(dg_id))
     else:
         logger.error("Unlock process status for dataguard group: %s failed." %(dg_id))
+    
+    # 保存操作日志到历史表
+    str='insert into oracle_dg_process_his select *, sysdate() from oracle_dg_process t '
+    op_status=mysql.ExecuteSQL(mysql_conn, str)
         
 
 
@@ -184,7 +187,7 @@ def kill_sessions(mysql_conn, ora_conn, server_id):
     logger.info("The database host type is %s" %(host_type))
     
 		# check host username
-    if host_user is None:
+    if host_user is None or host_user == "":
         logger.info("The host user name is None, connect failed.")
         return
 
