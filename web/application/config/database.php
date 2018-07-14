@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = '192.168.129.80';
+$db['default']['hostname'] = 'localhost';
 $db['default']['port']     = '3306';
 $db['default']['username'] = 'wlblazers';
-$db['default']['password'] = 'oracle';
+$db['default']['password'] = 'wl_passw0rd';
 $db['default']['database'] = 'wlblazers';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';

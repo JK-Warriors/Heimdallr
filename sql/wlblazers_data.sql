@@ -359,7 +359,7 @@ DELETE FROM `wlblazers_status`;
 -- Records of wlblazers_status
 -- ----------------------------
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_running', '1');
-INSERT INTO `wlblazers_status` VALUES ('wlblazers_version', '1.0.0 Beta');
+INSERT INTO `wlblazers_status` VALUES ('wlblazers_version', '1.0.0');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_checktime', '2017-05-01 09:56:10');
 
 
