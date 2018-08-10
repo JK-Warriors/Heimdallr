@@ -84,6 +84,7 @@ class Wl_oracle extends Front_Controller {
 	{
         parent::check_privilege();
         $data["datalist"]=$this->oracle->get_dg_status_total();
+        $data["pri_list"]=$this->oracle->get_primary_total();
         $data["sta_list"]=$this->oracle->get_standby_total();
 
         $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";

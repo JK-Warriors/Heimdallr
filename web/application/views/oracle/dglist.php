@@ -41,11 +41,11 @@
         <tr style="font-size: 12px;">
         <th><center><?php echo $this->lang->line('group_name'); ?></th> 
         <th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('ip'); ?></th> 
-        <th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('port'); ?></th> 
 				<th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('instance_name'); ?></th>
+        <th><center><?php echo $this->lang->line('primary_db'); echo $this->lang->line('time'); ?></th> 
         <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('ip'); ?></th> 
-        <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('port'); ?></th> 
 				<th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('instance_name'); ?></th>
+        <th><center><?php echo $this->lang->line('standby_db'); echo $this->lang->line('time'); ?></th> 
 				<th><center><?php echo $this->lang->line('mrp_status'); ?></th>
 				<th><center><?php echo $this->lang->line('dg_delay'); ?></th>
 				<th></th>
@@ -57,11 +57,23 @@
     <tr style="font-size: 12px;">
         <td><center><?php echo $item['group_name'] ?></td>
         <td><center><?php echo $item['p_host'] ?></td>
-        <td><center><?php echo $item['p_port'] ?></td>
         <td><center><?php echo $item['p_dsn'] ?></td>
+        <td><center><?php if(!empty($pri_list)) { ?>
+ 										<?php foreach ($pri_list as $s_item):?>
+ 										<?php    if($s_item['server_id'] == $item['p_id']){  ?>
+ 									  <?php    		echo $s_item['curr_db_time'];   ?>
+ 									  <?php    	} ?>
+ 										<?php endforeach; ?>
+ 										<?php } ?></td>
         <td><center><?php echo $item['s_host'] ?></td>
-        <td><center><?php echo $item['s_port'] ?></td>
         <td><center><?php echo $item['s_dsn'] ?></td>
+        <td><center><?php if(!empty($sta_list)) { ?>
+ 										<?php foreach ($sta_list as $s_item):?>
+ 										<?php    if($s_item['server_id'] == $item['s_id']){  ?>
+ 									  <?php    		echo $s_item['curr_db_time'];   ?>
+ 									  <?php    	} ?>
+ 										<?php endforeach; ?>
+ 										<?php } ?></td>
         <td><center><?php if(!empty($sta_list)) { ?>
  										<?php foreach ($sta_list as $s_item):?>
  										<?php    if($s_item['server_id'] == $item['s_id']){  ?>

@@ -126,6 +126,17 @@ class Oracle_model extends CI_Model{
         }
     }
     
+    function get_primary_total(){
+        $sql = "select * from oracle_dg_p_status 
+				        where server_id in (select id from db_cfg_oracle)
+				          and (server_id, id) in (select server_id, max(id) from oracle_dg_p_status t group by server_id)";
+										
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
     
     function get_standby_total(){
         $sql = "select * from oracle_dg_s_status 
