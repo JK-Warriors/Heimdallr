@@ -22,11 +22,45 @@ from multiprocessing import Process;
 
 def check_sqlserver(host,port,username,passwd,server_id,tags):
     try:
+        conn = pymssql.connect(host=host,port=int(port),user=username,password=passwd,charset="utf8")
+    except Exception, e:
+        func.mysql_exec("rollback;",'')
+        logger_msg="check sqlserver %s:%s : %s" %(host,port,e)
+        logger.warning(logger_msg)
+   
+        try:
+            connect=0
+            
+            func.mysql_exec("begin;",'')
+            
+            sql="delete from sqlserver_status where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
+            sql="insert into sqlserver_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
+            param=(server_id,host,port,tags,connect)
+            func.mysql_exec(sql,param)
+            
+            logger.info("Generate sqlserver instance alert for server: %s begin:" %(server_id))
+            alert.gen_alert_sqlserver_status(server_id)     # generate oracle instance alert
+            logger.info("Generate sqlserver instance alert for server: %s end." %(server_id))
+            
+            func.mysql_exec("commit;",'')
+
+        except Exception, e:
+            logger.error(e)
+            sys.exit(1)
+        finally:
+            sys.exit(1)
+
+    finally:
+        func.check_db_status(server_id,host,port,tags,'sqlserver')  
+        
+        
+    try:
         func.mysql_exec("begin;",'')
         func.mysql_exec("insert into sqlserver_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from sqlserver_status where server_id = %s;' %(server_id),'')
 
-        conn = pymssql.connect(host=host,port=int(port),user=username,password=passwd,charset="utf8")
 
         connect = 1
         role = -1
@@ -69,27 +103,14 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         
         #send mail
         mail.send_alert_mail(server_id, host)   
+
     except Exception, e:
+        logger.error(e)
         func.mysql_exec("rollback;",'')
-        logger_msg="check sqlserver %s:%s : %s" %(host,port,e)
-        logger.warning(logger_msg)
-   
-        try:
-            connect=0
-            sql="insert into sqlserver_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
-            param=(server_id,host,port,tags,connect)
-            func.mysql_exec(sql,param)
-
-        except Exception, e:
-            logger.error(e)
-            sys.exit(1)
-        finally:
-            sys.exit(1)
-
-    finally:
-        func.check_db_status(server_id,host,port,tags,'sqlserver')   
         sys.exit(1)
 
+    finally:
+        conn.close()
 
 def main():
     servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_sqlserver where is_delete=0 and monitor=1;')
