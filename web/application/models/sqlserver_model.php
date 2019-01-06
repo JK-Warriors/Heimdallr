@@ -65,6 +65,7 @@ class Sqlserver_model extends CI_Model{
 																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
 																					FROM sqlserver_status_his h
 																				 WHERE server_id = $server_id
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
 																		) t
 																	GROUP BY time");
         if ($query->num_rows() > 0)
