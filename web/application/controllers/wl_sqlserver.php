@@ -56,48 +56,31 @@ on `status`.server_id=`server`.id order by used_memory desc limit 10;")->result_
         $begin_time=!empty($begin_time) ? $begin_time : "30";
         $time_span = $this->uri->segment(5);
         $time_span=!empty($time_span) ? $time_span : "min";
-        
-        //图表
-        $chart_reslut=array();              
-        for($i=$begin_time;$i>=0;$i--){
-            $timestamp=time()-60*$i;
-            $time= date('YmdHi',$timestamp);
-            $has_record = $this->sqlserver->check_has_record($server_id,$time);
-            if($has_record){
-                $chart_reslut[$i]['time']=date('Y-m-d H:i',$timestamp);
-                $dbdata=$this->sqlserver->get_status_chart_record($server_id,$time);
-                $chart_reslut[$i]['processes'] = $dbdata['processes'];
-                $chart_reslut[$i]['processes_running'] = $dbdata['processes_running'];
-                $chart_reslut[$i]['processes_waits'] = $dbdata['processes_waits'];
-                $chart_reslut[$i]['connections_persecond'] = $dbdata['connections_persecond'];
-                $chart_reslut[$i]['pack_received_persecond'] = $dbdata['pack_received_persecond'];
-                $chart_reslut[$i]['pack_sent_persecond'] = $dbdata['pack_sent_persecond'];
-                $chart_reslut[$i]['packet_errors_persecond'] = $dbdata['packet_errors_persecond'];
-                
 
-            }  
-        }
-        $data['chart_reslut']=$chart_reslut;
-    
-        $chart_option=array();
-        if($time_span=='min'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='hour'){
-            $chart_option['formatString']='%H:%M';
-        }
-        else if($time_span=='day'){
-            $chart_option['formatString']='%m/%d %H:%M';
-        }
         
-        $data['chart_option']=$chart_option;
-      
         $data['begin_time']=$begin_time;
         $data['cur_server_id']=$server_id;
         $data["cur_server"] = $this->server->get_servers($server_id);
         $this->layout->view('sqlserver/chart',$data);
     }
 
+
+    public function chart_data()
+	{
+        $server_id = $this->uri->segment(3);
+        $server_id=!empty($server_id) ? $server_id : "0";
+        $begin_time = $this->uri->segment(4);
+        $begin_time=!empty($begin_time) ? $begin_time : "30";
+        
+
+        if($server_id!="0"){
+        		$data['chart_data']=$this->sqlserver->get_chart_data($server_id, $begin_time);
+        }
+				
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("sqlserver/chart_data",$data);
+    }
+    
    
    public function replication()
         {

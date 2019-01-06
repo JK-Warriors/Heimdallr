@@ -60,7 +60,18 @@ class Sqlserver_model extends CI_Model{
         }
     }
 
-    
+    function get_chart_data($server_id, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM sqlserver_status_his h
+																				 WHERE server_id = $server_id
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
 
 }
 
