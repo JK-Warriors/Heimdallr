@@ -356,7 +356,10 @@ DROP TABLE IF EXISTS `db_cfg_os`;
 CREATE TABLE `db_cfg_os` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) DEFAULT NULL,
-  `community` varchar(50) DEFAULT NULL,
+  `port` varchar(30) DEFAULT NULL,
+  `protocol` varchar(50) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
   `tags` varchar(30) DEFAULT NULL,
   `monitor` tinyint(2) DEFAULT '0',
   `send_mail` tinyint(2) DEFAULT '0',
@@ -1596,7 +1599,7 @@ DROP TABLE IF EXISTS `os_status`;
 CREATE TABLE `os_status` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `ip` varchar(50) NOT NULL,
-  `snmp` tinyint(2) NOT NULL DEFAULT '0',
+  `connect` tinyint(2) NOT NULL DEFAULT '0',
   `tags` varchar(100) DEFAULT NULL,
   `hostname` varchar(100) NOT NULL DEFAULT '-1',
   `kernel` varchar(100) NOT NULL DEFAULT '-1',
@@ -1636,7 +1639,7 @@ DROP TABLE IF EXISTS `os_status_his`;
 CREATE TABLE `os_status_his` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `ip` varchar(50) NOT NULL,
-  `snmp` tinyint(2) NOT NULL DEFAULT '0',
+  `connect` tinyint(2) NOT NULL DEFAULT '0',
   `tags` varchar(100) DEFAULT NULL,
   `hostname` varchar(100) NOT NULL DEFAULT '-1',
   `kernel` varchar(100) NOT NULL DEFAULT '-1',

@@ -11,8 +11,7 @@
  
 <div class="btn-toolbar">
     <a class="btn btn-primary " href="<?php echo site_url('cfg_os/add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('add'); ?></a>
-    <a class="btn btn-primary " href="<?php echo site_url('cfg_os/batch_add') ?>"><i class="icon-plus"></i> <?php echo $this->lang->line('batch_add'); ?></a>
-    
+   
 </div>
 
 <div class="well">

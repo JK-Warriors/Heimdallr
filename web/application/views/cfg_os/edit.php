@@ -38,12 +38,40 @@
    </div>
    
    <div class="control-group">
-    <label class="control-label" for="">*<?php echo $this->lang->line('snmp'); ?> <?php echo $this->lang->line('community'); ?></label>
+    <label class="control-label" for="">*<?php echo $this->lang->line('protocol'); ?> </label>
     <div class="controls">
-      <input type="text" id=""  name="community" value="<?php echo $record['community']; ?>" >
+        <select name="protocol" id="protocol" onchange="protocol_change(this)">
+         <option value="snmp" <?php echo set_selected("snmp",$record['protocol']) ?>><?php echo $this->lang->line('snmp'); ?></option>
+         <option value="winrm" <?php echo set_selected("winrm",$record['protocol']) ?>><?php echo $this->lang->line('winrm'); ?></option>
+        </select>
       <span class="help-inline"></span>
     </div>
    </div>
+   
+    <div id="div_port" class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('port'); ?></label>
+    <div class="controls">
+      <input type="text" id="port"  name="port" value="<?php echo $record['port']; ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+   
+   <div id="div_user" class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('username'); ?></label>
+    <div class="controls">
+      <input type="text" id="username"  name="username" value="<?php echo $record['username']; ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+   
+   <div id="div_passwd" class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('password'); ?></label>
+    <div class="controls">
+      <input type="password" id="password"  name="password" value="<?php echo $record['password']; ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+   
    
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('tags'); ?></label>
@@ -165,4 +193,36 @@
 </div>
 
 </form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+		if($("#protocol").val() == "winrm"){
+				$("#div_user").show();
+				$("#div_passwd").show();
+				$("#div_port").show();
+		}else{
+				$("#div_user").hide();
+				$("#div_passwd").hide();
+				$("#div_port").hide();
+		}
+});
+
+
+function protocol_change(e){
+		if(e.value == "snmp"){
+				$("#div_user").hide();
+				$("#div_passwd").hide();
+				$("#div_port").hide();
+				$("#username").val("");
+				$("#password").val("");
+				$("#port").val("");
+		}
+		else if(e.value == "winrm"){
+				$("#div_user").show();
+				$("#div_passwd").show();
+				$("#div_port").show();
+				$("#port").val("5985");
+		}
+}
+</script>
 

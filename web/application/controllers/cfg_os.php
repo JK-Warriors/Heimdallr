@@ -61,7 +61,7 @@ class cfg_os extends Front_Controller {
 		if(isset($_POST['submit']) && $_POST['submit']=='add')
         {
 			$this->form_validation->set_rules('host',  'lang:host', 'trim|required');
-			$this->form_validation->set_rules('community',  'lang:community', 'trim|required');
+			$this->form_validation->set_rules('protocol',  'lang:protocol', 'trim|required');
 			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
 			$this->form_validation->set_rules('threshold_warning_os_process',  'lang:alarm_threshold', 'trim|required|integer');
 			$this->form_validation->set_rules('threshold_warning_os_load',  'lang:alarm_threshold', 'trim|required|integer');
@@ -85,12 +85,15 @@ class cfg_os extends Front_Controller {
 					$data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
-						'community'=>$this->input->post('community'),
-					    'tags'=>$this->input->post('tags'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+						'protocol'=>$this->input->post('protocol'),
+						'port'=>$this->input->post('port'),
+						'username'=>$this->input->post('username'),
+						'password'=>$this->input->post('password'),
+						'tags'=>$this->input->post('tags'),
+						'monitor'=>$this->input->post('monitor'),
+						'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
-                        'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
+						'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
 						'alarm_os_process'=>$this->input->post('alarm_os_process'),
 						'alarm_os_load'=>$this->input->post('alarm_os_load'),
@@ -110,7 +113,7 @@ class cfg_os extends Front_Controller {
 						'threshold_critical_os_network'=>$this->input->post('threshold_critical_os_network'),
 						'threshold_critical_os_disk'=>$this->input->post('threshold_critical_os_disk'),
 						'threshold_critical_os_memory'=>$this->input->post('threshold_critical_os_memory'),
-                        'filter_os_disk'=>$this->input->post('filter_os_disk'),
+						'filter_os_disk'=>$this->input->post('filter_os_disk'),
 					);
 					$this->os->insert($data);
                     redirect(site_url('cfg_os/index'));
@@ -133,7 +136,7 @@ class cfg_os extends Front_Controller {
 		if(isset($_POST['submit']) && $_POST['submit']=='edit')
         {
             $this->form_validation->set_rules('host',  'lang:host', 'trim|required');
-			$this->form_validation->set_rules('community',  'lang:community', 'trim|required');
+			$this->form_validation->set_rules('protocol',  'lang:protocol', 'trim|required');
 			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
 			$this->form_validation->set_rules('threshold_warning_os_process',  'lang:alarm_threshold', 'trim|required|integer');
 			$this->form_validation->set_rules('threshold_warning_os_load',  'lang:alarm_threshold', 'trim|required|integer');
@@ -157,12 +160,15 @@ class cfg_os extends Front_Controller {
 					$data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
-						'community'=>$this->input->post('community'),
-					    'tags'=>$this->input->post('tags'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+						'protocol'=>$this->input->post('protocol'),
+						'port'=>$this->input->post('port'),
+						'username'=>$this->input->post('username'),
+						'password'=>$this->input->post('password'),
+						'tags'=>$this->input->post('tags'),
+						'monitor'=>$this->input->post('monitor'),
+						'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
-                        'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
+						'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
 						'alarm_os_process'=>$this->input->post('alarm_os_process'),
 						'alarm_os_load'=>$this->input->post('alarm_os_load'),
@@ -182,7 +188,7 @@ class cfg_os extends Front_Controller {
 						'threshold_critical_os_network'=>$this->input->post('threshold_critical_os_network'),
 						'threshold_critical_os_disk'=>$this->input->post('threshold_critical_os_disk'),
 						'threshold_critical_os_memory'=>$this->input->post('threshold_critical_os_memory'),
-                        'filter_os_disk'=>$this->input->post('filter_os_disk'),
+						'filter_os_disk'=>$this->input->post('filter_os_disk'),
 					);
 					$this->os->update($data,$id);
 					//echo $this->input->post('host_old');exit;
@@ -266,13 +272,13 @@ class cfg_os extends Front_Controller {
         {
             for($n=1;$n<=10;$n++){
 			  $host = $this->input->post('host_'.$n);
-              $community = $this->input->post('community_'.$n);
+              $protocol = $this->input->post('protocol'.$n);
               $tags = $this->input->post('tags_'.$n);
               if(!empty($host) && !empty($community) && !empty($tags)){
                  $data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
-						'community'=>$this->input->post('community'),
+						'protocol'=>$this->input->post('protocol'),
 					    'tags'=>$this->input->post('tags'),
                         'monitor'=>$this->input->post('monitor'),
                         'send_mail'=>$this->input->post('send_mail'),

@@ -32,14 +32,14 @@
     <th colspan="3"><center><?php echo $this->lang->line('load'); ?></center></th>
     <th colspan="3"><center><?php echo $this->lang->line('cpu'); ?></center></th>
     <th colspan="3"><center><?php echo $this->lang->line('memory'); ?></center></th>
-    <th colspan="2"><center><?php echo $this->lang->line('swap'); ?></center></th>
+    <!--<th colspan="2"><center><?php echo $this->lang->line('swap'); ?></center></th>-->
 	<th colspan="2"><center><?php echo $this->lang->line('disk'); ?><?php echo $this->lang->line('io'); ?></center></th>
 	<th colspan="2"><center><?php echo $this->lang->line('network'); ?></center></th>
         <th ></th>
      </tr>
         <tr style="font-size: 12px;">
         <th><?php echo $this->lang->line('host'); ?></th>
-        <th>SNMP</th> 
+        <th><?php echo $this->lang->line('connect'); ?></th> 
         <th><?php echo $this->lang->line('process'); ?></th>
         <th><?php echo $this->lang->line('load'); ?>(1)</th>
         <th><?php echo $this->lang->line('load'); ?>(5)</th>
@@ -48,10 +48,10 @@
         <th><?php echo $this->lang->line('system'); ?></th>
         <th><?php echo $this->lang->line('idle'); ?></th>
         <th><?php echo $this->lang->line('total'); ?></th>
-        <th><?php echo $this->lang->line('avail'); ?></th>
-        <th><?php echo $this->lang->line('cached'); ?></th>
-        <th><?php echo $this->lang->line('total'); ?></th>
-        <th><?php echo $this->lang->line('avail'); ?></th>
+        <th><?php echo $this->lang->line('used'); ?></th>
+        <th><?php echo $this->lang->line('rate'); ?></th>
+        <!--<th><?php echo $this->lang->line('total'); ?></th>-->
+        <!--<th><?php echo $this->lang->line('avail'); ?></th>-->
 				<th><?php echo $this->lang->line('read'); ?></th>
         <th><?php echo $this->lang->line('write'); ?></th>
 				<th><?php echo $this->lang->line('in'); ?></th>
@@ -64,7 +64,7 @@
  <?php foreach ($datalist  as $item):?>
     <tr style="font-size: 12px;">
         <td><?php echo $item['ip'] ?></td>
-        <td><?php if($item['snmp']=='1'){ ?> <span class="label label-success"><?php echo $this->lang->line('success'); ?></span> <?php }else{  ?><span class="label label-important"><?php echo $this->lang->line('failure'); ?></span> <?php } ?></td>
+        <td><?php if($item['connect']=='1'){ ?> <span class="label label-success"><?php echo $this->lang->line('success'); ?></span> <?php }else{  ?><span class="label label-important"><?php echo $this->lang->line('failure'); ?></span> <?php } ?></td>
         <td><?php echo check_value($item['process']) ?></td>
         <td><?php echo check_value($item['load_1']) ?></td>
         <td><?php echo check_value($item['load_5']) ?></td>
@@ -73,15 +73,15 @@
         <td><?php echo check_cpu($item['cpu_system_time']) ?></td>
         <td><?php echo check_cpu($item['cpu_idle_time']) ?></td>
         <td><?php echo check_memory($item['mem_total']) ?></td>
-        <td><?php echo check_memory($item['mem_avail']) ?></td>
-        <td><?php echo check_memory($item['mem_cached']) ?></td>
-        <td><?php echo check_memory($item['swap_total']) ?></td>
-        <td><?php echo check_memory($item['swap_avail']) ?></td>
-				<td><?php echo $item['disk_io_reads_total'] ?></td>
-        <td><?php echo $item['disk_io_writes_total'] ?></td>
+        <td><?php echo check_memory($item['mem_available']) ?></td>
+        <td><?php echo $item['mem_usage_rate'] ?>%</td>
+        <!--<td><?php echo check_memory($item['swap_total']) ?></td>-->
+        <!--<td><?php echo check_memory($item['swap_avail']) ?></td>-->
+				<td><?php echo format_bytes($item['disk_io_reads_total']) ?></td>
+        <td><?php echo format_bytes($item['disk_io_writes_total']) ?></td>
 				<td><?php echo format_bytes($item['net_in_bytes_total']) ?></td>
         <td><?php echo format_bytes($item['net_out_bytes_total']) ?></td>
-        <td><?php if($item['snmp']=='1'){ ?><a href="<?php echo site_url('wl_os/chart?host='.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a> <?php }else{  ?>--- <?php } ?></td>
+        <td><?php if($item['connect']=='1'){ ?><a href="<?php echo site_url('wl_os/chart?host='.$item['ip']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a> <?php }else{  ?>--- <?php } ?></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

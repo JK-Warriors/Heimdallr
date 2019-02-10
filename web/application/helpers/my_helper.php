@@ -207,7 +207,7 @@ function set_selected($data,$value){
   
 function check_value($data){
     if($data=='-1' || $data == null ){
-        return "---";
+        return "N/A";
     }
     else if($data=='master'){
         return "<span class='label label-info'>M</span>";
@@ -285,7 +285,7 @@ function check_memory($data)
 function check_cpu($data){
     if($data==-1)
     {
-        return '---';
+        return 'N/A';
     }
     if($data==0)
     {

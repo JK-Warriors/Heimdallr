@@ -29,15 +29,42 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('host'); ?></label>
     <div class="controls">
-      <input type="text" id=""  name="host" value="<?php echo set_value('host'); ?>" >
+      <input type="text" id="host"  name="host" value="<?php echo set_value('host'); ?>" >
       <span class="help-inline"></span>
     </div>
    </div>
    
    <div class="control-group">
-    <label class="control-label" for="">*<?php echo $this->lang->line('snmp'); ?> <?php echo $this->lang->line('community'); ?></label>
+    <label class="control-label" for="">*<?php echo $this->lang->line('protocol'); ?> </label>
     <div class="controls">
-      <input type="text" id=""  name="community" value="<?php echo set_value('community','public'); ?>" >
+        <select id="protocol" name="protocol" onchange="protocol_change(this)">
+         <option value="snmp"  ><?php echo $this->lang->line('snmp'); ?></option>
+         <option value="winrm"  ><?php echo $this->lang->line('winrm'); ?></option>
+        </select>
+      <span class="help-inline"></span>
+    </div>
+   </div>
+   
+   <div id="div_port" class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('port'); ?></label>
+    <div class="controls">
+      <input type="text" id="port"  name="port" value="<?php echo set_value('port'); ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+   
+   <div id="div_user" class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('username'); ?></label>
+    <div class="controls">
+      <input type="text" id="username"  name="username" value="<?php echo set_value('username'); ?>" >
+      <span class="help-inline"></span>
+    </div>
+   </div>
+   
+   <div id="div_passwd" class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('password'); ?></label>
+    <div class="controls">
+      <input type="password" id="password"  name="password" value="<?php echo set_value('password'); ?>" >
       <span class="help-inline"></span>
     </div>
    </div>
@@ -45,7 +72,7 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('tags'); ?></label>
     <div class="controls">
-      <input type="text" id=""  name="tags" value="<?php echo set_value('tags'); ?>" >
+      <input type="text" id="tags"  name="tags" value="<?php echo set_value('tags'); ?>" >
       <span class="help-inline"></span>
     </div>
    </div>
@@ -165,3 +192,31 @@
 
 </form>
 
+<script type="text/javascript">
+$(document).ready(function(){
+		$("#div_user").hide();
+		$("#div_passwd").hide();
+		$("#div_port").hide();
+		$("#username").val("");
+		$("#password").val("");
+		$("#port").val("");
+		
+});
+
+function protocol_change(e){
+		if(e.value == "snmp"){
+				$("#div_port").hide();
+				$("#div_user").hide();
+				$("#div_passwd").hide();
+				$("#username").val("");
+				$("#password").val("");
+				$("#port").val("");
+		}
+		else if(e.value == "winrm"){
+				$("#div_user").show();
+				$("#div_passwd").show();
+				$("#div_port").show();
+				$("#port").val("5985");
+		}
+}
+</script>
