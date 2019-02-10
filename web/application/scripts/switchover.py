@@ -487,16 +487,39 @@ def bind_ip(mysql_conn, group_id, server_id, op_type):
                 for ip in ip_list:
                     ip_cmd = ""
                     if op_type == "bind":
-                        ip_cmd = "ifconfig %s:%s %s netmask 255.255.255.0" %(network_card, i, ip)
+                        #get network mask
+                        mask_cmd = "ifconfig -a %s | grep 'Mask' | awk -F ':' '{print $NF}'" %(network_card)
+                        stdin, stdout, stderr = ssh.exec_command(mask_cmd + "\n")  
+                        mask=stdout.read()
+                        
+                        #get network gateway
+                        gateway_cmd = "route -n | grep %s | awk '{print $2}' | grep -v '0.0.0.0'" %(network_card)
+                        stdin, stdout, stderr = ssh.exec_command(gateway_cmd + "\n")  
+                        gateway=stdout.read()
+
+
+                        ip_cmd = "ifconfig %s:%s %s netmask %s" %(network_card, i, ip, mask)
                         ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
+                        print ip_cmd
+                        stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
+                        out_str=stdout.read()
+
+                        #arp
+                        arp_cmd = "arping -U -c 1 -I %s -s %s %s" %(network_card, ip, gateway)
+                        #arping -U -c 1 -I $nic -s $scanip $net_gateway
+                        print arp_cmd
+                        stdin, stdout, stderr = ssh.exec_command(arp_cmd + "\n")  
+                        out_str=stdout.read()
+
                     elif op_type == "unbind":
                         ip_cmd = "ifconfig %s:%s down" %(network_card, i)
                         ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
                         
-                    print ip_cmd
-                    stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
-                    out_str=stdout.read()
+                        print ip_cmd
+                        stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
+                        out_str=stdout.read()
                     
+
                     ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
                     stdin, stdout, stderr = ssh.exec_command(ck_cmd + "\n")  
                     out_str=stdout.read().strip("\n")
