@@ -34,7 +34,7 @@
 	</tr>
     <tr>
         <th><?php echo $this->lang->line('host'); ?></th>
-        <th><?php echo $this->lang->line('community'); ?></th>
+        <th><?php echo $this->lang->line('protocol'); ?></th>
         <th><?php echo $this->lang->line('tags'); ?></th>
 		<th><?php echo $this->lang->line('monitor'); ?></th>
 		<th><?php echo $this->lang->line('send_mail'); ?></th>
@@ -52,7 +52,7 @@
 <input type="hidden" name="ids[]" value="<?php echo $n ?>" /> 
     <tr style="font-size:12px;">
         <td><input type="text" name="host_<?php echo $n ?>" class="input-small" placeholder="<?php echo $this->lang->line('host'); ?>" value=""></td>
-        <td><input type="text" name="community_<?php echo $n ?>" class="input-mini" placeholder="<?php echo $this->lang->line('community'); ?>" value="public"></td>
+        <td><input type="text" name="protocol<?php echo $n ?>" class="input-mini" placeholder="<?php echo $this->lang->line('protocol'); ?>" value="public"></td>
         <td><input type="text" name="tags_<?php echo $n ?>" class="input-mini" placeholder="<?php echo $this->lang->line('tags'); ?>" value=""></td>
         
         <td><select name="monitor_<?php echo $n ?>"  class="input-mini">

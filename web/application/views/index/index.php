@@ -61,8 +61,8 @@
       <thead>
         <tr style="font-size: 13px;">
         <th colspan="4"><center><?php echo $this->lang->line('servers'); ?></center></th>
-        <th colspan="7"><center><?php echo $this->lang->line('db'); ?></center></th>
-        <th colspan="7"><center><?php echo $this->lang->line('os'); ?></center></th>
+        <th colspan="8"><center><?php echo $this->lang->line('db'); ?></center></th>
+        <th colspan="6"><center><?php echo $this->lang->line('os'); ?></center></th>
         <th ></th>
         </tr>
         <tr style="font-size: 12px;" >
@@ -78,7 +78,7 @@
         <th><?php echo $this->lang->line('repl'); ?></th>
         <th><?php echo $this->lang->line('delay'); ?></th>
         <th><?php echo $this->lang->line('tbs'); ?></th>
-        <th><?php echo $this->lang->line('snmp'); ?></th>
+        <!--<th><?php echo $this->lang->line('snmp'); ?></th>-->
         <th><?php echo $this->lang->line('process'); ?></th>
         <th><?php echo $this->lang->line('load'); ?></th>
         <th><?php echo $this->lang->line('cpu'); ?></th>
@@ -104,7 +104,7 @@
         <td><?php echo check_db_status_level($item['repl'],$item['repl_tips']) ?></td>
         <td><?php echo check_db_status_level($item['repl_delay'],$item['repl_delay_tips']) ?></td>
         <td><?php echo check_db_status_level($item['tablespace'],$item['tablespace_tips']) ?></td>
-        <td><?php echo check_db_status_level($item['snmp'],$item['snmp_tips']) ?></td>
+        <!--<td><?php echo check_db_status_level($item['snmp'],$item['snmp_tips']) ?></td>-->
         <td><?php echo check_db_status_level($item['process'],$item['process_tips']) ?></td>
         <td><?php echo check_db_status_level($item['load_1'],$item['load_1_tips']) ?></td>
         <td><?php echo check_db_status_level($item['cpu'],$item['cpu_tips']) ?></td>

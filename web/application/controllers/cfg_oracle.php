@@ -133,7 +133,7 @@ class cfg_oracle extends Front_Controller {
                     if($result == 0)
 										{   $os_data = array(
 														'host'=>$this->input->post('host'),
-														'community'=> "public",
+														'protocol'=> "snmp",
 							   					  'tags'=>$this->input->post('tags'),
 		                        'monitor'=> 0,
 		                        'send_mail'=> 0,

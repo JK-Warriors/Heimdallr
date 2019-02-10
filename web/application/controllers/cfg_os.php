@@ -274,7 +274,7 @@ class cfg_os extends Front_Controller {
 			  $host = $this->input->post('host_'.$n);
               $protocol = $this->input->post('protocol'.$n);
               $tags = $this->input->post('tags_'.$n);
-              if(!empty($host) && !empty($community) && !empty($tags)){
+              if(!empty($host) && !empty($protocol) && !empty($tags)){
                  $data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
