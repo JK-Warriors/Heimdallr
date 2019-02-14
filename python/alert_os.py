@@ -35,7 +35,7 @@ def gen_alert_os_status(os_ip):
         
     sql = """SELECT a.ip,
 										a.hostname,
-										a.snmp,
+										a.connect,
 										a.process,
 										a.load_1,
 										a.cpu_idle_time,
@@ -66,7 +66,7 @@ def gen_alert_os_status(os_ip):
         for line in result:
             host=line[0]
             hostname=line[1]
-            snmp=line[2]
+            connect=line[2]
             process=line[3]
             load_1=line[4]
             cpu_idle=line[5]
@@ -100,11 +100,11 @@ def gen_alert_os_status(os_ip):
             if send_sms_to_list is None or  send_sms_to_list.strip()=='':
                 send_sms_to_list = sms_to_list_common
                 
-            if snmp <> 1:
-                send_mail = func.update_send_mail_status(host,db_type,'snmp_server',send_mail,send_mail_max_count)
-                send_sms = func.update_send_sms_status(host,db_type,'snmp_server',send_sms,send_sms_max_count)
-                func.add_alert(server_id,tags,host,port,create_time,db_type,'snmp_server','down','critical','snmp server down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                func.update_db_status('snmp','3',server_id, host, db_type,create_time,'snmp_server','down','critical')
+            if connect <> 1:
+                send_mail = func.update_send_mail_status(host,db_type,'connect_server',send_mail,send_mail_max_count)
+                send_sms = func.update_send_sms_status(host,db_type,'connect_server',send_sms,send_sms_max_count)
+                func.add_alert(server_id,tags,host,port,create_time,db_type,'connect_server','down','critical','connect server fail',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                func.update_db_status('connect','3',server_id, host, db_type,create_time,'connect_server','down','critical')
                 func.update_db_status('process','-1',server_id, host, db_type,'','','','')
                 func.update_db_status('load_1','-1',server_id, host, db_type,'','','','')
                 func.update_db_status('cpu','-1',server_id, host, db_type,'','','','')
@@ -112,8 +112,8 @@ def gen_alert_os_status(os_ip):
                 func.update_db_status('network','-1',server_id, host, db_type,'','','','')
                 func.update_db_status('disk','-1',server_id, host, db_type,'','','','')
             else:
-                func.check_if_ok(server_id,tags,host,port,create_time,db_type,'snmp_server','up','snmp server up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                func.update_db_status('snmp',1,server_id, host, db_type,create_time,'snmp_server','up','ok')
+                func.check_if_ok(server_id,tags,host,port,create_time,db_type,'connect_server','up','connect server success',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                func.update_db_status('connect',1,server_id, host, db_type,create_time,'connect_server','up','ok')
 
                 if int(alarm_os_process)==1:
                     if int(process) >= int(threshold_critical_os_process):
