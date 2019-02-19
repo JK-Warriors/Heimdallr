@@ -38,7 +38,7 @@ def check_os_snmp(ip,filter_os_disk,tags):
             # get kernel
             command="""/usr/bin/snmpwalk -v1 -c %s %s SNMPv2-MIB::sysDescr.0|awk '{print $4 " " $6 " " $15}' """ %(community, ip)
             res_file=os.popen(command)
-            kernel=res_file.read()
+            kernel=res_file.read().replace('\n','')
             
             # get system_date
             command="""/usr/bin/snmpwalk -v1 -c %s %s HOST-RESOURCES-MIB::hrSystemDate.0|cut -d '=' -f2|cut -d ' ' -f3 """ %(community, ip)
@@ -500,12 +500,12 @@ def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
         outstr = str(r.std_out).replace("\r","")
         list_nic = outstr.split("\n")
         for i in list_nic:
-            if i.find("Name=")>=0 and i.find("Network") > 0:
+            if i.find("Name=")>=0 and i.find("Ethernet") > 0:
                 func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
                 func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
             	
         for i in list_nic:
-            if i.find("Name=")>=0 and i.find("Network") > 0:
+            if i.find("Name=")>=0 and i.find("Ethernet") > 0:
                 nic = i.replace("Name=","")
                 print nic
                 	
@@ -537,6 +537,7 @@ def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
         param = (ip,1,tags, hostname, kernel, system_date,system_uptime,process,load_1,load_5,load_15,cpu_user_time,cpu_system_time,cpu_idle_time,swap_total,swap_avail,mem_total,mem_avail,mem_free,mem_shared,mem_buffered,mem_cached,mem_usage_rate,mem_available,disk_io_reads_total,disk_io_writes_total,net_in_bytes_total,net_out_bytes_total)
         func.mysql_exec(sql,param) 
         
+            
         # generate OS alert
         alert.gen_alert_os_status(ip)    
         alert.gen_alert_os_disk(ip)    
@@ -598,7 +599,7 @@ def main():
                      plist.append(p)
                      p.start()
                  elif protocol == 'winrm':
-                     p = Process(target = check_os_winrm, args=(host,'5985', username,password,filter_os_disk,tags))
+                     p = Process(target = check_os_winrm, args=(host,port, username,password,filter_os_disk,tags))
                      plist.append(p)
                      p.start()
 

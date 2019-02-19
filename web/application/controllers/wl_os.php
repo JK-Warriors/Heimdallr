@@ -163,7 +163,12 @@ group by CONCAT(ip,left(fdisk,3)) order by (disk_io_reads+disk_io_writes)  desc 
 				$setval["host"] = $host;
 				$setval["begin_time"] = $begin_time;
 				
+        if($host!=""){
+        		$setval['kernel']=$this->os->get_kernel_by_host($host);
+        }
+        
         $data['setval']=$setval;
+        
         $this->layout->view('os/chart',$data);
     }
     

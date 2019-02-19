@@ -23,10 +23,10 @@
                 </div>
 </div> <!-- /toolbar -->             
 <hr/>
-<div id="cpu_load" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
+<div id="cpu_load" style="margin-top:5px; margin-left:10px; width:96%; height:300px; <?php if(strpos($setval['kernel'],'Windows')!==false) echo 'display:none'; ?>" ></div>
 <div id="cpu_utilization" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
 <div id="memory" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
-<div id="swap" style="margin-top:5px; margin-left:10px; width:96%; height:300px;"></div>
+<div id="swap" style="margin-top:5px; margin-left:10px; width:96%; height:300px; <?php if(strpos($setval['kernel'],'Windows')!==false) echo 'display:none'; ?>"></div>
 <div id="process" style="margin-top:5px; margin-left:10px; width:96%; height:300px; "></div>
 <div id="network" style="margin-top:5px; margin-left:10px; width:96%; height:300px; "></div>
 <div id="diskio" style="margin-top:5px; margin-left:10px; width:96%; height:300px; "></div>
@@ -38,6 +38,7 @@
 
 <script type="text/javascript">
 var url = "<?php echo site_url('wl_os/chart_data?host=') . $setval['host'] . '&begin_time=' . $setval['begin_time']; ?>";
+var kernel = "<?php echo $setval['kernel']; ?>";
 var d_cpu_load = document.getElementById("cpu_load");
 var c_cpu_load = echarts.init(d_cpu_load, 'infographic');
 
@@ -60,6 +61,7 @@ var d_diskio = document.getElementById("diskio");
 var c_diskio = echarts.init(d_diskio, 'infographic');
 
 var option = null;
+var option_1 = null;
 
 var colors = ['#5793f3', '#d14a61', '#675bba'];
 
@@ -241,7 +243,82 @@ function getChartSeriesData(url){
 				    }]
 				};
 				
-				c_cpu_utilization.setOption(option, true);
+				//=========================CPU windows=========================================//
+				option_1 = {
+				    title : {
+				        text: "<?php echo $setval['host']; ?> CPU <?php echo $this->lang->line('chart'); ?>",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['idle time'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value + ':';
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "idle time",
+				        type: 'line',
+				        color: colors[2],
+				        smooth: true,
+				        data: json.cpu_idle_time
+				    }]
+				};
+				
+				//alert(kernel);
+				if(kernel.indexOf("Windows") != -1){
+						c_cpu_utilization.setOption(option_1, true);
+				}
+				else{
+						c_cpu_utilization.setOption(option, true);
+				}
 				
 				
 				

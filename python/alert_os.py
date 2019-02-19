@@ -131,7 +131,9 @@ def gen_alert_os_status(os_ip):
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'process',process,'process running ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
 
                 if int(alarm_os_load)==1:
-                    if int(load_1) >= int(threshold_critical_os_load):
+                    if int(load_1) ==-1:
+                        func.update_db_status('load_1','-1',server_id, host, db_type,'','','','')
+                    elif int(load_1) >= int(threshold_critical_os_load):
                         send_mail = func.update_send_mail_status(host,db_type,'load',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(host,db_type,'load',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'load',load_1,'critical','too high load',send_mail,send_mail_to_list,send_sms,send_sms_to_list)

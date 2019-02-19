@@ -113,6 +113,17 @@ class Os_model extends CI_Model{
         }
     }
     
+
+
+    function get_kernel_by_host($host){
+        $query=$this->db->query("select kernel from os_status where ip='$host';");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->kernel;
+        }
+    }
+    
     
     function get_diskinfo_record($host){
         $query=$this->db->query("select * from os_disk where ip='$host';");
