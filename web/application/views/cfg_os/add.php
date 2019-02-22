@@ -34,12 +34,28 @@
     </div>
    </div>
    
+   <!--
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('protocol'); ?> </label>
     <div class="controls">
         <select id="protocol" name="protocol" onchange="protocol_change(this)">
          <option value="snmp"  ><?php echo $this->lang->line('snmp'); ?></option>
          <option value="winrm"  ><?php echo $this->lang->line('winrm'); ?></option>
+        </select>
+      <span class="help-inline"></span>
+    </div>
+   </div>-->
+   
+   
+   <div class="control-group">
+    <label class="control-label" for="">*<?php echo $this->lang->line('host_type'); ?> </label>
+    <div class="controls">
+        <select id="host_type" name="host_type" onchange="host_type_change(this)">
+         <option value="0"  >Linux</option>
+         <option value="1"  >AIX</option>
+         <option value="2"  >HP-UX</option>
+         <option value="3"  >Solaris</option>
+         <option value="4"  >Windows</option>
         </select>
       <span class="help-inline"></span>
     </div>
@@ -203,20 +219,20 @@ $(document).ready(function(){
 		
 });
 
-function protocol_change(e){
-		if(e.value == "snmp"){
+function host_type_change(e){
+		if(e.value == "4"){
+				$("#div_user").show();
+				$("#div_passwd").show();
+				$("#div_port").show();
+				$("#port").val("5985");
+		}
+		else{
 				$("#div_port").hide();
 				$("#div_user").hide();
 				$("#div_passwd").hide();
 				$("#username").val("");
 				$("#password").val("");
 				$("#port").val("");
-		}
-		else if(e.value == "winrm"){
-				$("#div_user").show();
-				$("#div_passwd").show();
-				$("#div_port").show();
-				$("#port").val("5985");
 		}
 }
 </script>

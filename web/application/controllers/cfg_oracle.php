@@ -131,9 +131,21 @@ class cfg_oracle extends Front_Controller {
                     $host=$this->input->post('host');
                     $result = $this->oracle->check_if_os_exists($host);
                     if($result == 0)
-										{   $os_data = array(
+										{   
+											$port = 161;
+											$protocol = "snmp";
+											if($this->input->post('host_type') == 4){
+													$port = 5985;
+													$protocol = "winrm";
+											}
+											
+											$os_data = array(
 														'host'=>$this->input->post('host'),
-														'protocol'=> "snmp",
+														'host_type'=>$this->input->post('host_type'),
+														'port'=> $port,
+														'protocol'=> $protocol,
+														'username'=>$this->input->post('host_user'),
+														'password'=>$this->input->post('host_pwd'),
 							   					  'tags'=>$this->input->post('tags'),
 		                        'monitor'=> 0,
 		                        'send_mail'=> 0,
@@ -244,11 +256,34 @@ class cfg_oracle extends Front_Controller {
 						'filter_tbs'=>$this->input->post('filter_tbs'),
 					);
 					$this->oracle->update($data,$id);
+					
 					if($this->input->post('monitor')!=1){
 						$this->oracle->db_status_remove($id);	
 					}
-                    redirect(site_url('cfg_oracle/index'));
-            }
+					
+					
+          $host=$this->input->post('host');
+          $host_id = $this->cfg_os->get_id_by_host($host);
+          if(!empty($host_id)){   
+							$port = 161;
+							$protocol = "snmp";
+							if($this->input->post('host_type') == 4){
+									$port = 5985;
+									$protocol = "winrm";
+							}
+											
+							$os_data = array(
+									'host_type'=>$this->input->post('host_type'),
+									'port'=> $port,
+									'protocol'=> $protocol,
+									'username'=>$this->input->post('host_user'),
+									'password'=>$this->input->post('host_pwd'),
+							);
+              $this->cfg_os->update($os_data, $host_id);
+          }
+                      
+          redirect(site_url('cfg_oracle/index'));
+          }
         }
         
          
@@ -256,13 +291,12 @@ class cfg_oracle extends Front_Controller {
 		if(!$id || !$record){
 			show_404();
 		}
-        else{
-            $data['record']= $record;
-        }
-          
-       
-        $this->layout->view("cfg_oracle/edit",$data);
+    else{
+      $data['record']= $record;
     }
+          
+    $this->layout->view("cfg_oracle/edit",$data);
+}
     
     /**
      * 删除

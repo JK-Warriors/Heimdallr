@@ -68,6 +68,17 @@ class cfg_os_model extends CI_Model{
 		}
 	}
     
+    function get_id_by_host($host)
+    {
+			$query = $this->db->get_where($this->table, array('host' =>$host));
+			if ($query->num_rows() > 0)
+			{
+			 	$result=$query->row_array();
+       	return $result['id'];
+			}
+		}
+	
+	
     function get_servers($server_id){
         $query = $this->db->get_where($this->table, array('id' =>$server_id));
 		if ($query->num_rows() > 0)
@@ -91,6 +102,8 @@ class cfg_os_model extends CI_Model{
 		$this->db->where('id', $id);
 		$this->db->update($this->table, $data);
 	}
+	
+
     
     /*
 	 * 删除信息

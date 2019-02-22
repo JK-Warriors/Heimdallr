@@ -61,7 +61,7 @@ class cfg_os extends Front_Controller {
 		if(isset($_POST['submit']) && $_POST['submit']=='add')
         {
 			$this->form_validation->set_rules('host',  'lang:host', 'trim|required');
-			$this->form_validation->set_rules('protocol',  'lang:protocol', 'trim|required');
+			$this->form_validation->set_rules('host_type',  'lang:host_type', 'trim|required');
 			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
 			$this->form_validation->set_rules('threshold_warning_os_process',  'lang:alarm_threshold', 'trim|required|integer');
 			$this->form_validation->set_rules('threshold_warning_os_load',  'lang:alarm_threshold', 'trim|required|integer');
@@ -82,11 +82,19 @@ class cfg_os extends Front_Controller {
 			}
 			else
 			{
+					$port = 161;
+					$protocol = "snmp";
+					if($this->input->post('host_type') == 4){
+							$port = 5985;
+							$protocol = "winrm";
+					}
+					
 					$data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
-						'protocol'=>$this->input->post('protocol'),
 						'port'=>$this->input->post('port'),
+						'host_type'=>$this->input->post('host_type'),
+						'protocol'=> $protocol,
 						'username'=>$this->input->post('username'),
 						'password'=>$this->input->post('password'),
 						'tags'=>$this->input->post('tags'),
@@ -136,7 +144,7 @@ class cfg_os extends Front_Controller {
 		if(isset($_POST['submit']) && $_POST['submit']=='edit')
         {
             $this->form_validation->set_rules('host',  'lang:host', 'trim|required');
-			$this->form_validation->set_rules('protocol',  'lang:protocol', 'trim|required');
+			$this->form_validation->set_rules('host_type',  'lang:host_type', 'trim|required');
 			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
 			$this->form_validation->set_rules('threshold_warning_os_process',  'lang:alarm_threshold', 'trim|required|integer');
 			$this->form_validation->set_rules('threshold_warning_os_load',  'lang:alarm_threshold', 'trim|required|integer');
@@ -157,11 +165,19 @@ class cfg_os extends Front_Controller {
 			}
 			else
 			{
+					$port = 161;
+					$protocol = "snmp";
+					if($this->input->post('host_type') == 4){
+							$port = 5985;
+							$protocol = "winrm";
+					}
+					
 					$data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
-						'protocol'=>$this->input->post('protocol'),
 						'port'=>$this->input->post('port'),
+						'host_type'=>$this->input->post('host_type'),
+						'protocol'=> $protocol,
 						'username'=>$this->input->post('username'),
 						'password'=>$this->input->post('password'),
 						'tags'=>$this->input->post('tags'),

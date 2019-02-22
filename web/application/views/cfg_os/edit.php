@@ -37,6 +37,7 @@
     </div>
    </div>
    
+   <!--
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('protocol'); ?> </label>
     <div class="controls">
@@ -46,8 +47,21 @@
         </select>
       <span class="help-inline"></span>
     </div>
-   </div>
+   </div>-->
    
+    <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('host_type'); ?></label>
+    <div class="controls">
+        <select name="host_type" id="host_type" class="input-medium" onchange="host_type_change(this)" >
+         <option value="0" <?php echo set_selected(0,$record['host_type']) ?>>Linux</option>
+         <option value="1" <?php echo set_selected(1,$record['host_type']) ?>>AIX</option>
+         <option value="2" <?php echo set_selected(2,$record['host_type']) ?>>HP-UX</option>
+         <option value="3" <?php echo set_selected(3,$record['host_type']) ?>>Solaris</option>
+         <option value="4" <?php echo set_selected(4,$record['host_type']) ?>>Windows</option>
+        </select>
+    </div>
+    </div>
+    
     <div id="div_port" class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('port'); ?></label>
     <div class="controls">
@@ -196,7 +210,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-		if($("#protocol").val() == "winrm"){
+		if($("#host_type").val() == "4"){
 				$("#div_user").show();
 				$("#div_passwd").show();
 				$("#div_port").show();
@@ -208,20 +222,20 @@ $(document).ready(function(){
 });
 
 
-function protocol_change(e){
-		if(e.value == "snmp"){
+function host_type_change(e){
+		if(e.value == "4"){
+				$("#div_user").show();
+				$("#div_passwd").show();
+				$("#div_port").show();
+				$("#port").val("5985");
+		}
+		else{
 				$("#div_user").hide();
 				$("#div_passwd").hide();
 				$("#div_port").hide();
 				$("#username").val("");
 				$("#password").val("");
 				$("#port").val("");
-		}
-		else if(e.value == "winrm"){
-				$("#div_user").show();
-				$("#div_passwd").show();
-				$("#div_port").show();
-				$("#port").val("5985");
 		}
 }
 </script>
