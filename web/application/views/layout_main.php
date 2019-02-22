@@ -178,9 +178,9 @@
                         <hr>
 
                         <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
-                        <p class="pull-right">Power by <a href="#" target="_blank">DR&M</a></p>
+                        <p class="pull-right">Power by <a>DR&M</a></p>
 
-                        <p>Copyright (c) 2018. All rights reserved. <a href="#" target="_blank">DR&M Cloud</a>&nbsp;(Disaster Recovery & Monitor Cloud)</p>
+                        <p>Copyright (c) 2018. All rights reserved. <a>DR&M Cloud</a>&nbsp;(Disaster Recovery & Monitor Cloud)</p>
                     </footer>
                     
             </div>
