@@ -12,6 +12,7 @@ $lang['_MongoDB'] = 'MongoDB';
 $lang['_Redis'] = 'Redis';
 $lang['_SQLServer'] = 'SQLServer';
 $lang['_OS'] = '操作系统';
+$lang['_Tool Box'] = '工具箱';
 
 $lang['_MySQL Panel'] = 'MySQL监控';
 $lang['_MySQL Monitor'] = 'MySQL';
@@ -68,6 +69,9 @@ $lang['_Role'] = '角色管理';
 $lang['_Menu'] = '菜单管理';
 $lang['_Privilege'] = '权限节点';
 $lang['_Authorization'] = '授权管理';
+
+
+$lang['_Lock List'] = '锁列表';
 
 
 

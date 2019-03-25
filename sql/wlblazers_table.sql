@@ -357,6 +357,7 @@ CREATE TABLE `db_cfg_os` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `host` varchar(30) DEFAULT NULL,
   `port` varchar(30) DEFAULT NULL,
+  `host_type` tinyint(2) DEFAULT '0' comment '0:Linux; 1:AIX; 2:HP-UX; 3:Solaris; 4:Windows',
   `protocol` varchar(50) DEFAULT NULL,
   `username` varchar(50) DEFAULT NULL,
   `password` varchar(50) DEFAULT NULL,

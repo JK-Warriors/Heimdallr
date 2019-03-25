@@ -33,6 +33,7 @@ INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlser
 INSERT INTO `admin_menu` VALUES ('20', 'OS Monitor', '1', '0', 'wl_os', 'iconfont icon-zhuji', '0', '1', '8', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('21', 'Alarm Panel', '1', '0', 'alarm', 'iconfont icon-jinggao', '0', '1', '9', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('22', 'Permission System', '1', '0', 'rabc', 'iconfont icon-icon-quanxianxg', '0', '1', '10', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('23', 'Tool Box', '1', '0', 'wl_lock', 'iconfont icon-icon-quanxianxg', '0', '1', '11', CURRENT_TIMESTAMP);
 
 -- ------------------Configure--------------------
 INSERT INTO `admin_menu` VALUES ('1001', 'Settings', '2', '10', 'settings/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
@@ -94,6 +95,8 @@ INSERT INTO `admin_menu` VALUES ('2204', 'Privilege', '2', '22', 'privilege/inde
 INSERT INTO `admin_menu` VALUES ('2205', 'Authorization', '2', '22', 'auth/index', '', '0', '1', '5', CURRENT_TIMESTAMP);
 
 
+-- ------------------Tool Box--------------------
+INSERT INTO `admin_menu` VALUES ('2301', 'Lock List', '2', '23', 'wl_lock/index', '', '0', '1', '1', CURRENT_TIMESTAMP);
 
 -- ----------------------------
 -- Table for admin_privilege
@@ -201,6 +204,13 @@ INSERT INTO `admin_privilege` VALUES ('1406', 'SQLServer Config Batch Add', '100
 
 INSERT INTO `admin_privilege` VALUES ('1451', 'SQLServer Health Monitor', '1301', 'wl_sqlserver/index', '451');
 INSERT INTO `admin_privilege` VALUES ('1452', 'SQLServer Health Chart', '1301', 'wl_sqlserver/chart', '452');
+
+
+
+-- --------------------------------------------------- Tool Box ------------------------------------------------------------
+INSERT INTO `admin_privilege` VALUES ('1501', 'Tool Box View', '2301', 'wl_lock/index', '501');
+INSERT INTO `admin_privilege` VALUES ('1502', 'Lock View', '2301', 'wl_lock/view_lock', '502');
+
 
 -- ---------------------------------------------------- MongoDB -----------------------------------------------------------
 -- INSERT INTO `admin_privilege` VALUES ('1501', 'MongoDB Config View', '1005', 'cfg_mongodb/index', '501');
@@ -326,6 +336,8 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1405');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1406');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1451');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1452');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1501');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1502');
 
 
 -- ----------------------------
