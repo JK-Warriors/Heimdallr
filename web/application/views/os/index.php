@@ -29,7 +29,7 @@
       <thead>
     <tr style="font-size: 12px;">
     <th colspan="3"><center><?php echo $this->lang->line('servers'); ?></center></th>
-    <th colspan="3"><center><?php echo $this->lang->line('load'); ?></center></th>
+    <!--<th colspan="3"><center><?php echo $this->lang->line('load'); ?></center></th>-->
     <th colspan="3"><center><?php echo $this->lang->line('cpu'); ?></center></th>
     <th colspan="3"><center><?php echo $this->lang->line('memory'); ?></center></th>
     <!--<th colspan="2"><center><?php echo $this->lang->line('swap'); ?></center></th>-->
@@ -41,9 +41,9 @@
         <th><?php echo $this->lang->line('host'); ?></th>
         <th><?php echo $this->lang->line('connect'); ?></th> 
         <th><?php echo $this->lang->line('process'); ?></th>
-        <th><?php echo $this->lang->line('load'); ?>(1)</th>
-        <th><?php echo $this->lang->line('load'); ?>(5)</th>
-        <th><?php echo $this->lang->line('load'); ?>(15)</th>
+        <!--<th><?php echo $this->lang->line('load'); ?>(1)</th>-->
+        <!--<th><?php echo $this->lang->line('load'); ?>(5)</th>-->
+        <!--<th><?php echo $this->lang->line('load'); ?>(15)</th>-->
         <th><?php echo $this->lang->line('user'); ?></th>
         <th><?php echo $this->lang->line('system'); ?></th>
         <th><?php echo $this->lang->line('idle'); ?></th>
@@ -66,9 +66,9 @@
         <td><?php echo $item['ip'] ?></td>
         <td><?php if($item['connect']=='1'){ ?> <span class="label label-success"><?php echo $this->lang->line('success'); ?></span> <?php }else{  ?><span class="label label-important"><?php echo $this->lang->line('failure'); ?></span> <?php } ?></td>
         <td><?php echo check_value($item['process']) ?></td>
-        <td><?php echo check_value($item['load_1']) ?></td>
-        <td><?php echo check_value($item['load_5']) ?></td>
-        <td><?php echo check_value($item['load_15']) ?></td>
+        <!--<td><?php echo check_value($item['load_1']) ?></td>-->
+        <!--<td><?php echo check_value($item['load_5']) ?></td>-->
+        <!--<td><?php echo check_value($item['load_15']) ?></td>-->
         <td><?php echo check_cpu($item['cpu_user_time']) ?></td>
         <td><?php echo check_cpu($item['cpu_system_time']) ?></td>
         <td><?php echo check_cpu($item['cpu_idle_time']) ?></td>
