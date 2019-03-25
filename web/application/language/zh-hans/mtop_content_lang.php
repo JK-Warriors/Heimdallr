@@ -315,6 +315,17 @@ $lang['delay'] = '延时';
 $lang['session_total'] = '会话数';
 $lang['session_actives'] = '活动进程数';
 $lang['session_waits'] = '等待进程数';
+$lang['actives'] = '活动';
+$lang['waits'] = '等待';
+
+$lang['logic_read'] = '逻辑读';
+$lang['physical_read_write'] = '物理读写';
+$lang['physical_io_request'] = '物理IO请求';
+$lang['block_changes'] = '块改变量';
+$lang['cpu_wait_time'] = 'CPU等待时间';
+$lang['open_cursors'] = '游标数';
+$lang['transactions'] = '事务数';
+
 $lang['tbs'] = '表空间';
 $lang['fb_space'] = '闪回空间';
 $lang['asm_space'] = '磁盘组空间';
@@ -327,6 +338,9 @@ $lang['used_rate'] = '使用率';
 $lang['diskgroup_name'] = '磁盘组名';
 $lang['type'] = '类型';
 $lang['free_size'] = '空闲空间';
+
+$lang['opration'] = '操作'; 
+$lang['view_lock'] = '查看锁'; 
 
 #sqlsrver
 $lang['processes'] = '进程数';

@@ -90,7 +90,7 @@ function getChartSeriesData(url){
 
 				option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> session_total <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('session_total'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -162,7 +162,7 @@ function getChartSeriesData(url){
 				//=========================Actives/Waits=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> actives/waits <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('actives'); ?>/<?php echo $this->lang->line('waits'); ?><?php echo $this->lang->line('process'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -241,7 +241,7 @@ function getChartSeriesData(url){
 				//=========================session_logical_reads=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> logical reads <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('logic_read'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -314,7 +314,7 @@ function getChartSeriesData(url){
 				//=========================physical_wr=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> physical reads/writes <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('physical_read_write'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -393,7 +393,7 @@ function getChartSeriesData(url){
 				//=========================physical_io_requests=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> physical io requests <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('physical_io_request'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -472,7 +472,7 @@ function getChartSeriesData(url){
 				//=========================db_block_changes=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> db block changes <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('block_changes'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -545,7 +545,7 @@ function getChartSeriesData(url){
 				//=========================os_cpu_wait_time=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> os cpu wait time <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('cpu_wait_time'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -618,7 +618,7 @@ function getChartSeriesData(url){
 				//=========================opened_cursors=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> opened cursors <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('open_cursors'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },
@@ -691,7 +691,7 @@ function getChartSeriesData(url){
 				//=========================transactions=========================================//
     		option = {
 				    title : {
-				        text: "<?php echo $cur_server; ?> transactions <?php echo $this->lang->line('chart'); ?>",
+				        text: "<?php echo $cur_server; ?> <?php echo $this->lang->line('transactions'); ?>",
 				        x: 'center',
 				        align: 'right'
 				    },

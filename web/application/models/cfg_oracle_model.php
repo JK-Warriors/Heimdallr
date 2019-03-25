@@ -72,7 +72,8 @@ class cfg_oracle_model extends CI_Model{
 		if ($query->num_rows() > 0)
 		{
 			$data=$query->row_array();
-            return $data['host'].":".$data['port'];
+            #return $data['host'].":".$data['port'];
+            return $data['tags'];
 		}
     }
     
