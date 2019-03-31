@@ -127,6 +127,38 @@ class Wl_oracle extends Front_Controller {
         $this->layout->view("oracle/dataguard",$data);
     }
     
+    public function dg_screen()
+	{
+        #parent::check_privilege();
+        $data["datalist"]=$this->oracle->get_status_total_record();
+        $data["dg_group"]=$this->oracle->get_dataguard_group();
+        
+        if(isset($_GET["dg_group_id"])){
+            $id = $_GET["dg_group_id"];
+        }
+        else{
+            $id = $data["dg_group"][0]["id"];
+        }
+        
+        $setval["id"] = $id;
+        $data["dg_info"]=$this->oracle->get_dg_group_by_id($id);
+        
+        if($id != ""){
+        		$pri_id = $this->oracle->get_pri_id_by_group_id($id);
+        		$sta_id = $this->oracle->get_sta_id_by_group_id($id);
+
+						if($pri_id != "" && $sta_id != ""){
+        				$data["primary_db"] = $this->oracle->get_primary_info($pri_id);
+        				$data["standby_db"] = $this->oracle->get_standby_info($sta_id);
+						}
+						
+        }
+        
+        $data["setval"]=$setval;
+
+				$this->layout->setLayout("layout_blank");
+        $this->layout->view("oracle/dg_screen",$data);
+    }
 
     public function dg_switch()
 	{

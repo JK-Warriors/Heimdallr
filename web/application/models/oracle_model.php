@@ -439,6 +439,7 @@ class Oracle_model extends CI_Model{
                                     d.port         as p_port,
                                     s.db_name      as db_name,
                                     s.open_mode    as open_mode,
+                                    s.version      as db_version,
                                     s.flashback_on    as flashback_on,
                                     s.flashback_earliest_time    as flashback_e_time,
                                     s.flashback_space_used    as flashback_space_used,

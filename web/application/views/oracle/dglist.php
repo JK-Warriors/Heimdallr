@@ -92,7 +92,8 @@
  									  <?php    	} ?>
  										<?php endforeach; ?>
  										<?php } ?></td>
-				<td><center><a href="<?php echo site_url('wl_oracle/dataguard?dg_group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('detail'); ?></a></td>
+				<td><center><a href="<?php echo site_url('wl_oracle/dg_screen?dg_group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('big_view'); ?></a></td>
+				<td><center><a href="<?php echo site_url('wl_oracle/dg_switch?dg_group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('manage'); ?></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

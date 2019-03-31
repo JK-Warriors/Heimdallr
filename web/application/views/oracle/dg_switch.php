@@ -32,7 +32,7 @@
 
 <div>
 <form id="form_switch" class="form-inline" method="post" action="" >
-    <a class="btn btn " href="<?php echo site_url('wl_oracle/dataguard') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
+    <a class="btn btn " href="<?php echo site_url('wl_oracle/dglist') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
 
     
     <button name="trans_type" type="button" value="Failover" onclick="checkUser(this)" <?php if($setval['id']==""){echo 'disabled="disabled"';} ?> class="btn btn-success" style="width:100px; float:right; margin-right:5px;"><?php echo $this->lang->line('failover'); ?></button>
