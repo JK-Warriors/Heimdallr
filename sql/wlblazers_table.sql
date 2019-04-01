@@ -514,10 +514,13 @@ CREATE TABLE `oracle_dg_p_status` (
   `server_id` int(10) NOT NULL,
   `check_seq` smallint(4) NOT NULL DEFAULT '0',
   `dest_id` smallint(4) NOT NULL DEFAULT '0',
+  `transmit_mode` varchar(20) DEFAULT NULL,
   `thread#` smallint(4) NOT NULL DEFAULT '0',
   `sequence#` int(10) DEFAULT NULL,
   `curr_scn` bigint(20) DEFAULT NULL,
   `curr_db_time` varchar(20) DEFAULT NULL,
+  `archived_delay` int(10) DEFAULT NULL,
+  `applied_delay` int(10) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
@@ -529,10 +532,13 @@ CREATE TABLE `oracle_dg_p_status_his` (
   `server_id` int(10) NOT NULL,
   `check_seq` smallint(4) NOT NULL DEFAULT '0',
   `dest_id` smallint(4) NOT NULL DEFAULT '0',
+  `transmit_mode` varchar(20) DEFAULT NULL,
   `thread#` smallint(4) NOT NULL DEFAULT '0',
   `sequence#` int(10) DEFAULT NULL,
   `curr_scn` bigint(20) DEFAULT NULL,
   `curr_db_time` varchar(20) DEFAULT NULL,
+  `archived_delay` int(10) DEFAULT NULL,
+  `applied_delay` int(10) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ymdhi` bigint(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -577,6 +583,16 @@ CREATE TABLE `oracle_dg_s_status_his` (
   KEY `idx_ymdhi` (`ymdhi`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `oracle_dg_s_redo`;
+CREATE TABLE `oracle_dg_s_redo` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` int(10) NOT NULL,
+  `redo_time` varchar(20) DEFAULT NULL,
+  `redo_log` bigint(20) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for oracle_dg_process

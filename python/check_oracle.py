@@ -298,16 +298,20 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         
         func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_dg_s_status where server_id in (%s, %s);" %(pri_id, sta_id),'')
         func.mysql_exec('delete from oracle_dg_s_status where server_id in (%s, %s);' %(pri_id, sta_id),'')
+        
+        func.mysql_exec('delete from oracle_dg_s_redo where server_id in (%s, %s);' %(pri_id, sta_id),'')
                              
         if p_conn:
             # collect primary information
-            dg_p_info = oracle.get_dg_p_info(p_conn, 1)
+            # dg_p_info = oracle.get_dg_p_info(p_conn, 1)
+            dg_p_info = oracle.get_dg_p_info_2(p_conn, 2)
             
             dest_id = -1
+            transmit_mode = "null"
             thread = -1
             sequence = -1
-            archived = -1
-            applied = -1
+            archived_delay = -1
+            applied_delay = -1
             current_scn = -1
             if dg_p_info:
                 # get new check_seq
@@ -315,17 +319,21 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
                     
                 for line in dg_p_info:
                     dest_id=line[0]
-                    thread=line[1]
-                    sequence=line[2]
-                    archived=line[3]
-                    applied=line[4]
-                    current_scn=line[5]
-                    dg_p_curr_time=line[6]
+                    transmit_mode=line[1]
+                    thread=line[2]
+                    sequence=line[3]
+                    archived=line[4]
+                    applied=line[5]
+                    current_scn=line[6]
+                    dg_p_curr_time=line[7]
                     
+                    archived_delay = oracle.get_log_archived_delay(p_conn, dest_id, thread)
+                    applied_delay = oracle.get_log_applied_delay(p_conn, dest_id, thread)
+                    #print thread, archived_delay, applied_delay
                     ##################### insert data to mysql server#############################
                     #print dest_id, thread, sequence, archived, applied, current_scn, curr_db_time
-                    sql = "insert into oracle_dg_p_status(server_id, check_seq, dest_id, `thread#`, `sequence#`, curr_scn, curr_db_time) values(%s,%s,%s,%s,%s,%s,%s);"
-                    param = (p_id, new_check_seq, dest_id, thread, sequence, current_scn, dg_p_curr_time)
+                    sql = "insert into oracle_dg_p_status(server_id, check_seq, dest_id, transmit_mode, `thread#`, `sequence#`, curr_scn, curr_db_time, archived_delay, applied_delay) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+                    param = (p_id, new_check_seq, dest_id, transmit_mode, thread, sequence, current_scn, dg_p_curr_time, archived_delay, applied_delay)
                     func.mysql_exec(sql,param) 
                     
                 logger.info("Gather primary database infomation for server: %s" %(p_id))
@@ -399,6 +407,18 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
             param = (dg_s_mrp, dg_delay, s_id)
             func.mysql_exec(sql,param)  
             
+            
+            ##### get standby redo per hour
+            dg_s_redo = oracle.get_redo_per_hour(s_conn)
+            if dg_s_redo:
+                for line in dg_s_redo:
+                    key_time=line[0]
+                    redo_p_h=line[1]
+            
+                    ##################### insert data to mysql server#############################
+                    sql = "insert into oracle_dg_s_redo(server_id, redo_time, redo_log) values(%s,%s,%s);"
+                    param = (s_id, key_time, redo_p_h)
+                    func.mysql_exec(sql,param)  
             
             # generate dataguard alert
             logger.info("Generate dataguard alert for server: %s begin:" %(s_id))

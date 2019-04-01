@@ -53,6 +53,24 @@ class Os_model extends CI_Model{
         }
     }
 
+
+    function get_os_info($host){
+        $query=$this->db->query("select * from os_status where ip='$host'; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->row_array(); 
+        }
+    }
+    
+    
+    function get_os_disk_info($host){
+        $query=$this->db->query("select max(used_rate) max_used from os_disk where ip = '$host' and total_size <> 0; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->row_array(); 
+        }
+    }
+    
      function get_disk_record($host){
         $query=$this->db->query("select * from os_disk where ip='$host'; ");
         if ($query->num_rows() > 0)

@@ -433,6 +433,16 @@ class Oracle_model extends CI_Model{
     }
     
     
+    function get_host_by_id($id){
+        $query=$this->db->query("select host from db_cfg_oracle t where id = $id; ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->host;
+        }
+    }
+    
+    
     function get_primary_info($pri_id){
         $query=$this->db->query("select d.id,
                                     d.host         as p_host,
@@ -446,6 +456,9 @@ class Oracle_model extends CI_Model{
                                     p.`thread#`    as p_thread,
                                     p.`sequence#`  as p_sequence,
                                     p.curr_scn     as p_scn,
+                                    p.transmit_mode as transmit_mode,
+                                    p.archived_delay as archived_delay,
+                                    p.applied_delay as applied_delay,
                                     p.curr_db_time as p_db_time
                             from (select * from db_cfg_oracle where id = $pri_id) d
                             left join oracle_status s
@@ -495,6 +508,15 @@ class Oracle_model extends CI_Model{
     }
 
 
+    function get_standby_redo($sta_id){
+        $query=$this->db->query("select * from oracle_dg_s_redo where server_id = 101 order by id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    
     function get_total_host(){
         $query=$this->db->query("select host  from mysql_status order by host;");
         if ($query->num_rows() > 0)

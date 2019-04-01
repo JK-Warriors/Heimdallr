@@ -225,7 +225,97 @@ def get_dg_p_info(conn, dest_id):
         curs.close()
 
 
+def get_dg_p_info_2(conn, dest_id):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select *
+                            from (select t.dest_id,
+                                        transmit_mode,
+                                        thread#,
+                                        sequence#+1,
+                                        archived,
+                                        applied,
+                                        current_scn,
+                                        to_char(scn_to_timestamp(current_scn), 'yyyy-mm-dd hh24:mi:ss') curr_db_time,
+                                        row_number() over(partition by thread# order by sequence# desc) rn
+                                    from v$archived_log t, v$archive_dest a, v$database d
+                                    where t.dest_id = a.dest_id
+                                      and t.dest_id = %s)
+                            where rn = 1 """ %(dest_id));
+        result = curs.fetchall()
+        
+        return result
+    except Exception,e:
+        return None
+        print e
 
+    finally:
+        curs.close()
+        
+def get_log_archived_delay(conn, dest_id, thread_id):
+    try:
+        result = 0
+        curs=conn.cursor()
+        curs.execute("""select count(1) from v$archived_log where dest_id = %s and thread# = %s and archived= 'NO' group by dest_id """ %(dest_id, thread_id));
+        list = curs.fetchone()
+        
+        if list:
+            result = list[0] 
+        else:
+            result = 0
+            
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+        
+
+def get_log_applied_delay(conn, dest_id, thread_id):
+    try:
+        result = 0
+        curs=conn.cursor()
+        curs.execute("""select count(1) from v$archived_log where dest_id = %s and thread# = %s and applied= 'NO' group by dest_id """ %(dest_id, thread_id));
+        list = curs.fetchone()
+        
+        if list:
+            result = list[0] 
+        else:
+            result = 0
+            
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+
+
+def get_redo_per_hour(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select substr(key_time, 9) || ':00' time, redo_p_h
+											  from (select LPAD(to_char(first_time, 'yyyymmddhh24'), 10) key_time,
+											               trunc(sum(blocks * block_size) / 1024 / 1024) redo_p_h
+											          from v$archived_log
+											         where first_time > sysdate - 1 / 2
+											           and standby_dest = 'NO'
+											         group by LPAD(to_char(first_time, 'yyyymmddhh24'), 10)
+											         order by key_time) """);
+        result = curs.fetchall()
+        
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+        
+          
 def get_dg_s_ms(conn):
     try:
         curs=conn.cursor()

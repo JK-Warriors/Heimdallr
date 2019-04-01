@@ -41,7 +41,7 @@
                 <div class="item-5"></div>
               </div>
               <p>日志应用: SEQ: <?php echo $standby_db[0]['s_sequence'] ?> BLOCK# <?php echo $standby_db[0]['s_block'] ?></p>
-              <p>日志传输模式:异步模式</p>
+              <p>日志传输模式: <?php if($primary_db[0]['transmit_mode']='ASYNCHRONOUS'){echo "异步模式";} else{echo "同步模式";} ?></p>
             </div>
             <div class="m1 ml">
               <p>生产系统</p>
@@ -111,20 +111,20 @@
               <table border="0">
                 <tr>
                   <td>CPU</td>
-                  <td>120</td>
+                  <td><?php echo 100 - $standby_os['cpu_idle_time'] ?></td>
+                  <td>内存</td>
+                  <td><?php echo $standby_os['mem_usage_rate'] ?></td>
+                </tr>
+                <tr>
+                  <td>磁盘空间</td>
+                  <td><?php echo $standby_os_disk['max_used'] ?></td>
                   <td>磁盘inode</td>
                   <td>111</td>
                 </tr>
                 <tr>
-                  <td>内存</td>
-                  <td>120</td>
-                  <td>服务器时间</td>
-                  <td>111</td>
-                </tr>
-                <tr>
-                  <td>磁盘空间</td>
-                  <td>120</td>
-                  <td>运行时间</td>
+                  <td>进程数</td>
+                  <td><?php echo $standby_os['process'] ?></td>
+                  <td>网络</td>
                   <td>111</td>
                 </tr>
               </table>
@@ -135,15 +135,28 @@
           <h3>备份差异</h3>
           <div class="m">
             <li>
-              <span>数据文件写入延时:</span>
-              <b class="orange">5天11小时11分11秒</b>
+              <span>数据文件写入延时:</span><b class="orange"><?php
+        				#$second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);
+        				#$date1 = "2019-04-01 19:47:11";
+        				#$date2 = "2019-03-06 15:43:05";
+        				$date1 = $primary_db[0]['p_db_time'];
+        				$date2 = $standby_db[0]['s_db_time'];
+        				
+        				$days_dif=floor((strtotime($date1)-strtotime($date2))/86400);
+        				$hours_dif=floor((strtotime($date1)-strtotime($date2) - ($days_dif*24*3600))/3600);
+        				$min_dif=floor((strtotime($date1)-strtotime($date2) - ($days_dif*24*3600) -($hours_dif * 3600))/60);
+        				$sec_dif=floor(strtotime($date1)-strtotime($date2) - ($days_dif*24*3600) -($hours_dif * 3600) - ($min_dif * 60));
+        				#echo strtotime($testdate1)-strtotime($testdate2);
+        				echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";
+        				?>
+              	</b>
             </li>
-            <li><span>日志应用延时thread:</span><b class="orange">1</b></li>
+            <li><span>日志传输延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?> <?php echo $primary_db[1]['p_thread'] ?></b></li>
             <li>
-              <span>日志应用延时sequence差异:</span><b class="orange">1111</b>
+              <span>日志传输延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['archived_delay'] ?> <?php echo $primary_db[1]['archived_delay'] ?></b>
             </li>
-            <li><span>日志传输延时thread:</span>1</li>
-            <li><span>日志传输延时sequence差异:</span>1</li>
+            <li><span>日志应用延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?> <?php echo $primary_db[1]['p_thread'] ?></b></li>
+            <li><span>日志应用延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['applied_delay'] ?> <?php echo $primary_db[1]['applied_delay'] ?></b></li>
           </div>
         </div>
       </div>
@@ -153,17 +166,47 @@
   <script type="text/javascript">
     var myChart = echarts.init(document.getElementById("main"), "chalk");
     var option = {
+	    tooltip: {
+  				trigger: 'axis'
+	    },
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: ["0:00", "2:00", "4:00", "6:00", "8:00", "10:00", "12:00"]
+        axisTick: {
+            alignWithLabel: true
+        },
+        axisLine: {
+            onZero: false,
+            lineStyle: {
+            }
+        },
+        axisPointer: {
+            label: {
+                formatter: function(params) {
+                    return params.value + ' 日志量';
+                }
+            }
+        },
+        data: [
+        		<?php if(!empty($standby_redo)) {?>
+						<?php foreach ($standby_redo  as $item):?>
+										"<?php echo $item['redo_time'] ?>",
+						<?php endforeach;?>
+						<?php } ?>
+        ]
       },
       yAxis: {
         type: "value"
       },
       series: [
         {
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          data: [
+        		<?php if(!empty($standby_redo)) {?>
+						<?php foreach ($standby_redo  as $item):?>
+										"<?php echo $item['redo_log'] ?>",
+						<?php endforeach;?>
+						<?php } ?>
+          ],
           type: "line",
           areaStyle: {}
         }
@@ -186,21 +229,26 @@
         radius: 50,
         indicator: [
           { name: "CPU", max: 100 },
-          { name: "运行时间", max: 100 },
-          { name: "服务器时间", max: 100 },
-          { name: "磁盘", max: 100 },
+          { name: "内存", max: 100 },
           { name: "磁盘空间", max: 100 },
-          { name: "内存", max: 100 }
+          { name: "磁盘inode", max: 100 },
+          { name: "进程数", max: 100 },
+          { name: "网络", max: 100 }
         ]
       },
       series: [
         {
-          name: "预算 vs 开销（Budget vs spending）",
+          name: "容灾库主机性能指标",
           type: "radar",
           itemStyle: { normal: { areaStyle: { type: "default" } } },
           data: [
             {
-              value: [72, 72, 55, 35, 50, 19]
+              value: [<?php echo $standby_os['cpu_idle_time'] ?>, 
+              <?php echo $standby_os['mem_usage_rate'] ?>, 
+              55, 
+              35, 
+              50, 
+              19]
             }
           ]
         }
