@@ -28,35 +28,37 @@
         <div class="b1" id="Timer">
         </div>
         <div class="b2"><?php echo $dg_info[0]['group_name'];?>容灾监控中心</div>
-        <div class="b3">最新检测时间:<span><?php if(!empty($datalist)){ echo $datalist[0]['create_time'];} else {echo $this->lang->line('the_monitoring_process_is_not_started');} ?></span></div>
+        <div class="b3">最新检测时间:<span><?php if(!empty($datalist)){ echo $datalist[0]['create_time'];} else {echo $this->lang->line('the_monitoring_process_is_not_started');} ?></span>
+        	
+        <a href="<?php echo site_url('wl_oracle/dglist'); ?>" class="qbtn"><img src="lib/bootstrap/img/quit.png" title="退出"></a>
+        	</div>
         <div class="b4">
           <h3>灾备状态</h3>
           <div class="m">
             <div class="m2">
-              <div class="container">
+              <div class="container <?php 
+        				$days_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))/86400);
+        				$hours_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']) - ($days_dif*24*3600))/3600);
+        				#echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";
+              	if($days_dif > 1 ){echo "item-red";}   #时间差超过1天，红色告警
+        				elseif($hours_dif > 1){echo "item-yellow";} #时间差超过1小时，黄色告警
+        				else{echo "";}
+              	?>">
                 <div class="item-1"></div>
                 <div class="item-2"></div>
                 <div class="item-3"></div>
                 <div class="item-4"></div>
                 <div class="item-5"></div>
               </div>
-              <p>日志应用: SEQ: <?php echo $standby_db[0]['s_sequence'] ?> BLOCK# <?php echo $standby_db[0]['s_block'] ?></p>
-              <p>日志传输模式: <?php if($primary_db[0]['transmit_mode']='ASYNCHRONOUS'){echo "异步模式";} else{echo "同步模式";} ?></p>
-              <p>同步状态: <img src="<?php 
-        				$days_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))/86400);
-        				$hours_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']) - ($days_dif*24*3600))/3600);
-        				#echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";
-              	if($days_dif > 1 ){echo "lib/bootstrap/img/sync_critical";}   #时间差超过1小时，显示trans_error图片
-        				elseif($hours_dif > 1){echo "lib/bootstrap/img/sync_warning";}
-        				else{echo "lib/bootstrap/img/sync_normal.png";}
-              	?>" alt="" />
-              </p>
+              <p><span class="spancolor">日志应用:</span> SEQ: <?php echo $standby_db[0]['s_sequence'] ?> BLOCK# <?php echo $standby_db[0]['s_block'] ?></p>
+              <p><span class="spancolor">传输模式:</span> <?php if($primary_db[0]['transmit_mode']='ASYNCHRONOUS'){echo "异步模式";} else{echo "同步模式";} ?></p>
+              
             </div>
             <div class="m1 ml">
               <p>生产系统</p>
               <img src="<?php if($primary_db[0]['open_mode']==-1){echo "lib/bootstrap/img/database_error.png";} else{echo "lib/bootstrap/img/database.png";} ?>" alt="" />
               <div class="mtext">
-                <li><span>scn时间:</span> <?php echo $primary_db[0]['p_db_time'] ?></li>
+                <li><span>SCN时间:</span> <?php echo $primary_db[0]['p_db_time'] ?></li>
                 <li><span>实例名:</span> <?php echo $primary_db[0]['db_name'] ?></li>
                 <li><span>IP地址:</span> <?php  echo $primary_db[0]['p_host'] ?></li>
                 <li><span>数据库版本:</span> <?php  echo $primary_db[0]['db_version'] ?></li>
@@ -66,7 +68,7 @@
               <p>灾备系统</p>
               <img src="<?php if($standby_db[0]['open_mode']==-1){echo "lib/bootstrap/img/database_error.png";} else{echo "lib/bootstrap/img/database.png";} ?>" alt="" />
               <div class="mtext">
-                <li><span>scn时间:</span> <?php echo $standby_db[0]['s_db_time'] ?></li>
+                <li><span>SCN时间:</span> <?php echo $standby_db[0]['s_db_time'] ?></li>
                 <li><span>实例名:</span> <?php echo $standby_db[0]['db_name'] ?></li>
                 <li><span>IP地址:</span> <?php  echo $standby_db[0]['s_host'] ?></li>
                 <li><span>数据库版本:</span> <?php  echo $standby_db[0]['db_version'] ?></li>
@@ -113,7 +115,7 @@
               <div id="main" style="width: 100%;height:100%;"></div>
             </div>
             <div class="e2">
-              <h4>报警雷达 (单位:百)</h4>
+              <h4>指标雷达</h4>
               <div id="main2" style="width: 100%;height:100%;"></div>
             </div>
             <div class="e3">
@@ -160,12 +162,12 @@
         				?>
               	</b>
             </li>
-            <li><span>日志传输延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?> <?php echo $primary_db[1]['p_thread'] ?></b></li>
+            <li><span>日志传输延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?><span style="display:inline-block;width:3.5em;"></span><?php echo $primary_db[1]['p_thread'] ?></b></li>
             <li>
-              <span>日志传输延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['archived_delay'] ?> <?php echo $primary_db[1]['archived_delay'] ?></b>
+              <span>日志传输延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['archived_delay'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['archived_delay'] ?></b>
             </li>
-            <li><span>日志应用延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?> <?php echo $primary_db[1]['p_thread'] ?></b></li>
-            <li><span>日志应用延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['applied_delay'] ?> <?php echo $primary_db[1]['applied_delay'] ?></b></li>
+            <li><span>日志应用延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['p_thread'] ?></b></li>
+            <li><span>日志应用延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['applied_delay'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['applied_delay'] ?></b></li>
           </div>
         </div>
       </div>
@@ -178,6 +180,13 @@
 	    tooltip: {
   				trigger: 'axis'
 	    },
+	    grid:{
+                    x:25,
+                    y:45,
+                    x2:2,
+                    y2:17,
+                    borderWidth:1
+                },
       xAxis: {
         type: "category",
         boundaryGap: false,
@@ -230,19 +239,21 @@
       radar: {
         name: {
           textStyle: {
-            color: "#fff"
+            color: "#fff",
+            fontSize: 10
           }
         },
 
-        center: ["55%", "50%"],
-        radius: 50,
+        center: ["45%", "50%"],
+        radius: 40,
+        nameGap : 0,
         indicator: [
-          { name: "CPU空闲率", max: 100 },
-          { name: "Swap空闲率", max: 100 },
-          { name: "内存空闲率", max: 100 },
-          { name: "磁盘空闲率", max: 100 },
-          { name: "Inode空闲率", max: 100 },
-          { name: "进程阈值率", max: 100 }
+          { name: "CPU", max: 100 },
+          { name: "Swap", max: 100 },
+          { name: "内存", max: 100 },
+          { name: "磁盘", max: 100 },
+          { name: "Inode", max: 100 },
+          { name: "进程", max: 100 }
         ]
       },
       series: [
@@ -264,6 +275,11 @@
       ]
     };
     myChart2.setOption(option);
+     myChart2.setOption(option);
+  window.addEventListener("resize", function () {
+    myChart.resize();
+    myChart2.resize();
+  });
   </script>
   <script type="text/javascript">
     $(function () {
@@ -308,24 +324,6 @@
 
 
 <script type="text/javascript">
-// 全屏切换代码
-var FullscreenFlag = false;
-$('#toggle-fullscreen').click(function () {
-    if (FullscreenFlag) {
-        ExitFullscreen();
-        $(this).attr('title','全屏显示');
-        $(this).html('<i class="fa fa-expand"></i>');
-        FullscreenFlag = false;
-    } else {
-        EnterFullscreen();
-        $(this).attr('title','退出全屏');
-        $(this).html('<i class="fa fa-compress"></i>');
-        FullscreenFlag = true;
-    }
-});
-
-	
-	
 function refresh()
 {
        window.location.reload();
