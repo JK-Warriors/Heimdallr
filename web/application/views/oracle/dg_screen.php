@@ -110,22 +110,22 @@
             <div class="e3">
               <table border="0">
                 <tr>
-                  <td>CPU</td>
-                  <td><?php echo 100 - $standby_os['cpu_idle_time'] ?></td>
-                  <td>内存</td>
-                  <td><?php echo $standby_os['mem_usage_rate'] ?></td>
+                  <td>CPU空闲率</td>
+                  <td><?php echo $standby_os['cpu_idle_time'] ?>%</td>
+                  <td>内存空闲率</td>
+                  <td><?php echo 100-$standby_os['mem_usage_rate'] ?>%</td>
                 </tr>
                 <tr>
-                  <td>磁盘空间</td>
-                  <td><?php echo $standby_os_disk['max_used'] ?></td>
-                  <td>磁盘inode</td>
-                  <td>111</td>
+                  <td>Swap空闲率</td>
+                  <td><?php echo floor(($standby_os['swap_avail']/$standby_os['swap_total'])*100) ?>%</td>
+                  <td>磁盘空闲率</td>
+                  <td><?php echo 100-$standby_os_disk['max_used'] ?>%</td>
                 </tr>
                 <tr>
+                  <td>Inode空闲率</td>
+                  <td>80%</td>
                   <td>进程数</td>
                   <td><?php echo $standby_os['process'] ?></td>
-                  <td>网络</td>
-                  <td>111</td>
                 </tr>
               </table>
             </div>
@@ -228,12 +228,12 @@
         center: ["55%", "50%"],
         radius: 50,
         indicator: [
-          { name: "CPU", max: 100 },
-          { name: "内存", max: 100 },
-          { name: "磁盘空间", max: 100 },
-          { name: "磁盘inode", max: 100 },
-          { name: "进程数", max: 100 },
-          { name: "网络", max: 100 }
+          { name: "CPU空闲率", max: 100 },
+          { name: "Swap空闲率", max: 100 },
+          { name: "内存空闲率", max: 100 },
+          { name: "磁盘空闲率", max: 100 },
+          { name: "Inode空闲率", max: 100 },
+          { name: "进程阈值率", max: 100 }
         ]
       },
       series: [
@@ -244,11 +244,11 @@
           data: [
             {
               value: [<?php echo $standby_os['cpu_idle_time'] ?>, 
-              <?php echo $standby_os['mem_usage_rate'] ?>, 
-              55, 
-              35, 
-              50, 
-              19]
+              <?php echo floor(($standby_os['swap_avail']/$standby_os['swap_total'])*100) ?>, 
+              <?php echo 100-$standby_os['mem_usage_rate'] ?>, 
+              <?php echo 100-$standby_os_disk['max_used'] ?>, 
+              80, 
+              <?php echo floor(($standby_os['process']/$standby_os_cfg['threshold_critical_os_process'])*100) ?>]
             }
           ]
         }

@@ -182,9 +182,9 @@ def check_os_snmp(ip,filter_os_disk,tags):
             # disk usage
             command=""
             if filter_os_disk=="":
-                command="""/usr/bin/snmpdf -v1 -c %s %s |grep -E "/"|grep -vE "/boot" """ %(community, ip)
+                command="""/usr/bin/snmpdf -v1 -c %s %s |grep -E "/"|grep -vE "/boot"|grep -vE "DVD" """ %(community, ip)
             else:
-                command="""/usr/bin/snmpdf -v1 -c %s %s |grep -E "/"|grep -vE "/boot" |grep -vE "%s" """ %(community, ip, filter_os_disk)
+                command="""/usr/bin/snmpdf -v1 -c %s %s |grep -E "/"|grep -vE "/boot"|grep -vE "DVD" |grep -vE "%s" """ %(community, ip, filter_os_disk)
             #print command
             disk_all=os.popen(command)
             result=disk_all.readlines()

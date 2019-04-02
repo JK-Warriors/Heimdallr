@@ -57,7 +57,15 @@ class cfg_os_model extends CI_Model{
 			return $query->row_array();
 		}
 	}
-    
+
+	function get_record_by_host($host){
+		$query = $this->db->get_where($this->table, array('host' =>$host));
+		if ($query->num_rows() > 0)
+		{
+			return $query->row_array();
+		}
+	}
+	
     function get_host_by_id($id)
     {
 		$query = $this->db->get_where($this->table, array('id' =>$id));

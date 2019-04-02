@@ -6,8 +6,9 @@ class Wl_oracle extends Front_Controller {
 		parent::__construct();
         $this->load->model('cfg_oracle_model','server');
         $this->load->model("option_model","option");
-		$this->load->model("oracle_model","oracle");
+        $this->load->model("oracle_model","oracle");
         $this->load->model("os_model","os");  
+        $this->load->model("cfg_os_model","cfg_os");  
         $this->load->model("user_model","user");
 	}
     
@@ -154,6 +155,7 @@ class Wl_oracle extends Front_Controller {
 						
         		$standby_host = $this->oracle->get_host_by_id($sta_id);
         		$data["standby_os"] = $this->os->get_os_info($standby_host);
+        		$data["standby_os_cfg"] = $this->cfg_os->get_record_by_host($standby_host);
         		$data["standby_os_disk"] = $this->os->get_os_disk_info($standby_host);
         		
         		$data["standby_redo"] = $this->oracle->get_standby_redo($sta_id);
