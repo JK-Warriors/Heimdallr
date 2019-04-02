@@ -42,10 +42,19 @@
               </div>
               <p>日志应用: SEQ: <?php echo $standby_db[0]['s_sequence'] ?> BLOCK# <?php echo $standby_db[0]['s_block'] ?></p>
               <p>日志传输模式: <?php if($primary_db[0]['transmit_mode']='ASYNCHRONOUS'){echo "异步模式";} else{echo "同步模式";} ?></p>
+              <p>同步状态: <img src="<?php 
+        				$days_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))/86400);
+        				$hours_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']) - ($days_dif*24*3600))/3600);
+        				#echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";
+              	if($days_dif > 1 ){echo "lib/bootstrap/img/sync_critical";}   #时间差超过1小时，显示trans_error图片
+        				elseif($hours_dif > 1){echo "lib/bootstrap/img/sync_warning";}
+        				else{echo "lib/bootstrap/img/sync_normal.png";}
+              	?>" alt="" />
+              </p>
             </div>
             <div class="m1 ml">
               <p>生产系统</p>
-              <img src="lib/bootstrap/img/database.png" alt="" />
+              <img src="<?php if($primary_db[0]['open_mode']==-1){echo "lib/bootstrap/img/database_error.png";} else{echo "lib/bootstrap/img/database.png";} ?>" alt="" />
               <div class="mtext">
                 <li><span>scn时间:</span> <?php echo $primary_db[0]['p_db_time'] ?></li>
                 <li><span>实例名:</span> <?php echo $primary_db[0]['db_name'] ?></li>
@@ -55,7 +64,7 @@
             </div>
             <div class="m1 mr">
               <p>灾备系统</p>
-              <img src="lib/bootstrap/img/database.png" alt="" />
+              <img src="<?php if($standby_db[0]['open_mode']==-1){echo "lib/bootstrap/img/database_error.png";} else{echo "lib/bootstrap/img/database.png";} ?>" alt="" />
               <div class="mtext">
                 <li><span>scn时间:</span> <?php echo $standby_db[0]['s_db_time'] ?></li>
                 <li><span>实例名:</span> <?php echo $standby_db[0]['db_name'] ?></li>
