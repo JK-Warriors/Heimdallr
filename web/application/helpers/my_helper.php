@@ -636,3 +636,20 @@ function check_dbtype($data){
 	return  $db_type_img;
 }
 
+function check_open_mode($data){  
+    if($data =="READ WRITE"){
+        return "读写";
+    }
+    else if($data =="READ ONLY WITH APPLY"){
+        return "实时查询";
+    }
+    else if($data =="READ ONLY"){
+        return "只读";
+    }
+    else if($data =="MOUNT"){
+        return "日志应用";
+    }
+    else{
+        return "异常";
+    }   
+}

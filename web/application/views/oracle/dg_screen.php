@@ -83,7 +83,7 @@
                     </li>
             		<?php endforeach;?>
             		
-                <li><span>状态:</span><?php echo $primary_db[0]['open_mode'] ?></li>
+                <li><span>状态:</span><?php echo check_open_mode($primary_db[0]['open_mode']) ?></li>
                 <li style="<?php if($primary_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>"><span>生产库闪回状态:</span>未启动</li>
                 <li style="<?php if($primary_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>"><span>最早闪回时间:</span>
                 <li><span>闪回空间使用率:</span><?php echo $primary_db[0]['flashback_space_used'] ?>%</li>
@@ -99,7 +99,7 @@
       						<p class="sp2">sequence: <?php echo $standby_db[0]['s_sequence']?></p>
       					</li>
       
-                <li><span>状态:</span><?php echo $standby_db[0]['open_mode'] ?></li>
+                <li><span>状态:</span><?php echo check_open_mode($standby_db[0]['open_mode']) ?></li>
                 <li style="<?php if($standby_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>"><span>容灾库闪回状态:</span>未启动</li>
                 <li style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>"><span>最早闪回时间:</span><?php echo $standby_db[0]['flashback_e_time'] ?></li>
                 <li><span>闪回空间使用率:</span><?php echo $standby_db[0]['flashback_space_used'] ?>%</li>
