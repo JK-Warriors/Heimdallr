@@ -1,0 +1,652 @@
+@charset "UTF-8";
+/** 初始化 **/
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td,
+form,
+pre {
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  color: #B0D5FF;
+  font-weight: 400;
+}
+
+body {
+  -webkit-font-feature-settings: "kern" 1;
+  -moz-font-feature-settings: "kern" 1;
+  -o-font-feature-settings: "kern" 1;
+  text-rendering: geometricPrecision;
+  font-family: "Microsoft YaHei";
+}
+
+a:active,
+a:hover {
+  outline: 0;
+}
+
+img {
+  display: inline-block;
+  border: none;
+  vertical-align: middle;
+}
+
+li {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: 400;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: 100%;
+}
+
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  outline: 0;
+}
+
+pre {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+/*清浮动*/
+.cf:before,
+.cf:after {
+  content: "";
+  display: table;
+}
+
+.cf:after {
+  clear: both;
+}
+
+.cf {
+  zoom: 1;
+}
+
+/** 滚动条 **/
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-button:vertical {
+  display: none;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background-color: rgba(14, 148, 234, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:vertical:hover {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+::-webkit-scrollbar-thumb:vertical:active {
+  background-color: rgba(0, 0, 0, 0.38);
+}
+
+.container-flex {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: url(../img/bg.jpg) #060A37 center center no-repeat;
+  background-size: 100% 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  outline: none;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 0.5rem;
+  overflow: hidden;
+  animation-delay: 1s;
+}
+
+.box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  font-size: 0.3rem;
+}
+
+.box .pagetit {
+  position: absolute;
+  top: 0%;
+  width: 100%;
+  height: 7%;
+  line-height: 7vh;
+  text-align: center;
+}
+
+.box .pagetit > div {
+  font-size: 0.18rem;
+  color: #7cddfd;
+  float: left;
+  padding: 0 1vw;
+  padding-top: 0.9vh;
+}
+
+.box .pagetit .time2 {
+  float: right;
+}
+
+.box .pagetit h1 {
+  font-size: 0.7rem;
+  opacity: 0;
+}
+
+.box .dtit {
+  width: 3rem;
+  height: 0.5rem;
+  background: url(../img/info-title.png) no-repeat;
+  background-size: 100% 100%;
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  margin-left: -1.5rem;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 0.5rem;
+  text-align: center;
+}
+
+.box img.bj-1 {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+}
+
+.box img.bj-2 {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+}
+
+.box img.bj-3 {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+}
+
+.box img.bj-4 {
+  position: absolute;
+  left: -1px;
+  bottom: -1px;
+}
+
+.box .datanum {
+  position: absolute;
+  top: 8%;
+  width: 98%;
+  left: 1%;
+  height: 15%;
+  border: 1px solid #20558b;
+}
+
+.box .datanum > ul {
+  height: 100%;
+}
+
+.box .datanum > ul > li {
+  float: left;
+  width: 10%;
+  height: 100%;
+  padding: 0 1%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box .datanum > ul > li p {
+  text-align: center;
+  padding-bottom: 0.1rem;
+  font-size: 0.2rem;
+}
+
+.box .datanum > ul > li span {
+  display: block;
+}
+
+.box .datanum > ul > li span img {
+  max-width: 6vw;
+  max-height: 8vh;
+}
+
+.box .left1 {
+  position: absolute;
+  top: 25%;
+  left: 1%;
+  width: 68%;
+  height: 53%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #20558b;
+  background-color: rgba(0, 24, 106, 0.5);
+}
+
+.box .left1 .datarow {
+  height: 33.3%;
+  width: 100%;
+}
+
+.box .left1 .datarow > div {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  float: left;
+  position: relative;
+}
+
+.box .left1 .datarow > div > h2 {
+  position: absolute;
+  top: 2%;
+  left: 5%;
+  font-size: 0.15rem;
+}
+
+.box .left1 .datarow .d1 {
+  width: 10%;
+}
+
+.box .left1 .datarow .d1 h1 {
+  width: 100%;
+  font-size: 0.2rem;
+}
+
+.box .left1 .datarow .d2 {
+  width: 23%;
+}
+
+.box .left1 .datarow .d3 {
+  width: 23%;
+}
+
+.box .left1 .datarow .d4 {
+  width: 14%;
+}
+
+.box .left1 .datarow .d4 > ul {
+  width: 100%;
+  height: 100%;
+  padding-top: 4vh;
+  padding-bottom: 3vh;
+}
+
+.box .left1 .datarow .d4 > ul li {
+  height: 20%;
+  width: 100%;
+  padding: 2px 0;
+}
+
+.box .left1 .datarow .d4 > ul li .progress {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 0px solid #fff;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 99px;
+}
+
+.box .left1 .datarow .d4 > ul li .progress .progress-value {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  z-index: 9;
+  font-size: 0.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: #fff;
+  transform: scale(0.7);
+}
+
+.box .left1 .datarow .d4 > ul li .progress .progress-bar {
+  z-index: 8;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.box .left1 .datarow .d4 > ul li .progress .progress-bar .progress-data {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  background: linear-gradient(to right, #1459A4, #1DFFF1);
+  height: 100%;
+  border-radius: 99px;
+}
+
+.box .left1 .datarow .d4 > ul li .progress.progress_danger .progress-data {
+  background: linear-gradient(to right, #E75E6E, #FFA76F);
+}
+
+.box .left1 .datarow .d5 {
+  width: 30%;
+}
+
+.box .right1 {
+  position: absolute;
+  top: 27%;
+  right: 1%;
+  width: 29%;
+  height: 35%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #20558b;
+  background-color: rgba(0, 24, 106, 0.5);
+}
+
+.box .right1 .right11 {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 50%;
+  height: 100%;
+}
+
+.box .right1 .right12 {
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  width: 50%;
+  height: 100%;
+}
+
+.box .right2 {
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+  width: 29%;
+  height: 34%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #20558b;
+  background-color: rgba(0, 24, 106, 0.5);
+}
+
+.box .right2 > ul {
+  width: 95%;
+  height: 100%;
+  height: 85%;
+  margin-top: 5%;
+}
+
+.box .right2 > ul > li {
+  width: 100%;
+  height: 33.3%;
+  position: relative;
+}
+
+.box .right2 > ul > li .progress {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 30%;
+  height: 100%;
+  padding: 0;
+  padding-top: 3vh;
+  text-align: center;
+}
+
+.box .right2 > ul > li .progress .progress-name {
+  font-size: 0.18rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+.box .right2 > ul > li .progress .progress-bar {
+  border: 0.02rem solid #0d1633;
+  height: 100%;
+  width: 50%;
+  margin-left: 25%;
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  background: #3c3c3c;
+}
+
+.box .right2 > ul > li .progress .progress-bar hr {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 0.02rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #0d1633;
+  z-index: 9;
+}
+
+.box .right2 > ul > li .progress .progress-bar hr:nth-child(1) {
+  top: 20%;
+}
+
+.box .right2 > ul > li .progress .progress-bar hr:nth-child(2) {
+  top: 40%;
+}
+
+.box .right2 > ul > li .progress .progress-bar hr:nth-child(3) {
+  top: 60%;
+}
+
+.box .right2 > ul > li .progress .progress-bar hr:nth-child(4) {
+  top: 80%;
+}
+
+.box .right2 > ul > li .progress .progress-bar .progress-data {
+  z-index: 7;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, #58DB1B, #92FF3E);
+}
+
+.box .right2 > ul > li .progress .progress-bar .progress-data.color2 {
+  background: linear-gradient(to top, #E75E6E, #FFA76F);
+}
+
+.box .right2 > ul > li .progress .progress-bar .progress-data.color3 {
+  background: linear-gradient(to top, #DB1B44, #FF3E7F);
+}
+
+.box .right2 > ul > li .proright {
+  position: absolute;
+  left: 30%;
+  top: 0%;
+  width: 70%;
+  height: 100%;
+  padding-top: 3vh;
+}
+
+.box .right2 > ul > li .proright > ul {
+  height: 100%;
+  width: 100%;
+  margin-top: 0%;
+}
+
+.box .right2 > ul > li .proright > ul > li {
+  width: 33.3%;
+  height: 100%;
+  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.4vw;
+}
+
+.box .right2 > ul > li .proright > ul > li > div {
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+}
+
+.box .right2 > ul > li .proright > ul > li.co1 > div {
+  background: linear-gradient(to top, #58DB1B, #92FF3E);
+}
+
+.box .right2 > ul > li .proright > ul > li.co2 > div {
+  background: linear-gradient(to top, #f3bf2b, #ffd868);
+}
+
+.box .right2 > ul > li .proright > ul > li.co3 > div {
+  background: linear-gradient(to top, #DB1B44, #FF3E7F);
+}
+
+.box .right2 > ul > li .proright > ul > li p {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 0.17rem;
+  line-height: 0.13rem;
+  padding-top: 1.68vh;
+}
+
+.box .right2 > ul > li .proright > ul > li p:nth-child(1) {
+  font-size: 0.3rem;
+  font-weight: 700;
+}
+
+.box .foot1 {
+  position: absolute;
+  bottom: 1%;
+  left: 1%;
+  width: 68%;
+  height: 19%;
+  padding-top: 0.1rem;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #20558b;
+  background-color: rgba(0, 24, 106, 0.5);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.box .foot1 span.circlespan {
+  display: inline-block;
+  width: 0.2rem;
+  height: 0.2rem;
+  background: #000;
+  position: relative;
+  top: 0.03rem;
+  border-radius: 999px;
+  margin-right: 0.05rem;
+}
+
+.box .foot1 span.circlespan.c1 {
+  background: #DB1B44;
+}
+
+.box .foot1 span.circlespan.c2 {
+  background: #f5c847;
+}
+
+.box .foot1 span.circlespan.c3 {
+  background: #58DB1B;
+}
+
+.box .foot1 .fg-box {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  color: #888;
+  padding: 0.1rem 0.2rem;
+  font-size: 0.18rem;
+  line-height: 0.3rem;
+}
+
+.box .foot1 .finfo {
+  position: absolute;
+  top: 0vh;
+  width: 100%;
+  height: 0.3rem;
+  line-height: 0.3rem;
+}
+
+.box .foot1 .finfo ul {
+  width: 100%;
+  text-align: right;
+}
+
+.box .foot1 .finfo ul li {
+  font-size: 0.15rem;
+  display: inline-block;
+  padding: 0 0.1rem;
+}

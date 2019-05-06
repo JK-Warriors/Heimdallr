@@ -509,7 +509,7 @@ class Oracle_model extends CI_Model{
 
 
     function get_oracle_redo($server_id){
-        $query=$this->db->query("select * from oracle_redo where server_id = $server_id order by id; ");
+        $query=$this->db->query("select * from (select * from oracle_redo where server_id = $server_id order by id desc limit 24) a order by id; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

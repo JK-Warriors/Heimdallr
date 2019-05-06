@@ -26,6 +26,9 @@
   <div class="container-flex">
     <div class="box">
       <div class="pagetit">
+      	
+        <div class="time1" >当前时间：&nbsp;<span id="Timer"></span></div>
+        <div class="time2">最新检测时间：&nbsp;<span><?php if(!empty($wlblazers_status)){ echo $wlblazers_status['wlblazers_checktime'];} else {echo $this->lang->line('the_monitoring_process_is_not_started');} ?></span></div>
         <h1><a href="<?php echo site_url('index/index'); ?>">DRM监控平台</a></h1>
       </div>
       <div class="datanum">
@@ -219,7 +222,7 @@
         
       </div>
       <div class="right1">
-        <div class="dtit">dbtime指标</div>
+        <div class="dtit">核心库指标</div>
         <img src="lib/bootstrap/img/bj-1.png" alt="" class="bj-1">
         <img src="lib/bootstrap/img/bj-2.png" alt="" class="bj-2">
         <img src="lib/bootstrap/img/bj-3.png" alt="" class="bj-3">
@@ -417,7 +420,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -448,6 +451,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -457,6 +461,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -474,7 +484,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+         axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        }
     },
     series: [
         {
@@ -507,7 +524,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -538,6 +555,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -547,6 +565,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -564,7 +588,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         { name: "total",
@@ -606,7 +637,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -637,6 +668,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -646,6 +678,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -663,7 +701,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         {
@@ -695,7 +740,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -726,6 +771,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -735,6 +781,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -752,7 +804,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         {
@@ -785,7 +844,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -816,6 +875,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -825,6 +885,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -842,7 +908,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         { name: "total",
@@ -884,7 +957,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -915,6 +988,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -924,6 +998,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -941,7 +1021,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         {
@@ -973,7 +1060,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -1004,6 +1091,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -1013,6 +1101,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -1030,7 +1124,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         {
@@ -1063,7 +1164,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -1094,6 +1195,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -1103,6 +1205,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -1120,7 +1228,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         { name: "total",
@@ -1162,7 +1277,7 @@ var option = {
     },
     grid: {
         left: '3%',
-        right: '3%',
+        right: '6%',
         top: '30px',
         bottom: '0',
         containLabel: true
@@ -1193,6 +1308,7 @@ var option = {
 
     calculable: true,
     xAxis: {
+    		splitLine:{show: false},
         type: "category",
         boundaryGap: false,
         axisTick: {
@@ -1202,6 +1318,12 @@ var option = {
             onZero: false,
             lineStyle: {
             }
+        },
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
         },
         axisPointer: {
             label: {
@@ -1219,7 +1341,14 @@ var option = {
         ]
     },
     yAxis: {
-        type: "value"
+    		splitLine:{show: false},
+        type: "value",
+        axisLabel: {
+            textStyle: {
+                fontSize: '9'
+            }
+
+        },
     },
     series: [
         {
@@ -1254,7 +1383,7 @@ var option = {
         textStyle: {
             color: '#ccc'
         },
-        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+        data:[]
     },
     series: [{
         name: '行业占比',

@@ -25,10 +25,9 @@
   <body style="visibility: visible;">
     <div class="container-flex">
       <div class="boxtit">
-        <div class="b1" id="Timer">
-        </div>
+        <div class="b1">当前时间：&nbsp;<span id="Timer"></span></div>
         <div class="b2"><?php echo $dg_info[0]['group_name'];?>容灾监控中心</div>
-        <div class="b3">最新检测时间:<span><?php if(!empty($datalist)){ echo $datalist[0]['create_time'];} else {echo $this->lang->line('the_monitoring_process_is_not_started');} ?></span>
+        <div class="b3">最新检测时间：&nbsp;<span><?php if(!empty($datalist)){ echo $datalist[0]['create_time'];} else {echo $this->lang->line('the_monitoring_process_is_not_started');} ?></span>
         	
         <a href="<?php echo site_url('wl_oracle/dglist'); ?>" class="qbtn"><img src="lib/bootstrap/img/quit.png" title="退出"></a>
         	</div>
