@@ -508,8 +508,8 @@ class Oracle_model extends CI_Model{
     }
 
 
-    function get_standby_redo($sta_id){
-        $query=$this->db->query("select * from oracle_dg_s_redo where server_id = 101 order by id; ");
+    function get_oracle_redo($server_id){
+        $query=$this->db->query("select * from oracle_redo where server_id = $server_id order by id; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

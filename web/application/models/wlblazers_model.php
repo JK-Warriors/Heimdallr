@@ -99,6 +99,36 @@ class Wlblazers_model extends CI_Model{
 		$count = $this->db->query($sql)->num_rows();
 		return $count;
 	}
+	
+	function get_oracle_active_instance(){
+    $sql = "SELECT os.server_id, os.tags
+								FROM oracle_status os, db_cfg_oracle co
+								WHERE os.server_id = co.id
+								AND os.connect = 1
+								AND co.is_delete = 0
+								AND co.monitor = 1";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
+	
+	function get_oracle_inactive_instance(){
+    $sql = "SELECT os.server_id, os.tags
+								FROM oracle_status os, db_cfg_oracle co
+								WHERE os.server_id = co.id
+								AND os.connect != 1
+								AND co.is_delete = 0
+								AND co.monitor = 1";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
 
 	function get_oracle_chart_server(){
     $sql = "select o.*, @rownum:=@rownum+1 rownum 
@@ -150,7 +180,55 @@ class Wlblazers_model extends CI_Model{
 		}
 	}
 	
-	
+   /*
+	 * 获取 空间 相关统计信息
+	 */
+    function get_tablespace_top5($server_id){
+        $sql = "SELECT t.* FROM oracle_tablespace t WHERE t.server_id = $server_id order by max_rate desc limit 5";
+        
+        $query=$this->db->query($sql);
+        
+				if ($query->num_rows() > 0)
+				{
+					return $query->result_array();
+				}
+    }
+
+   /*
+	 * 获取 db tag
+	 */
+    function get_db_tag($server_id){
+        $query=$this->db->query("select tags from db_cfg_oracle t where id = $server_id");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array()[0]; 
+        }
+    }
+    
+    
+   /*
+	 * 获取 db time
+	 */
+    function get_db_time($server_id){
+        $query=$this->db->query("select * from (select id, server_id, snap_id, end_time, db_time, elapsed, rate from oracle_db_time where server_id = $server_id order by snap_id desc limit 10) a order by snap_id  ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+
+   /*
+	 * 获取 db session
+	 */
+    function get_db_session($server_id){
+        $query=$this->db->query("select * from (select id, server_id, snap_id, end_time, total_session, active_session from oracle_session where server_id = 100 order by snap_id desc limit 10) a order by snap_id ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    
    /*
 	 * 获取 mysql 相关统计信息
 	 */
@@ -184,7 +262,36 @@ class Wlblazers_model extends CI_Model{
 		$count = $this->db->query($sql)->num_rows();
 		return $count;
 	}
+
+	function get_mysql_active_instance($key){
+    $sql = "SELECT ms.server_id, ms.tags
+								FROM mysql_status ms, db_cfg_mysql cm
+								WHERE ms.server_id = cm.id
+								AND ms.connect = 1
+								AND cm.is_delete = 0
+								AND cm.monitor = 1";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
 	
+	function get_mysql_inactive_instance($key){
+    $sql = "SELECT ms.server_id, ms.tags
+								FROM mysql_status ms, db_cfg_mysql cm
+								WHERE ms.server_id = cm.id
+								AND ms.connect != 1
+								AND cm.is_delete = 0
+								AND cm.monitor = 1";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
 	
    /*
 	 * 获取 sqlserver 相关统计信息
@@ -220,6 +327,35 @@ class Wlblazers_model extends CI_Model{
 		return $count;
 	}
 
+	function get_sqlserver_active_instance($key){
+    $sql = "SELECT ss.server_id, ss.tags
+								FROM sqlserver_status ss, db_cfg_sqlserver cs
+								WHERE ss.server_id = cs.id
+								AND ss.connect = 1
+								AND cs.is_delete = 0
+								AND cs.monitor = 1";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
+	
+	function get_sqlserver_inactive_instance($key){
+    $sql = "SELECT ss.server_id, ss.tags
+								FROM sqlserver_status ss, db_cfg_sqlserver cs
+								WHERE ss.server_id = cs.id
+								AND ss.connect != 1
+								AND cs.is_delete = 0
+								AND cs.monitor = 1";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
 
    /*
 	 * 获取 容灾库 延时信息

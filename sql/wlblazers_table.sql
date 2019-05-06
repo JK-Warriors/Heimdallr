@@ -584,8 +584,8 @@ CREATE TABLE `oracle_dg_s_status_his` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `oracle_dg_s_redo`;
-CREATE TABLE `oracle_dg_s_redo` (
+DROP TABLE IF EXISTS `oracle_redo`;
+CREATE TABLE `oracle_redo` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` int(10) NOT NULL,
   `redo_time` varchar(20) DEFAULT NULL,
@@ -594,6 +594,32 @@ CREATE TABLE `oracle_dg_s_redo` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `oracle_db_time`;
+CREATE TABLE `oracle_db_time` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` int(10) NOT NULL,
+  `snap_id` bigint(20) DEFAULT NULL,
+  `end_time` varchar(20) DEFAULT NULL,
+  `db_time` bigint(20) DEFAULT NULL,
+  `elapsed` bigint(20) DEFAULT NULL,
+  `rate` float(10,2) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `oracle_session`;
+CREATE TABLE `oracle_session` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `server_id` int(10) NOT NULL,
+  `snap_id` bigint(20) DEFAULT NULL,
+  `end_time` varchar(20) DEFAULT NULL,
+  `total_session` bigint(20) DEFAULT NULL,
+  `active_session` bigint(20) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 -- ----------------------------
 -- Table structure for oracle_dg_process
 -- ----------------------------

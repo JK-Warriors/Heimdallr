@@ -25,13 +25,13 @@ def get_parameters(conn):
         for item in data_list:
             parameters[item[0]] = item[1]
 
+
+        return parameters
     except Exception,e:
         print e
 
     finally:
         curs.close()
-
-    return parameters
 
 
 def get_sysstat(conn):
@@ -43,13 +43,12 @@ def get_sysstat(conn):
         for item in data_list:
             sysstat[item[0]] = item[1]
 
+        return sysstat
     except Exception,e:
         print e
 
     finally:
         curs.close()
-
-    return sysstat
 
 
 def get_instance(conn,field):
@@ -58,14 +57,13 @@ def get_instance(conn,field):
         curs.execute("select %s from v$instance" %(field) );
         result = curs.fetchone()[0]
 
+        return result
     except Exception,e:
         result = ''
         print e
 
     finally:
         curs.close()
-
-    return result
 
 
 def get_database(conn,field):
@@ -73,6 +71,7 @@ def get_database(conn,field):
         curs=conn.cursor()
         curs.execute("select %s from v$database" %(field) );
         result = curs.fetchone()[0]
+        return result
 
     except Exception,e:
         result = ''
@@ -80,8 +79,6 @@ def get_database(conn,field):
 
     finally:
         curs.close()
-
-    return result
 
 
 def get_version(conn):
@@ -90,15 +87,46 @@ def get_version(conn):
         curs.execute("select product,version from product_component_version where product like '%Database%'");
         result = curs.fetchone()[1]
 
+        return result
     except Exception,e:
         print e
 
     finally:
         curs.close()
 
-    return result
 
+def get_current_snap_id(conn, inst_id):
+    try:
+        curs=conn.cursor()
+        curs.execute("select max(snap_id) from wrm$_snapshot where instance_number = %s" %(inst_id));
+        result = curs.fetchone()[0]
 
+        return result
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+    
+def get_end_interval_time(conn, inst_id):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select to_char(t.end_interval_time, 'yyyy-mm-dd hh24:mi:ss') from wrm$_snapshot t 
+											where t.snap_id in (select max(snap_id) from wrm$_snapshot) 
+											and t.instance_number = %s """ %(inst_id));
+        result = curs.fetchone()[0]
+
+        return result
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+    
+    
+    
 def get_sessions(conn):
     try:
         curs=conn.cursor()
@@ -118,7 +146,7 @@ def get_sessions(conn):
 def get_actives(conn):
     try:
         curs=conn.cursor()
-        curs.execute("select count(*) from v$session where username not in('SYS','SYSTEM') and username is not null and STATUS='ACTIVE'");
+        curs.execute("select count(*) from v$session where STATUS='ACTIVE'");
         result = curs.fetchone()[0]
         return result
 
@@ -301,7 +329,7 @@ def get_redo_per_hour(conn):
 											  from (select LPAD(to_char(first_time, 'yyyymmddhh24'), 10) key_time,
 											               trunc(sum(blocks * block_size) / 1024 / 1024) redo_p_h
 											          from v$archived_log
-											         where first_time > sysdate - 1 / 2
+											         where first_time > sysdate - 3
 											           and standby_dest = 'NO'
 											         group by LPAD(to_char(first_time, 'yyyymmddhh24'), 10)
 											         order by key_time) """);
@@ -314,7 +342,39 @@ def get_redo_per_hour(conn):
 
     finally:
         curs.close()
+
+
+def get_db_time(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select snap_id, end_time, dbtime, elapsed, round(dbtime/elapsed, 2) as rate from (
+												select n.stat_name as name,
+												e.snap_id,
+												to_char(te.end_interval_time,'yyyy-mm-dd hh24:mi:ss') as end_time,
+												       round((e.value - b.value) / 1000 / 1000, 2) as dbtime,
+												       (to_date(to_char(te.end_interval_time,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss') - 
+												       to_date(to_char(tb.end_interval_time,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss'))*86400 as elapsed
+												  from wrh$_sys_time_model e, wrh$_sys_time_model b, wrh$_stat_name n, wrm$_snapshot tb, wrm$_snapshot te
+												 where e.stat_id = n.stat_id
+												   and b.stat_id = n.stat_id
+												   and b.snap_id = e.snap_id - 1
+												   and e.snap_id = (select max(snap_id) from wrm$_snapshot)
+												   and e.snap_id = te.snap_id and e.instance_number = te.instance_number
+												   and b.snap_id = tb.snap_id and b.instance_number = tb.instance_number
+												   and e.instance_number=b.instance_number
+												   and e.instance_number=(select instance_number from v$instance)
+												   and n.stat_name = 'DB time') tmp """);
+        result = curs.fetchall()
         
+        return result
+    except Exception,e:
+        return None
+        print e
+
+    finally:
+        curs.close()
+        
+             
           
 def get_dg_s_ms(conn):
     try:

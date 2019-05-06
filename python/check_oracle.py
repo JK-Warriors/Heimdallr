@@ -73,6 +73,8 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_diskgroup where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from oracle_diskgroup where server_id = %s;' %(server_id),'')
         
+        func.mysql_exec('delete from oracle_redo where server_id = %s;' %(server_id),'')
+        
         #get info by v$instance
         connect = 1
         instance_name = oracle.get_instance(conn,'instance_name')
@@ -102,13 +104,19 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         uptime = oracle.get_instance(conn,'startup_time')
         version = oracle.get_instance(conn,'version')
         instance_status = oracle.get_instance(conn,'status')
+        instance_number = oracle.get_instance(conn,'instance_number')
         database_status = oracle.get_instance(conn,'database_status')
         host_name = oracle.get_instance(conn,'host_name')
         archiver = oracle.get_instance(conn,'archiver')
+        
         #get info by sql count
         session_total = oracle.get_sessions(conn)
         session_actives = oracle.get_actives(conn)
         session_waits = oracle.get_waits(conn)
+        
+        #get snap_id, end_interval_time
+        snap_id = oracle.get_current_snap_id(conn, instance_number)
+        end_interval_time = oracle.get_end_interval_time(conn, instance_number)
         
         #get info by v$parameters
         parameters = oracle.get_parameters(conn)
@@ -182,7 +190,49 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
            alert.gen_alert_oracle_diskgroup(server_id)    # generate diskgroup alert
            logger.info("Generate diskgroup alert for server: %s end." %(server_id))
               
-                         
+        ##### get redo per hour
+        ora_redo = oracle.get_redo_per_hour(conn)
+        if ora_redo:
+           for line in ora_redo:
+              key_time=line[0]
+              redo_p_h=line[1]
+            
+              ##################### insert data to mysql server#############################
+              sql = "insert into oracle_redo(server_id, redo_time, redo_log) values(%s,%s,%s);"
+              param = (server_id, key_time, redo_p_h)
+              func.mysql_exec(sql,param)  
+              
+              
+        ##### get db time
+        ora_dbtime = oracle.get_db_time(conn)
+        if ora_dbtime:
+           for line in ora_dbtime:
+              snap_id=line[0]
+              end_time=line[1]
+              db_time=line[2]
+              elapsed=line[3]
+              rate=line[4]
+              
+              if rate < 0:
+                 rate = 0
+              ##################### insert data to mysql server#############################
+              sql = "select count(1) from oracle_db_time where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
+              li_count = func.mysql_single_query(sql)  
+              if li_count == 0:
+                 sql = "insert into oracle_db_time(server_id, snap_id, end_time, db_time, elapsed, rate) values(%s,%s,%s,%s,%s,%s);"
+                 param = (server_id, snap_id, end_time, db_time, elapsed, rate)
+                 func.mysql_exec(sql,param)  
+              
+        ##### insert total session, active session into table "oracle_session" for big view
+        sql = "select count(1) from oracle_session where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
+        li_count = func.mysql_single_query(sql)  
+        if li_count == 0:
+           sql = "insert into oracle_session(server_id, snap_id, end_time, total_session, active_session) values(%s,%s,%s,%s,%s);"
+           param = (server_id, snap_id, end_interval_time, session_total, session_actives)
+           func.mysql_exec(sql,param)  
+                               
+                               
+                               
         #check restore point
         restore_point = oracle.get_restorepoint(conn, flashback_retention)
         if restore_point:
@@ -299,7 +349,6 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         func.mysql_exec("insert into oracle_dg_s_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_dg_s_status where server_id in (%s, %s);" %(pri_id, sta_id),'')
         func.mysql_exec('delete from oracle_dg_s_status where server_id in (%s, %s);' %(pri_id, sta_id),'')
         
-        func.mysql_exec('delete from oracle_dg_s_redo where server_id in (%s, %s);' %(pri_id, sta_id),'')
                              
         if p_conn:
             # collect primary information
@@ -408,17 +457,7 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
             func.mysql_exec(sql,param)  
             
             
-            ##### get standby redo per hour
-            dg_s_redo = oracle.get_redo_per_hour(s_conn)
-            if dg_s_redo:
-                for line in dg_s_redo:
-                    key_time=line[0]
-                    redo_p_h=line[1]
-            
-                    ##################### insert data to mysql server#############################
-                    sql = "insert into oracle_dg_s_redo(server_id, redo_time, redo_log) values(%s,%s,%s);"
-                    param = (s_id, key_time, redo_p_h)
-                    func.mysql_exec(sql,param)  
+
             
             # generate dataguard alert
             logger.info("Generate dataguard alert for server: %s begin:" %(s_id))

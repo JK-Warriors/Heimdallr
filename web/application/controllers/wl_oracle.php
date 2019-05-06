@@ -158,7 +158,7 @@ class Wl_oracle extends Front_Controller {
         		$data["standby_os_cfg"] = $this->cfg_os->get_record_by_host($standby_host);
         		$data["standby_os_disk"] = $this->os->get_os_disk_info($standby_host);
         		
-        		$data["standby_redo"] = $this->oracle->get_standby_redo($sta_id);
+        		$data["standby_redo"] = $this->oracle->get_oracle_redo($sta_id);
         }
         
         $data["setval"]=$setval;
