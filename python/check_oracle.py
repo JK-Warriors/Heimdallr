@@ -214,22 +214,21 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
               
         ##### get db time
         sql = "select count(1) from oracle_db_time where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
-        li_count = func.mysql_single_query(sql)  
+        li_count = func.mysql_single_query(sql)
         if li_count == 0:
            ora_dbtime = oracle.get_db_time(conn, snap_id, instance_number)
            if ora_dbtime:
-              for line in ora_dbtime:
-                 end_time=line[1]
-                 db_time=line[2]
-                 elapsed=line[3]
-                 rate=line[4]
+              end_time=line[1]
+              db_time=line[2]
+              elapsed=line[3]
+              rate=line[4]
               
-                 if rate < 0:
-                    rate = 0
-                 ##################### insert data to mysql server#############################
-                 sql = "insert into oracle_db_time(server_id, snap_id, end_time, db_time, elapsed, rate) values(%s,%s,%s,%s,%s,%s);"
-                 param = (server_id, snap_id, end_time, db_time, elapsed, rate)
-                 func.mysql_exec(sql,param)  
+              if rate < 0:
+                 rate = 0
+              ##################### insert data to mysql server#############################
+              sql = "insert into oracle_db_time(server_id, snap_id, end_time, db_time, elapsed, rate) values(%s,%s,%s,%s,%s,%s);"
+              param = (server_id, snap_id, end_time, db_time, elapsed, rate)
+              func.mysql_exec(sql,param)  
               
               
               

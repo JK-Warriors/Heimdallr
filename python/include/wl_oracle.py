@@ -335,8 +335,8 @@ def get_redo_per_hour(conn):
         
         return result
     except Exception,e:
-        return None
         print e
+        return None
 
     finally:
         curs.close()
@@ -356,18 +356,17 @@ def get_db_time(conn, snap_id, inst_id):
 												 where e.stat_id = n.stat_id
 												   and b.stat_id = n.stat_id
 												   and b.snap_id = e.snap_id - 1
-												   and e.snap_id = snap_id
+												   and e.snap_id = %s
 												   and e.snap_id = te.snap_id and e.instance_number = te.instance_number
 												   and b.snap_id = tb.snap_id and b.instance_number = tb.instance_number
 												   and e.instance_number=b.instance_number
-												   and e.instance_number=inst_id
-												   and n.stat_name = 'DB time') tmp """);
-        result = curs.fetchall()
-        
+												   and e.instance_number=%s
+												   and n.stat_name = 'DB time') tmp """ %(snap_id, inst_id));
+        result = curs.fetchone()
         return result
     except Exception,e:
-        return None
         print e
+        return None
 
     finally:
         curs.close()
