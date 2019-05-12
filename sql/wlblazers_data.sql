@@ -141,8 +141,8 @@ INSERT INTO `admin_privilege` VALUES ('1071', 'Login System', '0', 'index/index'
 INSERT INTO `admin_privilege` VALUES ('1081', 'Alarm View', '2101', 'alarm/index', '81');
 INSERT INTO `admin_privilege` VALUES ('1082', 'Alarm His View', '2102', 'alarm/history', '82');
 
-INSERT INTO `admin_privilege` VALUES ('1091', 'BigView View', '1011', 'bigview/index', '91');
-INSERT INTO `admin_privilege` VALUES ('1092', 'BigView Save', '1011', 'bigview/save', '92');
+INSERT INTO `admin_privilege` VALUES ('1091', 'BigView View', '1011', 'cfg_bigview/index', '91');
+INSERT INTO `admin_privilege` VALUES ('1092', 'BigView Save', '1011', 'cfg_bigview/save', '92');
 -- -------------------------------------------------- MySQL -------------------------------------------------------
 INSERT INTO `admin_privilege` VALUES ('1101', 'MySQL Config View', '1002', 'cfg_mysql/index', '101');
 INSERT INTO `admin_privilege` VALUES ('1102', 'MySQL Config Add', '1002', 'cfg_mysql/add', '102');
