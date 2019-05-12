@@ -125,11 +125,11 @@
             <h1><?php echo $db_tag_1[tags] ?></h1>
           </div>
           <div class="d2">
-            <h2>负载（DB Time/ Elapsed time）</h2>
+            <h2>负载（DB Time/Elapsed Time）</h2>
             <div id="left2" style="width: 100%;height:100%;"></div>
           </div>
           <div class="d3">
-            <h2>total session和active session</h2>
+            <h2>Total Sessions 和 Active Sessions</h2>
             <div id="left3" style="width: 100%;height:100%;"></div>
           </div>
           <div class="d4">
@@ -151,7 +151,7 @@
             </ul>
           </div>
           <div class="d5">
-            <h2>每小时归档量</h2>
+            <h2>每小时日志量</h2>
             <div id="left5" style="width: 100%;height:100%;"></div>
           </div>
         </div>
@@ -695,7 +695,7 @@ var option = {
         data: [
         		<?php if(!empty($redo_1)) {?>
 						<?php foreach ($redo_1  as $item):?>
-										"<?php echo $item['redo_time'] ?>",
+										"<?php echo substr($item['key_time'],11,5) ?>",
 						<?php endforeach;?>
 						<?php } ?>
         ]
@@ -1015,7 +1015,7 @@ var option = {
         data: [
         		<?php if(!empty($redo_2)) {?>
 						<?php foreach ($redo_2  as $item):?>
-										"<?php echo $item['redo_time'] ?>",
+										"<?php echo substr($item['key_time'],11,5) ?>",
 						<?php endforeach;?>
 						<?php } ?>
         ]
@@ -1335,7 +1335,7 @@ var option = {
         data: [
         		<?php if(!empty($redo_3)) {?>
 						<?php foreach ($redo_3  as $item):?>
-										"<?php echo $item['redo_time'] ?>",
+										"<?php echo substr($item['key_time'],11,5) ?>",
 						<?php endforeach;?>
 						<?php } ?>
         ]
@@ -1373,10 +1373,11 @@ var option = {
     backgroundColor: 'rgba(0,0,0,0)',
     tooltip: {
         trigger: 'item',
-        formatter: "{b}: <br/>{c} ({d}%)"
+        formatter: "{b} <br/>{c} ({d}%)"
     },
     
     color: ['#af89d6', '#4ac7f5', '#0089ff', '#f36f8a', '#f5c847'],
+    //color: ['#ff0000', '#ff9600', '#ffff00', '#00ff00', '#00ff96', '#0000ff', '#ff00ff'],
     legend: {
         orient: 'vertical',
         x: 'left',
@@ -1415,26 +1416,16 @@ var option = {
                 }
             }
         },
-        data: [{
-                value: 335,
-                name: '直接访问'
+        data: [
+        
+        		<?php if(!empty($db_time_per_day)) {?>
+						<?php foreach ($db_time_per_day  as $item):?>
+        		{
+                value: <?php echo $item['db_time'] ?>,
+                name: '<?php echo $item['end_time'] ?>: DB Time'
             },
-            {
-                value: 310,
-                name: '邮件营销'
-            },
-            {
-                value: 234,
-                name: '联盟广告'
-            },
-            {
-                value: 135,
-                name: '视频广告'
-            },
-            {
-                value: 1548,
-                name: '搜索引擎'
-            }
+						<?php endforeach;?>
+						<?php } ?>
         ],
     }]
 };
@@ -1447,7 +1438,7 @@ var option = {
 
     tooltip: {},
     legend: {
-        data: ['namename']
+        data: ['']
     },
     radar: {
         // shape: 'circle',
@@ -1456,31 +1447,26 @@ var option = {
                 color: '#ccc',
             }
         },
-        indicator: [{
-                name: 'a1',
-                max: 100
-            },
-            {
-                name: 'a2',
-                max: 100
-            },
-            {
-                name: 'a3',
-                max: 100
-            },
-            {
-                name: 'a3',
-                max: 100
-            }
-        ]
+        center: ["45%", "50%"],
+        radius: 60,
+        nameGap : 0,
+        indicator: [{name: 'CPU',max: 100},
+            				{name: '内存',max: 100},
+            				{name: 'Swap',max: 100},
+            				{name: '磁盘',max: 100}
+        					]
     },
     series: [{
-        name: 'aaaa',
+        name: '核心主机性能指标（空闲率）',
         type: 'radar',
         areaStyle: {},
         data: [{
-            value: [50, 12, 90, 66]
-        }]
+            value: [<?php echo $core_os['cpu_idle_time'] ?>, 
+            				<?php echo 100-$core_os['mem_usage_rate'] ?>, 
+            				<?php echo floor(($core_os['swap_avail']/$core_os['swap_total'])*100) ?>, 
+            				<?php echo 100-$core_os_disk['max_used'] ?>]
+        }
+        ]
     }]
 };
 
@@ -1491,6 +1477,12 @@ window.addEventListener("resize", function () {
      left2.resize();
      left3.resize();
      left5.resize();
+     left22.resize();
+     left23.resize();
+     left25.resize();
+     left32.resize();
+     left33.resize();
+     left35.resize();
      right11.resize();
      right12.resize();
 });  	

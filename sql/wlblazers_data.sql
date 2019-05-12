@@ -43,6 +43,7 @@ INSERT INTO `admin_menu` VALUES ('1004', 'SQLServer', '2', '10', 'cfg_sqlserver/
 -- INSERT INTO `admin_menu` VALUES ('1005', 'MongoDB', '2', '10', 'cfg_mongodb/index', 'icon-list', '0', '1', '5', CURRENT_TIMESTAMP);
 -- INSERT INTO `admin_menu` VALUES ('1006', 'Redis', '2', '10', 'cfg_redis/index', 'icon-list', '0', '1', '6', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1010', 'OS', '2', '10', 'cfg_os/index', 'icon-list', '0', '1', '10', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1011', 'BigView', '2', '10', 'cfg_bigview/index', 'icon-list', '0', '1', '11', CURRENT_TIMESTAMP);
 
 -- ------------------MySQL Monitor--------------------
 INSERT INTO `admin_menu` VALUES ('1101', 'Health Monitor', '2', '11', 'wl_mysql/index', ' icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
@@ -140,6 +141,8 @@ INSERT INTO `admin_privilege` VALUES ('1071', 'Login System', '0', 'index/index'
 INSERT INTO `admin_privilege` VALUES ('1081', 'Alarm View', '2101', 'alarm/index', '81');
 INSERT INTO `admin_privilege` VALUES ('1082', 'Alarm His View', '2102', 'alarm/history', '82');
 
+INSERT INTO `admin_privilege` VALUES ('1091', 'BigView View', '1011', 'bigview/index', '91');
+INSERT INTO `admin_privilege` VALUES ('1092', 'BigView Save', '1011', 'bigview/save', '92');
 -- -------------------------------------------------- MySQL -------------------------------------------------------
 INSERT INTO `admin_privilege` VALUES ('1101', 'MySQL Config View', '1002', 'cfg_mysql/index', '101');
 INSERT INTO `admin_privilege` VALUES ('1102', 'MySQL Config Add', '1002', 'cfg_mysql/add', '102');
@@ -284,6 +287,8 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1062');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1071');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1081');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1082');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1091');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1092');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1101');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1102');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1103');
@@ -417,3 +422,14 @@ INSERT INTO `options` VALUES ('sms_fetion_user', '', '飞信发送短信账号')
 INSERT INTO `options` VALUES ('sms_fetion_pass', '', '飞信发送短信密码');
 INSERT INTO `options` VALUES ('smstype', 'fetion', '发送短信方式：fetion/api');
 INSERT INTO `options` VALUES ('monitor_sqlserver', '0', '是否开启SQLServer监控');
+
+
+-- ----------------------------
+-- Records of db_cfg_bigview
+-- ----------------------------
+DELETE FROM `db_cfg_bigview`;
+INSERT INTO `db_cfg_bigview`(metrix_name) VALUES ('center_db1');
+INSERT INTO `db_cfg_bigview`(metrix_name) VALUES ('center_db2');
+INSERT INTO `db_cfg_bigview`(metrix_name) VALUES ('center_db3');
+INSERT INTO `db_cfg_bigview`(metrix_name) VALUES ('core_db');
+INSERT INTO `db_cfg_bigview`(metrix_name) VALUES ('core_os');

@@ -73,7 +73,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_diskgroup where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from oracle_diskgroup where server_id = %s;' %(server_id),'')
         
-        func.mysql_exec('delete from oracle_redo where server_id = %s;' %(server_id),'')
+        ##func.mysql_exec('delete from oracle_redo where server_id = %s;' %(server_id),'')
         
         #get info by v$instance
         connect = 1
@@ -193,35 +193,45 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         ##### get redo per hour
         ora_redo = oracle.get_redo_per_hour(conn)
         if ora_redo:
-           for line in ora_redo:
-              key_time=line[0]
-              redo_p_h=line[1]
+           key_time=ora_redo[0]
+           redo_p_h=ora_redo[1]
+        else:
+           key_time = datetime.datetime.now().strftime('%Y-%m-%d %H')+':00'
+           redo_p_h=0
             
-              ##################### insert data to mysql server#############################
-              sql = "insert into oracle_redo(server_id, redo_time, redo_log) values(%s,%s,%s);"
-              param = (server_id, key_time, redo_p_h)
-              func.mysql_exec(sql,param)  
+        ##################### insert data to mysql server#############################
+        sql = "select count(1) from oracle_redo where server_id='%s' and key_time='%s'; " %(server_id,key_time)
+        li_count = func.mysql_single_query(sql)  
+        if li_count == 0:
+           sql = "insert into oracle_redo(server_id, key_time, redo_log) values(%s,%s,%s);"
+           param = (server_id, key_time, redo_p_h)
+           func.mysql_exec(sql,param)  
+        else:
+           sql = "update oracle_redo set redo_log = '%s', create_time = DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') where server_id = '%s' and key_time='%s'; " %(redo_p_h,server_id,key_time)
+           func.mysql_exec(sql,'')  
+
               
               
         ##### get db time
-        ora_dbtime = oracle.get_db_time(conn)
-        if ora_dbtime:
-           for line in ora_dbtime:
-              snap_id=line[0]
-              end_time=line[1]
-              db_time=line[2]
-              elapsed=line[3]
-              rate=line[4]
+        sql = "select count(1) from oracle_db_time where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
+        li_count = func.mysql_single_query(sql)  
+        if li_count == 0:
+           ora_dbtime = oracle.get_db_time(conn, snap_id, instance_number)
+           if ora_dbtime:
+              for line in ora_dbtime:
+                 end_time=line[1]
+                 db_time=line[2]
+                 elapsed=line[3]
+                 rate=line[4]
               
-              if rate < 0:
-                 rate = 0
-              ##################### insert data to mysql server#############################
-              sql = "select count(1) from oracle_db_time where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
-              li_count = func.mysql_single_query(sql)  
-              if li_count == 0:
+                 if rate < 0:
+                    rate = 0
+                 ##################### insert data to mysql server#############################
                  sql = "insert into oracle_db_time(server_id, snap_id, end_time, db_time, elapsed, rate) values(%s,%s,%s,%s,%s,%s);"
                  param = (server_id, snap_id, end_time, db_time, elapsed, rate)
                  func.mysql_exec(sql,param)  
+              
+              
               
         ##### insert total session, active session into table "oracle_session" for big view
         sql = "select count(1) from oracle_session where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)

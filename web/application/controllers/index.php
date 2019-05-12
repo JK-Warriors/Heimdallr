@@ -5,6 +5,7 @@ class Index extends Front_Controller {
 		parent::__construct();
         $this->load->model("wlblazers_model","wlblazers"); 
         $this->load->model("oracle_model","oracle");
+        $this->load->model("os_model","os");
 	
 	}
     
@@ -84,31 +85,45 @@ class Index extends Front_Controller {
         $data["sqlserver_waring"] = $this->wlblazers->get_db_count_waring('sqlserver');
         $data["sqlserver_critical"] = $this->wlblazers->get_db_count_critical('sqlserver');
         
+       
+        $center_db1 = $this->wlblazers->get_center_db('center_db1');
+        $center_db2 = $this->wlblazers->get_center_db('center_db2');
+        $center_db3 = $this->wlblazers->get_center_db('center_db3');
+        $core_db_id = $this->wlblazers->get_core_db();
+        $core_os_host = $this->wlblazers->get_core_os();
+       
         
         //get db name|tags
-        $data["db_tag_1"] = $this->wlblazers->get_db_tag(100);
-        $data["db_tag_2"] = $this->wlblazers->get_db_tag(101);
-        $data["db_tag_3"] = $this->wlblazers->get_db_tag(102);
+        $data["db_tag_1"] = $this->wlblazers->get_db_tag('center_db1');
+        $data["db_tag_2"] = $this->wlblazers->get_db_tag('center_db2');
+        $data["db_tag_3"] = $this->wlblazers->get_db_tag('center_db3');
         
         //get db_time
-        $data["db_time_1"] = $this->wlblazers->get_db_time(100);
-        $data["db_time_2"] = $this->wlblazers->get_db_time(101);
-        $data["db_time_3"] = $this->wlblazers->get_db_time(102);
+        $data["db_time_1"] = $this->wlblazers->get_db_time($center_db1);
+        $data["db_time_2"] = $this->wlblazers->get_db_time($center_db2);
+        $data["db_time_3"] = $this->wlblazers->get_db_time($center_db3);
         
+        //get db time per day
+        $data["db_time_per_day"] = $this->wlblazers->get_db_time_per_day($core_db_id);
+        
+        //get os info
+        $data["core_os"] = $this->os->get_os_info($core_os_host);
+        $data["core_os_disk"] = $this->os->get_os_disk_info($core_os_host);
+        		
         //get total session, active session
-        $data["db_session_1"] = $this->wlblazers->get_db_session(100);
-        $data["db_session_2"] = $this->wlblazers->get_db_session(101);
-        $data["db_session_3"] = $this->wlblazers->get_db_session(102);
+        $data["db_session_1"] = $this->wlblazers->get_db_session($center_db1);
+        $data["db_session_2"] = $this->wlblazers->get_db_session($center_db2);
+        $data["db_session_3"] = $this->wlblazers->get_db_session($center_db3);
         
         //get top 5 tablespace
-        $data["space_1"] = $this->wlblazers->get_tablespace_top5(100);
-        $data["space_2"] = $this->wlblazers->get_tablespace_top5(101);
-        $data["space_3"] = $this->wlblazers->get_tablespace_top5(102);
+        $data["space_1"] = $this->wlblazers->get_tablespace_top5($center_db1);
+        $data["space_2"] = $this->wlblazers->get_tablespace_top5($center_db2);
+        $data["space_3"] = $this->wlblazers->get_tablespace_top5($center_db3);
         
         //get first redo    
-        $data["redo_1"] = $this->oracle->get_oracle_redo(100);
-        $data["redo_2"] = $this->oracle->get_oracle_redo(101);
-        $data["redo_3"] = $this->oracle->get_oracle_redo(102);
+        $data["redo_1"] = $this->oracle->get_oracle_redo($center_db1);
+        $data["redo_2"] = $this->oracle->get_oracle_redo($center_db2);
+        $data["redo_3"] = $this->oracle->get_oracle_redo($center_db3);
 
 
         //for os

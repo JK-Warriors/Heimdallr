@@ -325,15 +325,13 @@ def get_log_applied_delay(conn, dest_id, thread_id):
 def get_redo_per_hour(conn):
     try:
         curs=conn.cursor()
-        curs.execute("""select substr(key_time, 9) || ':00' time, redo_p_h
-											  from (select LPAD(to_char(first_time, 'yyyymmddhh24'), 10) key_time,
-											               trunc(sum(blocks * block_size) / 1024 / 1024) redo_p_h
-											          from v$archived_log
-											         where first_time > sysdate - 3
-											           and standby_dest = 'NO'
-											         group by LPAD(to_char(first_time, 'yyyymmddhh24'), 10)
-											         order by key_time) """);
-        result = curs.fetchall()
+        curs.execute("""select to_char(first_time, 'yyyy-mm-dd hh24')||':00' key_time,
+															 trunc(sum(blocks * block_size) / 1024 / 1024) redo_p_h
+												  from v$archived_log
+												 where to_char(first_time, 'yyyymmddhh24') = to_char(sysdate, 'yyyymmddhh24')
+												   and standby_dest = 'NO'
+												 group by to_char(first_time, 'yyyy-mm-dd hh24') """);
+        result = curs.fetchone()
         
         return result
     except Exception,e:
@@ -344,7 +342,7 @@ def get_redo_per_hour(conn):
         curs.close()
 
 
-def get_db_time(conn):
+def get_db_time(conn, snap_id, inst_id):
     try:
         curs=conn.cursor()
         curs.execute("""select snap_id, end_time, dbtime, elapsed, round(dbtime/elapsed, 2) as rate from (
@@ -358,11 +356,11 @@ def get_db_time(conn):
 												 where e.stat_id = n.stat_id
 												   and b.stat_id = n.stat_id
 												   and b.snap_id = e.snap_id - 1
-												   and e.snap_id = (select max(snap_id) from wrm$_snapshot)
+												   and e.snap_id = snap_id
 												   and e.snap_id = te.snap_id and e.instance_number = te.instance_number
 												   and b.snap_id = tb.snap_id and b.instance_number = tb.instance_number
 												   and e.instance_number=b.instance_number
-												   and e.instance_number=(select instance_number from v$instance)
+												   and e.instance_number=inst_id
 												   and n.stat_name = 'DB time') tmp """);
         result = curs.fetchall()
         

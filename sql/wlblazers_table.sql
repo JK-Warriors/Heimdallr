@@ -457,6 +457,25 @@ CREATE TABLE `db_cfg_sqlserver` (
   KEY `idx_host` (`host`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for db_cfg_sqlserver
+-- ----------------------------
+DROP TABLE IF EXISTS `db_cfg_bigview`;
+CREATE TABLE `db_cfg_bigview` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `metrix_name` varchar(50)  DEFAULT NULL,
+  `server_id` smallint(4) NOT NULL DEFAULT '-1',
+  `host` varchar(30) NOT NULL DEFAULT '',
+  `port` varchar(10) NOT NULL DEFAULT '',
+  `type` varchar(10) NOT NULL DEFAULT '',
+  `tags` varchar(50) NOT NULL DEFAULT '',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_host` (`host`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+
 -- ----------------------------
 -- Table structure for db_status
 -- ----------------------------
@@ -588,7 +607,7 @@ DROP TABLE IF EXISTS `oracle_redo`;
 CREATE TABLE `oracle_redo` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `server_id` int(10) NOT NULL,
-  `redo_time` varchar(20) DEFAULT NULL,
+  `key_time` varchar(20) DEFAULT NULL,
   `redo_log` bigint(20) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

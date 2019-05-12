@@ -195,15 +195,41 @@ class Wlblazers_model extends CI_Model{
     }
 
    /*
+	 * 获取 center db 
+	 */
+    function get_center_db($metrix_name){
+        $query=$this->db->query("select server_id from db_cfg_bigview t where metrix_name = '$metrix_name'; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->row_array()['server_id']; 
+        }
+    }
+    function get_core_db(){
+        $query=$this->db->query("select server_id from db_cfg_bigview t where metrix_name = 'core_db'; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->row_array()['server_id']; 
+        }
+    }
+    function get_core_os(){
+        $query=$this->db->query("select host from db_cfg_bigview t where metrix_name = 'core_os'; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->row_array()['host']; 
+        }
+    }
+    
+   /*
 	 * 获取 db tag
 	 */
-    function get_db_tag($server_id){
-        $query=$this->db->query("select tags from db_cfg_oracle t where id = $server_id");
+    function get_db_tag($metrix_name){
+        $query=$this->db->query("select tags from db_cfg_bigview t where metrix_name = '$metrix_name'; ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array()[0]; 
         }
     }
+
     
     
    /*
@@ -217,6 +243,25 @@ class Wlblazers_model extends CI_Model{
         }
     }
 
+   /*
+	 * 按天获取 核心库 db time
+	 */
+    function get_db_time_per_day($server_id){
+        $query=$this->db->query("select a.server_id, a.end_time, a.db_time
+																		from (
+																		select server_id, substr(end_time, 1, 10) as end_time, sum(db_time) as db_time
+																		from oracle_db_time t 
+																		where t.server_id = $server_id
+																		group by substr(end_time, 1, 10)
+																		order by end_time desc
+																		limit 7) a
+																		order by a.end_time ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
    /*
 	 * 获取 db session
 	 */

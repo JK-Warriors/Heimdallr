@@ -12,6 +12,7 @@ $lang['_MongoDB'] = 'MongoDB';
 $lang['_Redis'] = 'Redis';
 $lang['_SQLServer'] = 'SQLServer';
 $lang['_OS'] = '操作系统';
+$lang['_BigView'] = '大屏配置';
 $lang['_Tool Box'] = '工具箱';
 
 $lang['_MySQL Panel'] = 'MySQL监控';
