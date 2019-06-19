@@ -112,6 +112,26 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
     finally:
         conn.close()
 
+
+######################################################################################################
+# function clean_invalid_db_status
+######################################################################################################   
+def clean_invalid_db_status():
+    try:
+        func.mysql_exec("insert into sqlserver_status_his SELECT *,sysdate() from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        func.mysql_exec('delete from sqlserver_status where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        
+        func.mysql_exec("insert into sqlserver_replication_his SELECT *,sysdate() from sqlserver_replication where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        func.mysql_exec('delete from sqlserver_replication where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
+                                
+        func.mysql_exec("delete from db_status where db_type = 'sqlserver' and server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        
+    except Exception, e:
+        logger.error(e)
+    finally:
+        pass
+        
+        
 def main():
     servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_sqlserver where is_delete=0 and monitor=1;')
 
@@ -138,6 +158,12 @@ def main():
          logger.warning("check sqlserver: not found any servers")
 
     logger.info("check sqlserver controller finished.")
+
+    # Clean invalid data
+    logger.info("Clean invalid sqlserver status start.")   
+    clean_invalid_db_status()
+    logger.info("Clean invalid sqlserver status finished.")       
+
 
 if __name__=='__main__':
     main()

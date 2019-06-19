@@ -584,16 +584,16 @@ def update_fb_retention(conn, server_id, old_value):
 ######################################################################################################   
 def clean_invalid_db_status():
     try:
-        func.mysql_exec("insert into oracle_status_his SELECT *,sysdate() from oracle_status where server_id not in(select id from  db_cfg_oracle);",'')
-        func.mysql_exec('delete from oracle_status where server_id not in(select id from  db_cfg_oracle);','')
+        func.mysql_exec("insert into oracle_status_his SELECT *,sysdate() from oracle_status where server_id not in(select id from  db_cfg_oracle where is_delete = 0);",'')
+        func.mysql_exec('delete from oracle_status where server_id not in(select id from  db_cfg_oracle where is_delete = 0);','')
         
-        func.mysql_exec("insert into oracle_tablespace_his SELECT *,sysdate() from oracle_tablespace where server_id not in(select id from  db_cfg_oracle);",'')
-        func.mysql_exec('delete from oracle_tablespace where server_id not in(select id from  db_cfg_oracle);','')
+        func.mysql_exec("insert into oracle_tablespace_his SELECT *,sysdate() from oracle_tablespace where server_id not in(select id from  db_cfg_oracle where is_delete = 0);",'')
+        func.mysql_exec('delete from oracle_tablespace where server_id not in(select id from  db_cfg_oracle where is_delete = 0);','')
         
-        func.mysql_exec("insert into oracle_diskgroup_his SELECT *,sysdate() from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle);",'')
-        func.mysql_exec('delete from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle);','')
+        func.mysql_exec("insert into oracle_diskgroup_his SELECT *,sysdate() from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle where is_delete = 0);",'')
+        func.mysql_exec('delete from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle where is_delete = 0);','')
         
-        func.mysql_exec("delete from db_status where db_type = 'oracle' and server_id not in(select id from  db_cfg_oracle);",'')
+        func.mysql_exec("delete from db_status where db_type = 'oracle' and server_id not in(select id from  db_cfg_oracle where is_delete = 0);",'')
         
     except Exception, e:
         logger.error(e)
@@ -634,7 +634,7 @@ def main():
 
     logger.info("check oracle controller finished.")
 
-
+    # Clean invalid data
     logger.info("Clean invalid oracle status start.")   
     clean_invalid_db_status()
     logger.info("Clean invalid oracle status finished.")       

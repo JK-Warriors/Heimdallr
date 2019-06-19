@@ -336,7 +336,36 @@ def check_mysql(host,port,username,password,server_id,tags):
         logger.error(e)
         sys.exit(1)
          
-   
+
+
+######################################################################################################
+# function clean_invalid_db_status
+######################################################################################################   
+def clean_invalid_db_status():
+    try:
+        func.mysql_exec("insert into mysql_status_his SELECT *,sysdate() from mysql_status where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
+        func.mysql_exec('delete from mysql_status where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        
+        func.mysql_exec("insert into mysql_bigtable_his SELECT *,sysdate() from mysql_bigtable where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
+        func.mysql_exec('delete from mysql_bigtable where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        
+        func.mysql_exec("insert into mysql_replication_his SELECT *,sysdate() from mysql_replication where server_id not in(select id from db_cfg_mysql);",'')
+        func.mysql_exec('delete from mysql_replication where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        
+        func.mysql_exec("insert into mysql_slow_query_review_his SELECT *,sysdate() from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
+        func.mysql_exec('delete from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        
+        func.mysql_exec('delete from mysql_connected where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        
+        func.mysql_exec('delete from mysql_processlist where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+                                  
+        func.mysql_exec("delete from db_status where db_type = 'mysql' and server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
+        
+    except Exception, e:
+        logger.error(e)
+    finally:
+        pass
+           
 
 def main():
     #get mysql servers list
@@ -370,6 +399,10 @@ def main():
 
     logger.info("check mysql controller finished.")
 
+    # Clean invalid data
+    logger.info("Clean invalid mysql status start.")   
+    clean_invalid_db_status()
+    logger.info("Clean invalid mysql status finished.")     
 
 if __name__=='__main__':
     main()
