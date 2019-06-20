@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
 <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
 <li class="active"><?php echo $this->lang->line('_MySQL Monitor'); ?></li><span class="divider">/</span></li>
 <li class="active"><?php echo $this->lang->line('_InnoDB Monitor'); ?></li>
@@ -104,7 +104,7 @@
 <td><?php echo $item['innodb_rows_inserted_persecond'] ?></td>
 <td><?php echo $item['innodb_rows_updated_persecond'] ?></td>
 <td><?php echo $item['innodb_rows_deleted_persecond'] ?></td>
-<td><a href="<?php echo site_url('wl_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></td>
+<td><a href="<?php echo site_url('wl_mysql/innodb_chart/'.$item['server_id']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
 </tr>
 <?php endforeach;?>
 <?php }else{  ?>

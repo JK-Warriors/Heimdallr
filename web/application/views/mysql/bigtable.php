@@ -37,7 +37,7 @@
         <th><?php echo $this->lang->line('table_name'); ?></th>
 		<th><?php echo $this->lang->line('table_size'); ?>(MB)</th>
 		<th><?php echo $this->lang->line('table_comment'); ?></th>
-        <th><?php echo $this->lang->line('trend'); ?> <?php echo $this->lang->line('chart'); ?></th>
+        <th><?php echo $this->lang->line('trend'); ?><?php echo $this->lang->line('chart'); ?></th>
 	    </tr>
       </thead>
       <tbody>
@@ -50,7 +50,7 @@
         <td><?php echo $item['table_name'] ?></td>
         <td><?php echo $item['table_size'] ?></td>
         <td><?php echo $item['table_comment'] ?></td>
-        <td><a href="<?php echo site_url('wl_mysql/bigtable_chart/'.$item['server_id'].'/'.$item['table_name']) ?>"><img src="./images/chart.gif"/></a></a></td>
+        <td><a href="<?php echo site_url('wl_mysql/bigtable_chart/'.$item['server_id'].'/'.$item['table_name']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>

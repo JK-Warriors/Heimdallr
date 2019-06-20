@@ -119,7 +119,7 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
 def clean_invalid_db_status():
     try:
         func.mysql_exec("insert into sqlserver_status_his SELECT *,sysdate() from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
-        func.mysql_exec('delete from sqlserver_status where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        func.mysql_exec('delete from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
         
         func.mysql_exec("insert into sqlserver_replication_his SELECT *,sysdate() from sqlserver_replication where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         func.mysql_exec('delete from sqlserver_replication where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')

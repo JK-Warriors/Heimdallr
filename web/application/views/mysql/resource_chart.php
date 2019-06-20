@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_MySQL Monitor'); ?></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Resource Monitor'); ?></li>
@@ -8,102 +8,308 @@
 
 <div class="container-fluid">
 <div class="row-fluid">
-           
+
+<div class="btn-toolbar">
+                <div class="btn-group">
+                  <a class="btn btn-default <?php if($begin_time=='30') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/30') ?>"><i class="fui-calendar-16"></i>&nbsp;30 <?php echo $this->lang->line('date_minutes'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='60') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/60') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='180') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/180') ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='360') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/360') ?>"><i class="fui-calendar-16"></i>&nbsp;6 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='720') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/720') ?>"><i class="fui-calendar-16"></i>&nbsp;12 <?php echo $this->lang->line('date_hours'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='1440') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/1440') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_days'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='4320') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/4320') ?>"><i class="fui-calendar-16"></i>&nbsp;3 <?php echo $this->lang->line('date_days'); ?></a>
+                  <a class="btn btn-default <?php if($begin_time=='10080') echo 'active'; ?>" href="<?php echo site_url('wl_mysql/resource_chart/'.$cur_server_id.'/10080') ?>"><i class="fui-calendar-16"></i>&nbsp;1 <?php echo $this->lang->line('date_weeks'); ?></a>
+                </div>
+</div>           
 <hr/>
-<div id="connections" style="margin-top:5px; margin-left:0px; width:500px; height:300px;float: left;"></div>
-<div id="files" style="margin-top:5px; margin-left:0px; width:500px; height:300px;float: left;"></div>
-<div id="tables" style="margin-top:5px; margin-left:0px; width:500px; height:300px;float: left;"></div>
+
+<div id="connections" style="margin-top:10px; margin-left:0px; width:96%; height:300px;"></div>
+<div id="tables" style="margin-top:10px; margin-left:0px; width:96%; height:300px;"></div>
+<div id="files" style="margin-top:10px; margin-left:0px; width:96%; height:300px;"></div>
 
 
 <script src="lib/jquery-1.7.2.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="./lib/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.donutRenderer.min.js"></script>
-<link href="./lib/jqplot/jquery.jqplot.min.css"  rel="stylesheet">
+<script src="lib/echarts4/echarts.min.js"></script>
+<script src="lib/echarts4/dark.js"></script>
+
+
 
 
 <script type="text/javascript">
+var url = "<?php echo site_url('wl_mysql/chart_data') . '/' . $this->uri->segment(3) . '/' . $this->uri->segment(4); ?>";
 
-$(document).ready(function(){
-  var data = [
-  ["connections_used (<?php echo $connections_used; ?>)", <?php echo $connections_used; ?>],
-  ["connections_unused (<?php echo $connections_unused; ?>)", <?php echo $connections_unused;?> ]
-  ];
-  var plot1 = jQuery.jqplot ('connections', [data], 
-    { 
-      title: {  
-        text: "<?php echo $cur_server; ?> Connections Usage <?php echo $this->lang->line('chart'); ?>",  //        设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-      },
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          // Put data labels on the pie slices.
-          // By default, labels show the percentage of the slice.
-          showDataLabels: true
-        }
-      },
-      
-      seriesColors: [ "#6699FF","#FF9933"],  // 默认显示的分类颜色 
-      legend: { show:true, location: 'e' }
-    }
-  );
+var d_connections = document.getElementById("connections");
+var c_connections = echarts.init(d_connections, 'infographic');
+
+var d_tables = document.getElementById("tables");
+var c_tables = echarts.init(d_tables, 'infographic');
+
+var d_files = document.getElementById("files");
+var c_files = echarts.init(d_files, 'infographic');
+
+
+var option = null;
+
+var colors = ['#5793f3', '#d14a61', '#675bba'];
+
+
+$(document).ready(function(){  
+
+		getChartSeriesData(url);
 });
 
-$(document).ready(function(){
-  var data = [
-  ["open_files_used (<?php echo $open_files_used; ?>)", <?php echo $open_files_used; ?>],
-  ["open_files_unused (<?php echo $open_files_unused; ?>)", <?php echo $open_files_unused;?> ]
-  ];
-  var plot1 = jQuery.jqplot ('files', [data], 
-    { 
-      title: {  
-        text: "<?php echo $cur_server; ?> Open Files Usage <?php echo $this->lang->line('chart'); ?>",  //        设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-      },
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          // Put data labels on the pie slices.
-          // By default, labels show the percentage of the slice.
-          showDataLabels: true
-        }
-      },
-      seriesColors: [ "#6699FF","#FF9933"], // 默认显示的分类颜色 
-      legend: { show:true, location: 'e' }
-    }
-  );
-});
 
-$(document).ready(function(){
-  var data = [
-  ["open_tables_used (<?php echo $open_tables_used; ?>)", <?php echo $open_tables_used; ?>],
-  ["open_tables_unused (<?php echo $open_tables_unused; ?>)", <?php echo $open_tables_unused;?> ]
-  ];
-  var plot1 = jQuery.jqplot ('tables', [data], 
-    { 
-      title: {  
-        text: "<?php echo $cur_server; ?>  Tables Cache Usage <?php echo $this->lang->line('chart'); ?>",  //        设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-      },
-      seriesDefaults: {
-        // Make this a pie chart.
-        renderer: jQuery.jqplot.PieRenderer, 
-        rendererOptions: {
-          // Put data labels on the pie slices.
-          // By default, labels show the percentage of the slice.
-          showDataLabels: true
-        }
-      },
-      seriesColors: [ "#6699FF","#FF9933"],  // 默认显示的分类颜色 
-      legend: { show:true, location: 'e' }
-    }
-  );
-});
+function getChartSeriesData(url){
+    $.get(url, function(json){
+    		//alert(json.server_id);
+    		//alert(json.time);
+    		//alert(json.delay);
 
+        //var status = 1;
+
+				    
+				//=========================connections=========================================//
+    		option = {
+				    title : {
+				        text: "<?php echo $cur_server; ?> 连接图表",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['connections_used','connections_unused'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "connections_used",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.connections_used
+				    },{
+				        name: "connections_unused",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.connections_unused
+				    }]
+				};
+				c_connections.setOption(option, true);
+				
+				
+				
+				
+				
+				//=========================tables=========================================//
+    		option = {
+				    title : {
+				        text: "<?php echo $cur_server; ?> 打开表格图表",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['open_tables_used','open_tables_unused'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "open_tables_used",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.open_tables_used
+				    },{
+				        name: "open_tables_unused",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.open_tables_unused
+				    }]
+				};
+				c_tables.setOption(option, true);
+				
+				
+				//=========================files=========================================//
+    		option = {
+				    title : {
+				        text: "<?php echo $cur_server; ?> 打开文件图表",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['open_files_used','open_files_unused'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "open_files_used",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.open_files_used
+				    },{
+				        name: "open_files_unused",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.open_files_unused
+				    }]
+				};
+				c_files.setOption(option, true);
+				
+    },'json');  
+				
+				
+				
+}  
 </script>

@@ -5,13 +5,8 @@
 
 <base href="<?php echo base_url().'application/views/static/'; ?>" />
 <script src="lib/jquery-1.7.2.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="./lib/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.highlighter.min.js"></script>
-<script type="text/javascript" src="./lib/jqplot/plugins/jqplot.cursor.min.js"></script>
-<link href="./lib/jqplot/jquery.jqplot.min.css"  rel="stylesheet">
+<script src="lib/echarts4/echarts.min.js"></script>
+<script src="lib/echarts4/dark.js"></script>
 <style type="text/css">
 /* roScripts
 Table Design by Mihalcea Romeo
@@ -109,12 +104,13 @@ MySQL Online AWR Report
 <div id="transaction" style="margin-top:15px; margin-left:20px; width:350px; height:250px; float:left;"></div>
 <div style="clear:both;"></div>
 <hr />
-
+<!---
 <p id="t_cpu"><h3>Host CPU</h3> </p>
 <div id="cpu_load" style="margin-top:5px; margin-left:10px; width:350px; height:220px; float:left;"></div>
 <div id="cpu_utilization" style="margin-top:5px; margin-left:10px; width:350px; height:220px;float:left;"></div>
 <div id="process" style="margin-top:5px; margin-left:10px; width:350px; height:220px;float:left; "></div>
 <div style="clear:both;"></div>
+-->
 <hr />
 
 <p><h3>Top10 SlowQuery SQL</h3> </p>
@@ -268,1184 +264,951 @@ MySQL Online AWR Report
 
 
 
+<script type="text/javascript">
 
-<script>
+var url = "<?php echo site_url('wl_mysql/awr_chart_data') . '/' . $server_id . '/' . $begin_timestamp . '/' . $end_timestamp; ?>";
+//alert(url);
 
-//==========================connections usage=========================================//
+var d_conn_usage = document.getElementById("connections_usage");
+var c_conn_usage = echarts.init(d_conn_usage, 'infographic');
+
+var d_tables = document.getElementById("tables_usage");
+var c_tables = echarts.init(d_tables, 'infographic');
+
+var d_files = document.getElementById("files_usage");
+var c_files = echarts.init(d_files, 'infographic');
+
+var d_threads_running = document.getElementById("threads_running");
+var c_threads_running = echarts.init(d_threads_running, 'infographic');
+
+var d_threads = document.getElementById("threads");
+var c_threads = echarts.init(d_threads, 'infographic');
+
+var d_connections = document.getElementById("connections");
+var c_connections = echarts.init(d_connections, 'infographic');
+
+var d_aborted_clients = document.getElementById("aborted_clients");
+var c_aborted_clients = echarts.init(d_aborted_clients, 'infographic');
+
+var d_aborted_connects = document.getElementById("aborted_connects");
+var c_aborted_connects = echarts.init(d_aborted_connects, 'infographic');
+
+var d_dml = document.getElementById("dml");
+var c_dml = echarts.init(d_dml, 'infographic');
+
+var d_queries = document.getElementById("queries");
+var c_queries = echarts.init(d_queries, 'infographic');
+
+var d_transaction = document.getElementById("transaction");
+var c_transaction = echarts.init(d_transaction, 'infographic');
+
+/*
+var d_cpu_load = document.getElementById("cpu_load");
+var c_cpu_load = echarts.init(d_cpu_load, 'infographic');
+
+var d_cpu_utilization = document.getElementById("cpu_utilization");
+var c_cpu_utilization = echarts.init(d_cpu_utilization, 'infographic');
+
+var d_process = document.getElementById("process");
+var c_process = echarts.init(d_process, 'infographic');
+*/
+
+var option = null;
+
+var colors = ['#5793f3', '#d14a61', '#675bba', '#ff5800'];
+//[ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12", "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"]
+
+
 $(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['max_connections']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['threads_connected']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('connections_usage', [data1,data2], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
 
-            }
-        }, 
-        yaxis:{
-            min:0,
-        } 
-    },
-    
-    title: {  
-        text: "Connection Pool Usage<br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'max'},{label: 'use'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "orange", "red"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
-
-//==========================files usage=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['open_files_limit']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['open_files']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('files_usage', [data1,data2], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
-
-            }
-        },
-        yaxis:{
-            min:0,
-        }   
-    },
-    
-    title: {  
-        text: "File Limit Usage<br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'max'},{label: 'use'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "orange", "red"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
-
-//==========================tables_usage=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['table_open_cache']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['open_tables']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('tables_usage', [data1,data2], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
-
-            }
-        },
-        yaxis:{
-            min:0,
-        }   
-    },
-    
-    title: {  
-        text: "Table Cache Usage <br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'max'},{label: 'use'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "orange", "red"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
+		getChartSeriesData(url);
 });
 
 
+function getChartSeriesData(url){
+    $.get(url, function(json){
+    		//alert(json.server_id);
+    		//alert(json.time);
+    		//alert(json.delay);
 
-//==========================threads_running=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['threads_running']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('threads_running', [data1], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
+        //var status = 1;
 
-            }
-        },  
-    },
-    
-    title: {  
-        text: "Threads Running<br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'threads_running'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
+				    
+				//=========================Connection Pool Usage=========================================//
+    		option = {
+				    title : {
+				        text: "Connection Pool Usage",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['max_connections','threads_connected'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "max_connections",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.max_connections
+				    },{
+				        name: "threads_connected",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.threads_connected
+				    }]
+				};
+				c_conn_usage.setOption(option, true);
+				
+				
+				//=========================files=========================================//
+    		option = {
+				    title : {
+				        text: "File Limit Usage",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['open_files_limit','open_files_used'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "open_files_limit",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.open_files_limit
+				    },{
+				        name: "open_files_used",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.open_files_used
+				    }]
+				};
+				c_files.setOption(option, true);			
+				
+				//=========================tables=========================================//
+    		option = {
+				    title : {
+				        text: "Table Cache Usage",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['table_open_cache','open_tables_used'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "table_open_cache",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.table_open_cache
+				    },{
+				        name: "open_tables_used",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.open_tables_used
+				    }]
+				};
+				c_tables.setOption(option, true);
+					
+				
+				
+		
+				//Threads
+				//=========================Threads Running=========================================//
+    		option = {
+				    title : {
+				        text: "Threads Running",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['threads_running'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "threads_running",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.threads_running
+				    }]
+				};
+				c_threads_running.setOption(option, true);
+		
+				//=========================Threads=========================================//
+    		option = {
+				    title : {
+				        text: "Threads",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['threads_connected','threads_created','threads_cached'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "threads_connected",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.threads_connected
+				    },{
+				        name: "threads_created",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.threads_created
+				    },{
+				        name: "threads_cached",
+				        type: 'line',
+				        color: colors[2],
+				        smooth: true,
+				        data: json.threads_cached
+				    }]
+				};
+				c_threads.setOption(option, true);	
+		
+				
+				//=========================Connection Persecond=========================================//
+				option = {
+				    title : {
+				        text: "Connection Persecond",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['connections_persecond'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "connections_persecond",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.connections_persecond
+				    }]
+				};
+				c_connections.setOption(option, true);	
+				
 
-//=========================threads=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['threads_connected']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['threads_created']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data3=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['threads_cached']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('threads', [data1,data2,data3], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
-
-            }
-        },  
-    },
-    
-    title: {  
-        text: "Threads <br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'connected'},{label: 'created'},{label: 'cached'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
-
-//==========================connections=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['connections_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('connections', [data1], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
-
-            }
-        },  
-    },
-    
-    title: {  
-        text: "Connections Persecond<br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'connections'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
-
-//==========================aborted_clients=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['aborted_clients']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('aborted_clients', [data1], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
-
-            }
-        },  
-    },
-    
-    title: {  
-        text: "Aborted Clients<br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'aborted_clients'}
-           //配置参数设置同seriesDefaults  
-    ],
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
-
-//==========================aborted_connects=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['aborted_connects']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('aborted_connects', [data1], {
-    axes:{
-        xaxis:{
-            renderer:$.jqplot.DateAxisRenderer,
-            pad:1.1,
-            tickOptions: {  
-                    mark: 'cross',    // 设置横（纵）坐标刻度在坐标轴上显示方式，分为坐标轴内，外，穿过坐标轴显示  
-                                // 值也分为：'outside', 'inside' 和 'cross',  
-                    showMark: false,     //设置是否显示刻度  
-                    showGridLine: true, // 是否在图表区域显示刻度值方向的网格线  
-                    markSize:0,        // 每个刻度线顶点距刻度线在坐标轴上点距离（像素为单位）  
-                                //如果mark值为 'cross', 那么每个刻度线都有上顶点和下顶点，刻度线与坐标轴  
-                                //在刻度线中间交叉，那么这时这个距离×2,  
-                    show: true,         // 是否显示刻度线，与刻度线同方向的网格线，以及坐标轴上的刻度值  
-                    showLabel: true,    // 是否显示刻度线以及坐标轴上的刻度值  
-                    formatString: '',   // 梃置坐标轴上刻度值显示格式，eg:'%b %#d, %Y'表示格式"月 日，年"，"AUG 30,2008"  
-                    fontSize:'',    //刻度值的字体大小  
-                    fontFamily:'Tahoma', //刻度值上字体  
-                    angle:40,           //刻度值与坐标轴夹角，角度为坐标轴正向顺时针方向  
-                    fontWeight:'normal', //字体的粗细  
-                    fontStretch:0,//刻度值在所在方向（坐标轴外）上的伸展(拉伸)度,
-
-            }
-        },  
-    },
-    
-    title: {  
-        text: "Aborted Connects<br/><?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },  
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              },
-              
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'aborted_connects'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色 
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    },
-      
-  });
-});
-
-//=========================dml=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['com_select_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['com_insert_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-   var data3=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['com_update_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-   var data4=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['com_delete_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('dml', [data1,data2,data3,data4], {
-    axes:{xaxis:{renderer:$.jqplot.DateAxisRenderer}},
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    title: {  
-        text: "DML Persecond<br/> <?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'select'},{label: 'insert'},{label: 'update'},{label: 'delete'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }  
-    
-  });
-});
-
-//=========================queries=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['queries_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['questions_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('queries', [data1,data2], {
-    axes:{xaxis:{renderer:$.jqplot.DateAxisRenderer}},
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    title: {  
-        text: "Queries Persecond<br/> <?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-           {label: 'queries'},{label: 'questions'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }  
-    
-  });
-});
-
-
-//=========================transaction=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['com_commit_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($mysql_chart_reslut)) { foreach($mysql_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['com_rollback_persecond']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('transaction', [data1,data2], {
-    axes:{xaxis:{renderer:$.jqplot.DateAxisRenderer}},
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    title: {  
-        text: "Transaction Persecond<br/> <?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-           {label: 'commit'},{label: 'rollback'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 2,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 2,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }  
-    
-  });
-});
-
-
-
-//==========================CPU Chart=========================================//
-$(document).ready(function(){  
-  var data1=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['load_1']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['load_5']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data3=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['load_15']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('cpu_load', [data1,data2,data3], {
-    axes:{xaxis:{renderer:$.jqplot.DateAxisRenderer}},
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    title: {  
-        text: "Host Load<br/> <?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'load 1'},{label: 'load 5'},{label: 'load 15'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 5,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 5,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }  
-    
-  });
-});
-
-$(document).ready(function(){
-  var data1=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['cpu_user_time']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data2=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['cpu_system_time']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var data3=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['cpu_idle_time']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('cpu_utilization', [data1,data2,data3], {
-    axes:{xaxis:{renderer:$.jqplot.DateAxisRenderer}},
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    title: {  
-        text: "Cpu Usage<br/> <?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'cpu user time'},{label: 'cpu system time'},{label: 'cpu idle time'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 5,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 5,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }  
-    
-  });
-});
-
-$(document).ready(function(){
-   var data1=[
-    <?php if(!empty($os_chart_reslut)) { foreach($os_chart_reslut as $item){ ?>
-    ["<?php echo $item['time']?>", <?php echo $item['process']?> ],
-    <?php }}else{ ?>
-    []    
-    <?php } ?>
-  ];
-  var plot1 = $.jqplot('process', [data1], {
-    axes:{xaxis:{renderer:$.jqplot.DateAxisRenderer}},
-    seriesDefaults: {
-              show: true,     // 设置是否渲染整个图表区域（即显示图表中内容）  
-              xaxis: 'xaxis', // either 'xaxis' or 'x2axis'.  
-              yaxis: 'yaxis', // either 'yaxis' or 'y2axis'.  
-              label: '',      // 用于显示在分类名称框中的分类名称  
-              color: '',      // 分类在图标中表示（折现，柱状图等）的颜色  
-              lineWidth: 1.5, // 分类图（特别是折线图）宽度  
-              shadow: true,   // 各图在图表中是否显示阴影区域   
-              showLine: true,     //是否显示图表中的折线（折线图中的折线）  
-              showMarker: false,   // 是否强调显示图中的数据节点  
-              fill: false,        // 是否填充图表中折线下面的区域（填充颜色同折线颜色）以及legend 
-              rendererOptions: {
-                 smooth: true,
-              }
-    },
-    title: {  
-        text: "Cpu Process<br/> <?php echo $begin_time.' - '.$end_time; ?>",   // 设置当前图的标题  
-        show: true,//设置当前标题是否显示 
-        fontSize:'13px',    //刻度值的字体大小  
-    },
-    series:[//如果有多个分类需要显示，这在此处设置各个分类的相关配置属性  
-           //eg.设置各个分类在分类名称框中的分类名称  
-            {label: 'cpu process'}
-           //配置参数设置同seriesDefaults  
-    ],  
-    legend: {  
-        show: true, //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置） 
-        label:'', 
-        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.  
-        xoffset: 5,        // 分类名称框距图表区域上边框的距离（单位px）  
-        yoffset: 5,        // 分类名称框距图表区域左边框的距离(单位px)  
-        background:'',        //分类名称框距图表区域背景色  
-        textColor:''          //分类名称框距图表区域内字体颜色  
-    },    
-    seriesColors: [ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12",   
-        "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"],  // 默认显示的分类颜色
-    highlighter: {
-            show: true, 
-            showLabel: true, 
-            tooltipAxes: '',
-            sizeAdjust: 1.5 , 
-            tooltipLocation : 'ne',
-    },
-    cursor:{
-            show: true, 
-            zoom: true
-    }  
-    
-  });
-});
-
-//===================================================================//
-
+				//Aborted	
+				//=========================aborted_clients=========================================//
+    		option = {
+				    title : {
+				        text: "Aborted Clients",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['aborted_clients'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "aborted_clients",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.aborted_clients
+				    }]
+				};
+				c_aborted_clients.setOption(option, true);
+		
+				//=========================aborted_connects=========================================//
+    		option = {
+				    title : {
+				        text: "Aborted Connects",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['aborted_connects'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "aborted_connects",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.aborted_connects
+				    }]
+				};
+				c_aborted_connects.setOption(option, true);
+				
+				
+				//Queries
+				//=========================DML Persecond=========================================//	
+    		option = {
+				    title : {
+				        text: "DML Persecond",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['total_select_persecond','total_insert_persecond','total_update_persecond','total_delete_persecond'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "total_select_persecond",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.total_select_persecond
+				    },{
+				        name: "total_insert_persecond",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.total_insert_persecond
+				    },{
+				        name: "total_update_persecond",
+				        type: 'line',
+				        color: colors[2],
+				        smooth: true,
+				        data: json.total_update_persecond
+				    },{
+				        name: "total_delete_persecond",
+				        type: 'line',
+				        color: colors[3],
+				        smooth: true,
+				        data: json.total_delete_persecond
+				    }]
+				};
+				c_dml.setOption(option, true);
+		
+				//=========================Queries Persecond=========================================//
+    		option = {
+				    title : {
+				        text: "Queries Persecond",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['queries_persecond','questions_persecond'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "queries_persecond",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.queries_persecond
+				    },{
+				        name: "questions_persecond",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.questions_persecond
+				    }]
+				};
+				c_queries.setOption(option, true);	
+		
+				
+				//=========================Transaction Persecond=========================================//
+				option = {
+				    title : {
+				        text: "Transaction Persecond",
+				        x: 'center',
+				        align: 'right'
+				    },
+				    color: colors,
+				
+				    toolbox: {
+				        feature: {
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip: {
+        				trigger: 'axis'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 80,
+				            end: 100
+				        }
+				    ],
+				    legend: {
+				        data:['commit_persecond','rollback_persecond'],
+				        x: 'left'
+				    },
+				    grid: {
+				        top: 70,
+				        bottom: 50
+				    },
+				    xAxis: {
+				        type: 'category',
+				        axisTick: {
+				            alignWithLabel: true
+				        },
+				        axisLine: {
+				            onZero: false,
+				            lineStyle: {
+				            }
+				        },
+				        axisPointer: {
+				            label: {
+				                formatter: function(params) {
+				                    return params.value;
+				                }
+				            }
+				        },
+				        data: json.time
+				    },
+				    yAxis: [{
+				        type: 'value'
+				    }],
+				    series: [{
+				        name: "commit_persecond",
+				        type: 'line',
+				        color: colors[0],
+				        smooth: true,
+				        data: json.commit_persecond
+				    },{
+				        name: "rollback_persecond",
+				        type: 'line',
+				        color: colors[1],
+				        smooth: true,
+				        data: json.rollback_persecond
+				    }]
+				};
+				c_transaction.setOption(option, true);	
+					
+		
+		
+				//Host CPU
+				//=========================Host Load=========================================//	
+    		
+				//=========================CPU Usage=========================================//
+    		
+				//=========================CPU Process=========================================//
+				
+					
+					
+    },'json');  											
+				
+}  
 </script>

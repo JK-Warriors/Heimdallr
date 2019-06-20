@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
 <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
 <li class="active"><?php echo $this->lang->line('_MySQL Monitor'); ?></li><span class="divider">/</span></li>
 <li class="active"><?php echo $this->lang->line('_Key Cache Monitor'); ?></li>
@@ -88,7 +88,7 @@
 <td><?php echo format_rate($item['key_blocks_used_rate']); ?></td>
 <td><?php echo format_rate($item['key_buffer_read_rate']); ?></td>
 <td><?php echo format_rate($item['key_buffer_write_rate']); ?></td>
-<td><a href="<?php echo site_url('wl_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></td>
+<td><a href="<?php echo site_url('wl_mysql/key_cache_chart/'.$item['server_id']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
 </tr>
 <?php endforeach;?>
 <?php }else{  ?>

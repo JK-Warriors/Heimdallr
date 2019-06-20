@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
     <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
     <li class="active"><?php echo $this->lang->line('_MySQL Monitor'); ?></li><span class="divider">/</span></li>
     <li class="active"><?php echo $this->lang->line('_AWR Report'); ?></li>
@@ -32,7 +32,7 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('begin_time'); ?></label>
     <div class="controls">
-      <input class="Wdate" style="width:200px;" type="text" name="begin_time" id="begin_time>" value="<?php echo $setval['begin_time'] ?>" onFocus="WdatePicker({doubleCalendar:false,isShowClear:false,readOnly:false,dateFmt:'yyyy-MM-dd HH:mm'})"/> 
+      <input class="Wdate" style="width:200px;" type="text" name="begin_time" id="begin_time>" value="<?php echo $setval['begin_time'] ?>" onFocus="WdatePicker({doubleCalendar:false,isShowClear:false,readOnly:false,dateFmt:'yyyy-MM-dd HH:mm:ss'})"/> 
       <span class="help-inline"></span>
     </div>
    </div>
@@ -40,7 +40,7 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('end_time'); ?></label>
     <div class="controls">
-      <input class="Wdate" style="width:200px;" type="text" name="end_time" id="end_time>" value="<?php echo $setval['end_time'] ?>" onFocus="WdatePicker({doubleCalendar:false,isShowClear:false,readOnly:false,startDate:'1980-05-01',dateFmt:'yyyy-MM-dd HH:mm'})"/>
+      <input class="Wdate" style="width:200px;" type="text" name="end_time" id="end_time>" value="<?php echo $setval['end_time'] ?>" onFocus="WdatePicker({doubleCalendar:false,isShowClear:false,readOnly:false,startDate:'1980-05-01',dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
       <span class="help-inline"></span>
     </div>
    </div>

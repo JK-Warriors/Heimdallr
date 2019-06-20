@@ -1,6 +1,6 @@
 
         
-<ul class="breadcrumb">
+        <ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_MySQL Monitor'); ?></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('_Resource Monitor'); ?></li>
@@ -80,7 +80,7 @@
         <td><?php echo $item['open_files'] ?></td>
         <td><?php echo $item['table_open_cache'] ?></td>
         <td><?php echo $item['open_tables'] ?></td>
-        <td><a href="<?php echo site_url('wl_mysql/chart/'.$item['server_id']) ?>"><img src="./images/chart.gif"/></a></td>
+        <td><a href="<?php echo site_url('wl_mysql/resource_chart/'.$item['server_id']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
     </tr>
  <?php endforeach;?>
  <?php }else{  ?>

@@ -290,7 +290,65 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
     }
     
     
+		function get_chart_data($server_id, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM mysql_status_his h
+																				 WHERE server_id = $server_id
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }  
+      
+		function get_replication_chart_data($server_id, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM mysql_replication_his h
+																				 WHERE server_id = $server_id
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+      
+		function get_bigtable_chart_data($server_id, $tab_name, $begin_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM mysql_bigtable_his h
+																				 WHERE server_id = $server_id
+																					 AND table_name = " . $tab_name . "
+																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
 
+
+		function get_awr_chart_data($server_id, $begin_time, $end_time){
+        $query=$this->db->query("SELECT *
+																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
+																					FROM mysql_status_his h
+																				 WHERE server_id = $server_id
+																					 AND create_time >= from_unixtime(" . $begin_time . ")
+																					 AND create_time <= from_unixtime(" . $end_time . ")
+																		) t
+																	GROUP BY time");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }  
+      
 }
 
 /* End of file mysql_model.php */

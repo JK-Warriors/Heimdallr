@@ -64,6 +64,7 @@ INSERT INTO `admin_menu` VALUES ('1205', 'Flashback', '2', '12', 'wl_oracle/flas
 
 -- ------------------SQLServer Monitor--------------------
 INSERT INTO `admin_menu` VALUES ('1301', 'Health Monitor', '2', '13', 'wl_sqlserver/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1302', 'Mirror Monitor', '2', '13', 'wl_sqlserver/replication', 'icon-list', '0', '1', '2', CURRENT_TIMESTAMP);
 
 
 -- ------------------MongoDB Monitor--------------------
@@ -154,15 +155,18 @@ INSERT INTO `admin_privilege` VALUES ('1106', 'MySQL Config Batch Add', '1002', 
 INSERT INTO `admin_privilege` VALUES ('1151', 'MySQL Health Monitor', '1101', 'wl_mysql/index', '151');
 INSERT INTO `admin_privilege` VALUES ('1152', 'MySQL Health Chart', '1101', 'wl_mysql/chart', '152');
 INSERT INTO `admin_privilege` VALUES ('1153', 'MySQL Resource Monitor', '1102', 'wl_mysql/resource', '153');
-INSERT INTO `admin_privilege` VALUES ('1154', 'MySQL Key Cache Monitor', '1103', 'wl_mysql/key_cache', '154');
-INSERT INTO `admin_privilege` VALUES ('1155', 'MySQL InnoDB Monitor', '1104', 'wl_mysql/innodb', '155');
-INSERT INTO `admin_privilege` VALUES ('1156', 'MySQL Replication Monitor', '1105', 'wl_mysql/replication', '156');
-INSERT INTO `admin_privilege` VALUES ('1157', 'MySQL Replication Chart', '1105', 'wl_mysql/replication_chart', '157');
-INSERT INTO `admin_privilege` VALUES ('1158', 'MySQL BigTable Analysis', '1106', 'wl_mysql/bigtable', '158');
-INSERT INTO `admin_privilege` VALUES ('1159', 'MySQL BigTable Analysis Chart', '1106', 'wl_mysql/bigtable_chart', '159');
-INSERT INTO `admin_privilege` VALUES ('1160', 'MySQLSlowQuery', '1107', 'wl_mysql/slowquery', '160');
-INSERT INTO `admin_privilege` VALUES ('1161', 'MySQLSlowQuery Detail', '1107', 'wl_mysql/slowquery_detail', '161');
-INSERT INTO `admin_privilege` VALUES ('1162', 'MySQL AWR Report', '1108', 'wl_mysql/awrreport', '162');
+INSERT INTO `admin_privilege` VALUES ('1154', 'MySQL Resource Chart', '1102', 'wl_mysql/resource_chart', '154');
+INSERT INTO `admin_privilege` VALUES ('1155', 'MySQL Key Cache Monitor', '1103', 'wl_mysql/key_cache', '155');
+INSERT INTO `admin_privilege` VALUES ('1156', 'MySQL Key Cache Chart', '1103', 'wl_mysql/key_cache_chart', '156');
+INSERT INTO `admin_privilege` VALUES ('1157', 'MySQL InnoDB Monitor', '1104', 'wl_mysql/innodb', '157');
+INSERT INTO `admin_privilege` VALUES ('1158', 'MySQL InnoDB Chart', '1104', 'wl_mysql/innodb_chart', '158');
+INSERT INTO `admin_privilege` VALUES ('1159', 'MySQL Replication Monitor', '1105', 'wl_mysql/replication', '159');
+INSERT INTO `admin_privilege` VALUES ('1160', 'MySQL Replication Chart', '1105', 'wl_mysql/replication_chart', '160');
+INSERT INTO `admin_privilege` VALUES ('1161', 'MySQL BigTable Analysis', '1106', 'wl_mysql/bigtable', '161');
+INSERT INTO `admin_privilege` VALUES ('1162', 'MySQL BigTable Analysis Chart', '1106', 'wl_mysql/bigtable_chart', '162');
+INSERT INTO `admin_privilege` VALUES ('1163', 'MySQLSlowQuery', '1107', 'wl_mysql/slowquery', '163');
+INSERT INTO `admin_privilege` VALUES ('1164', 'MySQLSlowQuery Detail', '1107', 'wl_mysql/slowquery_detail', '164');
+INSERT INTO `admin_privilege` VALUES ('1165', 'MySQL AWR Report', '1108', 'wl_mysql/awrreport', '165');
 
 -- --------------------------------------------------- Oracle ------------------------------------------------------
 INSERT INTO `admin_privilege` VALUES ('1201', 'Oracle Config View', '1003', 'cfg_oracle/index', '201');
@@ -207,6 +211,8 @@ INSERT INTO `admin_privilege` VALUES ('1406', 'SQLServer Config Batch Add', '100
 
 INSERT INTO `admin_privilege` VALUES ('1451', 'SQLServer Health Monitor', '1301', 'wl_sqlserver/index', '451');
 INSERT INTO `admin_privilege` VALUES ('1452', 'SQLServer Health Chart', '1301', 'wl_sqlserver/chart', '452');
+INSERT INTO `admin_privilege` VALUES ('1453', 'SQLServer Replication Monitor', '1302', 'wl_sqlserver/replication', '453');
+INSERT INTO `admin_privilege` VALUES ('1454', 'SQLServer Replication Chart', '1302', 'wl_sqlserver/replication_chart', '454');
 
 
 
@@ -307,6 +313,9 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1159');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1160');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1161');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1162');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1163');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1164');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1165');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1201');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1202');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1203');
@@ -341,6 +350,8 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1405');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1406');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1451');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1452');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1453');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1454');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1501');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1502');
 
