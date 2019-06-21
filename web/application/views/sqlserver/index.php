@@ -17,23 +17,9 @@
 <form name="form" class="form-inline" method="get" action="" >
 
 
-  <input type="text" id="host"  name="host" value="" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
-  <input type="text" id="tags"  name="tags" value="" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
+  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
+  <input type="text" id="tags"  name="tags" value="<?php echo $setval['tags']; ?>" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
   
-  
-  
-  <select name="order" class="input-small" style="width: 130px;">
-  <option value=""><?php echo $this->lang->line('sort'); ?></option>
-  <option value="id" <?php if($setval['order']=='id') echo "selected"; ?> ><?php echo $this->lang->line('default'); ?></option>
-  <option value="host" <?php if($setval['order']=='host') echo "selected"; ?> ><?php echo $this->lang->line('host'); ?></option>
-  <option value="uptime_in_seconds" <?php if($setval['order']=='uptime_in_seconds') echo "selected"; ?> ><?php echo $this->lang->line('uptime'); ?></option>
-  <option value="connected_clients" <?php if($setval['order']=='connected_clients') echo "selected"; ?> ><?php echo $this->lang->line('connections'); ?></option>
-
-  </select>
-  <select name="order_type" class="input-small" style="width: 70px;">
-  <option value="asc" <?php if($setval['order_type']=='asc') echo "selected"; ?> ><?php echo $this->lang->line('asc'); ?></option>
-  <option value="desc" <?php if($setval['order_type']=='desc') echo "selected"; ?> ><?php echo $this->lang->line('desc'); ?></option>
-  </select>
 
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
   <a href="<?php echo site_url('wl_sqlserver/health') ?>" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></a>

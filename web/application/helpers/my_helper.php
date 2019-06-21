@@ -1,5 +1,34 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * [errorLog 打印错误日志记录]
+ * @param  [type] $message [打印日志记录]
+ * @param  [type] $file    [日志文件名]
+ * @return [type]          [description]
+ */
+function errorLog($message,$file)
+{
+   	//将日志文件放在根目录下/log/日期的文件夹名
+   	$log_dir=$_SERVER['DOCUMENT_ROOT']."/log/".date('Ymd')."/";
+    //判断是否存在文件夹，没有则创建
+    if(!is_dir($log_dir)){
+        @mkdir($log_dir,0777,true);
+    }
+    //将错误日志记录写入文件中
+    $file=$log_dir.$file;
+    if(is_array($message)){
+        $arr=explode(".",$file);
+        if($arr[1]=='php'){
+            error_log("<?php \n return ".var_export($message, true)."\n", 3,$file);
+        }else{
+             error_log(var_export($message, true)."\n", 3,$file);
+        }        
+    }else{
+       error_log($message."\n\n", 3,$file); 
+    }   
+}
+
+
 function get_client_ip(){
    if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
        $ip = getenv("HTTP_CLIENT_IP");
@@ -29,12 +58,12 @@ function substring($str, $start, $len) {
 
 function get_replication_tree($array,$host='---',$port='---',$level=0){
     $repeat='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	$str_repeat = '';
+    $str_repeat = '';
     if($level) {
-		for($j = 0; $j < $level; $j ++) {
-			$str_repeat .= $repeat;
+			for($j = 0; $j < $level; $j ++) {
+				$str_repeat .= $repeat;
+			}
 		}
-	}
     if($level==0){
         $icon="<i class='icon-list'></i>";
     }
@@ -42,9 +71,9 @@ function get_replication_tree($array,$host='---',$port='---',$level=0){
         $icon="<i class='icon-refresh'></i>";
     }
     $str_repeat = $str_repeat.$icon;
-	$newarray = array ();
-	$temparray = array ();
-
+    $newarray = array ();
+    $temparray = array ();
+		
     foreach ( ( array ) $array as $v ) {
         if($v['master_server']==$host and $v['master_port']==$port)
         {
@@ -54,14 +83,53 @@ function get_replication_tree($array,$host='---',$port='---',$level=0){
             $v['level']=$level;
             $newarray[] = $v;
             $temparray = get_replication_tree($array,$host_v,$port_v,$level+1);
-   
+            
             if ($temparray) {
-				$newarray = array_merge ( $newarray, $temparray );
-			}
+							$newarray = array_merge ( $newarray, $temparray );
+						}
         }
     }
+		
     return $newarray;
 }
+
+
+function get_mirror_tree($array,$host='---',$level=0){
+    $repeat='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+    $str_repeat = '';
+    if($level) {
+			for($j = 0; $j < $level; $j ++) {
+				$str_repeat .= $repeat;
+			}
+		}
+    if($level==0){
+        $icon="<i class='icon-list'></i>";
+    }
+    else{
+        $icon="<i class='icon-refresh'></i>";
+    }
+    $str_repeat = $str_repeat.$icon;
+    $newarray = array ();
+    $temparray = array ();
+		
+    foreach ( ( array ) $array as $v ) {
+        if($v['master_server']==$host)
+        {
+            $host_v=$v['host'];
+            $v['host']=$str_repeat.$v['host'];
+            $v['level']=$level;
+            $newarray[] = $v;
+            $temparray = get_mirror_tree($array,$host_v,$level+1);
+            
+            if ($temparray) {
+							$newarray = array_merge ( $newarray, $temparray );
+						}
+        }
+    }
+		
+    return $newarray;
+}
+
 
 function get_redis_replication_tree($array,$server_id=0,$level=0){
     $repeat='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -479,6 +547,59 @@ function check_delay($data){
     
 }
 
+function check_mirror_role($data){  
+    if($data =="1"){
+        return "主体";
+    }
+    else if($data =="2"){
+        return "镜像";
+    }
+    else{
+        return "未知";
+    }   
+}
+
+function check_mirror_state($data){  
+    if($data =="0"){
+        return "已挂起";
+    }
+    else if($data =="1"){
+        return "与其他伙伴断开";
+    }
+    else if($data =="2"){
+        return "正在同步";
+    }
+    else if($data =="3"){
+        return "挂起故障转移";
+    }
+    else if($data =="4"){
+        return "已同步";
+    }
+    else if($data =="5"){
+        return "伙伴未同步";
+    }
+    else if($data =="6"){
+        return "伙伴已同步";
+    }
+    else{
+        return "不可访问或未镜像";
+    }   
+}
+
+function check_mirror_safety_level($data){  
+    if($data =="0"){
+        return "未知状态";
+    }
+    else if($data =="1"){
+        return "关闭[异步]";
+    }
+    else if($data =="2"){
+        return "完全[同步]";
+    }
+    else{
+        return "不可访问或未镜像";
+    }   
+}
 
 function check_alarm_level($data){  
     if($data =="warning"){

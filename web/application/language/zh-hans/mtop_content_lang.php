@@ -349,6 +349,13 @@ $lang['processes_waits'] = '等待进程数';
 $lang['max_connections'] = '最大连接数';
 $lang['errors'] = '错误数';
 
+$lang['lsn'] = 'LSN';
+$lang['end_of_log_lsn'] = '日志结尾LSN';
+$lang['replication_lsn'] = '复制LSN';
+$lang['state'] = '状态';
+$lang['safety_level'] = '安全等级';
+
+
 #machine_room
 $lang['machine_room'] = '机房';
 $lang['machine_room_name'] = '机房名称';

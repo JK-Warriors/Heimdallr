@@ -20,6 +20,40 @@ from multiprocessing import Process;
 
 
 def check_mysql(host,port,username,password,server_id,tags):
+
+    try:  
+        conn=MySQLdb.connect(host=host,user=username,passwd=password,port=int(port),connect_timeout=3,charset='utf8')
+    except Exception, e:
+        logger_msg="check mysql %s : %s" %(url,str(e).strip('\n'))
+        logger.warning(logger_msg)
+        
+        try:
+            connect=0
+            
+            func.mysql_exec("begin;",'')
+            
+            sql="delete from mysql_status where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
+            sql="insert into mysql_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
+            param=(server_id,host,port,tags,connect)
+            func.mysql_exec(sql,param)
+            
+            logger.info("Generate mysql instance alert for server: %s begin:" %(server_id))
+            alert.gen_alert_mysql_status(server_id)     # generate mysql instance alert
+            logger.info("Generate mysql instance alert for server: %s end." %(server_id))
+            
+            func.mysql_exec("commit;",'')
+        except Exception, e:
+            func.mysql_exec("rollback;",'')
+            logger.error(str(e).strip('\n'))
+            sys.exit(1)
+        finally:
+            sys.exit(1)
+    finally:
+        func.check_db_status(server_id,host,port,tags,'mysql')   
+        
+        
     try:
         func.mysql_exec("begin;",'')
         func.mysql_exec("insert into mysql_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_status where server_id = %s;" %(server_id),'')
@@ -28,15 +62,18 @@ def check_mysql(host,port,username,password,server_id,tags):
         func.mysql_exec("insert into mysql_replication_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_replication where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from mysql_replication where server_id = %s;' %(server_id),'')
     
-        conn=MySQLdb.connect(host=host,user=username,passwd=password,port=int(port),connect_timeout=3,charset='utf8')
+        logger.info("Generate mysql instance information for server: %s port: %s begin:" %(host, port))
+        
         cur=conn.cursor()
         conn.select_db('information_schema')
         #cur.execute('flush hosts;')
+        
         ############################# CHECK MYSQL ####################################################
         mysql_variables = func.get_mysql_variables(cur)
         mysql_status = func.get_mysql_status(cur)       
         time.sleep(1)
         mysql_status_2 = func.get_mysql_status(cur)
+        
         ############################# GET VARIABLES ###################################################
         version = func.get_item(mysql_variables,'version')
         key_buffer_size = func.get_item(mysql_variables,'key_buffer_size')
@@ -49,6 +86,7 @@ def check_mysql(host,port,username,password,server_id,tags):
         max_tmp_tables = func.get_item(mysql_variables,'max_tmp_tables')
         max_heap_table_size = func.get_item(mysql_variables,'max_heap_table_size')
         max_allowed_packet = func.get_item(mysql_variables,'max_allowed_packet')
+        
         ############################# GET INNODB INFO ##################################################
         #innodb variables
         innodb_version = func.get_item(mysql_variables,'innodb_version')
@@ -83,6 +121,7 @@ def check_mysql(host,port,username,password,server_id,tags):
         innodb_rows_inserted_persecond = int(func.get_item(mysql_status_2,'Innodb_rows_inserted')) - int(func.get_item(mysql_status,'Innodb_rows_inserted'))
         innodb_rows_read_persecond = int(func.get_item(mysql_status_2,'Innodb_rows_read')) - int(func.get_item(mysql_status,'Innodb_rows_read'))
         innodb_rows_updated_persecond = int(func.get_item(mysql_status_2,'Innodb_rows_updated')) - int(func.get_item(mysql_status,'Innodb_rows_updated'))
+        
         ############################# GET STATUS ##################################################
         connect = 1
         uptime = func.get_item(mysql_status,'Uptime')
@@ -99,6 +138,7 @@ def check_mysql(host,port,username,password,server_id,tags):
         key_blocks_not_flushed = func.get_item(mysql_status,'Key_blocks_not_flushed')
         key_blocks_unused = func.get_item(mysql_status,'Key_blocks_unused')
         key_blocks_used = func.get_item(mysql_status,'Key_blocks_used')
+        
         ############################# GET STATUS PERSECOND ##################################################
         connections_persecond = int(func.get_item(mysql_status_2,'Connections')) - int(func.get_item(mysql_status,'Connections'))
         bytes_received_persecond = (int(func.get_item(mysql_status_2,'Bytes_received')) - int(func.get_item(mysql_status,'Bytes_received')))/1024
@@ -121,6 +161,7 @@ def check_mysql(host,port,username,password,server_id,tags):
         key_reads_persecond = int(func.get_item(mysql_status_2,'Key_reads')) - int(func.get_item(mysql_status,'Key_reads'))
         key_write_requests_persecond = int(func.get_item(mysql_status_2,'Key_write_requests')) - int(func.get_item(mysql_status,'Key_write_requests'))
         key_writes_persecond = int(func.get_item(mysql_status_2,'Key_writes')) - int(func.get_item(mysql_status,'Key_writes'))
+        
         ############################# GET MYSQL HITRATE ##################################################
         if (string.atof(func.get_item(mysql_status,'Qcache_hits')) + string.atof(func.get_item(mysql_status,'Com_select'))) <> 0:
             query_cache_hitrate = string.atof(func.get_item(mysql_status,'Qcache_hits')) / (string.atof(func.get_item(mysql_status,'Qcache_hits')) + string.atof(func.get_item(mysql_status,'Com_select')))
@@ -204,7 +245,7 @@ def check_mysql(host,port,username,password,server_id,tags):
                 func.mysql_exec(sql,param)
 
         #check mysql connected
-        connected=cur.execute("select SUBSTRING_INDEX(host,':',1) as connect_server, user connect_user,db connect_db, count(SUBSTRING_INDEX(host,':',1)) as connect_count  from information_schema.processlist where db is not null and db!='information_schema' and db !='performance_schema' group by connect_server ;");
+        connected=cur.execute("select SUBSTRING_INDEX(host,':',1) as connect_server, user connect_user,db connect_db, count(SUBSTRING_INDEX(host,':',1)) as connect_count from information_schema.processlist where db is not null and db!='information_schema' and db !='performance_schema' group by connect_server,connect_user,connect_db;");
         if connected:
             for line in cur.fetchall():
                 sql="insert into mysql_connected(server_id,host,port,tags,connect_server,connect_user,connect_db,connect_count) values(%s,%s,%s,%s,%s,%s,%s,%s);"
@@ -230,16 +271,12 @@ def check_mysql(host,port,username,password,server_id,tags):
 
 
         if slave_status <> 0:
-            gtid_mode=cur.execute("select * from information_schema.global_variables where variable_name='gtid_mode';")
-            result=cur.fetchone()
-            if result:
-                gtid_mode=result[1]
-            else:
-                gtid_mode='OFF'
+            gtid_mode = func.get_item(mysql_variables,'gtid_mode')
             datalist.append(gtid_mode)
-            read_only=cur.execute("select * from information_schema.global_variables where variable_name='read_only';")
-            result=cur.fetchone()
-            datalist.append(result[1])
+            
+            read_only=func.get_item(mysql_variables,'read_only')
+            datalist.append(read_only)
+            
             slave_info=cur.execute('show slave status;')
             result=cur.fetchone()
             master_server=result[1]
@@ -264,16 +301,12 @@ def check_mysql(host,port,username,password,server_id,tags):
             datalist.append(0)
 
         elif master_thread >= 1:
-            gtid_mode=cur.execute("select * from information_schema.global_variables where variable_name='gtid_mode';")
-            result=cur.fetchone()
-            if result:
-                gtid_mode=result[1]
-            else:
-                gtid_mode='OFF'
+            gtid_mode = func.get_item(mysql_variables,'gtid_mode')
             datalist.append(gtid_mode)
-            read_only=cur.execute("select * from information_schema.global_variables where variable_name='read_only';")
-            result=cur.fetchone()
-            datalist.append(result[1])
+            
+            read_only=func.get_item(mysql_variables,'read_only')
+            datalist.append(read_only)
+            
             datalist.append('---')
             datalist.append('---')
             datalist.append('---')
@@ -306,35 +339,20 @@ def check_mysql(host,port,username,password,server_id,tags):
          
         func.mysql_exec("commit;",'')
         
+        logger.info("Generate mysql instance information for server: %s port: %s end:" %(host, port))
         #send mail
         mail.send_alert_mail(server_id, host)   
         
-        cur.close()
 
-    except MySQLdb.Error,e:
-        func.mysql_exec("rollback;",'')
-        logger_msg="check mysql %s:%s failure: %d %s" %(host,port,e.args[0],e.args[1])
-        logger.warning(logger_msg)
-        logger_msg="check mysql %s:%s failure: sleep 3 seconds and check again." %(host,port)
-        logger.warning(logger_msg)
-        time.sleep(3)
-        try:
-            conn=MySQLdb.connect(host=host,user=username,passwd=password,port=int(port),connect_timeout=3,charset='utf8')
-            cur=conn.cursor()
-            conn.select_db('information_schema')
-        except MySQLdb.Error,e:
-            logger_msg="check mysql second %s:%s failure: %d %s" %(host,port,e.args[0],e.args[1])
-            logger.warning(logger_msg)
-            connect = 0
-            sql="insert into mysql_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
-            param=(server_id,host,port,tags,connect)
-            func.mysql_exec(sql,param)
-   
-    try:  
-        func.check_db_status(server_id,host,port,tags,'mysql')   
     except Exception, e:
         logger.error(e)
+        func.mysql_exec("rollback;",'')
         sys.exit(1)
+
+    finally:
+        cur.close()
+
+   
          
 
 
@@ -352,8 +370,8 @@ def clean_invalid_db_status():
         func.mysql_exec("insert into mysql_replication_his SELECT *,sysdate() from mysql_replication where server_id not in(select id from db_cfg_mysql);",'')
         func.mysql_exec('delete from mysql_replication where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
         
-        func.mysql_exec("insert into mysql_slow_query_review_his SELECT *,sysdate() from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
-        func.mysql_exec('delete from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        #func.mysql_exec("insert into mysql_slow_query_review_his SELECT *,sysdate() from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
+        #func.mysql_exec('delete from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
         
         func.mysql_exec('delete from mysql_connected where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
         

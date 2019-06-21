@@ -120,7 +120,7 @@
         <img src="lib/bootstrap/img/bj-2.png" alt="" class="bj-2">
         <img src="lib/bootstrap/img/bj-3.png" alt="" class="bj-3">
         <img src="lib/bootstrap/img/bj-4.png" alt="" class="bj-4">
-        <div class="datarow cf">
+        <div class="datarow cf" <?php if($center_db_count < 1){echo "style='display:none'";} ?>>
           <div class="d1">
             <h1><?php echo $db_tag_1[tags] ?></h1>
           </div>
@@ -157,7 +157,7 @@
         </div>
         
         <!--- 第二个 ---> 
-        <div class="datarow cf">
+        <div class="datarow cf" <?php if($center_db_count < 2){echo "style='display:none'";} ?>>
           <div class="d1">
             <h1><?php echo $db_tag_2[tags] ?></h1>
           </div>
@@ -189,7 +189,7 @@
         </div>
         
         <!--- 第三个 ---> 
-        <div class="datarow cf">
+        <div class="datarow cf" <?php if($center_db_count < 3){echo "style='display:none'";} ?> >
           <div class="d1">
             <h1><?php echo $db_tag_3[tags] ?></h1>
           </div>

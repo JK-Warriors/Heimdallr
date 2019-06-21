@@ -259,6 +259,7 @@ def check_db_status(server_id,db_host,db_port,tags,db_type):
              sort=1
              sql="""delete s from db_status s, db_cfg_mysql o 
                     where s.host= o.host
+                    and s.port = o.port
                     and s.tags != o.tags
                     and s.db_type_sort = 1 """
         elif db_type=='oracle':

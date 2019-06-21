@@ -4,6 +4,7 @@ import sys
 import string
 import time
 import datetime
+import traceback
 import MySQLdb
 import pymssql
 import logging
@@ -61,6 +62,8 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         func.mysql_exec("insert into sqlserver_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from sqlserver_status where server_id = %s;' %(server_id),'')
 
+        func.mysql_exec("insert into sqlserver_mirror_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_mirror where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from sqlserver_mirror where server_id = %s;' %(server_id),'')
 
         connect = 1
         role = -1
@@ -96,6 +99,26 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         func.mysql_exec(sql,param)
         func.update_db_status_init(server_id,'sqlserver',role,version,tags)
 
+        # generate sqlserver mirror status
+        logger.info("Generate mirror info for server: %s begin:" %(server_id))
+        mirror = sqlserver.get_mirror_info(conn)
+        if mirror:
+           for line in mirror:
+              master_server = line[2]
+              master_port = line[3]
+           	
+              if line[4] == 1:
+                 master_server = "---"
+                 master_port = "---"
+           		
+              sql="insert into sqlserver_mirror(server_id,host,port,tags,db_id,db_name,master_server,master_port,mirroring_role,mirroring_state,mirroring_state_desc,mirroring_safety_level,mirroring_partner_name,mirroring_partner_instance,mirroring_failover_lsn,mirroring_connection_timeout,mirroring_redo_queue,mirroring_end_of_log_lsn,mirroring_replication_lsn) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+              param=(server_id,host,port,tags,line[0],line[1],master_server,master_port,line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14])
+              func.mysql_exec(sql,param)
+        logger.info("Generate mirror info for server: %s end:" %(server_id))
+              
+
+
+
         # generate sqlserver status alert
         alert.gen_alert_sqlserver_status(server_id)   
         
@@ -105,7 +128,9 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         mail.send_alert_mail(server_id, host)   
 
     except Exception, e:
-        logger.error(e)
+        logger.error('traceback.format_exc():\n%s' % traceback.format_exc())
+        #print 'traceback.print_exc():'; traceback.print_exc()
+        #print 'traceback.format_exc():\n%s' % traceback.format_exc()
         func.mysql_exec("rollback;",'')
         sys.exit(1)
 
@@ -121,8 +146,8 @@ def clean_invalid_db_status():
         func.mysql_exec("insert into sqlserver_status_his SELECT *,sysdate() from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         func.mysql_exec('delete from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
         
-        func.mysql_exec("insert into sqlserver_replication_his SELECT *,sysdate() from sqlserver_replication where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
-        func.mysql_exec('delete from sqlserver_replication where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
+        func.mysql_exec("insert into sqlserver_mirror_his SELECT *,sysdate() from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        func.mysql_exec('delete from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
                                 
         func.mysql_exec("delete from db_status where db_type = 'sqlserver' and server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         
@@ -159,7 +184,7 @@ def main():
 
     logger.info("check sqlserver controller finished.")
 
-    # Clean invalid data
+		# Clean invalid data
     logger.info("Clean invalid sqlserver status start.")   
     clean_invalid_db_status()
     logger.info("Clean invalid sqlserver status finished.")       

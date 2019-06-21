@@ -204,6 +204,17 @@ class Wlblazers_model extends CI_Model{
            return $query->row_array()['server_id']; 
         }
     }
+    
+    function get_center_db_count(){
+        $query=$this->db->query("select * from db_cfg_bigview t where metrix_name like 'center_db%' and server_id > 0; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->num_rows(); 
+        }else{
+           return 0; 
+        }
+    }
+    
     function get_core_db(){
         $query=$this->db->query("select server_id from db_cfg_bigview t where metrix_name = 'core_db'; ");
         if ($query->num_rows() > 0)

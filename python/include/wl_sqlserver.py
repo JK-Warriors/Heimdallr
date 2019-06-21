@@ -122,3 +122,34 @@ def ger_processes_waits(conn):
         curs.close()
 
 
+def get_mirror_info(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select m.database_id,
+															d.name,
+															substring(mirroring_partner_name, 7, charindex(':',mirroring_partner_name,7)-7) as master_server,
+															right(mirroring_partner_name, len(mirroring_partner_name) - charindex(':',mirroring_partner_name,7)) as master_port,
+															m.mirroring_role,
+															m.mirroring_state,
+															m.mirroring_state_desc,
+															m.mirroring_safety_level,
+															m.mirroring_partner_name,
+															m.mirroring_partner_instance,
+															m.mirroring_failover_lsn,
+															m.mirroring_connection_timeout,
+															m.mirroring_redo_queue,
+															m.mirroring_end_of_log_lsn,
+															m.mirroring_replication_lsn
+												 from sys.database_mirroring m, sys.databases d
+											  where M.mirroring_guid is NOT NULL
+												  AND m.database_id = d.database_id; """);
+												  
+        result = curs.fetchall()
+        return result
+    except Exception,e:
+        print e
+        return None
+
+    finally:
+        curs.close()
+

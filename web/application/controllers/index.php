@@ -85,13 +85,13 @@ class Index extends Front_Controller {
         $data["sqlserver_waring"] = $this->wlblazers->get_db_count_waring('sqlserver');
         $data["sqlserver_critical"] = $this->wlblazers->get_db_count_critical('sqlserver');
         
-       
         $center_db1 = $this->wlblazers->get_center_db('center_db1');
         $center_db2 = $this->wlblazers->get_center_db('center_db2');
         $center_db3 = $this->wlblazers->get_center_db('center_db3');
         $core_db_id = $this->wlblazers->get_core_db();
         $core_os_host = $this->wlblazers->get_core_os();
        
+        $data["center_db_count"] = $this->wlblazers->get_center_db_count();
         
         //get db name|tags
         $data["db_tag_1"] = $this->wlblazers->get_db_tag('center_db1');

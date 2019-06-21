@@ -1991,29 +1991,30 @@ CREATE TABLE `sqlserver_status_his` (
 
 
 -- ----------------------------
--- Table structure for sqlserver_replication
+-- Table structure for sqlserver_mirror
 -- ----------------------------
-DROP TABLE IF EXISTS `sqlserver_replication`;
-CREATE TABLE `sqlserver_replication` (
+DROP TABLE IF EXISTS `sqlserver_mirror`;
+CREATE TABLE `sqlserver_mirror` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` smallint(4) DEFAULT NULL,
-  `tags` varchar(50) NOT NULL DEFAULT '',
   `host` varchar(30) DEFAULT NULL,
   `port` varchar(20) DEFAULT NULL,
-  `is_master` tinyint(2) DEFAULT '0',
-  `is_slave` tinyint(2) unsigned DEFAULT '0',
-  `read_only` varchar(10) DEFAULT NULL,
-  `gtid_mode` varchar(10) DEFAULT NULL,
+  `tags` varchar(50) NOT NULL DEFAULT '',
+  `db_id` int(10) DEFAULT NULL,
+  `db_name` varchar(30)  DEFAULT NULL,
   `master_server` varchar(30) DEFAULT NULL,
   `master_port` varchar(20) DEFAULT NULL,
-  `slave_io_run` varchar(20) DEFAULT NULL,
-  `slave_sql_run` varchar(20) DEFAULT NULL,
-  `delay` varchar(20) DEFAULT NULL,
-  `current_binlog_file` varchar(30) DEFAULT NULL,
-  `current_binlog_pos` varchar(30) DEFAULT NULL,
-  `master_binlog_file` varchar(30) DEFAULT NULL,
-  `master_binlog_pos` varchar(30) DEFAULT NULL,
-  `master_binlog_space` bigint(18) NOT NULL DEFAULT '0',
+  `mirroring_role` tinyint(1) DEFAULT NULL,
+  `mirroring_state` tinyint(1) DEFAULT NULL,
+  `mirroring_state_desc` varchar(60) DEFAULT NULL,
+  `mirroring_safety_level` tinyint(1) DEFAULT NULL,
+  `mirroring_partner_name` varchar(128) DEFAULT NULL,
+  `mirroring_partner_instance` varchar(128) DEFAULT NULL,
+  `mirroring_failover_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_connection_timeout` int(10) DEFAULT NULL,
+  `mirroring_redo_queue` int(10) DEFAULT NULL,
+  `mirroring_end_of_log_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_replication_lsn` numeric(25,0) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2021,27 +2022,28 @@ CREATE TABLE `sqlserver_replication` (
 -- ----------------------------
 -- Table structure for sqlserver_replication_his
 -- ----------------------------
-DROP TABLE IF EXISTS `sqlserver_replication_his`;
-CREATE TABLE `sqlserver_replication_his` (
+DROP TABLE IF EXISTS `sqlserver_mirror_his`;
+CREATE TABLE `sqlserver_mirror_his` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `server_id` smallint(4) NOT NULL,
-  `tags` varchar(50) NOT NULL DEFAULT '',
+  `server_id` smallint(4) DEFAULT NULL,
   `host` varchar(30) DEFAULT NULL,
   `port` varchar(20) DEFAULT NULL,
-  `is_master` tinyint(2) DEFAULT '0',
-  `is_slave` tinyint(2) DEFAULT '0',
-  `read_only` varchar(10) DEFAULT NULL,
-  `gtid_mode` varchar(10) DEFAULT NULL,
+  `tags` varchar(50) NOT NULL DEFAULT '',
+  `db_id` int(10) DEFAULT NULL,
+  `db_name` varchar(30)  DEFAULT NULL,
   `master_server` varchar(30) DEFAULT NULL,
   `master_port` varchar(20) DEFAULT NULL,
-  `slave_io_run` varchar(20) DEFAULT NULL,
-  `slave_sql_run` varchar(20) DEFAULT NULL,
-  `delay` varchar(20) DEFAULT NULL,
-  `current_binlog_file` varchar(30) DEFAULT NULL,
-  `current_binlog_pos` varchar(30) DEFAULT NULL,
-  `master_binlog_file` varchar(30) DEFAULT NULL,
-  `master_binlog_pos` varchar(30) DEFAULT NULL,
-  `master_binlog_space` bigint(18) DEFAULT NULL,
+  `mirroring_role` tinyint(1) DEFAULT NULL,
+  `mirroring_state` tinyint(1) DEFAULT NULL,
+  `mirroring_state_desc` varchar(60) DEFAULT NULL,
+  `mirroring_safety_level` tinyint(1) DEFAULT NULL,
+  `mirroring_partner_name` varchar(128) DEFAULT NULL,
+  `mirroring_partner_instance` varchar(128) DEFAULT NULL,
+  `mirroring_failover_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_connection_timeout` int(10) DEFAULT NULL,
+  `mirroring_redo_queue` int(10) DEFAULT NULL,
+  `mirroring_end_of_log_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_replication_lsn` numeric(25,0) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `YmdHi` bigint(18) DEFAULT NULL,
   PRIMARY KEY (`id`),

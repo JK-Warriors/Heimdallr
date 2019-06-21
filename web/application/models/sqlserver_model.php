@@ -74,6 +74,29 @@ class Sqlserver_model extends CI_Model{
         }
     }
 
+    function get_replication_total_record(){
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        
+        $sql = "SELECT * from(select m.* 
+															from sqlserver_mirror m, db_cfg_sqlserver s
+															where m.server_id = s.id) t
+													where 1=1 ";
+													        
+				if($host != ""){
+						$sql = $sql . " AND (t.`host` like '%" . $host . "%')";
+				}
+				
+				if($tags != ""){
+						$sql = $sql . " AND (t.`tags` like '%" . $tags . "%')";
+				}
+																
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
 }
 
 /* End of file sqlserver_model.php */
