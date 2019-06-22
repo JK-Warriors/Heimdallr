@@ -78,9 +78,10 @@ class Sqlserver_model extends CI_Model{
         $host=isset($_GET["host"]) ? $_GET["host"] : "";
         $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
         
-        $sql = "SELECT * from(select m.* 
-															from sqlserver_mirror m, db_cfg_sqlserver s
-															where m.server_id = s.id) t
+        $sql = "SELECT * from(select m.*, st.connect
+															from sqlserver_mirror m, db_cfg_sqlserver s, sqlserver_status st
+															where m.server_id = s.id
+                                and m.server_id = st.server_id) t
 													where 1=1 ";
 													        
 				if($host != ""){

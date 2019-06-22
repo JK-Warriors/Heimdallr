@@ -96,9 +96,10 @@ class MySQL_model extends CI_Model{
     
     function get_replication_total_record(){
         
-        $this->db->select('repl.*,servers.host,servers.port,servers.tags');
+        $this->db->select('repl.*,servers.host,servers.port,servers.tags,status.connect');
         $this->db->from('mysql_replication repl');
         $this->db->join('db_cfg_mysql servers', 'repl.server_id=servers.id', 'left');
+        $this->db->join('mysql_status status', 'repl.server_id=status.server_id', 'left');
         
         !empty($_GET["host"]) && $this->db->like("repl.host", $_GET["host"]);
         !empty($_GET["tags"]) && $this->db->like("repl.tags", $_GET["tags"]);

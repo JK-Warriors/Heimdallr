@@ -379,10 +379,10 @@
            	<?php foreach ($alarm  as $item):?>
               <li>
                   <table class="table">
-                    <tr>
-                        <td style="width:100px;"><?php echo $item['tags'] ?></td>
-                        <td style="width:60px;"><?php echo $item['db_type'] ?></td>
-                        <td><?php echo $item['message'] ?></td>
+                    <tr style="color:red;">
+                        <td style="width:100px;<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['tags'] ?></td>
+                        <td style="width:60px;<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['db_type'] ?></td>
+                        <td style="<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['message'] ?></td>
                     </tr>
                   </table>
               </li>

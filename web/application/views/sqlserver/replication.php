@@ -56,7 +56,7 @@
       <tbody>
 <?php if(!empty($datalist)) {?>
  <?php foreach ($datalist  as $item):?>
-    <tr>
+    <tr <?php if($item['connect']==0){echo "bgcolor='#FF0000'";} ?>>
         <td><?php echo $item['host'].':'. $item['port'] ?></td>
         <td><?php echo $item['tags'] ?></td>
         <td><?php echo $item['db_name'] ?></td>

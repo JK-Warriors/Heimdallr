@@ -93,7 +93,7 @@
       <tbody>
 <?php if(!empty($datalist)) {?>
  <?php foreach ($datalist  as $item):?>
-    <tr>
+    <tr <?php if($item['connect']==0){echo "bgcolor='#FF0000'";} ?>>
         <td><?php  echo $item['host'].':'. $item['port'] ?></td>
         <td><?php echo $item['tags'] ?></td>
         <td><?php echo check_role($item['is_master'],$item['is_slave']) ?></td>
@@ -101,7 +101,7 @@
         <td><?php echo $item['read_only'] ?></td>
         <td><?php echo check_value($item['slave_io_run']) ?></td>
         <td><?php echo check_value($item['slave_sql_run']) ?></td>
-		<td><?php echo check_delay($item['delay']) ?>  </td>
+        <td><?php echo check_delay($item['delay']) ?>  </td>
         <td><?php echo $item['current_binlog_file'] ?></td>
         <td><?php echo $item['current_binlog_pos'] ?></td>
         <td><?php echo $item['master_binlog_file'] ?></td>

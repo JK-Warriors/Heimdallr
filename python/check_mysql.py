@@ -20,6 +20,7 @@ from multiprocessing import Process;
 
 
 def check_mysql(host,port,username,password,server_id,tags):
+    url=host+':'+port
 
     try:  
         conn=MySQLdb.connect(host=host,user=username,passwd=password,port=int(port),connect_timeout=3,charset='utf8')
@@ -38,6 +39,14 @@ def check_mysql(host,port,username,password,server_id,tags):
             sql="insert into mysql_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
             param=(server_id,host,port,tags,connect)
             func.mysql_exec(sql,param)
+            
+            # 更新容灾库 mysql_replication 表的信息
+            sql="""update mysql_replication t 
+                   set read_only = 'N/A', gtid_mode = 'N/A', slave_io_run='N/A', slave_sql_run = 'N/A',
+                       delay = '', current_binlog_file = 'N/A', current_binlog_pos = 'N/A', master_binlog_file = 'N/A',
+                       master_binlog_pos = 'N/A', master_binlog_space = -1, create_time = sysdate()
+                   where server_id = %s; """ %(server_id)
+            func.mysql_exec(sql,'')
             
             logger.info("Generate mysql instance alert for server: %s begin:" %(server_id))
             alert.gen_alert_mysql_status(server_id)     # generate mysql instance alert
@@ -256,20 +265,14 @@ def check_mysql(host,port,username,password,server_id,tags):
         master_thread=cur.execute("select * from information_schema.processlist where COMMAND = 'Binlog Dump' or COMMAND = 'Binlog Dump GTID';")
         slave_status=cur.execute('show slave status;')
         datalist=[]
-        if master_thread >= 1:
-            datalist.append(int(1))
-            if slave_status <> 0:
-                datalist.append(int(1))
-            else:
-                datalist.append(int(0))
-        else:
+        if slave_status <> 0:
             datalist.append(int(0))
-            if slave_status <> 0:
-                datalist.append(int(1))
-            else:
-                datalist.append(int(0))
-
-
+            datalist.append(int(1))
+        else:
+            datalist.append(int(1))
+            datalist.append(int(0))
+            
+            
         if slave_status <> 0:
             gtid_mode = func.get_item(mysql_variables,'gtid_mode')
             datalist.append(gtid_mode)
@@ -300,7 +303,7 @@ def check_mysql(host,port,username,password,server_id,tags):
             datalist.append(master_binlog_pos)
             datalist.append(0)
 
-        elif master_thread >= 1:
+        else:
             gtid_mode = func.get_item(mysql_variables,'gtid_mode')
             datalist.append(gtid_mode)
             
@@ -324,8 +327,7 @@ def check_mysql(host,port,username,password,server_id,tags):
                 for row in cur.fetchall():
                     binlogs = binlogs + row[1]
                 datalist.append(binlogs)
-        else:
-            datalist=[]
+
 
         result=datalist
         if result:

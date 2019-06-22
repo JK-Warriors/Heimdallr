@@ -448,7 +448,32 @@ class Wlblazers_model extends CI_Model{
 		
 		return $query->num_rows();
 	}
+
+   /*
+	 * 获取 sqlserver镜像信息
+	 */
+	function get_sqlserver_count_normal(){
+    $sql = "select * from sqlserver_mirror t where mirroring_role = 2 and mirroring_state = 4 ";
+		$query = $this->db->query($sql);
+		
+		return $query->num_rows();
+	}
+
+	function get_sqlserver_count_waring(){
+    $sql = "select * from sqlserver_mirror t where mirroring_role = 2 and mirroring_state = 2 ";
+		$query = $this->db->query($sql);
+		
+		return $query->num_rows();
+	}
 	
+	function get_sqlserver_count_critical(){
+    $sql = "select * from sqlserver_mirror t where mirroring_role = 2 and mirroring_state not in(2,4) ";
+		
+		$query = $this->db->query($sql);
+		
+		return $query->num_rows();
+	}
+		
 	
    /*
 	 * 获取 主机 相关信息
@@ -468,7 +493,7 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 告警 相关信息
 	 */
 	function get_alarm_paging($limit,$offset){
-    $sql = "select tags, db_type, message 
+    $sql = "select tags, db_type, message, level
     						from alerts t 
 							where (t.db_type = 'os' and t.host in (select host from db_cfg_os))
 							or (t.db_type = 'oracle' and t.server_id in (select id from db_cfg_oracle))

@@ -6,10 +6,10 @@
  * @param  [type] $file    [日志文件名]
  * @return [type]          [description]
  */
-function errorLog($message,$file)
+function errorLog($message,$file='main.log')
 {
    	//将日志文件放在根目录下/log/日期的文件夹名
-   	$log_dir=$_SERVER['DOCUMENT_ROOT']."/log/".date('Ymd')."/";
+   	$log_dir=$_SERVER['DOCUMENT_ROOT']."/application/logs/".date('Ymd')."/";
     //判断是否存在文件夹，没有则创建
     if(!is_dir($log_dir)){
         @mkdir($log_dir,0777,true);
@@ -86,6 +86,10 @@ function get_replication_tree($array,$host='---',$port='---',$level=0){
             
             if ($temparray) {
 							$newarray = array_merge ( $newarray, $temparray );
+						}elseif($level == 0){
+							//如果顶层没有子项，则去除顶层
+							$index = array_search($v, $newarray);
+							unset($newarray[$index]);
 						}
         }
     }
@@ -123,6 +127,10 @@ function get_mirror_tree($array,$host='---',$level=0){
             
             if ($temparray) {
 							$newarray = array_merge ( $newarray, $temparray );
+						}elseif($level == 0){
+							//如果顶层没有子项，则去除顶层
+							$index = array_search($v, $newarray);
+							unset($newarray[$index]);
 						}
         }
     }

@@ -80,10 +80,10 @@ class Index extends Front_Controller {
         $data["sqlserver_active_instance"] = $this->wlblazers->get_sqlserver_active_instance();
         $data["sqlserver_inactive_instance"] = $this->wlblazers->get_sqlserver_inactive_instance();
         
-        //for sqlserver delay
-        $data["sqlserver_normal"] = $this->wlblazers->get_db_count_normal('sqlserver');
-        $data["sqlserver_waring"] = $this->wlblazers->get_db_count_waring('sqlserver');
-        $data["sqlserver_critical"] = $this->wlblazers->get_db_count_critical('sqlserver');
+        //for sqlserver mirror
+        $data["sqlserver_normal"] = $this->wlblazers->get_sqlserver_count_normal();
+        $data["sqlserver_waring"] = $this->wlblazers->get_sqlserver_count_waring();
+        $data["sqlserver_critical"] = $this->wlblazers->get_sqlserver_count_critical();
         
         $center_db1 = $this->wlblazers->get_center_db('center_db1');
         $center_db2 = $this->wlblazers->get_center_db('center_db2');
