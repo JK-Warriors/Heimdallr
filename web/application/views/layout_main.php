@@ -89,7 +89,7 @@
                             <li class="divider"></li>
                             <li <?php if($model=='wl_mysql'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_mysql/replication'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">MySQL</a></li>
                             <li class="divider"></li>
-                            <li <?php if($model=='wl_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_sqlserver/index'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li>
+                            <li <?php if($model=='wl_sqlserver'){ echo "class='active'";} ?>><a href="<?php echo site_url('wl_sqlserver/replication'); ?>" class="hidden-phone visible-tablet visible-desktop" role="button">SQLServer</a></li>
                         </ul>
                     </li>                    
                     
