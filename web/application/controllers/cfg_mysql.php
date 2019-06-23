@@ -83,30 +83,31 @@ class cfg_mysql extends Front_Controller {
 					$data['error_code']=0;
 					$data = array(
                         'host'=>$this->input->post('host'),
-						'port'=>$this->input->post('port'),
-						'username'=>$this->input->post('username'),
-						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
+                        'port'=>$this->input->post('port'),
+                        'username'=>$this->input->post('username'),
+                        'password'=>$this->input->post('password'),
+                        'tags'=>$this->input->post('tags'),
                         'monitor'=>$this->input->post('monitor'),
                         'send_mail'=>$this->input->post('send_mail'),
-						'send_sms'=>$this->input->post('send_sms'),
+                        'send_sms'=>$this->input->post('send_sms'),
                         'slow_query'=>$this->input->post('slow_query'),
                         'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
-						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
+                        'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
                         'send_slowquery_to_list'=>$this->input->post('send_slowquery_to_list'),
                         'bigtable_monitor'=>$this->input->post('bigtable_monitor'),
+                        'bigtable_size'=>$this->input->post('bigtable_size'),
                         'binlog_auto_purge'=>$this->input->post('binlog_auto_purge'),
                         'binlog_store_days'=>$this->input->post('binlog_store_days'),
                         'alarm_threads_connected'=>$this->input->post('alarm_threads_connected'),
                         'alarm_threads_running'=>$this->input->post('alarm_threads_running'),
-						'alarm_threads_waits'=>$this->input->post('alarm_threads_waits'),
+                        'alarm_threads_waits'=>$this->input->post('alarm_threads_waits'),
                         'alarm_repl_status'=>$this->input->post('alarm_repl_status'),
                         'alarm_repl_delay'=>$this->input->post('alarm_repl_delay'),
                         'threshold_warning_threads_connected'=>$this->input->post('threshold_warning_threads_connected'),
                         'threshold_critical_threads_connected'=>$this->input->post('threshold_critical_threads_connected'),
                         'threshold_warning_threads_running'=>$this->input->post('threshold_warning_threads_running'),
                         'threshold_critical_threads_running'=>$this->input->post('threshold_critical_threads_running'),
-						'threshold_warning_threads_waits'=>$this->input->post('threshold_warning_threads_waits'),
+                        'threshold_warning_threads_waits'=>$this->input->post('threshold_warning_threads_waits'),
                         'threshold_critical_threads_waits'=>$this->input->post('threshold_critical_threads_waits'),
                         'threshold_warning_repl_delay'=>$this->input->post('threshold_warning_repl_delay'),
                         'threshold_critical_repl_delay'=>$this->input->post('threshold_critical_repl_delay'),
@@ -129,21 +130,21 @@ class cfg_mysql extends Front_Controller {
 		 * 提交编辑后处理
 		 */
         $data['error_code']=0;
-		if(isset($_POST['submit']) && $_POST['submit']=='edit')
+        if(isset($_POST['submit']) && $_POST['submit']=='edit')
         {
             $this->form_validation->set_rules('host',  'lang:host', 'trim|required');
             $this->form_validation->set_rules('port',  'lang:port', 'trim|required|min_length[4]|max_length[6]|integer');
             $this->form_validation->set_rules('username',  'lang:username', 'trim|required');
-			$this->form_validation->set_rules('password',  'lang:password', 'trim|required');
-			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
+            $this->form_validation->set_rules('password',  'lang:password', 'trim|required');
+            $this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
             $this->form_validation->set_rules('binlog_store_days',  'lang:binlog_store_days', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_threads_connected',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_threads_running',  'lang:alarm_threshold', 'trim|required|integer');
-			$this->form_validation->set_rules('threshold_warning_threads_waits',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_warning_threads_waits',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_warning_repl_delay',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_threads_connected',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_threads_running',  'lang:alarm_threshold', 'trim|required|integer');
-			$this->form_validation->set_rules('threshold_critical_threads_waits',  'lang:alarm_threshold', 'trim|required|integer');
+            $this->form_validation->set_rules('threshold_critical_threads_waits',  'lang:alarm_threshold', 'trim|required|integer');
             $this->form_validation->set_rules('threshold_critical_repl_delay',  'lang:alarm_threshold', 'trim|required|integer');
 			if ($this->form_validation->run() == FALSE)
 			{
@@ -153,31 +154,32 @@ class cfg_mysql extends Front_Controller {
 			{
 					$data['error_code']=0;
 					$data = array(
-						'host'=>$this->input->post('host'),
-						'port'=>$this->input->post('port'),
-						'username'=>$this->input->post('username'),
-						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
+                        'host'=>$this->input->post('host'),
+                        'port'=>$this->input->post('port'),
+                        'username'=>$this->input->post('username'),
+                        'password'=>$this->input->post('password'),
+                        'tags'=>$this->input->post('tags'),
                         'monitor'=>$this->input->post('monitor'),
                         'send_mail'=>$this->input->post('send_mail'),
-						'send_sms'=>$this->input->post('send_sms'),
+                        'send_sms'=>$this->input->post('send_sms'),
                         'slow_query'=>$this->input->post('slow_query'),
                         'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
-						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
+                        'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
                         'send_slowquery_to_list'=>$this->input->post('send_slowquery_to_list'),
                         'bigtable_monitor'=>$this->input->post('bigtable_monitor'),
+                        'bigtable_size'=>$this->input->post('bigtable_size'),
                         'binlog_auto_purge'=>$this->input->post('binlog_auto_purge'),
                         'binlog_store_days'=>$this->input->post('binlog_store_days'),
                         'alarm_threads_connected'=>$this->input->post('alarm_threads_connected'),
                         'alarm_threads_running'=>$this->input->post('alarm_threads_running'),
-						'alarm_threads_waits'=>$this->input->post('alarm_threads_waits'),
+                        'alarm_threads_waits'=>$this->input->post('alarm_threads_waits'),
                         'alarm_repl_status'=>$this->input->post('alarm_repl_status'),
                         'alarm_repl_delay'=>$this->input->post('alarm_repl_delay'),
                         'threshold_warning_threads_connected'=>$this->input->post('threshold_warning_threads_connected'),
                         'threshold_critical_threads_connected'=>$this->input->post('threshold_critical_threads_connected'),
                         'threshold_warning_threads_running'=>$this->input->post('threshold_warning_threads_running'),
                         'threshold_critical_threads_running'=>$this->input->post('threshold_critical_threads_running'),
-						'threshold_warning_threads_waits'=>$this->input->post('threshold_warning_threads_waits'),
+                        'threshold_warning_threads_waits'=>$this->input->post('threshold_warning_threads_waits'),
                         'threshold_critical_threads_waits'=>$this->input->post('threshold_critical_threads_waits'),
                         'threshold_warning_repl_delay'=>$this->input->post('threshold_warning_repl_delay'),
                         'threshold_critical_repl_delay'=>$this->input->post('threshold_critical_repl_delay'),

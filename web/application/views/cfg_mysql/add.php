@@ -108,7 +108,7 @@
     </div>
     </div>
     
-    <div class="control-group">
+    <div class="control-group" style="display:none">
     <label class="control-label" for=""><?php echo $this->lang->line('slowquery'); ?></label>
     <div class="controls" >
         <select name="slow_query" id="slow_query" class="input-small">
@@ -130,10 +130,11 @@
          <option value="0"  ><?php echo $this->lang->line('off'); ?></option>
          <option value="1"  ><?php echo $this->lang->line('on'); ?></option>
         </select>
+        &nbsp;&nbsp;<?php echo $this->lang->line('threshold'); ?>&nbsp;<input type="text" id="bigtable_size" class="input-small" placeholder="" name="bigtable_size" value="1024" >&nbsp;&nbsp;MB
     </div>
     </div>
     
-    <div class="control-group">
+    <div class="control-group" style="display:none">
     <label class="control-label" for=""><?php echo $this->lang->line('binlog_auto_purge'); ?></label>
     <div class="controls">
         <select name="binlog_auto_purge" id="binlog_auto_purge" class="input-small">

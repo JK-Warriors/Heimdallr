@@ -5,6 +5,7 @@ import sys
 import string
 import time
 import datetime
+import traceback
 import MySQLdb
 import logging
 import logging.config
@@ -19,7 +20,7 @@ import alert_main as mail
 from multiprocessing import Process;
 
 
-def check_mysql(host,port,username,password,server_id,tags):
+def check_mysql(host,port,username,password,server_id,tags,bigtable_monitor,bigtable_size):
     url=host+':'+port
 
     try:  
@@ -70,6 +71,9 @@ def check_mysql(host,port,username,password,server_id,tags):
 
         func.mysql_exec("insert into mysql_replication_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_replication where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from mysql_replication where server_id = %s;' %(server_id),'')
+
+        func.mysql_exec("insert into mysql_bigtable_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_bigtable where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from mysql_bigtable where server_id = %s;' %(server_id),'')
     
         logger.info("Generate mysql instance information for server: %s port: %s begin:" %(host, port))
         
@@ -95,6 +99,7 @@ def check_mysql(host,port,username,password,server_id,tags):
         max_tmp_tables = func.get_item(mysql_variables,'max_tmp_tables')
         max_heap_table_size = func.get_item(mysql_variables,'max_heap_table_size')
         max_allowed_packet = func.get_item(mysql_variables,'max_allowed_packet')
+        log_bin = func.get_item(mysql_variables,'log_bin')
         
         ############################# GET INNODB INFO ##################################################
         #innodb variables
@@ -261,6 +266,19 @@ def check_mysql(host,port,username,password,server_id,tags):
                 param =(server_id,host,port,tags,line[0],line[1],line[2],line[3])
                 func.mysql_exec(sql,param)
 
+        #check mysql bigtable
+        if bigtable_monitor == 1:
+            bigtable=cur.execute("""SELECT table_schema,table_name,ROUND(data_length/( 1024 * 1024 ), 2), table_comment as COMMENT 
+																	    FROM information_schema.TABLES 
+																	   where ROUND(( data_length ) / ( 1024 * 1024 ), 2) > %s
+																	   ORDER BY 3 DESC; """ %(bigtable_size));
+            if bigtable:
+                for row in cur.fetchall():
+                    sql="insert into mysql_bigtable(server_id,host,port,tags,db_name,table_name,table_size,table_comment) values(%s,%s,%s,%s,%s,%s,%s,%s);"
+                    param=(server_id,host,port,tags,row[0],row[1],row[2],row[3])
+                    func.mysql_exec(sql,param)
+        
+
         #check mysql replication
         master_thread=cur.execute("select * from information_schema.processlist where COMMAND = 'Binlog Dump' or COMMAND = 'Binlog Dump GTID';")
         slave_status=cur.execute('show slave status;')
@@ -317,16 +335,25 @@ def check_mysql(host,port,username,password,server_id,tags):
             datalist.append('---')
             datalist.append('---')
             datalist.append('---')
+            
             master=cur.execute('show master status;')
             master_result=cur.fetchone()
-            datalist.append(master_result[0])
-            datalist.append(master_result[1])
-            binlog_file=cur.execute('show master logs;')
-            binlogs=0
-            if binlog_file:
-                for row in cur.fetchall():
-                    binlogs = binlogs + row[1]
+            if master_result:
+                datalist.append(master_result[0])
+                datalist.append(master_result[1])
+            else:
+                datalist.append('---')
+                datalist.append('---')
+                
+            if log_bin == 'ON':
+                binlog_file=cur.execute('show master logs;')
+                binlogs=0
+                if binlog_file:
+                    for row in cur.fetchall():
+                        binlogs = binlogs + row[1]
                 datalist.append(binlogs)
+            else:
+                datalist.append(0)
 
 
         result=datalist
@@ -347,7 +374,8 @@ def check_mysql(host,port,username,password,server_id,tags):
         
 
     except Exception, e:
-        logger.error(e)
+        logger.error('server_id: %s host: %s port: %s \n' %(server_id,host, port))
+        logger.error('traceback.format_exc():\n%s' % traceback.format_exc())
         func.mysql_exec("rollback;",'')
         sys.exit(1)
 
@@ -389,7 +417,7 @@ def clean_invalid_db_status():
 
 def main():
     #get mysql servers list
-    servers = func.mysql_query('select id,host,port,username,password,tags from db_cfg_mysql where is_delete=0 and monitor=1;')
+    servers = func.mysql_query('select id,host,port,username,password,tags,bigtable_monitor,bigtable_size from db_cfg_mysql where is_delete=0 and monitor=1;')
 
     logger.info("check mysql controller started.")
 
@@ -402,9 +430,11 @@ def main():
              username=row[3]
              password=row[4]
              tags=row[5]
+             bigtable_monitor=row[6]
+             bigtable_size=row[7]
              #thread.start_new_thread(check_mysql, (host,port,user,passwd,server_id,application_id))
              #time.sleep(1)
-             p = Process(target = check_mysql, args = (host,port,username,password,server_id,tags))
+             p = Process(target = check_mysql, args = (host,port,username,password,server_id,tags,bigtable_monitor,bigtable_size))
              plist.append(p)
          for p in plist:
              p.start()

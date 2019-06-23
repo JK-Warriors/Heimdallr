@@ -247,6 +247,7 @@ $lang['swap_total'] = '总SWAP';
 $lang['swap_avail'] = '可用SWAP';
 $lang['cpu_load'] = 'CPU负载';
 $lang['disk_usage'] = '磁盘使用率';
+$lang['threshold'] = '阈值';
 $lang['threshold_warning'] = '警告阈值';
 $lang['threshold_critical'] = '紧急阈值';
 

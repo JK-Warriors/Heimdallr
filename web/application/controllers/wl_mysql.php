@@ -257,14 +257,15 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
         parent::check_privilege();
         $server_id = $this->uri->segment(3);
         $server_id=!empty($server_id) ? $server_id : "0";
-        $begin_time = $this->uri->segment(4);
+        $tab_name = $this->uri->segment(4);
+        $tab_name=!empty($tab_name) ? $tab_name : "null";
+        $begin_time = $this->uri->segment(5);
         $begin_time=!empty($begin_time) ? $begin_time : "30";
-        $time_span = $this->uri->segment(5);
-        $time_span=!empty($time_span) ? $time_span : "min";
 
         
-        $data['begin_time']=$begin_time;
         $data['cur_server_id']=$server_id;
+        $data['tab_name']=$tab_name;
+        $data['begin_time']=$begin_time;
         $data["cur_server"] = $this->server->get_servers($server_id);
         $this->layout->view('mysql/bigtable_chart',$data);
     }
@@ -278,9 +279,6 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
         $begin_time = $this->uri->segment(5);
         $begin_time=!empty($begin_time) ? $begin_time : "30";
         
-        
-        
-
         if($server_id!="0"){
         		$data['chart_data']=$this->mysql->get_bigtable_chart_data($server_id, $tab_name, $begin_time);
         }

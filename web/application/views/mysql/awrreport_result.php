@@ -113,6 +113,7 @@ MySQL Online AWR Report
 -->
 <hr />
 
+<!--
 <p><h3>Top10 SlowQuery SQL</h3> </p>
 <table border="1" width="1200" style="font-size: 12px;">
         <tr>
@@ -259,6 +260,7 @@ MySQL Online AWR Report
 </p>
  <?php endforeach;?>
 <?php } ?>
+-->
 
 	
 

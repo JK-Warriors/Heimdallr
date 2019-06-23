@@ -49,18 +49,6 @@ def main():
             job.start()
 
         time.sleep(3)
-        if monitor_mongodb=="1":
-            job = Process(target = job_run, args = ('check_mongodb',frequency_monitor))
-            joblist.append(job)
-            job.start()
-
-        time.sleep(3)
-        if monitor_redis=="1":
-            job = Process(target = job_run, args = ('check_redis',frequency_monitor))
-            joblist.append(job)
-            job.start()
-
-        time.sleep(3)
         if monitor_sqlserver=="1":
             job = Process(target = job_run, args = ('check_sqlserver',frequency_monitor))
             joblist.append(job)
@@ -71,13 +59,18 @@ def main():
             job = Process(target = job_run, args = ('check_os',frequency_monitor))
             joblist.append(job)
             job.start()
-            
+
         time.sleep(3)
         if alert=="1":
             job = Process(target = job_run, args = ('alert_main',frequency_alert))
             joblist.append(job)
             job.start()     
 
+        time.sleep(3)
+        job = Process(target = job_run, args = ('clean_history',3600))
+        joblist.append(job)
+        job.start()
+            
         for job in joblist:
             job.join();
 

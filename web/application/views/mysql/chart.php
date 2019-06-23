@@ -1,6 +1,6 @@
 
         
-        <ul class="breadcrumb">
+		<ul class="breadcrumb">
             <li><a href="<?php echo site_url(); ?>"><?php echo $this->lang->line('home'); ?></a> <span class="divider">/</span></li>
             <li><a href="<?php echo site_url('wl_mysql/index'); ?>"><?php echo $this->lang->line('_MySQL Monitor'); ?></a></li><span class="divider">/</span></li>
             <li class="active"><?php echo $this->lang->line('chart'); ?></li>

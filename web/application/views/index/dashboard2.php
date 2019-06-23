@@ -380,8 +380,9 @@
               <li>
                   <table class="table">
                     <tr style="color:red;">
-                        <td style="width:100px;<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['tags'] ?></td>
+                        <td style="width:140px;<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['create_time'] ?></td>
                         <td style="width:60px;<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['db_type'] ?></td>
+                        <td style="width:100px;<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['tags'] ?></td>
                         <td style="<?php if($item['level']=='ok'){echo 'color:#58DB1B;';}elseif($item['level']=='warning'){echo 'color:yellow;';}else{echo 'color:#DB1B44;';} ?>"><?php echo $item['message'] ?></td>
                     </tr>
                   </table>
@@ -1611,7 +1612,7 @@ window.addEventListener("resize", function () {
     })(jQuery);
     $(function() {
         $("div.fg-box").myScroll({
-            speed: 160, //数值越大，速度越慢
+            speed: 200, //数值越大，速度越慢
             rowHeight: 37 //li的高度
         });
     });

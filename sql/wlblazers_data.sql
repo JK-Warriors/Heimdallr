@@ -52,7 +52,7 @@ INSERT INTO `admin_menu` VALUES ('1103', 'Key Cache Monitor', '2', '11', 'wl_mys
 INSERT INTO `admin_menu` VALUES ('1104', 'InnoDB Monitor', '2', '11', 'wl_mysql/innodb', 'icon-list', '0', '1', '4', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1105', 'Replication Monitor', '2', '11', 'wl_mysql/replication', ' icon-list', '0', '1', '5', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1106', 'BigTable Analysis', '2', '11', 'wl_mysql/bigtable', 'icon-list', '0', '1', '6', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('1107', 'Slowquery Analysis', '2', '11', 'wl_mysql/slowquery', 'icon-list', '0', '1', '7', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('1107', 'Slowquery Analysis', '2', '11', 'wl_mysql/slowquery', 'icon-list', '0', '1', '7', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1108', 'AWR Report', '2', '11', 'wl_mysql/awrreport', 'icon-list', '0', '1', '8', CURRENT_TIMESTAMP);
 
 -- ------------------Oracle Monitor--------------------
@@ -98,7 +98,7 @@ INSERT INTO `admin_menu` VALUES ('2205', 'Authorization', '2', '22', 'auth/index
 
 
 -- ------------------Tool Box--------------------
-INSERT INTO `admin_menu` VALUES ('2301', 'Lock List', '2', '23', 'wl_lock/index', '', '0', '1', '1', CURRENT_TIMESTAMP);
+--INSERT INTO `admin_menu` VALUES ('2301', 'Lock List', '2', '23', 'wl_lock/index', '', '0', '1', '1', CURRENT_TIMESTAMP);
 
 -- ----------------------------
 -- Table for admin_privilege

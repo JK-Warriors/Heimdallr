@@ -324,7 +324,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
 																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
 																					FROM mysql_bigtable_his h
 																				 WHERE server_id = $server_id
-																					 AND table_name = " . $tab_name . "
+																					 AND table_name = '" . $tab_name . "'
 																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
 																		) t
 																	GROUP BY time");

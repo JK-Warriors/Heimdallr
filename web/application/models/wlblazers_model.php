@@ -493,7 +493,7 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 告警 相关信息
 	 */
 	function get_alarm_paging($limit,$offset){
-    $sql = "select tags, db_type, message, level
+    $sql = "select create_time,tags, db_type, message, level
     						from alerts t 
 							where (t.db_type = 'os' and t.host in (select host from db_cfg_os))
 							or (t.db_type = 'oracle' and t.server_id in (select id from db_cfg_oracle))

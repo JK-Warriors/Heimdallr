@@ -813,10 +813,10 @@ CREATE TABLE `mysql_bigtable_his` (
   `table_size` decimal(10,2) DEFAULT NULL,
   `table_comment` varchar(200) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `Ymd` int(11) DEFAULT NULL,
+  `ymdhi` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_create_time` (`create_time`) USING BTREE,
-  KEY `idx_server_id_tablename_ymd` (`server_id`,`table_name`,`Ymd`) USING BTREE
+  KEY `idx_server_id_tablename_ymdhi` (`server_id`,`table_name`,`ymdhi`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

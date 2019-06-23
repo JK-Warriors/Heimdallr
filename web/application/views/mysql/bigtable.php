@@ -16,8 +16,8 @@
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form" class="form-inline" method="get" action="<?php site_url('wl_mysql/bigtable') ?>" >
  
-  <input type="text" id="host"  name="host" value="" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
-  <input type="text" id="tags"  name="tags" value="" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
+  <input type="text" id="host"  name="host" value="<?php echo $setval['host']; ?>" placeholder="<?php echo $this->lang->line('please_input_host'); ?>" class="input-medium" >
+  <input type="text" id="tags"  name="tags" value="<?php echo $setval['tags']; ?>" placeholder="<?php echo $this->lang->line('please_input_tags'); ?>" class="input-medium" >
   
   
   <button type="submit" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
@@ -33,10 +33,9 @@
         <tr style="font-size: 12px;">
         <th><?php echo $this->lang->line('host'); ?></th> 
         <th><?php echo $this->lang->line('tags'); ?></th> 
-		<th><?php echo $this->lang->line('db_name'); ?></th>
+        <th><?php echo $this->lang->line('db_name'); ?></th>
         <th><?php echo $this->lang->line('table_name'); ?></th>
-		<th><?php echo $this->lang->line('table_size'); ?>(MB)</th>
-		<th><?php echo $this->lang->line('table_comment'); ?></th>
+        <th><?php echo $this->lang->line('table_size'); ?>(MB)</th>
         <th><?php echo $this->lang->line('trend'); ?><?php echo $this->lang->line('chart'); ?></th>
 	    </tr>
       </thead>
@@ -45,11 +44,10 @@
  <?php foreach ($datalist  as $item):?>
     <tr style="font-size: 12px;">
         <td><?php echo $item['host'] ?>:<?php echo $item['port'] ?></td>
-		<td><?php echo $item['tags'] ?></td>
+        <td><?php echo $item['tags'] ?></td>
         <td><?php echo $item['db_name'] ?></td>
         <td><?php echo $item['table_name'] ?></td>
         <td><?php echo $item['table_size'] ?></td>
-        <td><?php echo $item['table_comment'] ?></td>
         <td><a href="<?php echo site_url('wl_mysql/bigtable_chart/'.$item['server_id'].'/'.$item['table_name']) ?>"><i class="icon-bar-chart"></i><?php echo $this->lang->line('view_chart'); ?></a></td>
 	</tr>
  <?php endforeach;?>
