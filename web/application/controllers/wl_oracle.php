@@ -301,8 +301,12 @@ class Wl_oracle extends Front_Controller {
             $id = $_GET["server_id"];
         }
         else{
+            if(!empty($data["datalist"])){
             $id = $data["datalist"][0]["server_id"];
-        }
+            }else{
+            $id = -1;
+            }
+    }
         
         $setval["id"] = $id;
         

@@ -277,7 +277,7 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 db session
 	 */
     function get_db_session($server_id){
-        $query=$this->db->query("select * from (select id, server_id, snap_id, end_time, total_session, active_session from oracle_session where server_id = 100 order by snap_id desc limit 10) a order by snap_id ");
+        $query=$this->db->query("select * from (select id, server_id, snap_id, end_time, total_session, active_session from oracle_session where server_id = $server_id order by snap_id desc limit 10) a order by snap_id ");
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

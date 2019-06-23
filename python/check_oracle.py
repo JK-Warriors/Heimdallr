@@ -218,10 +218,10 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         if li_count == 0:
            ora_dbtime = oracle.get_db_time(conn, snap_id, instance_number)
            if ora_dbtime:
-              end_time=line[1]
-              db_time=line[2]
-              elapsed=line[3]
-              rate=line[4]
+              end_time=ora_dbtime[1]
+              db_time=ora_dbtime[2]
+              elapsed=ora_dbtime[3]
+              rate=ora_dbtime[4]
               
               if rate < 0:
                  rate = 0
