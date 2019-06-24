@@ -1377,8 +1377,9 @@ var option = {
         formatter: "{b} <br/>{c} ({d}%)"
     },
     
-    color: ['#af89d6', '#4ac7f5', '#0089ff', '#f36f8a', '#f5c847'],
+    color: ['#af89d6', '#4ac7f5', '#0089ff', '#f36f8a', '#f5c847','#ff5800','#839557'],
     //color: ['#ff0000', '#ff9600', '#ffff00', '#00ff00', '#00ff96', '#0000ff', '#ff00ff'],
+    //[ "#ff5800", "#EAA228", "#4bb2c5", "#839557", "#958c12", "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc"]
     legend: {
         orient: 'vertical',
         x: 'left',
