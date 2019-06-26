@@ -98,7 +98,7 @@ function get_replication_tree($array,$host='---',$port='---',$level=0){
 }
 
 
-function get_mirror_tree($array,$host='---',$level=0){
+function get_mirror_tree($array,$host='---',$db_name='---',$level=0){
     $repeat='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     $str_repeat = '';
     if($level) {
@@ -117,13 +117,15 @@ function get_mirror_tree($array,$host='---',$level=0){
     $temparray = array ();
 		
     foreach ( ( array ) $array as $v ) {
+    	if($level==0){
         if($v['master_server']==$host)
         {
             $host_v=$v['host'];
             $v['host']=$str_repeat.$v['host'];
+            $db_name_v=$v['db_name'];
             $v['level']=$level;
             $newarray[] = $v;
-            $temparray = get_mirror_tree($array,$host_v,$level+1);
+            $temparray = get_mirror_tree($array,$host_v,$db_name_v,$level+1);
             
             if ($temparray) {
 							$newarray = array_merge ( $newarray, $temparray );
@@ -133,6 +135,26 @@ function get_mirror_tree($array,$host='---',$level=0){
 							unset($newarray[$index]);
 						}
         }
+      }else{
+        if($v['master_server']==$host and $v['db_name']==$db_name)
+        {
+            $host_v=$v['host'];
+            $v['host']=$str_repeat.$v['host'];
+            $db_name_v=$v['db_name'];
+            $v['level']=$level;
+            $newarray[] = $v;
+            $temparray = get_mirror_tree($array,$host_v,$db_name_v,$level+1);
+            
+            if ($temparray) {
+							$newarray = array_merge ( $newarray, $temparray );
+						}elseif($level == 0){
+							//如果顶层没有子项，则去除顶层
+							$index = array_search($v, $newarray);
+							unset($newarray[$index]);
+						}
+        }
+      	
+      }
     }
 		
     return $newarray;
