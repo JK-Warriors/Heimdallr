@@ -93,6 +93,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['delay'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {

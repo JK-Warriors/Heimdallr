@@ -112,6 +112,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['threads_running','threads_connected','threads_cached'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -196,6 +197,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['QPS','TPS'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -275,6 +277,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['total_select_persecond','total_insert_persecond','total_update_persecond','total_delete_persecond'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -366,6 +369,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['commit_persecond','rollback_persecond'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -445,6 +449,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['bytes_received','bytes_sent'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -524,6 +529,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['aborted_clients','aborted_connects'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {

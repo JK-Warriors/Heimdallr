@@ -91,6 +91,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['key_buffer_read_rate','key_buffer_write_rate','key_blocks_used_rate'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {

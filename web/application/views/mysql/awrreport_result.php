@@ -370,7 +370,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['max_connections','threads_connected'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -449,7 +451,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['open_files_limit','open_files_used'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -527,7 +531,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['table_open_cache','open_tables_used'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -609,7 +615,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['threads_running'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -681,7 +689,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['threads_connected','threads_created','threads_cached'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -766,7 +776,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['connections_persecond'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -840,7 +852,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['aborted_clients'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -912,7 +926,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['aborted_connects'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -986,7 +1002,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['total_select_persecond','total_insert_persecond','total_update_persecond','total_delete_persecond'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -1076,7 +1094,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['queries_persecond','questions_persecond'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,
@@ -1155,7 +1175,9 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['commit_persecond','rollback_persecond'],
-				        x: 'left'
+				        orient: 'vertical',
+				        x: 'left',
+				        y: '20'
 				    },
 				    grid: {
 				        top: 70,

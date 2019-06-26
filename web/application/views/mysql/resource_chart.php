@@ -102,6 +102,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['connections_used','connections_unused'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -184,6 +185,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['open_tables_used','open_tables_unused'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -263,6 +265,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['open_files_used','open_files_unused'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {

@@ -91,6 +91,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['table_size'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {

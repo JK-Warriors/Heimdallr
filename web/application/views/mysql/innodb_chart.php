@@ -97,6 +97,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['buffer_pool_reads_persecond','buffer_pool_pages_flushed_persecond'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
@@ -176,6 +177,7 @@ function getChartSeriesData(url){
 				    ],
 				    legend: {
 				        data:['rows_read_persecond','rows_inserted_persecond','rows_updated_persecond','rows_deleted_persecond'],
+				        orient: 'vertical',
 				        x: 'left'
 				    },
 				    grid: {
