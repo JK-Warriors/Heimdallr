@@ -561,6 +561,41 @@ class cfg_oracle extends Front_Controller {
         }
     }
 
+/**
+     * 连接测试
+     */
+    function check_connection(){
+        $ip = $_POST["ip"];
+        $port = $_POST["port"];
+        $dsn = $_POST["dsn"];
+        $username = $_POST["username"];
+        $password = $_POST["password"];
+        
+        $setval["connect"] = -1;
+ 				$serverName = $ip . ':' . $port . '/' . $dsn;
+ 				
+				try{
+ 					#errorLog($serverName);
+					$conn = oci_connect($username,$password,$serverName);
+					
+  				if (!$conn) {
+    				errorLog('Error: Unable to connect to Oracle.' . oci_error());
+        		$setval["connect"] = 1;
+					}else{
+						#errorLog('Succ'); 
+        		$setval["connect"] = 0;
+        		oci_close($conn);
+					}
+					
+        	$data["setval"]=$setval;
+        	
+					$this->layout->setLayout("layout_blank");
+        	$this->layout->view("cfg_sqlserver/json_data",$data);
+				}
+				catch(Exception $e){
+ 					errorLog($e->getMessage());
+				}
+    }
 }
 
 /* End of file cfg_oracle.php */

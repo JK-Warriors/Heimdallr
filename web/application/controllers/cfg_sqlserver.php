@@ -222,46 +222,41 @@ class cfg_sqlserver extends Front_Controller {
         
     }
     
+    
     /**
-     * 批量添加
+     * 连接测试
      */
-     function batch_add(){
-        parent::check_privilege();
+    function check_connection(){
+        $ip = $_POST["ip"];
+        $port = $_POST["port"];
+        $username = $_POST["username"];
+        $password = $_POST["password"];
         
-        /*
-		 * 提交批量添加后处理
-		 */
-		$data['error_code']=0;
-		if(isset($_POST['submit']) && $_POST['submit']=='batch_add')
-        {
-            for($n=1;$n<=10;$n++){
-			  $host = $this->input->post('host_'.$n);
-              $port = $this->input->post('port_'.$n);
-			  $password = $this->input->post('password_'.$n);
-              $tags = $this->input->post('tags_'.$n);
-              if(!empty($host) && !empty($port) &&  !empty($tags)){
-                 
-                 $data['error_code']=0;
-					$data = array(
-                        'host'=>$host,
-						'port'=>$port,
-						'password'=>$password,
-						'tags'=>$tags,
-                        'monitor'=>$this->input->post('monitor_'.$n),
-                        'send_mail'=>$this->input->post('send_mail_'.$n),
-						'send_sms'=>$this->input->post('send_sms_'.$n),
-                        'alarm_connected_clients'=>$this->input->post('alarm_connected_clients_'.$n),
-                        'alarm_command_processed'=>$this->input->post('alarm_command_processed_'.$n),
-						'alarm_blocked_clients'=>$this->input->post('alarm_blocked_clients_'.$n),
-					);
-					$this->sqlserver->insert($data);
-              }
-		   }
-           redirect(site_url('cfg_sqlserver/index'));
-        }
-
-        $this->layout->view("cfg_sqlserver/batch_add",$data);
-     }
+        $setval["connect"] = -1;
+ 				
+				try{
+ 					$serverName = "dblib:host=". $ip . ":" . $port;
+ 					#errorLog($serverName);
+					$conn = new PDO($serverName,$username,$password);
+					
+  				if (!$conn) {
+    				errorLog('Error: Unable to connect to SQLServer.');
+        		$setval["connect"] = 1;
+					}else{
+						#errorLog('Succ'); 
+        		$setval["connect"] = 0;
+        		$conn=null;			#关闭连接
+					}
+					
+        	$data["setval"]=$setval;
+        	
+					$this->layout->setLayout("layout_blank");
+        	$this->layout->view("cfg_sqlserver/json_data",$data);
+				}
+				catch(PDOException $e){
+ 					errorLog($e->getMessage());
+				}
+    }
     
     
 }

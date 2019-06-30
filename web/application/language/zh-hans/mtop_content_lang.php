@@ -357,6 +357,10 @@ $lang['state'] = '状态';
 $lang['safety_level'] = '安全等级';
 
 
+#common
+$lang['connect_test'] = '连接测试';
+
+
 #machine_room
 $lang['machine_room'] = '机房';
 $lang['machine_room_name'] = '机房名称';

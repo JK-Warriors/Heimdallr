@@ -247,49 +247,38 @@ class cfg_mysql extends Front_Controller {
     }
     
     /**
-     * 批量添加
+     * 连接测试
      */
-     function batch_add(){
-        parent::check_privilege();
+    function check_connection(){
+        $ip = $_POST["ip"];
+        $port = $_POST["port"];
+        $username = $_POST["username"];
+        $password = $_POST["password"];
         
-        /*
-		 * 提交批量添加后处理
-		 */
-		$data['error_code']=0;
-		if(isset($_POST['submit']) && $_POST['submit']=='batch_add')
-        {
-            for($n=1;$n<=10;$n++){
-			  $host = $this->input->post('host_'.$n);
-              $port = $this->input->post('port_'.$n);
-			  $username = $this->input->post('username_'.$n);
-			  $password = $this->input->post('password_'.$n);
-              $tags = $this->input->post('tags_'.$n);
-              if(!empty($host) && !empty($port) && !empty($username) && !empty($password) && !empty($tags)){
-                 
-                 $data['error_code']=0;
-					$data = array(
-                        'host'=>$host,
-						'port'=>$port,
-					    'username'=>$username,
-						'password'=>$password,
-						'tags'=>$tags,
-                        'monitor'=>$this->input->post('monitor_'.$n),
-                        'send_mail'=>$this->input->post('send_mail_'.$n),
-						'send_sms'=>$this->input->post('send_sms_'.$n),
-                        'alarm_threads_connected'=>$this->input->post('alarm_threads_connected_'.$n),
-                        'alarm_threads_running'=>$this->input->post('alarm_threads_running_'.$n),
-						'alarm_threads_waits'=>$this->input->post('alarm_threads_waits_'.$n),
-                        'alarm_repl_status'=>$this->input->post('alarm_repl_status_'.$n),
-                        'alarm_repl_delay'=>$this->input->post('alarm_repl_delay_'.$n),
-					);
-					$this->mysql->insert($data);
-              }
-		   }
-           redirect(site_url('cfg_mysql/index'));
-        }
-       
-        $this->layout->view("cfg_mysql/batch_add",$data);
-     }
+        $servername = $ip . ":" . $port;
+				try {
+ 					#errorLog('begin');
+ 					
+ 					$conn = mysqli_connect($servername, $username, $password);
+  				if (!$conn) {
+    				#errorLog('Error: Unable to connect to MySQL.' . mysqli_connect_error());
+        		$setval["connect"] = 1;
+					}else{
+						#errorLog('Succ'); 
+        		$setval["connect"] = 0;
+        		mysqli_close($conn);
+					}
+					
+        	$data["setval"]=$setval;
+        	
+					$this->layout->setLayout("layout_blank");
+        	$this->layout->view("cfg_mysql/json_data",$data);
+					
+				}
+				catch(Exception $e){
+ 					errorLog($e->getMessage());
+				}
+    }    
     
     
 }

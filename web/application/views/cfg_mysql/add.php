@@ -6,10 +6,15 @@
             <li class="active"><?php echo $this->lang->line('_MySQL'); ?></li>
 </ul>
 
+<script src="lib/bootstrap/js/bootstrap-switch.js"></script>
+<script src="lib/bootstrap/js/bootbox.js"></script>
+<script src="lib/layer3/layer.js"></script>
+
+
 <div class="container-fluid">
 <div class="row-fluid">
 
-<form name="form" class="form-horizontal" method="post" action="<?php echo site_url('cfg_mysql/add') ?>" >
+<form id="form" name="form" class="form-horizontal" method="post" action="<?php echo site_url('cfg_mysql/add') ?>" >
 <input type="hidden" name="submit" value="add"/> 
 <div class="btn-toolbar">
     <button type="submit" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
@@ -30,7 +35,7 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('host'); ?></label>
     <div class="controls">
-      <input type="text" id=""  name="host" value="<?php echo set_value('host'); ?>" >
+      <input type="text" id="host"  name="host" value="<?php echo set_value('host'); ?>" >
       <span class="help-inline"></span>
     </div>
    </div>
@@ -38,7 +43,7 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('port'); ?></label>
     <div class="controls">
-      <input type="text" id=""  name="port" value="<?php echo set_value('port','3306'); ?>" >
+      <input type="text" id="port"  name="port" value="<?php echo set_value('port','3306'); ?>" >
       <span class="help-inline"></span>
     </div>
    </div>
@@ -46,7 +51,7 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('username'); ?></label>
     <div class="controls">
-      <input type="text" id=""  name="username" value="<?php echo set_value('username'); ?>" >
+      <input type="text" id="username"  name="username" value="<?php echo set_value('username'); ?>" >
       <span class="help-inline"></span>
     </div>
    </div>
@@ -54,8 +59,9 @@
    <div class="control-group">
     <label class="control-label" for="">*<?php echo $this->lang->line('password'); ?></label>
     <div class="controls">
-      <input type="password" id=""  name="password" value="<?php echo set_value('password'); ?>" >
+      <input type="password" id="password"  name="password" value="<?php echo set_value('password'); ?>" >
       <span class="help-inline"></span>
+    	<button name="conn_check" type="button" value="conn_check" onclick="CheckConnect(this)"  class="btn btn-success"><?php echo $this->lang->line('connect_test'); ?></button>
     </div>
    </div>
    
@@ -208,4 +214,101 @@
 
 
 </form>
+
+<script type="text/javascript">
+var target_url = "<?php echo site_url('cfg_mysql/check_connection') ?>";
+
+ 
+function CheckConnect(e){
+		var t_ip = $("#host").val();
+		var t_port = $("#port").val();
+		var t_username = $("#username").val();
+		var t_passwd = $("#password").val();
+
+		if($("#host").val() == ""){
+				bootbox.alert({
+		        		message: "请输入主机IP!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#port").val() == ""){
+				bootbox.alert({
+		        		message: "请输入端口号!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#username").val() == ""){
+				bootbox.alert({
+		        		message: "请输入用户名!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#password").val() == ""){
+				bootbox.alert({
+		        		message: "请输入密码!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		  }else{
+	      $.ajax({
+	                url: target_url,
+	                data: $("#form").serializeArray(),
+	                data: {"ip":t_ip,"port":t_port,"username":t_username,"password":t_passwd},
+	                type: "POST",
+	                success: function (data) {
+	          			//回调函数，判断提交返回的数据执行相应逻辑
+		          			if(data.connect==0){
+		  									bootbox.alert({
+								        		message: "数据库连接成功!",
+								        		buttons: {
+													        ok: {
+													            label: '确定',
+													            className: 'btn-success'
+													        }
+													    }
+								        	});
+		          			}else{
+		  									bootbox.alert({
+								        		message: "数据库连接失败，请联系管理员!",
+								        		buttons: {
+													        ok: {
+													            label: '确定',
+													            className: 'btn-success'
+													        }
+													    }
+								        	});
+		          			}
+	                }
+								});		
+		  }
+		  
+		  
+        	
+	
+
+}
+
+
+
+</script>
 
