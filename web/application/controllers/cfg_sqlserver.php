@@ -3,8 +3,9 @@
 class cfg_sqlserver extends Front_Controller {
     function __construct(){
 		parent::__construct();
-        $this->load->model('cfg_sqlserver_model','sqlserver');
-        $this->load->model('cfg_os_model','cfg_os');
+    $this->load->model('cfg_sqlserver_model','sqlserver');
+    $this->load->model('cfg_os_model','cfg_os');
+    $this->load->model("wlblazers_model","wlblazers");
 		$this->load->library('form_validation');
 	
 	}
@@ -43,7 +44,7 @@ class cfg_sqlserver extends Front_Controller {
     public function trash(){
         parent::check_privilege();
         $sql="select * from db_cfg_redis  where is_delete=1 order by id asc";
-		$result=$this->sqlserver->get_total_record_sql($sql);
+        $result=$this->sqlserver->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
         $this->layout->view("cfg_sqlserver/trash",$data);
@@ -62,9 +63,9 @@ class cfg_sqlserver extends Front_Controller {
 		if(isset($_POST['submit']) && $_POST['submit']=='add')
         {
 			$this->form_validation->set_rules('host',  'lang:host', 'trim|required');
-            $this->form_validation->set_rules('port',  'lang:port', 'trim|required|min_length[4]|max_length[6]|integer');
-            $this->form_validation->set_rules('username',  'lang:username', 'trim|required');
-            $this->form_validation->set_rules('password',  'lang:password', 'trim|required');
+      $this->form_validation->set_rules('port',  'lang:port', 'trim|required|min_length[4]|max_length[6]|integer');
+      $this->form_validation->set_rules('username',  'lang:username', 'trim|required');
+      $this->form_validation->set_rules('password',  'lang:password', 'trim|required');
 			$this->form_validation->set_rules('tags',  'lang:tags', 'trim|required');
 			$this->form_validation->set_rules('threshold_warning_processes',  'lang:alarm_threshold', 'trim|required|integer');
 			$this->form_validation->set_rules('threshold_critical_processes',  'lang:alarm_threshold', 'trim|required|integer');
@@ -82,13 +83,13 @@ class cfg_sqlserver extends Front_Controller {
 					$data = array(
 						'host'=>$this->input->post('host'),
 						'port'=>$this->input->post('port'),
-                        'username'=>$this->input->post('username'),
+            'username'=>$this->input->post('username'),
 						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+					  'tags'=>$this->input->post('tags'),
+            'monitor'=>$this->input->post('monitor'),
+            'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
-                        'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
+            'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
 						'alarm_processes'=>$this->input->post('alarm_processes'),
 						'alarm_processes_running'=>$this->input->post('alarm_processes_running'),
@@ -222,7 +223,171 @@ class cfg_sqlserver extends Front_Controller {
         
     }
     
+     /**
+     * 添加 Mirror
+     */
+    public function add_mirror(){
+        #parent::check_privilege();
+        $sql="select * from db_cfg_sqlserver where is_delete=0 order by id asc";
+        $result=$this->sqlserver->get_total_record_sql($sql);
+        $data["datalist"]=$result['datalist'];
+        $data["datacount"]=$result['datacount'];
+        
+        $sql="select t.id,
+                    t.mirror_name,
+                    t.db_name,
+                    p.id   as pri_id,
+                    p.host as pri_host,
+                    p.port as pri_port,
+                    p.tags as pri_tags,
+                    s.id   as sta_id,
+                    s.host as sta_host,
+                    s.port as sta_port,
+                    s.tags as sta_tags
+            from db_cfg_sqlserver_mirror t, db_cfg_sqlserver p, db_cfg_sqlserver s
+            where t.primary_db_id = p.id
+                and t.standby_db_id = s.id
+                and p.is_delete = 0
+                and s.is_delete = 0
+            order by t.display_order asc";
+        $result=$this->sqlserver->get_total_record_sql($sql);
+        $data["mirror_list"]=$result['datalist'];
+        $data["mirror_count"]=$result['datacount'];
+
+		
+    /*
+		 * 提交添加后处理
+		 */
+		$data['error_code']=0;
+		if(isset($_POST['submit']) && $_POST['submit']=='dg_manage')
+        {
+					$this->form_validation->set_rules('mirror_name',  'lang:mirror_name', 'trim|required');
+					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
+					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
+					$this->form_validation->set_rules('db_name',  'lang:db_name', 'trim|required');
+           
+			if ($this->form_validation->run() == FALSE)
+			{
+					$data['error_code']='validation_error';
+			}
+			else
+			{
+        //验证license
+        $license_quota = $this->wlblazers->get_license_quota();
+        $sql="select * from db_cfg_sqlserver_mirror where is_delete=0";
+        $query = $this->db->query($sql);
+        $mirror_count = $query->num_rows();
+      
+        if(empty($license_quota)){
+            redirect(site_url('error/no_license'));
+            return ;
+        }else if($mirror_count >= $license_quota){
+            redirect(site_url('error/out_quota'));
+            return ;
+        }
+        
+					$data['error_code']=0;
+					$data = array(
+						'mirror_name'=>$this->input->post('mirror_name'),
+						'primary_db_id'=>$this->input->post('primary_db'),
+						'standby_db_id'=>$this->input->post('standby_db'),
+						'db_name'=>$this->input->post('db_name'),
+					);
+					
+					$this->sqlserver->insert_mirror($data);
+          redirect(site_url('cfg_sqlserver/add_mirror'));
+          }
+        }
+         
+    $this->layout->view("cfg_sqlserver/add_mirror",$data);
+    }
+
     
+    
+    public function edit_mirror($id){
+        //parent::check_privilege();
+        $id  = !empty($id) ? $id : $_POST['id'];
+        
+        
+        /*
+				 * 提交编辑后处理
+				*/
+        $data['error_code']=0;
+				if(isset($_POST['submit']) && $_POST['submit']=='dg_manage')
+        {
+					$this->form_validation->set_rules('mirror_name',  'lang:mirror_name', 'trim|required');
+					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
+					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
+					$this->form_validation->set_rules('db_name',  'lang:db_name', 'trim|required');
+					
+					if ($this->form_validation->run() == FALSE)
+					{
+						$data['error_code']='validation_error';
+					}
+					else
+					{
+						$data['error_code']=0;
+						$data = array(
+							'mirror_name'=>$this->input->post('mirror_name'),
+							'primary_db_id'=>$this->input->post('primary_db'),
+							'standby_db_id'=>$this->input->post('standby_db'),
+							'db_name'=>$this->input->post('db_name'),
+						);
+						
+						$this->sqlserver->update_mirror($data,$id);
+            redirect(site_url('cfg_sqlserver/add_mirror'));
+	        }
+      	}
+      	
+      	$sql="select * from db_cfg_sqlserver where is_delete=0 order by id asc";
+        $result=$this->sqlserver->get_total_record_sql($sql);
+        $data["datalist"]=$result['datalist'];
+        $data["datacount"]=$result['datacount'];
+        
+        $sql="select t.id,
+                    t.mirror_name,
+                    t.db_name,
+                    p.id   as pri_id,
+                    p.host as pri_host,
+                    p.port as pri_port,
+                    p.tags as pri_tags,
+                    s.id   as sta_id,
+                    s.host as sta_host,
+                    s.port as sta_port,
+                    s.tags as sta_tags
+            from db_cfg_sqlserver_mirror t, db_cfg_sqlserver p, db_cfg_sqlserver s
+            where t.primary_db_id = p.id
+                and t.standby_db_id = s.id
+                and p.is_delete = 0
+                and s.is_delete = 0
+            order by t.display_order asc";
+        $result=$this->sqlserver->get_total_record_sql($sql);
+        $data["mirror_list"]=$result['datalist'];
+        $data["mirror_count"]=$result['datacount'];
+        
+        
+        $data["group_id"]=$id;
+        $sql="select * from db_cfg_sqlserver_mirror  where is_delete=0 and id = $id ";
+        $result=$this->sqlserver->get_total_record_sql($sql);
+        $data["mirror"]=$result['datalist'];
+        
+        
+       
+        $this->layout->view("cfg_sqlserver/add_mirror",$data);
+    }
+    
+    
+    /**
+    * 删除 镜像 链路
+    */
+    function delete_mirror($id){
+        #parent::check_privilege();
+        if($id){
+		    		$this->sqlserver->delete_mirror($id);
+            redirect(site_url('cfg_sqlserver/add_mirror'));
+        }
+    }
+        
     /**
      * 连接测试
      */

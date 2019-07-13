@@ -459,6 +459,36 @@ CREATE TABLE `db_cfg_sqlserver` (
 
 
 -- ----------------------------
+-- Table structure for db_cfg_sqlserver_mirror
+-- ----------------------------
+DROP TABLE IF EXISTS `db_cfg_sqlserver_mirror`;
+CREATE TABLE `db_cfg_sqlserver_mirror` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `mirror_name` varchar(200),
+  `primary_db_id` int(10),
+  `standby_db_id` int(10),
+  `db_name` varchar(50),
+  `shift_vip` tinyint(1),
+  `node_vips` varchar(400),
+  `network_card` varchar(100),
+  `is_switch` tinyint(1) DEFAULT 0,
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+  `on_process` tinyint(1) DEFAULT 0,
+  `on_switchover` tinyint(1) DEFAULT 0,
+  `on_failover` tinyint(1) DEFAULT 0,
+  `display_order` smallint(4) NOT NULL DEFAULT '1',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `primary_db_id` (`primary_db_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+alter table db_cfg_sqlserver_mirror modify column on_process tinyint(1) DEFAULT 0 comment '值为1时，表明正在进行Switchover，或者Failover'; 
+alter table db_cfg_sqlserver_mirror modify column on_switchover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Switchover切换'; 
+alter table db_cfg_sqlserver_mirror modify column on_failover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Failover切换'; 
+
+
+
+-- ----------------------------
 -- Table structure for db_cfg_sqlserver
 -- ----------------------------
 DROP TABLE IF EXISTS `db_cfg_bigview`;
@@ -1991,15 +2021,68 @@ CREATE TABLE `sqlserver_status_his` (
 
 
 -- ----------------------------
--- Table structure for sqlserver_mirror
+-- Table structure for sqlserver_mirror_p
 -- ----------------------------
-DROP TABLE IF EXISTS `sqlserver_mirror`;
-CREATE TABLE `sqlserver_mirror` (
+DROP TABLE IF EXISTS `sqlserver_mirror_p`;
+CREATE TABLE `sqlserver_mirror_p` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mirror_id` smallint(4) DEFAULT NULL,
   `server_id` smallint(4) DEFAULT NULL,
-  `host` varchar(30) DEFAULT NULL,
-  `port` varchar(20) DEFAULT NULL,
-  `tags` varchar(50) NOT NULL DEFAULT '',
+  `db_id` int(10) DEFAULT NULL,
+  `db_name` varchar(30)  DEFAULT NULL,
+  `mirroring_role` tinyint(1) DEFAULT NULL,
+  `mirroring_state` tinyint(1) DEFAULT NULL,
+  `mirroring_state_desc` varchar(60) DEFAULT NULL,
+  `mirroring_safety_level` tinyint(1) DEFAULT NULL,
+  `mirroring_partner_name` varchar(128) DEFAULT NULL,
+  `mirroring_partner_instance` varchar(128) DEFAULT NULL,
+  `mirroring_failover_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_connection_timeout` int(10) DEFAULT NULL,
+  `mirroring_redo_queue` int(10) DEFAULT NULL,
+  `mirroring_end_of_log_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_replication_lsn` numeric(25,0) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for sqlserver_mirror_p_his
+-- ----------------------------
+DROP TABLE IF EXISTS `sqlserver_mirror_p_his`;
+CREATE TABLE `sqlserver_mirror_p_his` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mirror_id` smallint(4) DEFAULT NULL,
+  `server_id` smallint(4) DEFAULT NULL,
+  `db_id` int(10) DEFAULT NULL,
+  `db_name` varchar(30)  DEFAULT NULL,
+  `mirroring_role` tinyint(1) DEFAULT NULL,
+  `mirroring_state` tinyint(1) DEFAULT NULL,
+  `mirroring_state_desc` varchar(60) DEFAULT NULL,
+  `mirroring_safety_level` tinyint(1) DEFAULT NULL,
+  `mirroring_partner_name` varchar(128) DEFAULT NULL,
+  `mirroring_partner_instance` varchar(128) DEFAULT NULL,
+  `mirroring_failover_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_connection_timeout` int(10) DEFAULT NULL,
+  `mirroring_redo_queue` int(10) DEFAULT NULL,
+  `mirroring_end_of_log_lsn` numeric(25,0) DEFAULT NULL,
+  `mirroring_replication_lsn` numeric(25,0) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `YmdHi` bigint(18) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_create_time` (`create_time`),
+  KEY `idx_union_1` (`mirror_id`,`server_id`,`YmdHi`) USING BTREE,
+  KEY `idx_ymdhi` (`YmdHi`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for sqlserver_mirror_s
+-- ----------------------------
+DROP TABLE IF EXISTS `sqlserver_mirror_s`;
+CREATE TABLE `sqlserver_mirror_s` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mirror_id` smallint(4) DEFAULT NULL,
+  `server_id` smallint(4) DEFAULT NULL,
   `db_id` int(10) DEFAULT NULL,
   `db_name` varchar(30)  DEFAULT NULL,
   `master_server` varchar(30) DEFAULT NULL,
@@ -2020,15 +2103,13 @@ CREATE TABLE `sqlserver_mirror` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for sqlserver_replication_his
+-- Table structure for sqlserver_mirror_s_his
 -- ----------------------------
-DROP TABLE IF EXISTS `sqlserver_mirror_his`;
-CREATE TABLE `sqlserver_mirror_his` (
+DROP TABLE IF EXISTS `sqlserver_mirror_s_his`;
+CREATE TABLE `sqlserver_mirror_s_his` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mirror_id` smallint(4) DEFAULT NULL,
   `server_id` smallint(4) DEFAULT NULL,
-  `host` varchar(30) DEFAULT NULL,
-  `port` varchar(20) DEFAULT NULL,
-  `tags` varchar(50) NOT NULL DEFAULT '',
   `db_id` int(10) DEFAULT NULL,
   `db_name` varchar(30)  DEFAULT NULL,
   `master_server` varchar(30) DEFAULT NULL,
@@ -2047,8 +2128,75 @@ CREATE TABLE `sqlserver_mirror_his` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `YmdHi` bigint(18) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_tags` (`tags`),
   KEY `idx_create_time` (`create_time`),
-  KEY `idx_union_1` (`server_id`,`YmdHi`) USING BTREE,
+  KEY `idx_union_1` (`mirror_id`,`server_id`,`YmdHi`) USING BTREE,
   KEY `idx_ymdhi` (`YmdHi`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for db_op_process
+-- ----------------------------
+DROP TABLE IF EXISTS `db_op_process`;
+CREATE TABLE `db_op_process` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `db_type` varchar(50) NOT NULL,
+  `group_id` int(10) NOT NULL,
+  `process_type` varchar(20) COMMENT '2个类型：SWITCHOVER;FAILOVER;',
+  `process_desc` varchar(1000),
+  `rate` tinyint(1) DEFAULT 0,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_type` (`db_type`, `group_id`, `process_type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for db_op_process_his
+-- ----------------------------
+DROP TABLE IF EXISTS `db_op_process_his`;
+CREATE TABLE `db_op_process_his` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `db_type` varchar(50) NOT NULL,
+  `group_id` int(10) NOT NULL,
+  `process_type` varchar(20) COMMENT '2个类型：SWITCHOVER;FAILOVER;',
+  `process_desc` varchar(1000),
+  `rate` tinyint(1) DEFAULT 0,
+  `create_time` timestamp NULL,
+  `current_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_type` (`db_type`, `group_id`, `process_type`,`create_time`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for db_opration
+-- ----------------------------
+DROP TABLE IF EXISTS `db_opration`;
+CREATE TABLE `db_opration` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `db_type` varchar(50) NOT NULL,
+  `group_id` int(10) NOT NULL,
+  `op_type` varchar(20),
+  `result` varchar(2),
+  `reason` varchar(1000),
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`db_type`,`group_id`,`op_type`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for db_opration_his
+-- ----------------------------
+DROP TABLE IF EXISTS `db_opration_his`;
+CREATE TABLE `db_opration_his` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `db_type` varchar(50) NOT NULL,
+  `group_id` int(10) NOT NULL,
+  `op_type` varchar(20),
+  `result` varchar(2),
+  `reason` varchar(1000),
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `current_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_group_type` (`db_type`, `group_id`, `op_type`,`create_time`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;

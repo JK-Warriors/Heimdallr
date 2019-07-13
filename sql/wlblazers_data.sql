@@ -174,7 +174,8 @@ INSERT INTO `admin_privilege` VALUES ('1202', 'Oracle Config Add', '1003', 'cfg_
 INSERT INTO `admin_privilege` VALUES ('1203', 'Oracle Config Edit', '1003', 'cfg_oracle/edit', '203');
 INSERT INTO `admin_privilege` VALUES ('1204', 'Oracle Config Trash', '1003', 'cfg_oracle/trash', '204');
 INSERT INTO `admin_privilege` VALUES ('1205', 'Oracle Config Delete', '1003', 'cfg_oracle/delete', '205');
-INSERT INTO `admin_privilege` VALUES ('1206', 'Oracle Config Batch Add', '1003', 'cfg_oracle/batch_add', '206');
+INSERT INTO `admin_privilege` VALUES ('1206', 'Oracle Config Add DG', '1003', 'cfg_oracle/add_dg', '206');
+INSERT INTO `admin_privilege` VALUES ('1207', 'Oracle Config Edit DG', '1003', 'cfg_oracle/edit_dg', '207');
 
 INSERT INTO `admin_privilege` VALUES ('1251', 'Oracle Health Monitor', '1201', 'wl_oracle/index', '251');
 INSERT INTO `admin_privilege` VALUES ('1252', 'Oracle Health Chart', '1201', 'wl_oracle/chart', '252');
@@ -207,12 +208,14 @@ INSERT INTO `admin_privilege` VALUES ('1402', 'SQLServer Config Add', '1004', 'c
 INSERT INTO `admin_privilege` VALUES ('1403', 'SQLServer Config Edit', '1004', 'cfg_sqlserver/edit', '403');
 INSERT INTO `admin_privilege` VALUES ('1404', 'SQLServer Config Trash', '1004', 'cfg_sqlserver/trash', '404');
 INSERT INTO `admin_privilege` VALUES ('1405', 'SQLServer Config Delete', '1004', 'cfg_sqlserver/delete', '405');
-INSERT INTO `admin_privilege` VALUES ('1406', 'SQLServer Config Batch Add', '1004', 'cfg_sqlserver/batch_add', '406');
+INSERT INTO `admin_privilege` VALUES ('1406', 'SQLServer Config Add Mirror', '1004', 'cfg_sqlserver/add_mirror', '406');
+INSERT INTO `admin_privilege` VALUES ('1407', 'SQLServer Config Edit Mirror', '1004', 'cfg_sqlserver/edit_mirror', '407');
 
 INSERT INTO `admin_privilege` VALUES ('1451', 'SQLServer Health Monitor', '1301', 'wl_sqlserver/index', '451');
 INSERT INTO `admin_privilege` VALUES ('1452', 'SQLServer Health Chart', '1301', 'wl_sqlserver/chart', '452');
 INSERT INTO `admin_privilege` VALUES ('1453', 'SQLServer Replication Monitor', '1302', 'wl_sqlserver/replication', '453');
 INSERT INTO `admin_privilege` VALUES ('1454', 'SQLServer Replication Chart', '1302', 'wl_sqlserver/replication_chart', '454');
+INSERT INTO `admin_privilege` VALUES ('1455', 'SQLServer Mirror Switch', '1302', 'wl_sqlserver/mirror_switch', '455');
 
 
 
@@ -322,6 +325,7 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1203');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1204');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1205');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1206');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1207');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1251');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1252');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1253');
@@ -348,10 +352,12 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1403');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1404');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1405');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1406');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1407');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1451');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1452');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1453');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1454');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1455');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1501');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1502');
 

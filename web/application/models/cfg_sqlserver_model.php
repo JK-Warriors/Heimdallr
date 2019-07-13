@@ -2,6 +2,7 @@
 class cfg_sqlserver_model extends CI_Model{
 
     protected $table='db_cfg_sqlserver';
+    protected $table_mirror='db_cfg_sqlserver_mirror';
     
 	function get_total_rows(){
 		$this->db->from($this->table);
@@ -80,8 +81,12 @@ class cfg_sqlserver_model extends CI_Model{
     * 插入数据
     */
    	public function insert($data){		
-		$this->db->insert($this->table, $data);
-	}
+			$this->db->insert($this->table, $data);
+		}
+		
+   	public function insert_mirror($data){		
+			$this->db->insert($this->table_mirror, $data);
+		}
     
     /*
 	 * 更新信息
@@ -90,6 +95,11 @@ class cfg_sqlserver_model extends CI_Model{
 		$this->db->where('id', $id);
 		$this->db->update($this->table, $data);
 	}
+	
+	public function update_mirror($data,$id){
+		$this->db->where('id', $id);
+		$this->db->update($this->table_mirror, $data);
+	}
     
     /*
 	 * 删除信息
@@ -97,6 +107,11 @@ class cfg_sqlserver_model extends CI_Model{
 	public function delete($id){
 		$this->db->where('id', $id);
 		$this->db->delete($this->table);
+	}
+	
+	public function delete_mirror($id){
+		$this->db->where('id', $id);
+		$this->db->delete($this->table_mirror);
 	}
 	
 	/*

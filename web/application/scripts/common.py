@@ -163,6 +163,130 @@ def update_op_reason(mysql_conn, group_id, op_type, reason):
     
     
 
+
+###############################################################################
+# function log_db_op_process
+###############################################################################
+def log_db_op_process(mysql_conn, db_type, group_id, process_type, process_desc, rate, block_time=0):
+    #logger.info("Log the %s operate process for group: %s" %(db_type, group_id))
+    
+    # generate process log
+    str="insert into db_op_process(db_type, group_id, process_type, process_desc, rate) values ('%s', %s, '%s', '%s', %s) " %(db_type, group_id, process_type, process_desc, rate)
+    log_status=mysql.ExecuteSQL(mysql_conn, str)
+    
+    if log_status == 1:
+        logger.info("Log the %s operate process for group: %s; completed %s." %(db_type, group_id, rate))
+    else:
+        logger.error("Log the %s operate process for group: %s failed." %(db_type, group_id))
+
+    time.sleep(block_time)
+    
+#######################################################################################################################
+###############################################################################
+# function db_op_lock
+###############################################################################
+def db_op_lock(mysql_conn, db_type, group_id, process_type):
+    tab_name=""
+    if db_type == "sqlserver":
+        tab_name="db_cfg_sqlserver_mirror"
+        
+    logger.info("Lock the %s process status in %s for group: %s" %(process_type, tab_name, group_id))
+    
+    # update process status to 1
+    col_name=""
+    if process_type == "SWITCHOVER":
+        col_name="on_switchover"
+    elif process_type == "FAILOVER":
+        col_name="on_failover"
+    else:
+        col_name=""
+    	
+    str='update %s set on_process = 1, %s = 1 where id= %s ' %(tab_name, col_name, group_id)
+    op_status=mysql.ExecuteSQL(mysql_conn, str)
+    logger.info(str)
+    
+    if op_status == 1:
+        logger.info("Lock the process status for group: %s successfully." %(group_id))
+    else:
+        logger.error("Lock the process status for group: %s failed." %(group_id))
+        
+    # 清理操作日志 
+    str="insert into db_op_process_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from db_op_process where db_type = '%s' and group_id = %s; " %(db_type, group_id)
+    op_status=mysql.ExecuteSQL(mysql_conn, str)
+    str="delete from db_op_process where db_type = '%s' and group_id = %s; " %(db_type, group_id)
+    op_status=mysql.ExecuteSQL(mysql_conn, str)
+
+
+###############################################################################
+# function db_op_unlock
+###############################################################################
+def db_op_unlock(mysql_conn, db_type, group_id, process_type):
+    tab_name=""
+    if db_type == "sqlserver":
+        tab_name="db_cfg_sqlserver_mirror"
+        
+    logger.info("Unlock the %s process status in %s for mirror group: %s" %(process_type, tab_name, group_id))
+    
+    # update process status to 1
+    col_name=""
+    if process_type == "SWITCHOVER":
+        col_name="on_switchover"
+    elif process_type == "FAILOVER":
+        col_name="on_failover"
+    else:
+        col_name=""
+    	
+    str='update %s set on_process = 0, %s = 0 where id= %s ' %(tab_name, col_name, group_id)
+    op_status=mysql.ExecuteSQL(mysql_conn, str)
+    logger.info(str)
+    
+    if op_status == 1:
+        logger.info("Unlock process status for group: %s successfully." %(group_id))
+    else:
+        logger.error("Unlock process status for group: %s failed." %(group_id))
+    
+        
+
+
+###############################################################################
+# function init_db_op_instance
+###############################################################################
+def init_db_op_instance(mysql_conn, db_type, group_id, op_type):
+    logger.info("Initialize %s opration instance for group %s." %(db_type, group_id))
+    
+    str="""insert into db_opration(db_type, group_id, op_type) values('%s', '%s', '%s') """%(db_type, group_id, op_type)
+    is_succ = mysql.ExecuteSQL(mysql_conn, str)
+    
+            
+###############################################################################
+# function update_db_op_result
+###############################################################################
+def update_db_op_result(mysql_conn, db_type, group_id, op_type, result):
+    logger.info("update opration result for group %s." %(group_id))
+	
+    # get max inst id
+    str="""select max(id) from db_opration where db_type='%s' and group_id= %s and op_type = '%s' """ %(db_type, group_id, op_type)
+    max_id=mysql.GetSingleValue(mysql_conn, str)
+    
+    str="""update db_opration set result = '%s' where id = %s and op_type = '%s' """%(result, max_id, op_type)
+    is_succ = mysql.ExecuteSQL(mysql_conn, str)
+    
+
+
+###############################################################################
+# function update_db_op_reason
+###############################################################################
+def update_db_op_reason(mysql_conn, db_type, group_id, op_type, reason):
+    logger.info("update opration reason for group %s." %(group_id))
+	
+    # get max inst id
+    str="""select max(id) from db_opration where group_id= %s and op_type = '%s' """ %(group_id, op_type)
+    max_id=mysql.GetSingleValue(mysql_conn, str)
+    
+    str="""update db_opration set reason = '%s'  where id = %s and op_type = '%s' """%(reason, max_id, op_type)
+    is_succ = mysql.ExecuteSQL(mysql_conn, str)
+
+
 ################################################################################################################################
 # function kill_sessions
 # 该函数主要实现2个功能：

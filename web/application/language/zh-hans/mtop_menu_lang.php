@@ -41,6 +41,8 @@ $lang['_DiskGroup Monitor'] = '磁盘组监控';
 $lang['_Flashback'] = '闪回';
 
 $lang['_SQLServer Monitor'] = 'SQLServer';
+$lang['_Mirror List'] = '镜像列表';
+$lang['_Mirror Manage'] = '镜像管理';
 
 $lang['_MongoDB Panel'] = 'MongoDB';
 $lang['_MongoDB Monitor'] = 'MongoDB监控';

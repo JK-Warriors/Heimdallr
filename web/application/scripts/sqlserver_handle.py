@@ -1,19 +1,14 @@
 ﻿#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 ###############################################################################
-# Mysql handle Script
-# Created on 2017-01-10
+# SqlServer handle Script
+# Created on 2019-07-12
 # Author : Kevin Gideon
 # Version: 1.0
 # Usage:
 ###############################################################################
-
-###############################################################################
-# define functions
-###############################################################################
-import pymysql
+import pymssql
 import time,datetime
-import ConfigParser as configparser				#python 2.7以下，只能识别到ConfigParser，python3以后，用的是import configparser
 import os
 import sys
 
@@ -22,59 +17,47 @@ import logging.config
 
 logging.config.fileConfig('./logging.conf')
 logger = logging.getLogger('WLBlazers')
-#####################################################################################################
+###############################################################################
+# define functions
+###############################################################################
 # 连接数据库
-def ConnectMysql():
-        # 读取配置信息
-        config = configparser.ConfigParser()
-        curPath = os.getcwd()
-        parent_path = os.path.abspath(os.path.dirname(curPath) + os.path.sep + ".")
-        #print(parent_path)
-
-        config.read(parent_path + '/scripts/param.ini')
-        host_id = config.get("wlblazers", "host")
-        port = config.getint("wlblazers", "port")
-        username = config.get("wlblazers", "user")
-        password = config.get("wlblazers", "passwd")
-        dbname = config.get("wlblazers", "db")
-
-
-        # 打开数据库连接
-        try:
-            return pymysql.connect(host=host_id, user=username, passwd=password, port=port, db=dbname, charset='utf8')
-        except Exception as e:
-            logger.error("Connect to wlblazers error: " + str(e))
-            sys.exit(2)
-
-
-def CloseMysql(conn):
-    # 关闭数据库连接
-    if conn:
-        conn.close()
-
-
-# 取单个返回值
-def GetSingleValue(conn, query_str):
-    res = None
+def ConnectMssql(host,port,username,passwd):
+    # 打开数据库连接
     try:
-        # 使用cursor()方法获取操作游标
-        cur = conn.cursor()
-
-        # 使用execute方法执行SQL语句
-        cur.execute(query_str)
-
-        # 使用fetchall获取数据集
-        rows = cur.fetchall()
-        for row in rows:
-            res = row[0]
-
-        return res
+        return pymssql.connect(host=host,port=int(port),user=username,password=passwd,charset="utf8")
     except Exception as e:
         logger.error(e)
 
 
 
-# 取单行返回值		
+def CloseMssql(conn):
+    # 关闭数据库连接
+    if conn:
+        conn.close()
+
+
+def GetSingleValue(conn,str):
+    res = None
+
+    try:
+        # 使用cursor()方法获取操作游标
+        cur = conn.cursor()
+
+        # 使用execute方法执行SQL语句
+        cur.execute(str)
+
+        # 使用fetchall获取数据集
+        rows = cur.fetchall()
+        for row in rows:
+            res = row[0]
+		
+        cur.close()
+		
+        return res
+    except Exception as e:
+        logger.error(e)
+
+		
 def GetSingleRow(conn, str):
     res = None
 
@@ -93,53 +76,55 @@ def GetSingleRow(conn, str):
         return rows
     except Exception as e:
         logger.error(e)
-        
-        
-# 获取mysql库查询结果集
-def GetMultiValue(conn, query_str):
-    rows = None
+
+
+def GetMultiValue(conn, str):
+    res = None
+
     try:
         # 使用cursor()方法获取操作游标
         cur = conn.cursor()
 
         # 使用execute方法执行SQL语句
-        cur.execute(query_str)
+        cur.execute(str)
 
         # 使用fetchall获取数据集
         rows = cur.fetchall()
-
+		
+        cur.close()
+		
         return rows
     except Exception as e:
         logger.error(e)
-
-		
-def ExecuteSQL(conn, query_str):
+        
+        		
+def ExecuteSQL(conn, str):
     res = None
+
     try:
         # 使用cursor()方法获取操作游标
         cur = conn.cursor()
 
         # 使用execute方法执行SQL语句
-        cur.execute(query_str)
-
-        # 提交
+        cur.execute(str)
+		
+        cur.close()
         conn.commit()
-
         return 1
     except Exception as e:
         logger.error(e)
         conn.rollback()
-
+		
 ###############################################################################
-# main
+# main test
 ###############################################################################
 '''
 if __name__ == "__main__":
     # 建立mysql连接
-    mysql_conn = ConnectMysql()
-    query_str = "select value from aop_perf_stat where inst_id = 1 and name = 'parse count (total)' order by time desc limit 1;"
+    oracle_conn = ConnectOracle()
+    query_str = "select sysdate from dual"
 
-    value = GetSingleValue(mysql_conn, query_str)
-    CloseMysql(mysql_conn)
+    value = GetSingleValue(oracle_conn, query_str)
+    CloseOracle(oracle_conn)
     print value
 '''

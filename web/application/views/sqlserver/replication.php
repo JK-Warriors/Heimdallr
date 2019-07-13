@@ -37,35 +37,53 @@
     <table class="table table-hover  table-condensed " style="font-size: 12px;">
       <thead>
         <tr>
-		<th colspan="4"><center><?php echo $this->lang->line('servers'); ?></center></th>
-		<th colspan="2"><center><?php echo $this->lang->line('status'); ?></center></th>
-		<th colspan="2"><center><?php echo $this->lang->line('lsn'); ?></center></th>
+				<th colspan="2"><center></center></th>
+        <th colspan="3"><center><?php echo $this->lang->line('primary_db'); ?></center></th>
+        <th colspan="3"><center><?php echo $this->lang->line('standby_db'); ?></center></th>
+				<th colspan="2"><center><?php echo $this->lang->line('status'); ?></center></th>
+				<th colspan="1"></th>
         <th ></th>
 	   </tr>
         <tr>
-        <th><?php echo $this->lang->line('host'); ?></th>
-        <th><?php echo $this->lang->line('tags'); ?></th>
-        <th><?php echo $this->lang->line('db_name'); ?></th>
-        <th><?php echo $this->lang->line('db_role'); ?></th>
-        <th><?php echo $this->lang->line('state'); ?></th>
-        <th><?php echo $this->lang->line('safety_level'); ?></th>
-        <th><?php echo $this->lang->line('end_of_log_lsn'); ?></th>
-        <th><?php echo $this->lang->line('replication_lsn'); ?></th>
+        <th><center><?php echo $this->lang->line('mirror_name'); ?></th> 
+        <th><center><?php echo $this->lang->line('db_name'); ?></th> 
+        <th><center><?php echo $this->lang->line('ip') ?></th> 
+        <th><center><?php echo $this->lang->line('port') ?></th> 
+        <th><center><?php echo $this->lang->line('tags'); ?></th> 
+        <th><center><?php echo $this->lang->line('ip'); ?></th> 
+        <th><center><?php echo $this->lang->line('port') ?></th> 
+        <th><center><?php echo $this->lang->line('tags'); ?></th> 
+				<th><center><?php echo $this->lang->line('mirror_state'); ?></th>
+				<th><center><?php echo $this->lang->line('safety_level'); ?></th>
+				<th></th>
 	   </tr>
       </thead>
       <tbody>
 <?php if(!empty($datalist)) {?>
  <?php foreach ($datalist  as $item):?>
-    <tr <?php if($item['connect']==0){echo "bgcolor='#FF0000'";} ?>>
-        <td><?php echo $item['host'].':'. $item['port'] ?></td>
-        <td><?php echo $item['tags'] ?></td>
-        <td><?php echo $item['db_name'] ?></td>
-        <td><?php echo check_mirror_role($item['mirroring_role']) ?></td>
-        <td><?php echo check_mirror_state($item['mirroring_state']) ?></td>
-        <td><?php echo check_mirror_safety_level($item['mirroring_safety_level']) ?></td>
-        <td><?php echo $item['mirroring_end_of_log_lsn'] ?></td>
-        <td><?php echo $item['mirroring_replication_lsn'] ?></td>
-        
+        <td><center><?php echo $item['mirror_name'] ?></td>
+        <td><center><?php echo $item['db_name'] ?></td>
+        <td><center><?php echo $item['p_host'] ?></td>
+        <td><center><?php echo $item['p_port'] ?></td>
+        <td><center><?php echo $item['p_tags'] ?></td>
+        <td><center><?php echo $item['s_host'] ?></td>
+        <td><center><?php echo $item['s_port'] ?></td>
+        <td><center><?php echo $item['s_tags'] ?></td>
+        <td><center><?php if(!empty($sta_list)) { ?>
+ 										<?php foreach ($sta_list as $s_item):?>
+ 										<?php    if($s_item['server_id']==$item['s_id'] and $s_item['db_name']==$item['db_name']){  ?>
+ 									  <?php    		echo check_mirror_state($s_item['mirroring_state']);   ?>
+ 									  <?php    	} ?>
+ 										<?php endforeach; ?>
+ 										<?php } ?></td>
+        <td><center><?php if(!empty($sta_list)) { ?>
+ 										<?php foreach ($sta_list as $s_item):?>
+ 										<?php    if($s_item['server_id']==$item['s_id'] and $s_item['db_name']==$item['db_name']){  ?>
+ 									  <?php    		echo check_mirror_safety_level($s_item['mirroring_safety_level']);   ?>
+ 									  <?php    	} ?>
+ 										<?php endforeach; ?>
+ 										<?php } ?></td>
+				<td><center><a href="<?php echo site_url('wl_sqlserver/mirror_switch?group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('manage'); ?></a></td>
 	</tr>
  <?php endforeach;?>
 <?php }else{  ?>

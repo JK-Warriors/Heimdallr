@@ -122,7 +122,7 @@ def ger_processes_waits(conn):
         curs.close()
 
 
-def get_mirror_info(conn):
+def get_mirror_info(conn, db_name):
     try:
         curs=conn.cursor()
         curs.execute("""select m.database_id,
@@ -142,9 +142,10 @@ def get_mirror_info(conn):
 															m.mirroring_replication_lsn
 												 from sys.database_mirroring m, sys.databases d
 											  where M.mirroring_guid is NOT NULL
-												  AND m.database_id = d.database_id; """);
+												  AND m.database_id = d.database_id
+												  and d.name = '%s'; """ %(db_name));
 												  
-        result = curs.fetchall()
+        result = curs.fetchone()
         return result
     except Exception,e:
         print e

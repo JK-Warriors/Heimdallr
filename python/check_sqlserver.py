@@ -62,8 +62,6 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         func.mysql_exec("insert into sqlserver_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from sqlserver_status where server_id = %s;' %(server_id),'')
 
-        func.mysql_exec("insert into sqlserver_mirror_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_mirror where server_id = %s;" %(server_id),'')
-        func.mysql_exec('delete from sqlserver_mirror where server_id = %s;' %(server_id),'')
 
         connect = 1
         role = -1
@@ -98,27 +96,7 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         param = (server_id,tags,host,port,connect,role,uptime,version,lock_timeout,trancount,max_connections,processes,processes_running,processes_waits,connections_persecond,pack_received_persecond,pack_sent_persecond,packet_errors_persecond)
         func.mysql_exec(sql,param)
         func.update_db_status_init(server_id,'sqlserver',role,version,tags)
-
-        # generate sqlserver mirror status
-        logger.info("Generate mirror info for server: %s begin:" %(server_id))
-        mirror = sqlserver.get_mirror_info(conn)
-        if mirror:
-           for line in mirror:
-              master_server = line[2]
-              master_port = line[3]
-           	
-              if line[4] == 1:
-                 master_server = "---"
-                 master_port = "---"
-           		
-              sql="insert into sqlserver_mirror(server_id,host,port,tags,db_id,db_name,master_server,master_port,mirroring_role,mirroring_state,mirroring_state_desc,mirroring_safety_level,mirroring_partner_name,mirroring_partner_instance,mirroring_failover_lsn,mirroring_connection_timeout,mirroring_redo_queue,mirroring_end_of_log_lsn,mirroring_replication_lsn) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-              param=(server_id,host,port,tags,line[0],line[1],master_server,master_port,line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14])
-              func.mysql_exec(sql,param)
-        logger.info("Generate mirror info for server: %s end:" %(server_id))
               
-
-
-
         # generate sqlserver status alert
         alert.gen_alert_sqlserver_status(server_id)   
         
@@ -139,6 +117,127 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
 
 
 ######################################################################################################
+# function get_connect
+######################################################################################################    
+def get_connect(server_id):
+    host = ""
+    port = ""
+    username = ""
+    password = ""
+    tags = ""
+    
+    server=func.mysql_query("select host,port,username,password,tags from db_cfg_sqlserver where id=%s;" %(server_id))
+    if server:
+        for row in server:
+            host=row[0]
+            port=row[1]
+            username=row[2]
+            passwd=row[3]
+            tags=row[4]
+
+    if host=="":
+        logger.warning("get host failed, exit!")
+        sys.exit(1)
+        
+
+    try:
+        conn = pymssql.connect(host=host,port=int(port),user=username,password=passwd,charset="utf8")
+        return conn
+    except Exception, e:
+        func.mysql_exec("rollback;",'')
+        logger_msg="check sqlserver %s:%s : %s" %(host,port,e)
+        logger.warning(logger_msg)
+   
+        try:
+            connect=0
+            
+            func.mysql_exec("begin;",'')
+            
+            sql="delete from sqlserver_status where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
+            sql="insert into sqlserver_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
+            param=(server_id,host,port,tags,connect)
+            func.mysql_exec(sql,param)
+            
+            logger.info("Generate sqlserver instance alert for server: %s begin:" %(server_id))
+            alert.gen_alert_sqlserver_status(server_id)     # generate oracle instance alert
+            logger.info("Generate sqlserver instance alert for server: %s end." %(server_id))
+            
+            func.mysql_exec("commit;",'')
+
+        except Exception, e:
+            logger.error(e)
+            sys.exit(1)
+        finally:
+            sys.exit(1)
+
+    finally:
+        func.check_db_status(server_id,host,port,tags,'sqlserver')  
+        
+        
+######################################################################################################
+# function check_mirror
+######################################################################################################       
+def check_mirror(mirror_id, pri_id, sta_id, db_name,is_switch):
+    p_id = ""
+    s_id = ""
+    p_conn = ""
+    s_conn = ""
+    if is_switch == 0:
+        p_id = pri_id
+        s_id = sta_id
+    else:
+        p_id = sta_id
+        s_id = pri_id
+
+    try:
+        p_conn = get_connect(p_id)
+        s_conn = get_connect(s_id)
+
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into sqlserver_mirror_p_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_mirror_p where db_name = '%s' and server_id in (%s, %s);" %(db_name, pri_id, sta_id),'')
+        func.mysql_exec("delete from sqlserver_mirror_p where db_name = '%s' and server_id in (%s, %s);" %(db_name, pri_id, sta_id),'')
+        
+        func.mysql_exec("insert into sqlserver_mirror_s_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_mirror_s where db_name = '%s' and server_id in (%s, %s);" %(db_name, pri_id, sta_id),'')
+        func.mysql_exec("delete from sqlserver_mirror_s where db_name = '%s' and server_id in (%s, %s);" %(db_name, pri_id, sta_id),'')
+        
+        if p_conn:
+            # collect primary information
+            logger.info("Generate mirror primary info for server: %s begin:" %(p_id))
+            mp_info = sqlserver.get_mirror_info(p_conn, db_name)
+            if mp_info:
+                if mp_info[4] == 1:
+                    sql="insert into sqlserver_mirror_p(mirror_id,server_id,db_id,db_name,mirroring_role,mirroring_state,mirroring_state_desc,mirroring_safety_level,mirroring_partner_name,mirroring_partner_instance,mirroring_failover_lsn,mirroring_connection_timeout,mirroring_redo_queue,mirroring_end_of_log_lsn,mirroring_replication_lsn) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                    param=(mirror_id,p_id,mp_info[0],mp_info[1],mp_info[4],mp_info[5],mp_info[6],mp_info[7],mp_info[8],mp_info[9],mp_info[10],mp_info[11],mp_info[12],mp_info[13],mp_info[14])
+                    func.mysql_exec(sql,param)
+                    logger.info("Generate mirror primary info for server: %s end:" %(p_id))
+                else:
+                    logger.warn("The primary server: %s configured in mirror group is NOT match the mirroring_role!" %(p_id))
+    	
+
+        if s_conn:
+            # collect standby information
+            logger.info("Generate mirror standby info for server: %s begin:" %(s_id))
+            ms_info = sqlserver.get_mirror_info(s_conn, db_name)
+            if ms_info:
+                if ms_info[4] == 1:
+                    logger.warn("The standby server: %s configured in mirror group is NOT match the mirroring_role!" %(s_id))
+                else:
+                    sql="insert into sqlserver_mirror_s(mirror_id,server_id,db_id,db_name,master_server,master_port,mirroring_role,mirroring_state,mirroring_state_desc,mirroring_safety_level,mirroring_partner_name,mirroring_partner_instance,mirroring_failover_lsn,mirroring_connection_timeout,mirroring_redo_queue,mirroring_end_of_log_lsn,mirroring_replication_lsn) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                    param=(mirror_id,s_id,ms_info[0],ms_info[1],ms_info[2],ms_info[3],ms_info[4],ms_info[5],ms_info[6],ms_info[7],ms_info[8],ms_info[9],ms_info[10],ms_info[11],ms_info[12],ms_info[13],ms_info[14])
+                    func.mysql_exec(sql,param)
+                    logger.info("Generate mirror standby info for server: %s end:" %(s_id))
+             
+        func.mysql_exec("commit;",'')       	
+    except Exception, e:
+        logger.error(e)
+        func.mysql_exec("rollback;",'')
+
+    finally:
+        None
+	
+######################################################################################################
 # function clean_invalid_db_status
 ######################################################################################################   
 def clean_invalid_db_status():
@@ -146,8 +245,8 @@ def clean_invalid_db_status():
         func.mysql_exec("insert into sqlserver_status_his SELECT *,sysdate() from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         func.mysql_exec('delete from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
         
-        func.mysql_exec("insert into sqlserver_mirror_his SELECT *,sysdate() from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
-        func.mysql_exec('delete from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
+        #func.mysql_exec("insert into sqlserver_mirror_his SELECT *,sysdate() from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        #func.mysql_exec('delete from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
                                 
         func.mysql_exec("delete from db_status where db_type = 'sqlserver' and server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         
@@ -184,6 +283,31 @@ def main():
 
     logger.info("check sqlserver controller finished.")
 
+    #check for dataguard group
+    mirror_list=func.mysql_query("select id, mirror_name, primary_db_id, standby_db_id, db_name, is_switch from db_cfg_sqlserver_mirror where is_delete=0 and on_process = 0;")
+
+    logger.info("check sqlserver mirror start.")
+    if mirror_list:
+        plist_2 = []
+        for row in mirror_list:
+            mirror_id=row[0]
+            mirror_name=row[1]
+            pri_id=row[2]
+            sta_id=row[3]
+            db_name=row[4]
+            is_switch=row[5]
+            p2 = Process(target = check_mirror, args = (mirror_id,pri_id,sta_id,db_name,is_switch))
+            plist_2.append(p2)
+            p2.start()
+            
+        for p2 in plist_2:
+            p2.join()
+
+    else:
+        logger.warning("check sqlserver mirror: not found any mirror group")
+
+    logger.info("check sqlserver mirror finished.")
+    
 		# Clean invalid data
     logger.info("Clean invalid sqlserver status start.")   
     clean_invalid_db_status()

@@ -12,6 +12,7 @@ $lang['application'] = '应用';
 $lang['application_id'] = '应用';
 $lang['ip_address'] = 'IP地址';
 $lang['db_name'] = '数据库名';
+$lang['db_version'] = '数据库版本';
 $lang['db_type'] = '数据库类型';
 $lang['type'] = '类型';
 $lang['mysql'] = 'MySQL';
@@ -353,9 +354,12 @@ $lang['errors'] = '错误数';
 $lang['lsn'] = 'LSN';
 $lang['end_of_log_lsn'] = '日志结尾LSN';
 $lang['replication_lsn'] = '复制LSN';
+$lang['mirror_state'] = '镜像状态';
 $lang['state'] = '状态';
 $lang['safety_level'] = '安全等级';
 
+$lang['add_mirror'] = '新增镜像';
+$lang['mirror_name'] = '镜像名';
 
 #common
 $lang['connect_test'] = '连接测试';
