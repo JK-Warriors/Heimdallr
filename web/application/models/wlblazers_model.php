@@ -453,21 +453,21 @@ class Wlblazers_model extends CI_Model{
 	 * 获取 sqlserver镜像信息
 	 */
 	function get_sqlserver_count_normal(){
-    $sql = "select * from sqlserver_mirror t where mirroring_role = 2 and mirroring_state = 4 ";
+    $sql = "select * from sqlserver_mirror_s t where mirroring_role = 2 and mirroring_state = 4 ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
 	}
 
 	function get_sqlserver_count_waring(){
-    $sql = "select * from sqlserver_mirror t where mirroring_role = 2 and mirroring_state = 2 ";
+    $sql = "select * from sqlserver_mirror_s t where mirroring_role = 2 and mirroring_state = 2 ";
 		$query = $this->db->query($sql);
 		
 		return $query->num_rows();
 	}
 	
 	function get_sqlserver_count_critical(){
-    $sql = "select * from sqlserver_mirror t where mirroring_role = 2 and mirroring_state not in(2,4) ";
+    $sql = "select * from sqlserver_mirror_s t where mirroring_role = 2 and mirroring_state not in(2,4) ";
 		
 		$query = $this->db->query($sql);
 		

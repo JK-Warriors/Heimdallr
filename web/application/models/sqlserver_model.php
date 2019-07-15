@@ -198,8 +198,7 @@ class Sqlserver_model extends CI_Model{
         
     function get_standby_total(){
         $sql = "select * from sqlserver_mirror_s 
-				        where server_id in (select id from db_cfg_sqlserver)
-				          and (server_id, id) in (select server_id, max(id) from sqlserver_mirror_s t group by server_id)";
+				        where server_id in (select id from db_cfg_sqlserver)";
 										
         $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
