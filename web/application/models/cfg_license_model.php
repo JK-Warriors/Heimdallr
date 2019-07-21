@@ -18,7 +18,24 @@ class cfg_license_model extends CI_Model{
 		function get_license_quota($quota_type){
 	    $license_data = $this->get_license();  
 			if($license_data){
-				return $license_data[$quota_type];
+					if($quota_type == 'ora_watch')
+					{
+						return $license_data['config_info']['ora_watch'];
+					}elseif($quota_type == 'ora_recover'){
+						return $license_data['config_info']['ora_recover'];
+					}elseif($quota_type == 'mysql_watch'){
+						return $license_data['config_info']['mysql_watch'];
+					}elseif($quota_type == 'mysql_recover'){
+						return $license_data['config_info']['mysql_recover'];
+					}elseif($quota_type == 'mssql_watch'){
+						return $license_data['config_info']['mssql_watch'];
+					}elseif($quota_type == 'mssql_recover'){
+						return $license_data['config_info']['mssql_recover'];
+					}
+					else{
+						return 0;
+					}
+					
 			}else{
 				return 0;
 			}
