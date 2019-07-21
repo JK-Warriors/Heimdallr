@@ -44,6 +44,7 @@ INSERT INTO `admin_menu` VALUES ('1004', 'SQLServer', '2', '10', 'cfg_sqlserver/
 -- INSERT INTO `admin_menu` VALUES ('1006', 'Redis', '2', '10', 'cfg_redis/index', 'icon-list', '0', '1', '6', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1010', 'OS', '2', '10', 'cfg_os/index', 'icon-list', '0', '1', '10', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('1011', 'BigView', '2', '10', 'cfg_bigview/index', 'icon-list', '0', '1', '11', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('1012', 'License', '2', '10', 'cfg_license/index', 'icon-list', '0', '1', '12', CURRENT_TIMESTAMP);
 
 -- ------------------MySQL Monitor--------------------
 INSERT INTO `admin_menu` VALUES ('1101', 'Health Monitor', '2', '11', 'wl_mysql/index', ' icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
@@ -144,6 +145,8 @@ INSERT INTO `admin_privilege` VALUES ('1082', 'Alarm His View', '2102', 'alarm/h
 
 INSERT INTO `admin_privilege` VALUES ('1091', 'BigView View', '1011', 'cfg_bigview/index', '91');
 INSERT INTO `admin_privilege` VALUES ('1092', 'BigView Save', '1011', 'cfg_bigview/save', '92');
+
+INSERT INTO `admin_privilege` VALUES ('1095', 'License View', '1012', 'cfg_license/index', '95');
 -- -------------------------------------------------- MySQL -------------------------------------------------------
 INSERT INTO `admin_privilege` VALUES ('1101', 'MySQL Config View', '1002', 'cfg_mysql/index', '101');
 INSERT INTO `admin_privilege` VALUES ('1102', 'MySQL Config Add', '1002', 'cfg_mysql/add', '102');
@@ -298,6 +301,7 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1081');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1082');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1091');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1092');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1095');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1101');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1102');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1103');

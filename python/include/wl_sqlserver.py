@@ -81,7 +81,7 @@ def get_database(conn,field):
 def ger_processes(conn):
     try:
         curs=conn.cursor()
-        curs.execute("SELECT COUNT(*) FROM [Master].[dbo].[SYSPROCESSES] WHERE [DBID] IN ( SELECT  [dbid] FROM [Master].[dbo].[SYSDATABASES])");
+        curs.execute("SELECT COUNT(*) FROM [master].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [master].[dbo].[sysdatabases])");
         result = curs.fetchone()[0]
         return result
 
@@ -96,7 +96,7 @@ def ger_processes(conn):
 def ger_processes_running(conn):
     try:
         curs=conn.cursor()
-        curs.execute("SELECT COUNT(*) FROM [Master].[dbo].[SYSPROCESSES] WHERE [DBID] IN ( SELECT  [dbid] FROM [Master].[dbo].[SYSDATABASES])  AND  status !='SLEEPING' AND status !='BACKGROUND'");
+        curs.execute("SELECT COUNT(*) FROM [master].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [master].[dbo].[sysdatabases])  AND  status !='SLEEPING' AND status !='BACKGROUND'");
         result = curs.fetchone()[0]
         return result
 
@@ -110,7 +110,7 @@ def ger_processes_running(conn):
 def ger_processes_waits(conn):
     try:
         curs=conn.cursor()
-        curs.execute("SELECT COUNT(*) FROM [Master].[dbo].[SYSPROCESSES] WHERE [DBID] IN ( SELECT  [dbid] FROM [Master].[dbo].[SYSDATABASES])  AND  status ='SUSPENDED' AND waittime >2 ");
+        curs.execute("SELECT COUNT(*) FROM [master].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [master].[dbo].[sysdatabases])  AND  status ='SUSPENDED' AND waittime >2 ");
         result = curs.fetchone()[0]
         return result
 

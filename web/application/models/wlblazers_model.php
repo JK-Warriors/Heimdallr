@@ -510,6 +510,7 @@ class Wlblazers_model extends CI_Model{
 	 /*
 	 * 获取 license 信息
 	 */
+	/*
 	function get_license_exprie_date(){
 		$key = 'qZe60QZFxuirub2ey4+7+Q==';
 		
@@ -553,8 +554,10 @@ class Wlblazers_model extends CI_Model{
     	
     	return substr($text,strpos($text, '|')+1);
 		}
+		
+		
 	}
-	
+	*/
 	
 }
 

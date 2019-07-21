@@ -259,6 +259,12 @@ $lang['web_url'] = '网站地址';
 $lang['status_code'] = '状态码';
 $lang['mail_to_list'] = '邮件接收人';
 
+#license
+$lang['get_m_code'] = '获取机器码';
+$lang['license_code'] = '授权码';
+$lang['license_active'] = '授权激活';
+
+
 #os
 $lang['disk'] = '磁盘';
 $lang['disk_io'] = '磁盘IO';

@@ -5,6 +5,7 @@ class cfg_mysql extends Front_Controller {
 		parent::__construct();
         $this->load->model('cfg_mysql_model','mysql');
         $this->load->model('cfg_os_model','cfg_os');
+    $this->load->model("cfg_license_model","license");
 		$this->load->library('form_validation');
 	
 	}
@@ -80,6 +81,20 @@ class cfg_mysql extends Front_Controller {
 			}
 			else
 			{
+        //验证license
+        $license_quota = $this->license->get_license_quota('mysql_watch');
+        $sql="select * from db_cfg_mysql where is_delete=0";
+        $query = $this->db->query($sql);
+        $mysql_count = $query->num_rows();
+      
+        if(empty($license_quota)){
+            redirect(site_url('error/no_license'));
+                return ;
+        }else if($mysql_count >= $license_quota){
+            redirect(site_url('error/out_quota'));
+                return ;
+        }
+        
 					$data['error_code']=0;
 					$data = array(
                         'host'=>$this->input->post('host'),

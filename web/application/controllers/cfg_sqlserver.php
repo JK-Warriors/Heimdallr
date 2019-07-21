@@ -5,7 +5,7 @@ class cfg_sqlserver extends Front_Controller {
 		parent::__construct();
     $this->load->model('cfg_sqlserver_model','sqlserver');
     $this->load->model('cfg_os_model','cfg_os');
-    $this->load->model("wlblazers_model","wlblazers");
+    $this->load->model("cfg_license_model","license");
 		$this->load->library('form_validation');
 	
 	}
@@ -79,6 +79,20 @@ class cfg_sqlserver extends Front_Controller {
 			}
 			else
 			{
+        //验证license
+        $license_quota = $this->license->get_license_quota('mssql_watch');
+        $sql="select * from db_cfg_sqlserver where is_delete=0";
+        $query = $this->db->query($sql);
+        $mssql_count = $query->num_rows();
+      
+        if(empty($license_quota)){
+            redirect(site_url('error/no_license'));
+                return ;
+        }else if($mssql_count >= $license_quota){
+            redirect(site_url('error/out_quota'));
+                return ;
+        }
+        
 					$data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
@@ -273,7 +287,7 @@ class cfg_sqlserver extends Front_Controller {
 			else
 			{
         //验证license
-        $license_quota = $this->wlblazers->get_license_quota();
+        $license_quota = $this->license->get_license_quota('mssql_recover');
         $sql="select * from db_cfg_sqlserver_mirror where is_delete=0";
         $query = $this->db->query($sql);
         $mirror_count = $query->num_rows();

@@ -12,7 +12,7 @@ class cfg_bigview extends Front_Controller {
      * 首页
      */
     public function index(){
-        //parent::check_privilege();
+        parent::check_privilege();
         
         $data["total_db"]= $this->bgv->get_total_db();
         $data["total_os"]= $this->bgv->get_total_os();

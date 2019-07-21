@@ -106,8 +106,8 @@ class Login extends CI_Controller  {
     $data['wlblazers_status']=$wlblazers_status;
     
     
-    $exprie_date = $this->wlblazers->get_license_exprie_date();
-    $data['wlb_license'] = $exprie_date;
+    #$exprie_date = $this->wlblazers->get_license_exprie_date();
+    #$data['wlb_license'] = $exprie_date;
     
     $this->load->view('login',$data);
 		

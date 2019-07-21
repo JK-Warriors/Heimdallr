@@ -6,7 +6,7 @@ class cfg_oracle extends Front_Controller {
         $this->load->model('cfg_oracle_model','oracle');
         $this->load->model('cfg_oracle_dg_model','oracle_dgs');
         $this->load->model('cfg_os_model','cfg_os');
-        $this->load->model("wlblazers_model","wlblazers");
+        $this->load->model("cfg_license_model","license");
         $this->load->library('form_validation');
 	
 	}
@@ -88,6 +88,20 @@ class cfg_oracle extends Front_Controller {
 			}
 			else
 			{
+        //验证license
+        $license_quota = $this->license->get_license_quota('ora_watch');
+        $sql="select * from db_cfg_oracle where is_delete=0";
+        $query = $this->db->query($sql);
+        $ora_count = $query->num_rows();
+      
+        if(empty($license_quota)){
+            redirect(site_url('error/no_license'));
+                return ;
+        }else if($ora_count >= $license_quota){
+            redirect(site_url('error/out_quota'));
+                return ;
+        }
+        
 					$data['error_code']=0;
 					$data = array(
 						'host'=>$this->input->post('host'),
@@ -430,7 +444,7 @@ class cfg_oracle extends Front_Controller {
 					$this->form_validation->set_rules('group_name',  'lang:group_name', 'trim|required');
 					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
 					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
-					$this->form_validation->set_rules('fb_retention',  'lang:standby_db', 'trim|required');
+					$this->form_validation->set_rules('fb_retention',  'lang:fb_retention', 'trim|required');
            
 			if ($this->form_validation->run() == FALSE)
 			{
@@ -439,7 +453,7 @@ class cfg_oracle extends Front_Controller {
 			else
 			{
         //验证license
-        $license_quota = $this->wlblazers->get_license_quota();
+        $license_quota = $this->license->get_license_quota('ora_recover');
         $sql="select * from db_cfg_oracle_dg where is_delete=0";
         $query = $this->db->query($sql);
         $dg_count = $query->num_rows();
