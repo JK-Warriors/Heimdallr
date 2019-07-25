@@ -1,6 +1,20 @@
 <?php 
 class cfg_license_model extends CI_Model{
-
+	  private static $PRIVATE_KEY = '';
+    private static $PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAu4JxauiYZWM6vWRitoUX
+taDwA7aabma4poOtweRWPGYgDFhXoUpZxho8fcR6q9kaSnOh+bu/Q/Wc8nqNq15f
+wSj6I9GE5FtV57AM7Tcx0+fg2emhzqZ4YKa/yxheii7OAdJTsA4vk8bkCq2LSqli
+GgK5oBRtdM5srKALymvEUnZb6jxp/V/HzB08BuPHfQcvW/BHB/FTjcy6uHH9uQZE
+qIG0yrYorOC5DJ3gHOH45GQ4nWXkya61BxDCwW++bOqzhSzY0XYhZJduXShs50Iu
+90lcNy9I6FiHZPwnENvj4k9RcJ34GcVwA69+y3NkEJbAdbRATDXSCogYiFFc/Blj
+cniUezgoUTs+wacRouH1MnXA8vKH+xrOJV2SJAV5aGtt6x8xtnABsYERL02vn15v
+CVXAv1JcTli9Hi0uIgTRlLYWGnW85fFKRkHxSTSPoWTyE0JqTzG+J+s1tJRTlIUP
+RNFSB8hkRwlhDUdE9G06XCeKeSZXogYc1frSRtTTPyVN/Qqh/30TK56o8nDZMlHD
+M/hi2RO38xHb1KCYIJmqaR0qxZBiKVELuvrlICKzMOWyT2gh28LPGXXzu3DvnB1k
+gkQAK6rpSmr5RYhB5BqquLZWkWu91U7cJxWsl/8TtF69eeZAAMeMqXarCELCFV0q
+hbaMIjgsqOhJUwoQb0ymNVMCAwEAAQ==
+-----END PUBLIC KEY-----';   
   
    		
 		#获取License到期时间
@@ -69,8 +83,10 @@ class cfg_license_model extends CI_Model{
 		  
 			$license_contents = @file_get_contents($license_path);
 			
-			$license_data = json_decode($this->licensecrypto($license_contents),true);
-		
+			#$license_data = json_decode($this->licensecrypto($license_contents),true);
+			#改为RSA加密
+			$license_data = json_decode($this->publicDecrypt($license_contents),true);
+			
 			return $license_data;
 		}
 		
@@ -187,34 +203,81 @@ class cfg_license_model extends CI_Model{
 			}
 		}
 		
-		/*
-		# 生成UUID
-		function macbyte($val) {
-			if ($val < 16)
-				return '0'.dechex($val);
 
-			return dechex($val);
-		}
-		
-		function generate_uuid($seed=false) {
-			if (!$seed)
-				$seed = time();
-			srand($seed);
+    /**     
+     * 获取私钥     
+     * @return bool|resource     
+     */    
+    private static function getPrivateKey() 
+    {        
+        $privKey = self::$PRIVATE_KEY;        
+        return openssl_pkey_get_private($privKey);    
+    }    
+ 
+    /**     
+     * 获取公钥     
+     * @return bool|resource     
+     */    
+    private static function getPublicKey()
+    {        
+        $publicKey = self::$PUBLIC_KEY;        
+        return openssl_pkey_get_public($publicKey);    
+    }    
+ 
+    /**     
+     * 私钥加密     
+     * @param string $data     
+     * @return null|string     
+     */    
+    public static function privEncrypt($data = '')    
+    {        
+        if (!is_string($data)) {            
+            return null;       
+        }
+				
+        return openssl_private_encrypt($data,$encrypted,self::getPrivateKey()) ? base64_encode($encrypted) : null;    
+    }    
+ 
+    /**     
+     * 公钥加密     
+     * @param string $data     
+     * @return null|string     
+     */    
+    public static function publicEncrypt($data = '')   
+    {        
+        if (!is_string($data)) {            
+            return null;        
+        }
+        
+        return openssl_public_encrypt($data,$encrypted,self::getPublicKey()) ? base64_encode($encrypted) : null;    
+    }    
+ 
+    /**     
+     * 私钥解密     
+     * @param string $encrypted     
+     * @return null     
+     */    
+    public static function privDecrypt($encrypted = '')    
+    {        
+        if (!is_string($encrypted)) {            
+            return null;        
+        }        
+        return (openssl_private_decrypt(base64_decode($encrypted), $decrypted, self::getPrivateKey())) ? $decrypted : null;    
+    }    
+ 
+    /**     
+     * 公钥解密     
+     * @param string $encrypted     
+     * @return null     
+     */    
+    public static function publicDecrypt($encrypted = '')    
+    {        
+        if (!is_string($encrypted)) {            
+            return null;        
+        }        
+    return (openssl_public_decrypt(base64_decode($encrypted), $decrypted, self::getPublicKey())) ? $decrypted : null;    
+    }
 
-			$ret = array();
-			for ($i = 0; $i < 16; $i++)
-				$ret[] = $this->macbyte(rand() % 256);
-
-			$a = $ret[0].$ret[1].$ret[2].$ret[3];
-			$b = $ret[4].$ret[5];
-			$c = $ret[6].$ret[7];
-			$d = $ret[8].$ret[9];
-			$e = $ret[10].$ret[11].$ret[12].$ret[13].$ret[14].$ret[15];
-
-			return $a.'-'.$b.'-'.$c.'-'.$d.'-'.$e;
-		}
-		    
-    */    
 }
 
 /* End of file cfg_license_model.php */

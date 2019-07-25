@@ -24,7 +24,6 @@ class cfg_license extends Front_Controller {
     ##获取机器码
     public function get_m_code()   
     {  
-				#$setval['machine_code'] = $this->license->generate_uuid('ywy_drm');
 				$setval['machine_code'] = $this->license->getMacAddr(PHP_OS);
         $data["setval"]=$setval;
         	
@@ -39,7 +38,7 @@ class cfg_license extends Front_Controller {
     		if($license_code){
     			$machine_code = $this->license->getMacAddr(PHP_OS);
     			
-    			$license_data = json_decode($this->license->licensecrypto($license_code),true);
+    			$license_data = json_decode($this->license->publicDecrypt($license_code),true);
     			
     			if($license_data){
     					if($license_data['key'] == $machine_code){
