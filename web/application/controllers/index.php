@@ -67,6 +67,7 @@ class Index extends Front_Controller {
         $data["mysql_active_instance"] = $this->wlblazers->get_mysql_active_instance();
         $data["mysql_inactive_instance"] = $this->wlblazers->get_mysql_inactive_instance();
         
+        
         //for mysql delay
         $data["mysql_normal"] = $this->wlblazers->get_db_count_normal('mysql');
         $data["mysql_waring"] = $this->wlblazers->get_db_count_waring('mysql');
@@ -84,6 +85,9 @@ class Index extends Front_Controller {
         $data["sqlserver_normal"] = $this->wlblazers->get_sqlserver_count_normal();
         $data["sqlserver_waring"] = $this->wlblazers->get_sqlserver_count_waring();
         $data["sqlserver_critical"] = $this->wlblazers->get_sqlserver_count_critical();
+        
+        //get db instance total
+        $data["db_instance_total"] = $this->wlblazers->get_db_instance_total();
         
         $center_db1 = $this->wlblazers->get_center_db('center_db1');
         $center_db2 = $this->wlblazers->get_center_db('center_db2');

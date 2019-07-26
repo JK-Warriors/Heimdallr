@@ -21,6 +21,56 @@
 		
   <title></title>
 </head>
+      <!-- 上下翻页用样式 -->
+<style>
+      .box .datanum .scroll {
+      height: 100%;
+      overflow: hidden;
+      }
+      
+      .box .datanum ul {
+      height: 100% !important;
+}
+.box .datanum ul > li {
+float: left;
+width: 10%;
+height: 100%;
+padding: 0 1%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.box .datanum ul > li p {
+text-align: center;
+padding-bottom: 0.1rem;
+font-size: 0.2rem;
+}
+
+.box .datanum ul > li span {
+display: block;
+}
+
+.box .datanum ul > li span img {
+max-width: 6vw;
+max-height: 8vh;
+}
+
+
+.scroll{height: 100%;overflow: hidden;}
+.box .datanum ul{height:100% !important;}
+      </style>
+			<!-- 上下翻页 一个ul里循环10个li,超过10个新增一个ul.一个ul翻一页-->
+
+<script type="text/javascript">
+$(function () {
+setInterval(function () {
+$(".scroll ul").eq(0).slideUp(400, function () {
+$(this).appendTo($(this).parent()).show();
+})
+}, 2000)
+})
+</script>
 
 <body style="visibility: visible;">
   <div class="container-flex">
@@ -37,82 +87,24 @@
         <img src="lib/bootstrap/img/bj-2.png" alt="" class="bj-2">
         <img src="lib/bootstrap/img/bj-3.png" alt="" class="bj-3">
         <img src="lib/bootstrap/img/bj-4.png" alt="" class="bj-4">
-        <ul class="cf">
-        	<!-- Oracle实例状态 -->
-        	<?php if(!empty($oracle_active_instance)) {?>
-        	<?php foreach ($oracle_active_instance as $item): ?>
-          <li>
-            <span>
-              <p><?php echo $item['tags'] ?></p>
-              <img src="lib/bootstrap/img/db1.png" alt="">
-            </span>
-          </li>
-          <?php endforeach;?>
-          <?php } ?>  
-          
-          
-        	<?php if(!empty($oracle_inactive_instance)) {?>
-        	<?php foreach ($oracle_inactive_instance as $item): ?>
-          <li>
-            <span>
-              <p><?php echo $item['tags'] ?></p>
-              <img src="lib/bootstrap/img/db2.png" alt="">
-            </span>
-          </li>
-          <?php endforeach;?>
-          <?php } ?>  
-          
-        	<!-- MySQL实例状态 -->
-        	<?php if(!empty($mysql_active_instance)) {?>
-        	<?php foreach ($mysql_active_instance as $item): ?>
-          <li>
-            <span>
-              <p><?php echo $item['tags'] ?></p>
-              <img src="lib/bootstrap/img/db1.png" alt="">
-            </span>
-          </li>
-          <?php endforeach;?>
-          <?php } ?>  
-          
-          
-        	<?php if(!empty($mysql_inactive_instance)) {?>
-        	<?php foreach ($mysql_inactive_instance as $item): ?>
-          <li>
-            <span>
-              <p><?php echo $item['tags'] ?></p>
-              <img src="lib/bootstrap/img/db2.png" alt="">
-            </span>
-          </li>
-          <?php endforeach;?>
-          <?php } ?>  
-        	
-          
-        	<!-- SQLServer实例状态 -->
-        	<?php if(!empty($sqlserver_active_instance)) {?>
-        	<?php foreach ($sqlserver_active_instance as $item): ?>
-          <li>
-            <span>
-              <p><?php echo $item['tags'] ?></p>
-              <img src="lib/bootstrap/img/db1.png" alt="">
-            </span>
-          </li>
-          <?php endforeach;?>
-          <?php } ?>  
-          
-          
-        	<?php if(!empty($sqlserver_inactive_instance)) {?>
-        	<?php foreach ($sqlserver_inactive_instance as $item): ?>
-          <li>
-            <span>
-              <p><?php echo $item['tags'] ?></p>
-              <img src="lib/bootstrap/img/db2.png" alt="">
-            </span>
-          </li>
-          <?php endforeach;?>
-          <?php } ?>  
-        	
-          
-        </ul>
+
+      	<div class="scroll">
+      	<?php if(!empty($db_instance_total)) {?>
+      	<?php $li_count = 0; ?>
+      	<?php foreach ($db_instance_total as $item): ?>
+        <?php if($li_count%10 ==0){echo '<ul class="cf">';} ?> 
+        <li>
+          <span>
+            <p><?php echo $item['tags'] ?></p>
+            <img src="<?php if($item['connect']==1){echo "lib/bootstrap/img/db1.png";}else{echo "lib/bootstrap/img/db2.png";} ?>" alt="">
+          </span>
+        </li>
+        <?php $li_count = $li_count + 1; ?> 
+        <?php if($li_count == sizeof($db_instance_total)){echo '</ul>';}elseif($li_count%10 ==0){echo '</ul>';} ?> 
+        <?php endforeach;?>
+        <?php } ?>  
+        
+      </div>
       </div>
       <div class="left1">
 

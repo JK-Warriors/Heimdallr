@@ -130,6 +130,36 @@ class Wlblazers_model extends CI_Model{
 		}
 	}
 
+
+	function get_db_instance_total(){
+    $sql = "SELECT os.server_id, os.tags, os.connect, 'oracle' as 'db_type'
+								FROM oracle_status os, db_cfg_oracle co
+								WHERE os.server_id = co.id
+								AND co.is_delete = 0
+								AND co.monitor = 1
+						UNION ALL
+						SELECT ms.server_id, ms.tags, ms.connect, 'mysql' as 'db_type'
+														FROM mysql_status ms, db_cfg_mysql cm
+														WHERE ms.server_id = cm.id
+														AND cm.is_delete = 0
+														AND cm.monitor = 1
+						UNION ALL
+						SELECT ss.server_id, ss.tags, ss.connect, 'sqlserver' as 'db_type'
+														FROM sqlserver_status ss, db_cfg_sqlserver cs
+														WHERE ss.server_id = cs.id
+														AND cs.is_delete = 0
+														AND cs.monitor = 1
+						order by db_type, server_id";
+		
+		$query=$this->db->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+	}
+
+
+
 	function get_oracle_chart_server(){
     $sql = "select o.*, @rownum:=@rownum+1 rownum 
 		from(SELECT DISTINCT s.server_id, s.tags, d.group_name
