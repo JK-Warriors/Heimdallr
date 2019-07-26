@@ -22,50 +22,47 @@
 
 <div class="well">
 
-<div class="ui-state-default ui-corner-all" style="height: 220px;" >
+<div class="ui-state-default ui-corner-all" >
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form_license" class="form-inline" method="get" action="" >
-
-<div class="form-group">
-		<label class="col-lg-2 control-label"><?php echo $this->lang->line('license_code'); ?>：</label>
-		<div class="col-lg-4" style="float:left;" >
-         <textarea class="form-control" id="license_code" style="width: 100%;height: 150px"></textarea>
-    </div>
-</div>         
-<div class="form-group">
-		<div class="col-lg-offset-2 col-lg-10">
-				<button id="license_active" onclick="licenseActive(this)" type="button" class="btn btn-primary"><?php echo $this->lang->line('license_active'); ?></button>
-		</div>
-</div>
-
+<table style="width:100%;border:0px;">
+	<tr>
+		<td style="width:150px;text-align:right;vertical-align: top;padding-right:30px;"><b><?php echo $this->lang->line('license_code'); ?>：</b></td>
+		<td><textarea class="form-control" id="license_code" style="width: 400px;height: 150px"></textarea></td>
+		</tr>
+	<tr>
+		<td></td>
+		<td style="padding-top:15px;"><button id="license_active" onclick="licenseActive(this)" type="button" class="btn btn-primary"><?php echo $this->lang->line('license_active'); ?></button></td>
+		</tr>
+</table>
 </form>                   
 </div>
-
-<div class="ui-state-default ui-corner-all" style="height: 140px;" >
-<p><span style="margin-right: .3em;" class="ui-icon ui-icon-search"></span> 
+<style>
+	.tempstyle01{padding-bottom:15px;}
+	.tempstyle01 label,.tempstyle01 div{
+		box-sizing:border-box;}
+	</style>
+<div class="ui-state-default ui-corner-all tempstyle01">
+	<h3 style="padding: 0 15px;">授权信息</h3>
 	
 	<div style="width: 100%;">
-		<label class="col-lg-2 control-label">授权信息：</label>
-	</div>
-	
-	<div style="width: 100%;">
-		<label class="col-lg-2 control-label">类型：<?php if($license_data['type']==1){echo "测试版";} ?></label>
-		<label class="col-lg-2 control-label">过期时间：<?php echo date("Y/m/d H:i:s",$license_data['expiration_time']); ?></label>
-		<label class="col-lg-2 control-label">状态：<?php if($license_data['status']==1){echo "启用";} ?></label>
+		<label class="col-lg-4 control-label"><b>类型：</b><?php if($license_data['type']==1){echo "测试版";} ?></label>
+		<label class="col-lg-4 control-label"><b>过期时间：</b><?php echo date("Y-m-d H:i:s",$license_data['expiration_time']); ?></label>
+		<label class="col-lg-4 control-label"><b>状态：</b><?php if($license_data['status']==1){echo "启用";} ?></label>
 	</div>
 	
 	<div style="width: 100%;">	
-		<label class="col-lg-2 control-label">Oracle容灾：<?php echo $license_data['config_info']['ora_recover']; ?> 个授权点</label>
-		<label class="col-lg-2 control-label">mysql容灾：<?php echo $license_data['config_info']['mysql_recover']; ?> 个授权点</label>
-		<label class="col-lg-2 control-label">SQLServer容灾：<?php echo $license_data['config_info']['mssql_recover']; ?> 个授权点</label>
+		<label class="col-lg-4 control-label"><b>Oracle容灾：</b><?php echo $license_data['config_info']['ora_recover']; ?> 个授权点</label>
+		<label class="col-lg-4 control-label"><b>mysql容灾：</b><?php echo $license_data['config_info']['mysql_recover']; ?> 个授权点</label>
+		<label class="col-lg-4 control-label"><b>SQLServer容灾：</b><?php echo $license_data['config_info']['mssql_recover']; ?> 个授权点</label>
 	</div>
 	
 	<div style="width: 100%;">	
-		<label class="col-lg-2 control-label">Oracle监控：<?php echo $license_data['config_info']['ora_watch']; ?> 个授权点</label>
-		<label class="col-lg-2 control-label">mysql监控：<?php echo $license_data['config_info']['mysql_watch']; ?> 个授权点</label>
-		<label class="col-lg-2 control-label">SQLServer监控：<?php echo $license_data['config_info']['mssql_watch']; ?> 个授权点</label>
+		<label class="col-lg-4 control-label"><b>Oracle监控：</b><?php echo $license_data['config_info']['ora_watch']; ?> 个授权点</label>
+		<label class="col-lg-4 control-label"><b>mysql监控：</b><?php echo $license_data['config_info']['mysql_watch']; ?> 个授权点</label>
+		<label class="col-lg-4 control-label"><b>SQLServer监控：</b><?php echo $license_data['config_info']['mssql_watch']; ?> 个授权点</label>
 	</div>
-	
+	<div style="clear:both;"></div>
 	
 
 </div>     
