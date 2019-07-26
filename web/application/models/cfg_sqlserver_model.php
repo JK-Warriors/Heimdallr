@@ -77,6 +77,49 @@ class cfg_sqlserver_model extends CI_Model{
 		}
     }
     
+    
+    function mirror_name_exists($mirror_name,$id=''){
+    	try{
+    		if($id==''){
+        	$sql="select * from db_cfg_sqlserver_mirror where is_delete=0 and mirror_name='$mirror_name'; ";
+    		}else{
+        	$sql="select * from db_cfg_sqlserver_mirror where is_delete=0 and mirror_name='$mirror_name' and id != $id; ";
+    		}
+    		
+				$query = $this->db->query($sql);
+				if($query->num_rows() > 0){
+						return 1;
+				}else{
+						return 0;
+				};
+			}catch(Exception $e){
+				errorLog($e->getMessage());
+				return -1;
+			}
+    }
+    
+    
+    function mirror_group_exists($primary_db, $standby_db, $db_name,$id=''){
+    	try{
+    		if($id==''){
+        	$sql="select * from db_cfg_sqlserver_mirror where is_delete=0 and primary_db_id='$primary_db' and standby_db_id='$standby_db' and db_name='$db_name'; ";
+    		}else{
+        	$sql="select * from db_cfg_sqlserver_mirror where is_delete=0 and primary_db_id='$primary_db' and standby_db_id='$standby_db' and db_name='$db_name' and id != $id; ";
+    		}
+    		
+		    $query = $this->db->query($sql);
+				if($query->num_rows() > 0){
+						return 1;
+				}else{
+						return 0;
+				};
+			}catch(Exception $e){
+				errorLog($e->getMessage());
+				return -1;
+			}
+    }
+    
+    
     /*
     * 插入数据
     */

@@ -267,53 +267,76 @@ class cfg_sqlserver extends Front_Controller {
         $result=$this->sqlserver->get_total_record_sql($sql);
         $data["mirror_list"]=$result['datalist'];
         $data["mirror_count"]=$result['datacount'];
+        
+        $data["mirror_quota"]= $this->license->get_license_quota('mssql_recover');
 
 		
-    /*
-		 * 提交添加后处理
-		 */
-		$data['error_code']=0;
-		if(isset($_POST['submit']) && $_POST['submit']=='dg_manage')
-        {
+    	/*
+		 	* 提交添加后处理
+		 	*/
+			$data['error_code']=0;
+			if(isset($_POST['submit']) && $_POST['submit']=='add_mirror')
+    	{
 					$this->form_validation->set_rules('mirror_name',  'lang:mirror_name', 'trim|required');
 					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
 					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
 					$this->form_validation->set_rules('db_name',  'lang:db_name', 'trim|required');
            
-			if ($this->form_validation->run() == FALSE)
-			{
-					$data['error_code']='validation_error';
-			}
-			else
-			{
-        //验证license
-        $license_quota = $this->license->get_license_quota('mssql_recover');
-        $sql="select * from db_cfg_sqlserver_mirror where is_delete=0";
-        $query = $this->db->query($sql);
-        $mirror_count = $query->num_rows();
-      
-        if(empty($license_quota)){
-            redirect(site_url('error/no_license'));
-            return ;
-        }else if($mirror_count >= $license_quota){
-            redirect(site_url('error/out_quota'));
-            return ;
-        }
-        
-					$data['error_code']=0;
-					$data = array(
-						'mirror_name'=>$this->input->post('mirror_name'),
-						'primary_db_id'=>$this->input->post('primary_db'),
-						'standby_db_id'=>$this->input->post('standby_db'),
-						'db_name'=>$this->input->post('db_name'),
-					);
+					if ($this->form_validation->run() == FALSE)
+					{
+							$data['error_code']='validation_error';
+					}
+					else
+					{
+		        //验证license
+		        $license_quota = $this->license->get_license_quota('mssql_recover');
+		        $sql="select * from db_cfg_sqlserver_mirror where is_delete=0";
+		        $query = $this->db->query($sql);
+		        $mirror_count = $query->num_rows();
+		      
+		      	$mirror_name = $this->input->post('mirror_name');
+		      	$primary_db = $this->input->post('primary_db');
+		      	$standby_db = $this->input->post('standby_db');
+		      	$db_name = $this->input->post('db_name');
+		      	
+		      	$name_exists = $this->sqlserver->mirror_name_exists($mirror_name);
+		      	$group_exists = $this->sqlserver->mirror_group_exists($primary_db, $standby_db, $db_name);
+		      	
+		        if(empty($license_quota)){
+								$data['error_code']=-1;
+								$data['error_message']="没有License，请检查授权文件!";
+		            #redirect(site_url('error/no_license'));
+		            #return ;
+		        }elseif($mirror_count >= $license_quota){
+								$data['error_code']=-1;
+								$data['error_message']="您已经超出了镜像组授权限制，请删除后再添加!";
+		            #redirect(site_url('error/out_quota'));
+		            #return ;
+		        }elseif($name_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "镜像名已存在!";
+		        }elseif($group_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "镜像组已存在!";
+		        }else{
+								$data['error_code']=0;
+								$data = array(
+								'mirror_name'=>$this->input->post('mirror_name'),
+								'primary_db_id'=>$this->input->post('primary_db'),
+								'standby_db_id'=>$this->input->post('standby_db'),
+								'db_name'=>$this->input->post('db_name'),
+								);
+								
+								$this->sqlserver->insert_mirror($data);
+						}
 					
-					$this->sqlserver->insert_mirror($data);
-          redirect(site_url('cfg_sqlserver/add_mirror'));
+					
+						$this->layout->setLayout("layout_blank");
+        		$this->layout->view("cfg_sqlserver/json_data",$data);
           }
-        }
-         
-    $this->layout->view("cfg_sqlserver/add_mirror",$data);
+    	}else{
+    			$this->layout->view("cfg_sqlserver/add_mirror",$data);
+  		}
     }
 
     
@@ -327,7 +350,7 @@ class cfg_sqlserver extends Front_Controller {
 				 * 提交编辑后处理
 				*/
         $data['error_code']=0;
-				if(isset($_POST['submit']) && $_POST['submit']=='dg_manage')
+				if(isset($_POST['submit']) && $_POST['submit']=='edit_mirror')
         {
 					$this->form_validation->set_rules('mirror_name',  'lang:mirror_name', 'trim|required');
 					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
@@ -340,54 +363,75 @@ class cfg_sqlserver extends Front_Controller {
 					}
 					else
 					{
-						$data['error_code']=0;
-						$data = array(
-							'mirror_name'=>$this->input->post('mirror_name'),
-							'primary_db_id'=>$this->input->post('primary_db'),
-							'standby_db_id'=>$this->input->post('standby_db'),
-							'db_name'=>$this->input->post('db_name'),
-						);
-						
-						$this->sqlserver->update_mirror($data,$id);
-            redirect(site_url('cfg_sqlserver/add_mirror'));
+		      	$mirror_name = $this->input->post('mirror_name');
+		      	$primary_db = $this->input->post('primary_db');
+		      	$standby_db = $this->input->post('standby_db');
+		      	$db_name = $this->input->post('db_name');
+		      	
+		      	$name_exists = $this->sqlserver->mirror_name_exists($mirror_name, $id);
+		      	$group_exists = $this->sqlserver->mirror_group_exists($primary_db, $standby_db, $db_name, $id);
+		      	
+		      	if($name_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "镜像名已存在!";
+		        }elseif($group_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "镜像组已存在!";
+		        }else{
+								$data['error_code']=0;
+								$data = array(
+								'mirror_name'=>$this->input->post('mirror_name'),
+								'primary_db_id'=>$this->input->post('primary_db'),
+								'standby_db_id'=>$this->input->post('standby_db'),
+								'db_name'=>$this->input->post('db_name'),
+								);
+								
+								$this->sqlserver->update_mirror($data,$id);
+						}
+					
+					
+						$this->layout->setLayout("layout_blank");
+        		$this->layout->view("cfg_sqlserver/json_data",$data);
+        		
+		      
 	        }
-      	}
-      	
-      	$sql="select * from db_cfg_sqlserver where is_delete=0 order by id asc";
-        $result=$this->sqlserver->get_total_record_sql($sql);
-        $data["datalist"]=$result['datalist'];
-        $data["datacount"]=$result['datacount'];
-        
-        $sql="select t.id,
-                    t.mirror_name,
-                    t.db_name,
-                    p.id   as pri_id,
-                    p.host as pri_host,
-                    p.port as pri_port,
-                    p.tags as pri_tags,
-                    s.id   as sta_id,
-                    s.host as sta_host,
-                    s.port as sta_port,
-                    s.tags as sta_tags
-            from db_cfg_sqlserver_mirror t, db_cfg_sqlserver p, db_cfg_sqlserver s
-            where t.primary_db_id = p.id
-                and t.standby_db_id = s.id
-                and p.is_delete = 0
-                and s.is_delete = 0
-            order by t.display_order asc";
-        $result=$this->sqlserver->get_total_record_sql($sql);
-        $data["mirror_list"]=$result['datalist'];
-        $data["mirror_count"]=$result['datacount'];
-        
-        
-        $data["group_id"]=$id;
-        $sql="select * from db_cfg_sqlserver_mirror  where is_delete=0 and id = $id ";
-        $result=$this->sqlserver->get_total_record_sql($sql);
-        $data["mirror"]=$result['datalist'];
-        
-        
-       
-        $this->layout->view("cfg_sqlserver/add_mirror",$data);
+      	}else{
+	      	$sql="select * from db_cfg_sqlserver where is_delete=0 order by id asc";
+	        $result=$this->sqlserver->get_total_record_sql($sql);
+	        $data["datalist"]=$result['datalist'];
+	        $data["datacount"]=$result['datacount'];
+	        
+	        $sql="select t.id,
+	                    t.mirror_name,
+	                    t.db_name,
+	                    p.id   as pri_id,
+	                    p.host as pri_host,
+	                    p.port as pri_port,
+	                    p.tags as pri_tags,
+	                    s.id   as sta_id,
+	                    s.host as sta_host,
+	                    s.port as sta_port,
+	                    s.tags as sta_tags
+	            from db_cfg_sqlserver_mirror t, db_cfg_sqlserver p, db_cfg_sqlserver s
+	            where t.primary_db_id = p.id
+	                and t.standby_db_id = s.id
+	                and p.is_delete = 0
+	                and s.is_delete = 0
+	            order by t.display_order asc";
+	        $result=$this->sqlserver->get_total_record_sql($sql);
+	        $data["mirror_list"]=$result['datalist'];
+	        $data["mirror_count"]=$result['datacount'];
+	        
+	        
+	        $data["group_id"]=$id;
+	        $sql="select * from db_cfg_sqlserver_mirror  where is_delete=0 and id = $id ";
+	        $result=$this->sqlserver->get_total_record_sql($sql);
+	        $data["mirror"]=$result['datalist'];
+	        
+	        
+	       
+	        $this->layout->view("cfg_sqlserver/add_mirror",$data);
+	      }
     }
     
     

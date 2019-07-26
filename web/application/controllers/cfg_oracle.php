@@ -433,55 +433,78 @@ class cfg_oracle extends Front_Controller {
             order by t.display_order asc";
         $result=$this->oracle_dgs->get_total_record_sql($sql);
         $data["dglist"]=$result['datalist'];
-        $data["dgcount"]=$result['datacount'];
-		
-        /*
-		 * 提交添加后处理
-		 */
-		$data['error_code']=0;
-		if(isset($_POST['submit']) && $_POST['submit']=='dg_manage')
-        {
-					$this->form_validation->set_rules('group_name',  'lang:group_name', 'trim|required');
-					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
-					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
-					$this->form_validation->set_rules('fb_retention',  'lang:fb_retention', 'trim|required');
-           
-			if ($this->form_validation->run() == FALSE)
-			{
-				$data['error_code']='validation_error';
-			}
-			else
-			{
-        //验证license
-        $license_quota = $this->license->get_license_quota('ora_recover');
-        $sql="select * from db_cfg_oracle_dg where is_delete=0";
-        $query = $this->db->query($sql);
-        $dg_count = $query->num_rows();
-      
-        if(empty($license_quota)){
-            redirect(site_url('error/no_license'));
-                return ;
-        }else if($dg_count >= $license_quota){
-            redirect(site_url('error/out_quota'));
-                return ;
-        }
+        $data["dg_count"]=$result['datacount'];
         
-					$data['error_code']=0;
-					$data = array(
-						'group_name'=>$this->input->post('group_name'),
-						'primary_db_id'=>$this->input->post('primary_db'),
-						'standby_db_id'=>$this->input->post('standby_db'),
-						'fb_retention'=>$this->input->post('fb_retention'),
-						'shift_vip'=>$this->input->post('shift_vip'),
-						'node_vips'=>$this->input->post('node_vips'),
-						'network_card'=>$this->input->post('network_card'),
-					);
-					$this->oracle_dgs->insert($data);
-                    redirect(site_url('cfg_oracle/add_dg'));
-            }
-        }
-         
-        $this->layout->view("cfg_oracle/add_dg",$data);
+        
+        $data["dg_quota"]= $this->license->get_license_quota('ora_recover');
+		    /*
+				 * 提交添加后处理
+				 */
+				$data['error_code']=0;
+				if(isset($_POST['submit']) && $_POST['submit']=='add_dg')
+		    {
+							$this->form_validation->set_rules('group_name',  'lang:group_name', 'trim|required');
+							$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
+							$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
+							$this->form_validation->set_rules('fb_retention',  'lang:fb_retention', 'trim|required');
+		           
+						if ($this->form_validation->run() == FALSE)
+						{
+							$data['error_code']='validation_error';
+						}
+						else
+						{
+			        	//验证license
+			        	$license_quota = $this->license->get_license_quota('ora_recover');
+			        	$sql="select * from db_cfg_oracle_dg where is_delete=0";
+			        	$query = $this->db->query($sql);
+			        	$dg_count = $query->num_rows();
+			      
+				      	$group_name = $this->input->post('group_name');
+				      	$primary_db = $this->input->post('primary_db');
+				      	$standby_db = $this->input->post('standby_db');
+				      	
+				      	$name_exists = $this->oracle_dgs->name_exists($group_name);
+				      	$group_exists = $this->oracle_dgs->group_exists($primary_db, $standby_db);
+				      	
+								
+				        if(empty($license_quota)){
+										$data['error_code']=-1;
+										$data['error_message']="没有License，请检查授权文件!";
+				            #redirect(site_url('error/no_license'));
+				            #return ;
+				        }elseif($dg_count >= $license_quota){
+										$data['error_code']=-1;
+										$data['error_message']="您已经超出了容灾组授权限制，请删除后再添加!";
+				            #redirect(site_url('error/out_quota'));
+				            #return ;
+				        }elseif($name_exists == 1){
+										$data['error_code']=-1;
+										$data['error_message']= "组名已存在!";
+				        }elseif($group_exists == 1){
+										$data['error_code']=-1;
+										$data['error_message']= "容灾组已存在!";
+				        }else{
+										$data['error_code']=0;
+										$data = array(
+											'group_name'=>$this->input->post('group_name'),
+											'primary_db_id'=>$this->input->post('primary_db'),
+											'standby_db_id'=>$this->input->post('standby_db'),
+											'fb_retention'=>$this->input->post('fb_retention'),
+											'shift_vip'=>$this->input->post('shift_vip'),
+											'node_vips'=>$this->input->post('node_vips'),
+											'network_card'=>$this->input->post('network_card'),
+										);
+										
+										$this->oracle_dgs->insert($data);
+								}
+								errorLog($data['error_message']);
+								$this->layout->setLayout("layout_blank");
+		        		$this->layout->view("cfg_oracle/json_data",$data);
+			      }
+			  }else{
+			     $this->layout->view("cfg_oracle/add_dg",$data);
+			  }
     }
 
     
@@ -495,7 +518,7 @@ class cfg_oracle extends Front_Controller {
 				 * 提交编辑后处理
 				*/
         $data['error_code']=0;
-				if(isset($_POST['submit']) && $_POST['submit']=='dg_manage')
+				if(isset($_POST['submit']) && $_POST['submit']=='edit_dg')
         {
 					$this->form_validation->set_rules('group_name',  'lang:group_name', 'trim|required');
 					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
@@ -508,59 +531,74 @@ class cfg_oracle extends Front_Controller {
 					}
 					else
 					{
-						$data['error_code']=0;
-						$data = array(
-							'group_name'=>$this->input->post('group_name'),
-							'primary_db_id'=>$this->input->post('primary_db'),
-							'standby_db_id'=>$this->input->post('standby_db'),
-							'fb_retention'=>$this->input->post('fb_retention'),
-							'shift_vip'=>$this->input->post('shift_vip'),
-							'node_vips'=>$this->input->post('node_vips'),
-							'network_card'=>$this->input->post('network_card'),
-						);
+						$group_name = $this->input->post('group_name');
+		      	$primary_db = $this->input->post('primary_db');
+		      	$standby_db = $this->input->post('standby_db');
+		      	
+		      	$name_exists = $this->oracle_dgs->name_exists($group_name, $id);
+		      	$group_exists = $this->oracle_dgs->group_exists($primary_db, $standby_db, $id);
+		      	
+		        if($name_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "组名已存在!";
+		        }elseif($group_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "容灾组已存在!";
+		        }else{
+								$data['error_code']=0;
+								$data = array(
+									'group_name'=>$this->input->post('group_name'),
+									'primary_db_id'=>$this->input->post('primary_db'),
+									'standby_db_id'=>$this->input->post('standby_db'),
+									'fb_retention'=>$this->input->post('fb_retention'),
+									'shift_vip'=>$this->input->post('shift_vip'),
+									'node_vips'=>$this->input->post('node_vips'),
+									'network_card'=>$this->input->post('network_card'),
+								);
+								
+								$this->oracle_dgs->update($data,$id);
+						}
 						
-						$this->oracle_dgs->update($data,$id);
-            redirect(site_url('cfg_oracle/add_dg'));
+						$this->layout->setLayout("layout_blank");
+        		$this->layout->view("cfg_oracle/json_data",$data);
 	        }
-      	}
-      	
-      	$sql="select * from db_cfg_oracle where is_delete=0 order by id asc";
-        $result=$this->oracle->get_total_record_sql($sql);
-        $data["datalist"]=$result['datalist'];
-        $data["datacount"]=$result['datacount'];
-        
-        $sql="select t.id,
-                    t.group_name,
-                    p.id   as pri_id,
-                    p.host as pri_host,
-                    p.port as pri_port,
-                    p.dsn as pri_dsn,
-                    p.tags as pri_tags,
-                    s.id   as sta_id,
-                    s.host as sta_host,
-                    s.port as sta_port,
-                    s.dsn as sta_dsn,
-                    s.tags as sta_tags,
-                    t.fb_retention as fb_retention
-            from db_cfg_oracle_dg t, db_cfg_oracle p, db_cfg_oracle s
-            where t.primary_db_id = p.id
-                and t.standby_db_id = s.id
-                and p.is_delete = 0
-                and s.is_delete = 0
-            order by t.display_order asc";
-        $result=$this->oracle_dgs->get_total_record_sql($sql);
-        $data["dglist"]=$result['datalist'];
-        $data["dgcount"]=$result['datacount'];
-        
-        
-        $data["group_id"]=$id;
-        $sql="select * from db_cfg_oracle_dg  where is_delete=0 and id = $id ";
-        $result=$this->oracle->get_total_record_sql($sql);
-        $data["dg"]=$result['datalist'];
-        
-        
-       
-        $this->layout->view("cfg_oracle/add_dg",$data);
+      	}else{
+	      	$sql="select * from db_cfg_oracle where is_delete=0 order by id asc";
+	        $result=$this->oracle->get_total_record_sql($sql);
+	        $data["datalist"]=$result['datalist'];
+	        $data["datacount"]=$result['datacount'];
+	        
+	        $sql="select t.id,
+	                    t.group_name,
+	                    p.id   as pri_id,
+	                    p.host as pri_host,
+	                    p.port as pri_port,
+	                    p.dsn as pri_dsn,
+	                    p.tags as pri_tags,
+	                    s.id   as sta_id,
+	                    s.host as sta_host,
+	                    s.port as sta_port,
+	                    s.dsn as sta_dsn,
+	                    s.tags as sta_tags,
+	                    t.fb_retention as fb_retention
+	            from db_cfg_oracle_dg t, db_cfg_oracle p, db_cfg_oracle s
+	            where t.primary_db_id = p.id
+	                and t.standby_db_id = s.id
+	                and p.is_delete = 0
+	                and s.is_delete = 0
+	            order by t.display_order asc";
+	        $result=$this->oracle_dgs->get_total_record_sql($sql);
+	        $data["dglist"]=$result['datalist'];
+	        $data["dgcount"]=$result['datacount'];
+	        
+	        
+	        $data["group_id"]=$id;
+	        $sql="select * from db_cfg_oracle_dg  where is_delete=0 and id = $id ";
+	        $result=$this->oracle->get_total_record_sql($sql);
+	        $data["dg"]=$result['datalist'];
+	        
+	        $this->layout->view("cfg_oracle/add_dg",$data);	
+      }
     }
     
     

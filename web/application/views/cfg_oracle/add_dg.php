@@ -6,10 +6,14 @@
            <li class="active"><?php echo $this->lang->line('_Oracle'); ?></li>
 </ul>
 
+<script src="lib/bootstrap/js/bootstrap-switch.js"></script>
+<script src="lib/bootstrap/js/bootbox.js"></script>
+<script src="lib/layer3/layer.js"></script>
+
 <div class="container-fluid">
 <div class="row-fluid">
 
-<form name="form" class="form-horizontal" method="post" action="<?php if($group_id != ""){echo site_url('cfg_oracle/edit_dg/') . "/" . $group_id ;}else{echo site_url('cfg_oracle/add_dg');} ?>" >
+<form id="form" name="form" class="form-horizontal" method="post" action="<?php if($group_id != ""){echo site_url('cfg_oracle/edit_dg/') . "/" . $group_id ;}else{echo site_url('cfg_oracle/add_dg');} ?>" >
 <input type="hidden" id="submit" name="submit" value="dg_manage"/> 
 <div class="btn-toolbar">
    <a class="btn btn " href="<?php echo site_url('cfg_oracle/index') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
@@ -43,20 +47,6 @@
        <span class="help-inline"></span>
    </div>
   </div>
-
-  <!-- <div class="control-group">
-   <label class="control-label" for=""><?php echo $this->lang->line('primary_dest_id'); ?></label>
-   <div class="controls">
-     <select name="primary_dest_id" id="primary_dest_id" class="input-large">
-       <?php 
-       $arr_dest_id = range(2, 31);
-       foreach ($arr_dest_id as $dest_id):?>
-       <option value="<?php echo $dest_id;?>" ><?php echo $dest_id;?></option>
-       <?php endforeach;?>
-       </select>
-       <span class="help-inline"></span>
-   </div>
-  </div> -->
   
   <div class="control-group">
    <label class="control-label" for="">*<?php echo $this->lang->line('standby_db'); ?></label>
@@ -70,8 +60,6 @@
        <span class="help-inline"></span>
    </div>
   </div>
-
-
 
    <div class="control-group">
    <label class="control-label" for="">备库闪回保留天数：</label>
@@ -104,7 +92,7 @@
   </div>
 
   <div class="controls">
-   <button type="submit" id="btn_save" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
+   <button type="button" id="btn_save" onclick="checkLicense(this)" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
   <div class="btn-group"></div>
   </div>
   
@@ -154,7 +142,7 @@
 <?php endforeach;?>
 <tr>
 <td colspan="13">
-<font color="#000000"><?php echo $this->lang->line('total_record'); ?> <?php echo $dgcount; ?></font>
+<font color="#000000"><?php echo $this->lang->line('total_record'); ?> <?php echo $dg_count; ?></font>
 </td>
 </tr>
 <?php }else{  ?>
@@ -242,6 +230,95 @@
 		
  });
  
-
+ 
+ var target_url="<?php if($group_id==""){echo site_url('cfg_oracle/add_dg');}else{echo site_url('cfg_oracle/edit_dg');} ?>";
+ var submit="<?php if($group_id==""){echo 'add_dg';}else{echo 'edit_dg';} ?>";
+ 
+ function checkLicense(e){
+ 		var dg_count = "<?php echo $dg_count ?>";
+ 		var dg_license_quota = "<?php echo $dg_quota ?>";
+ 		var shift_vip = 0;
+ 		if($("#shift_vip").is(':checked') == true){
+ 				shift_vip = 1;
+ 		}
+ 		
+ 		
+ 		if($("#group_name").val() == ""){
+				bootbox.alert({
+		        		message: "请输入组名!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#primary_db").val() == ""){
+				bootbox.alert({
+		        		message: "请选择主库!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#standby_db").val() == ""){
+				bootbox.alert({
+		        		message: "请选择备库!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if(group_id=="" && dg_count >= dg_license_quota){
+			bootbox.alert({
+	        		message: "您已经超出了容灾授权限制，请删除后再添加!",
+	        		buttons: {
+						        ok: {
+						            label: '确定',
+						            className: 'btn-success'
+						        }
+						    }
+	        	});
+ 			
+ 		}else{
+	    $.ajax({
+			        url: target_url,
+			        data: $("#form").serializeArray(),
+			        data: {"submit":submit,"group_id":group_id,"group_name":$("#group_name").val(),"primary_db":$("#primary_db").val(),"standby_db":$("#standby_db").val(),"fb_retention":$("#fb_retention").val(),"shift_vip":shift_vip,"node_vips":$("#node_vips").val(),"network_card":$("#network_card").val()},
+			        type: "POST",
+			        success: function (data) {
+			  			//回调函数，判断提交返回的数据执行相应逻辑
+			            if (data.Success) {
+			            }
+			            else {
+			            }
+			            
+			            if(data.error_code==-1){
+		  									bootbox.alert({
+								        		message: data.error_message,
+								        		buttons: {
+													        ok: {
+													            label: '确定',
+													            className: 'btn-success'
+													        }
+													    }
+								        	});
+		          		}else{
+											window.location.reload();
+		          		}
+		          			
+			        }
+						});
+ 		}
+ 		
+ }
+ 
 </script>
 

@@ -6,10 +6,14 @@
            <li class="active"><?php echo $this->lang->line('_SQLServer'); ?></li>
 </ul>
 
+<script src="lib/bootstrap/js/bootstrap-switch.js"></script>
+<script src="lib/bootstrap/js/bootbox.js"></script>
+<script src="lib/layer3/layer.js"></script>
+
 <div class="container-fluid">
 <div class="row-fluid">
 
-<form name="form" class="form-horizontal" method="post" action="<?php if($group_id != ""){echo site_url('cfg_sqlserver/edit_mirror/') . "/" . $group_id ;}else{echo site_url('cfg_sqlserver/add_mirror');} ?>" >
+<form id="form_mirror" class="form-horizontal" method="post" action="<?php if($group_id != ""){echo site_url('cfg_sqlserver/edit_mirror/') . "/" . $group_id ;}else{echo site_url('cfg_sqlserver/add_mirror');} ?>" >
 <input type="hidden" id="submit" name="submit" value="dg_manage"/> 
 <div class="btn-toolbar">
    <a class="btn btn " href="<?php echo site_url('cfg_sqlserver/index') ?>"><i class="icon-return"></i> <?php echo $this->lang->line('return'); ?></a>
@@ -68,7 +72,7 @@
 
 
   <div class="controls">
-   <button type="submit" id="btn_save" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
+   <button type="button" id="btn_save" onclick="checkLicense(this)" class="btn btn-primary"><i class="icon-save"></i> <?php echo $this->lang->line('save'); ?></button>
   <div class="btn-group"></div>
   </div>
   
@@ -159,8 +163,103 @@
    
 
  });
-
  
+ var target_url="<?php if($group_id==""){echo site_url('cfg_sqlserver/add_mirror');}else{echo site_url('cfg_sqlserver/edit_mirror');} ?>";
+ var submit="<?php if($group_id==""){echo 'add_mirror';}else{echo 'edit_mirror';} ?>";
+ 
+ function checkLicense(e){
+ 
+   	
+ 		var mirror_count = "<?php echo $mirror_count ?>";
+ 		var mirror_license_quota = "<?php echo $mirror_quota ?>";
+ 		
+ 		if($("#mirror_name").val() == ""){
+				bootbox.alert({
+		        		message: "请输入镜像组名!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#primary_db").val() == ""){
+				bootbox.alert({
+		        		message: "请选择主库!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#standby_db").val() == ""){
+				bootbox.alert({
+		        		message: "请选择备库!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if($("#db_name").val() == ""){
+				bootbox.alert({
+		        		message: "请输入数据库名!",
+		        		buttons: {
+							        ok: {
+							            label: '确定',
+							            className: 'btn-success'
+							        }
+							    }
+		        	});
+				        	
+		}else if(group_id=="" && mirror_count >= mirror_license_quota){
+			bootbox.alert({
+	        		message: "您已经超出了镜像组授权限制，请删除后再添加!",
+	        		buttons: {
+						        ok: {
+						            label: '确定',
+						            className: 'btn-success'
+						        }
+						    }
+	        	});
+ 			
+ 		}else{
+	    $.ajax({
+			        url: target_url,
+			        data: $("#form_mirror").serializeArray(),
+			        data: {"submit":submit,"group_id":group_id,"mirror_name":$("#mirror_name").val(),"primary_db":$("#primary_db").val(),"standby_db":$("#standby_db").val(),"db_name":$("#db_name").val()},
+			        type: "POST",
+			        success: function (data) {
+			  			//回调函数，判断提交返回的数据执行相应逻辑
+			            if (data.Success) {
+			            }
+			            else {
+			            }
+			            
+			            if(data.error_code==-1){
+		  									bootbox.alert({
+								        		message: data.error_message,
+								        		buttons: {
+													        ok: {
+													            label: '确定',
+													            className: 'btn-success'
+													        }
+													    }
+								        	});
+		          		}else{
+											window.location.reload();
+		          		}
+		          			
+			        }
+						});
+ 		}
+ 		
+ }
 
 </script>
 
