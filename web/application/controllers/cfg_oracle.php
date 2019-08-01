@@ -531,6 +531,7 @@ class cfg_oracle extends Front_Controller {
 					}
 					else
 					{
+						$id = $this->input->post('group_id');
 						$group_name = $this->input->post('group_name');
 		      	$primary_db = $this->input->post('primary_db');
 		      	$standby_db = $this->input->post('standby_db');

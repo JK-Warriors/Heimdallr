@@ -320,14 +320,14 @@ class cfg_sqlserver extends Front_Controller {
 								$data['error_message']= "镜像组已存在!";
 		        }else{
 								$data['error_code']=0;
-								$data = array(
+								$data_dr = array(
 								'mirror_name'=>$this->input->post('mirror_name'),
 								'primary_db_id'=>$this->input->post('primary_db'),
 								'standby_db_id'=>$this->input->post('standby_db'),
 								'db_name'=>$this->input->post('db_name'),
 								);
 								
-								$this->sqlserver->insert_mirror($data);
+								$this->sqlserver->insert_mirror($data_dr);
 						}
 					
 					
@@ -363,6 +363,7 @@ class cfg_sqlserver extends Front_Controller {
 					}
 					else
 					{
+		      	$id = $this->input->post('group_id');
 		      	$mirror_name = $this->input->post('mirror_name');
 		      	$primary_db = $this->input->post('primary_db');
 		      	$standby_db = $this->input->post('standby_db');
@@ -379,14 +380,14 @@ class cfg_sqlserver extends Front_Controller {
 								$data['error_message']= "镜像组已存在!";
 		        }else{
 								$data['error_code']=0;
-								$data = array(
+								$data_dr = array(
 								'mirror_name'=>$this->input->post('mirror_name'),
 								'primary_db_id'=>$this->input->post('primary_db'),
 								'standby_db_id'=>$this->input->post('standby_db'),
 								'db_name'=>$this->input->post('db_name'),
 								);
 								
-								$this->sqlserver->update_mirror($data,$id);
+								$this->sqlserver->update_mirror($data_dr,$id);
 						}
 					
 					

@@ -2,6 +2,7 @@
 class cfg_mysql_model extends CI_Model{
 
     protected $table='db_cfg_mysql';
+    protected $table_dr='db_cfg_mysql_dr';
     
 	function get_total_rows(){
 		$this->db->from($this->table);
@@ -137,7 +138,61 @@ class cfg_mysql_model extends CI_Model{
 		$this->db->delete('db_status');
 	}
 	
+
+    function dr_name_exists($group_name,$id=''){
+    	try{
+    		if($id==''){
+        	$sql="select * from db_cfg_mysql_dr where is_delete=0 and group_name='$group_name'; ";
+    		}else{
+        	$sql="select * from db_cfg_mysql_dr where is_delete=0 and group_name='$group_name' and id != $id; ";
+    		}
+    		
+				$query = $this->db->query($sql);
+				if($query->num_rows() > 0){
+						return 1;
+				}else{
+						return 0;
+				};
+			}catch(Exception $e){
+				errorLog($e->getMessage());
+				return -1;
+			}
+    }
     
+    
+    function dr_group_exists($primary_db, $standby_db, $id=''){
+    	try{
+    		if($id==''){
+        	$sql="select * from db_cfg_mysql_dr where is_delete=0 and primary_db_id='$primary_db' and standby_db_id='$standby_db'; ";
+    		}else{
+        	$sql="select * from db_cfg_mysql_dr where is_delete=0 and primary_db_id='$primary_db' and standby_db_id='$standby_db' and id != $id; ";
+    		}
+    		
+		    $query = $this->db->query($sql);
+				if($query->num_rows() > 0){
+						return 1;
+				}else{
+						return 0;
+				};
+			}catch(Exception $e){
+				errorLog($e->getMessage());
+				return -1;
+			}
+    }
+    
+   	public function insert_dr($data){		
+			$this->db->insert($this->table_dr, $data);
+		}
+
+		public function update_dr($data,$id){
+			$this->db->where('id', $id);
+			$this->db->update($this->table_dr, $data);
+		}
+    
+		public function delete_dr($id){
+			$this->db->where('id', $id);
+			$this->db->delete($this->table_dr);
+		}    
 }
 
 /* End of file cfg_mysql_model.php */

@@ -295,7 +295,207 @@ class cfg_mysql extends Front_Controller {
 				}
     }    
     
+     /**
+     * 添加 disaster recovery
+     */
+    public function add_dr(){
+        #parent::check_privilege();
+        $sql="select * from db_cfg_mysql where is_delete=0 order by id asc";
+        $result=$this->mysql->get_total_record_sql($sql);
+        $data["datalist"]=$result['datalist'];
+        $data["datacount"]=$result['datacount'];
+        
+        $sql="select t.id,
+                    t.group_name,
+                    p.id   as pri_id,
+                    p.host as pri_host,
+                    p.port as pri_port,
+                    p.tags as pri_tags,
+                    s.id   as sta_id,
+                    s.host as sta_host,
+                    s.port as sta_port,
+                    s.tags as sta_tags
+            from db_cfg_mysql_dr t, db_cfg_mysql p, db_cfg_mysql s
+            where t.primary_db_id = p.id
+                and t.standby_db_id = s.id
+                and p.is_delete = 0
+                and s.is_delete = 0
+            order by t.display_order asc";
+        $result=$this->mysql->get_total_record_sql($sql);
+        $data["dr_list"]=$result['datalist'];
+        $data["dr_count"]=$result['datacount'];
+        
+        $data["dr_quota"]= $this->license->get_license_quota('mysql_recover');
+
+		
+    	/*
+		 	* 提交添加后处理
+		 	*/
+			$data['error_code']=0;
+			if(isset($_POST['submit']) && $_POST['submit']=='add_dr')
+    	{
+					$this->form_validation->set_rules('group_name',  'lang:group_name', 'trim|required');
+					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
+					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
+           
+					if ($this->form_validation->run() == FALSE)
+					{
+							$data['error_code']='validation_error';
+					}
+					else
+					{
+		        //验证license
+		        $license_quota = $this->license->get_license_quota('mysql_recover');
+		        $sql="select * from db_cfg_mysql_dr where is_delete=0";
+		        $query = $this->db->query($sql);
+		        $dr_count = $query->num_rows();
+		      
+		      	$group_name = $this->input->post('group_name');
+		      	$primary_db = $this->input->post('primary_db');
+		      	$standby_db = $this->input->post('standby_db');
+		      	
+		      	$name_exists = $this->mysql->dr_name_exists($group_name);
+		      	$group_exists = $this->mysql->dr_group_exists($primary_db, $standby_db);
+		      	
+		        if(empty($license_quota)){
+								$data['error_code']=-1;
+								$data['error_message']="没有License，请检查授权文件!";
+		            #redirect(site_url('error/no_license'));
+		            #return ;
+		        }elseif($dr_count >= $license_quota){
+								$data['error_code']=-1;
+								$data['error_message']="您已经超出了容灾组授权限制，请删除后再添加!";
+		            #redirect(site_url('error/out_quota'));
+		            #return ;
+		        }elseif($name_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "容灾组名已存在!";
+		        }elseif($group_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "容灾组已存在!";
+		        }else{
+								$data['error_code']=0;
+								$data_dr = array(
+								'group_name'=>$this->input->post('group_name'),
+								'primary_db_id'=>$this->input->post('primary_db'),
+								'standby_db_id'=>$this->input->post('standby_db'),
+								);
+								
+								$this->mysql->insert_dr($data_dr);
+						}
+					
+					
+						$this->layout->setLayout("layout_blank");
+        		$this->layout->view("cfg_mysql/json_data",$data);
+          }
+    	}else{
+    			$this->layout->view("cfg_mysql/add_dr",$data);
+  		}
+    }
+
     
+    
+    public function edit_dr($id){
+        //parent::check_privilege();
+        $id  = !empty($id) ? $id : $_POST['id'];
+        
+        /*
+				 * 提交编辑后处理
+				*/
+        $data['error_code']=0;
+				if(isset($_POST['submit']) && $_POST['submit']=='edit_dr')
+        {
+					$this->form_validation->set_rules('group_name',  'lang:group_name', 'trim|required');
+					$this->form_validation->set_rules('primary_db',  'lang:primary_db', 'trim|required');
+					$this->form_validation->set_rules('standby_db',  'lang:standby_db', 'trim|required');
+					
+					if ($this->form_validation->run() == FALSE)
+					{
+						$data['error_code']='validation_error';
+					}
+					else
+					{
+		      	$group_id = $this->input->post('group_id');
+		      	$group_name = $this->input->post('group_name');
+		      	$primary_db = $this->input->post('primary_db');
+		      	$standby_db = $this->input->post('standby_db');
+		      	
+		      	$name_exists = $this->mysql->dr_name_exists($group_name, $group_id);
+		      	$group_exists = $this->mysql->dr_group_exists($primary_db, $standby_db, $group_id);
+		      	
+		      	if($name_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "容灾组名已存在!";
+		        }elseif($group_exists == 1){
+								$data['error_code']=-1;
+								$data['error_message']= "容灾组已存在!";
+		        }else{
+								$data['error_code']=0;
+								$data_dr = array(
+								'group_name'=>$this->input->post('group_name'),
+								'primary_db_id'=>$this->input->post('primary_db'),
+								'standby_db_id'=>$this->input->post('standby_db'),
+								);
+								
+								$this->mysql->update_dr($data_dr,$group_id);
+						}
+					
+					
+						$this->layout->setLayout("layout_blank");
+        		$this->layout->view("cfg_mysql/json_data",$data);
+        		
+		      
+	        }
+      	}else{
+	      	$sql="select * from db_cfg_mysql where is_delete=0 order by id asc";
+	        $result=$this->mysql->get_total_record_sql($sql);
+	        $data["datalist"]=$result['datalist'];
+	        $data["datacount"]=$result['datacount'];
+	        
+	        $sql="select t.id,
+	                    t.group_name,
+	                    p.id   as pri_id,
+	                    p.host as pri_host,
+	                    p.port as pri_port,
+	                    p.tags as pri_tags,
+	                    s.id   as sta_id,
+	                    s.host as sta_host,
+	                    s.port as sta_port,
+	                    s.tags as sta_tags
+	            from db_cfg_mysql_dr t, db_cfg_mysql p, db_cfg_mysql s
+	            where t.primary_db_id = p.id
+	                and t.standby_db_id = s.id
+	                and p.is_delete = 0
+	                and s.is_delete = 0
+	            order by t.display_order asc";
+	        $result=$this->mysql->get_total_record_sql($sql);
+	        $data["dr_list"]=$result['datalist'];
+	        $data["dr_count"]=$result['datacount'];
+	        
+	        
+	        $data["group_id"]=$id;
+	        $sql="select * from db_cfg_mysql_dr  where is_delete=0 and id = $id ";
+	        $result=$this->mysql->get_total_record_sql($sql);
+	        $data["dr"]=$result['datalist'];
+	        
+	        
+	       
+	        $this->layout->view("cfg_mysql/add_dr",$data);
+	      }
+    }
+    
+    
+    /**
+    * 删除 镜像 链路
+    */
+    function delete_dr($id){
+        #parent::check_privilege();
+        if($id){
+		    		$this->mysql->delete_dr($id);
+            redirect(site_url('cfg_mysql/add_dr'));
+        }
+    }
+            
 }
 
 /* End of file cfg_mysql.php */

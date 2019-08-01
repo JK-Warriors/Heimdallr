@@ -262,6 +262,35 @@ CREATE TABLE `db_cfg_mysql` (
   KEY `idx_host` (`host`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for db_cfg_mysql_dr
+-- ----------------------------
+DROP TABLE IF EXISTS `db_cfg_mysql_dr`;
+CREATE TABLE `db_cfg_mysql_dr` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(200),
+  `primary_db_id` int(10),
+  `standby_db_id` int(10),
+  `shift_vip` tinyint(1),
+  `node_vips` varchar(400),
+  `network_card` varchar(100),
+  `is_switch` tinyint(1) DEFAULT 0,
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+  `on_process` tinyint(1) DEFAULT 0,
+  `on_switchover` tinyint(1) DEFAULT 0,
+  `on_failover` tinyint(1) DEFAULT 0,
+  `display_order` smallint(4) NOT NULL DEFAULT '1',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `primary_db_id` (`primary_db_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
+alter table db_cfg_mysql_dr modify column on_process tinyint(1) DEFAULT 0 comment '值为1时，表明正在进行Switchover，或者Failover'; 
+alter table db_cfg_mysql_dr modify column on_switchover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Switchover切换'; 
+alter table db_cfg_mysql_dr modify column on_failover tinyint(1) DEFAULT 0 comment '值为1时，表明当前正在进行Failover切换'; 
+
+
 -- ----------------------------
 -- Table structure for db_cfg_oracle
 -- ----------------------------

@@ -154,6 +154,7 @@ INSERT INTO `admin_privilege` VALUES ('1103', 'MySQL Config Edit', '1002', 'cfg_
 INSERT INTO `admin_privilege` VALUES ('1104', 'MySQL Config Trash', '1002', 'cfg_mysql/trash', '104');
 INSERT INTO `admin_privilege` VALUES ('1105', 'MySQL Config Delete', '1002', 'cfg_mysql/delete', '105');
 INSERT INTO `admin_privilege` VALUES ('1106', 'MySQL Config Batch Add', '1002', 'cfg_mysql/batch_add', '106');
+INSERT INTO `admin_privilege` VALUES ('1107', 'MySQL Config Add Dr', '1002', 'cfg_mysql/add_dr', '107');
 
 INSERT INTO `admin_privilege` VALUES ('1151', 'MySQL Health Monitor', '1101', 'wl_mysql/index', '151');
 INSERT INTO `admin_privilege` VALUES ('1152', 'MySQL Health Chart', '1101', 'wl_mysql/chart', '152');
@@ -308,6 +309,7 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1103');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1104');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1105');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1106');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1107');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1151');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1152');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1153');
