@@ -296,7 +296,7 @@ def gen_alert_oracle_dg(server_id):
                         send_mail = func.update_send_mail_status(server_id,db_type,'mrp_status',send_mail,send_mail_max_count)
                         send_sms  = func.update_send_sms_status(server_id,db_type,'mrp_status',send_sms,send_sms_max_count)
                         func.add_alert(server_id,tags,host,port,create_time,db_type,'mrp_status',mrp_status,'warning','MRP process is down',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                        func.update_db_status('repl',2,server_id, host, db_type,create_time,'mrp_status',mrp_status,'warning')
+                        func.update_db_status('repl',2,server_id, host, db_type,create_time,'repl',mrp_status,'warning')
                     else:
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'mrp_status',mrp_status,'MRP process is up',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('repl',1,server_id, host, db_type,create_time,'repl',mrp_status,'ok')

@@ -594,6 +594,7 @@ def clean_invalid_db_status():
         func.mysql_exec('delete from oracle_diskgroup where server_id not in(select id from  db_cfg_oracle where is_delete = 0);','')
         
         func.mysql_exec("delete from db_status where db_type = 'oracle' and server_id not in(select id from  db_cfg_oracle where is_delete = 0);",'')
+        func.mysql_exec("delete from db_status where db_type = 'oracle' and host not in(select host from  db_cfg_oracle where is_delete = 0);",'')
         
     except Exception, e:
         logger.error(e)

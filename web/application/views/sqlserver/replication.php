@@ -71,14 +71,14 @@
         <td><center><?php echo $item['s_tags'] ?></td>
         <td><center><?php if(!empty($sta_list)) { ?>
  										<?php foreach ($sta_list as $s_item):?>
- 										<?php    if($s_item['server_id']==$item['s_id'] and $s_item['db_name']==$item['db_name']){  ?>
+ 										<?php    if($s_item['server_id']==$item['s_id'] and strtolower($s_item['db_name'])==strtolower($item['db_name'])){  ?>
  									  <?php    		echo check_mirror_state($s_item['mirroring_state']);   ?>
  									  <?php    	} ?>
  										<?php endforeach; ?>
  										<?php } ?></td>
         <td><center><?php if(!empty($sta_list)) { ?>
  										<?php foreach ($sta_list as $s_item):?>
- 										<?php    if($s_item['server_id']==$item['s_id'] and $s_item['db_name']==$item['db_name']){  ?>
+ 										<?php    if($s_item['server_id']==$item['s_id'] and strtolower($s_item['db_name'])==strtolower($item['db_name'])){  ?>
  									  <?php    		echo check_mirror_safety_level($s_item['mirroring_safety_level']);   ?>
  									  <?php    	} ?>
  										<?php endforeach; ?>

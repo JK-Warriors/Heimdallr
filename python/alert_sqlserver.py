@@ -151,7 +151,57 @@ def gen_alert_sqlserver_status(server_id):
     else:
        pass
 
+       
+       
+def gen_alert_sqlserver_mirror(server_id, mirror_role):
+    if g_alert != "1":
+        return -1
+        
+    sql = """SELECT a.server_id,
+									a.connect,
+									a.create_time,
+									a.host,
+									a.port,
+									b.send_mail,
+									b.send_mail_to_list,
+									b.send_sms,
+									b.send_sms_to_list,
+									b.tags,
+									'sqlserver' AS db_type
+								FROM sqlserver_status a, db_cfg_sqlserver b
+								WHERE a.server_id = b.id 
+									and a.server_id = %s """ %(server_id)
+    result=func.mysql_query(sql)
+    if result <> 0:
+        for line in result:
+            server_id=line[0]
+            connect=line[1]
+            create_time=line[2]
+            host=line[3]
+            port=line[4]
+            send_mail=line[5]
+            send_mail_to_list=line[6]
+            send_sms=line[7]
+            send_sms_to_list=line[8]
+            tags=line[9]
+            db_type=line[10]
+        
+            if send_mail_to_list is None or  send_mail_to_list.strip()=='':
+                send_mail_to_list = mail_to_list_common
+            if send_sms_to_list is None or  send_sms_to_list.strip()=='':
+                send_sms_to_list = sms_to_list_common
+                
 
+            if mirror_role==1:
+                send_mail = func.update_send_mail_status(server_id,db_type,'mirroring_role',send_mail,send_mail_max_count)
+                send_sms  = func.update_send_sms_status(server_id,db_type,'mirroring_role',send_sms,send_sms_max_count)
+                func.add_alert(server_id,tags,host,port,create_time,db_type,'mirroring_role',mirror_role,'critical','Database role is NOT match!',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                func.update_db_status('repl',3,server_id, host, db_type,create_time,'mirroring_role',mirror_role,'critical')
+            else:
+                func.check_if_ok(server_id,tags,host,port,create_time,db_type,'mirroring_role',mirror_role,'Database role is OK!',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                func.update_db_status('repl',1,server_id, host, db_type,create_time,'mirroring_role',mirror_role,'ok')
+    else:
+       pass
 
 
 

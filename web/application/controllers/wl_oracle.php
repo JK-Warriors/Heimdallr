@@ -191,31 +191,74 @@ class Wl_oracle extends Front_Controller {
 		            $dg_action = $_POST["dg_action"];
 		
 		            if($dg_action == "Switchover"){
-		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
+		            		$file_full_name = $base_path . '/application/scripts/switchover.py';
+		            		$file_exists = file_exists($file_full_name);
+		            		if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
+		            		}else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python switchover.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >switchover.log 2>&1';    
+		            		}
 		                $result = shell_exec($order);
 		                #$result = "Succes";
 		            }
 		            elseif($dg_action == "Failover"){
-		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
+		            		$file_full_name = $base_path . '/application/scripts/failover.py';
+		            		$file_exists = file_exists($file_full_name);
+		            		if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';  
+		            		}else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python failover.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >failover.log 2>&1';   
+		            		}
+		                 
 		                $result = shell_exec($order);  
 		                #$result = "Succes";
 		            }
 		            elseif($dg_action == "MRPStart"){
-		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1';    
+		            		$file_full_name = $base_path . '/application/scripts/mrp_start.py';
+		            		$file_exists = file_exists($file_full_name);
+		            		if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1'; 
+		            		}else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_start.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_start.log 2>&1'; 
+		            		}
+		            		
+		                #errorLog($order);
 		                $result = shell_exec($order);
 		                #$result = "Succes";
 		            }
 		            elseif($dg_action == "MRPStop"){
-		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1';   
+		            		$file_full_name = $base_path . '/application/scripts/mrp_stop.py';
+		            		$file_exists = file_exists($file_full_name);
+		            		if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1'; 
+		            		}else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mrp_stop.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mrp_stop.log 2>&1'; 
+		            		}
+		                  
+		                #errorLog($order);
 		                $result = shell_exec($order);  
 		            }
 		            elseif($dg_action == "SnapshotStart"){
-		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_start.log 2>&1';    
+		            		$file_full_name = $base_path . '/application/scripts/snapshot_start.py';
+		            		$file_exists = file_exists($file_full_name);
+		            		if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_start.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_start.log 2>&1';  
+		            		}else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_start.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_start.log 2>&1';  
+		            		}
+		                  
 		                $result = shell_exec($order);
 		                #$result = "Succes";
 		            }
 		            elseif($dg_action == "SnapshotStop"){
-		                $order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_stop.log 2>&1';   
+		            		$file_full_name = $base_path . '/application/scripts/snapshot_stop.py';
+		            		$file_exists = file_exists($file_full_name);
+		            		if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_stop.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_stop.log 2>&1';  
+		            		}else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python snapshot_stop.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >snapshot_stop.log 2>&1';  
+		            		}
+		                 
 		                $result = shell_exec($order);  
 		            }
 		        }

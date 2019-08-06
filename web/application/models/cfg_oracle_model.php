@@ -116,6 +116,10 @@ class cfg_oracle_model extends CI_Model{
 		#修改dataguard配置表相关条目的is_delete
 		$sql = "update db_cfg_oracle_dg t set t.is_delete = 1 where primary_db_id = $id or standby_db_id = $id";
 		$this->db->query($sql);
+		
+		#删除大屏配置表里面想要的server
+		$sql = "delete from db_cfg_bigview where type = 'oracle' and server_id = $id";
+		$this->db->query($sql);
 	}
 	
     /*
