@@ -497,7 +497,9 @@ class Wlblazers_model extends CI_Model{
 	}
 	
 	function get_sqlserver_count_critical(){
-    $sql = "select * from sqlserver_mirror_s t where mirroring_role = 2 and mirroring_state not in(2,4) ";
+    $sql = "select a.num - b.num from 
+						(select count(*) num from db_cfg_sqlserver_mirror t where is_delete = 0) a, 
+						(select count(*) num from sqlserver_mirror_s t where mirroring_role = 2 and mirroring_state in(2,4)) b ";
 		
 		$query = $this->db->query($sql);
 		

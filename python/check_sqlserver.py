@@ -156,6 +156,13 @@ def get_connect(server_id):
             sql="delete from sqlserver_status where server_id = %s; " %(server_id)
             func.mysql_exec(sql,'')
             
+            # delete for the mirror record
+            sql="delete from sqlserver_mirror_p where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
+            sql="delete from sqlserver_mirror_s where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
             sql="insert into sqlserver_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
             param=(server_id,host,port,tags,connect)
             func.mysql_exec(sql,param)
@@ -254,8 +261,11 @@ def clean_invalid_db_status():
         func.mysql_exec("insert into sqlserver_status_his SELECT *,sysdate() from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         func.mysql_exec('delete from sqlserver_status where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
         
-        #func.mysql_exec("insert into sqlserver_mirror_his SELECT *,sysdate() from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
-        #func.mysql_exec('delete from sqlserver_mirror where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
+        func.mysql_exec("insert into sqlserver_mirror_p_his SELECT *,sysdate() from sqlserver_mirror_p where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        func.mysql_exec('delete from sqlserver_mirror_p where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
+
+        func.mysql_exec("insert into sqlserver_mirror_s_his SELECT *,sysdate() from sqlserver_mirror_s where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
+        func.mysql_exec('delete from sqlserver_mirror_s where server_id not in(select id from db_cfg_sqlserver where is_delete = 0);','')
                                 
         func.mysql_exec("delete from db_status where db_type = 'sqlserver' and server_id not in(select id from db_cfg_sqlserver where is_delete = 0);",'')
         
