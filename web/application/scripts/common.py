@@ -41,11 +41,12 @@ def log_dg_op_process(mysql_conn, dg_id, process_type, process_desc, rate, block
     str="insert into oracle_dg_process(group_id, process_type, process_desc, rate) values (%s, '%s', '%s', %s) " %(dg_id, process_type, process_desc, rate)
     log_status=mysql.ExecuteSQL(mysql_conn, str)
     
-    if log_status == 1:
-        logger.info("Log the operate process for dataguard group: %s; completed %s." %(dg_id, rate))
-    else:
-        logger.error("Log the operate process for dataguard group: %s failed." %(dg_id))
-
+    #if log_status == 1:
+    #    logger.info("Log the operate process for dataguard group: %s; completed %s." %(dg_id, rate))
+    #else:
+    #    logger.error("Log the operate process for dataguard group: %s failed." %(dg_id))
+    
+    # 
     time.sleep(block_time)
     
 ###############################################################################

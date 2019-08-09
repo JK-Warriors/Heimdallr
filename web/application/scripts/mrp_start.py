@@ -56,7 +56,18 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     str="""select count(1) from gv$session where program like '%(MRP0)' """
     mrp_process=oracle.GetSingleValue(s_conn, str)
     common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取MRP进程状态成功', 30, 2)
-	
+    
+    # get standby redo log
+    str='select count(1) from v$standby_log'
+    log_count=oracle.GetSingleValue(s_conn, str)
+    logger.info("The current database has %s standby log" %(log_count)) 
+    
+    recover_str = ""
+    if log_count > 0:
+        recover_str = "alter database recover managed standby database using current logfile disconnect from session;"
+    else:
+        recover_str = "alter database recover managed standby database disconnect from session;"
+        
     if role=="PHYSICAL STANDBY":
         common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色成功', 50, 2)
         if(mrp_process > 0):
@@ -79,11 +90,15 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             logger.info("Now we are going to start the mrp process... ")
             common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '正在开启MRP进程...', 70, 2)
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
-            sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
+            sqlplus.stdin.write(bytes(recover_str + os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            #logger.error(err)
-            if err is None:
+            logger.error(err)
+            
+            # get mrp process status
+            str="""select count(1) from gv$session where program like '%(MRP0)' """
+            mrp_process_a=oracle.GetSingleValue(s_conn, str)
+            if mrp_process_a > 0:
                 common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', 'MRP进程开启成功', 90, 2)
                 logger.info("Start the MRP process successfully.")
                 result=0
@@ -104,7 +119,7 @@ def update_mrp_status(mysql_conn, sta_id):
     # get current switch flag
     str='select mrp_status from oracle_dg_s_status where server_id= %s' %(sta_id)
     mrp_status=mysql.GetSingleValue(mysql_conn, str)
-    logger.info("debug the mrp_status: %s" %(mrp_status))
+    #logger.info("debug the mrp_status: %s" %(mrp_status))
     
     if mrp_status == '0':
         logger.info("The current MRP status is inactive.")

@@ -81,7 +81,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
             sqlplus.stdin.write(bytes(recover_str + os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            #logger.error(err)
+            logger.error(err)
             
             # 获取oracle连接
             p_conn = oracle.ConnectOracleAsSysdba(p_conn_str)
@@ -95,7 +95,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
                 sqlplus.stdin.write(bytes(recover_str + os.linesep))
                 out, err = sqlplus.communicate()
                 logger.info(out)
-                #logger.error(err)
+                logger.error(err)
 
                 str='select open_mode from v$database'
                 open_mode=oracle.GetSingleValue(p_conn, str)
@@ -157,7 +157,7 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            #logger.error(err)
+            logger.error(err)
             
             # check MRP status
             str="select count(1) from gv$session where program like '%(MRP0)' "

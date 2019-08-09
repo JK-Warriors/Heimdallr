@@ -64,6 +64,7 @@ def failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             sqlplus.stdin.write(bytes("alter database recover managed standby database disconnect from session;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
+            logger.info(err)
 		
 		
             # check MRP status

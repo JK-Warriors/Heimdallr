@@ -61,8 +61,17 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             sqlplus.stdin.write(bytes("alter database recover managed standby database cancel;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
-            #logger.error(err)
-            if err is None:
+            logger.error(err)
+            
+            # get mrp process status
+            str="""select count(1) from gv$session where program like '%(MRP0)' """
+            mrp_process_a=oracle.GetSingleValue(s_conn, str)
+            logger.info("Current MRP process: %s" %(mrp_process_a))
+            if(mrp_process_a > 0):
+                common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', 'MRP进程停止失败', 90, 2)
+                logger.info("Stop the MRP process failed.")
+                result=-1
+            else:
                 common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', 'MRP进程停止成功', 90, 2)
                 logger.info("Stop the MRP process successfully.")
                 result=0
@@ -159,6 +168,8 @@ if __name__=="__main__":
         if res ==0:
             update_mrp_status(mysql_conn, sta_id)
             common.update_op_result(mysql_conn, group_id, 'MRP_STOP', '0')
+        else:
+            common.update_op_result(mysql_conn, group_id, 'MRP_STOP', '-1')
             
     finally:
         common.operation_unlock(mysql_conn, group_id, 'MRP_STOP')
