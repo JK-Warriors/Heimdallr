@@ -321,6 +321,16 @@ def check_os_snmp(ip,filter_os_disk,tags):
         else:
             func.mysql_exec("insert into os_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
             func.mysql_exec("delete from os_status where ip = '%s';" %(ip),'')
+        
+            func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
+            func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
+        
+            func.mysql_exec("insert into os_disk_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_disk where ip = '%s';" %(ip),'')
+            func.mysql_exec("delete from os_disk where ip = '%s';" %(ip),'')
+        
+            func.mysql_exec("insert into os_diskio_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_diskio where ip = '%s';" %(ip),'')
+            func.mysql_exec("delete from os_diskio where ip = '%s';" %(ip),'')
+        
             sql = "insert into os_status(ip,connect,tags) values(%s,%s,%s)"
             param = (ip,0,tags)
             func.mysql_exec(sql,param) 
@@ -333,7 +343,7 @@ def check_os_snmp(ip,filter_os_disk,tags):
         mail.send_alert_mail(0, ip)      
     except Exception, e:
         print e.message
-        logger.error("%s:%s statspack error: %s"%(dbhost,dbport,e))
+        logger.error("%s:%s statspack error: %s"%(ip,port,e))
     finally:
         pass
 
@@ -344,13 +354,12 @@ def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
         # get winrm session
         url = 'http://%s:%s/wsman' %(ip,port)
         win = winrm.Session(url,auth=(username,password))
-
-
+        
         r = win.run_cmd('wmic os get CSName /format:list')
         outstr = str(r.std_out.decode()).replace("\r","").replace("\n","")
         hostname = outstr.replace("CSName=","")
         print(hostname)
-
+        
         # get kernel version
         r = win.run_cmd('wmic os get caption /format:list')
         outstr = str(r.std_out.decode()).replace("\r","").replace("\n","")
@@ -546,7 +555,24 @@ def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
         mail.send_alert_mail(0, ip)      
     except Exception, e:
         print e.message
-        logger.error("%s:%s statspack error: %s"%(dbhost,dbport,e))
+        logger.error("%s:%s statspack error: %s"%(ip,port,e))
+        func.mysql_exec("insert into os_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
+        func.mysql_exec("delete from os_status where ip = '%s';" %(ip),'')
+        
+        func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
+        func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
+        
+        func.mysql_exec("insert into os_disk_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_disk where ip = '%s';" %(ip),'')
+        func.mysql_exec("delete from os_disk where ip = '%s';" %(ip),'')
+        
+        func.mysql_exec("insert into os_diskio_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_diskio where ip = '%s';" %(ip),'')
+        func.mysql_exec("delete from os_diskio where ip = '%s';" %(ip),'')
+                
+        sql = "insert into os_status(ip,connect,tags) values(%s,%s,%s)"
+        param = (ip,0,tags)
+        func.mysql_exec(sql,param) 
+        
+        alert.gen_alert_os_status(ip)    
     finally:
         pass     
 
