@@ -22,7 +22,7 @@ class Chart_model extends CI_Model{
     }
     
     function get_replication($server_id,$time){
-        $query=$this->db->query("select slave_io_run,slave_sql_run,delay from mysql_replication_his where server_id=$server_id and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select slave_io_run,slave_sql_run,delay from mysql_dr_s_his where server_id=$server_id and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 

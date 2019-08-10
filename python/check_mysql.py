@@ -41,13 +41,8 @@ def check_mysql(host,port,username,password,server_id,tags,bigtable_monitor,bigt
             param=(server_id,host,port,tags,connect)
             func.mysql_exec(sql,param)
             
-            # 更新容灾库 mysql_replication 表的信息
-            sql="""update mysql_replication t 
-                   set read_only = 'N/A', gtid_mode = 'N/A', slave_io_run='N/A', slave_sql_run = 'N/A',
-                       delay = '', current_binlog_file = 'N/A', current_binlog_pos = 'N/A', master_binlog_file = 'N/A',
-                       master_binlog_pos = 'N/A', master_binlog_space = -1, create_time = sysdate()
-                   where server_id = %s; """ %(server_id)
-            func.mysql_exec(sql,'')
+            # 更新容灾库 mysql_dr_s 表的信息
+            func.mysql_exec("delete from mysql_dr_s where server_id in (%s);" %(server_id),'')
             
             logger.info("Generate mysql instance alert for server: %s begin:" %(server_id))
             alert.gen_alert_mysql_status(server_id)     # generate mysql instance alert
@@ -68,9 +63,6 @@ def check_mysql(host,port,username,password,server_id,tags,bigtable_monitor,bigt
         func.mysql_exec("begin;",'')
         func.mysql_exec("insert into mysql_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from mysql_status where server_id = %s;' %(server_id),'')
-
-        func.mysql_exec("insert into mysql_replication_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_replication where server_id = %s;" %(server_id),'')
-        func.mysql_exec('delete from mysql_replication where server_id = %s;' %(server_id),'')
 
         func.mysql_exec("insert into mysql_bigtable_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_bigtable where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from mysql_bigtable where server_id = %s;' %(server_id),'')
@@ -279,93 +271,6 @@ def check_mysql(host,port,username,password,server_id,tags,bigtable_monitor,bigt
                     func.mysql_exec(sql,param)
         
 
-        #check mysql replication
-        master_thread=cur.execute("select * from information_schema.processlist where COMMAND = 'Binlog Dump' or COMMAND = 'Binlog Dump GTID';")
-        slave_status=cur.execute('show slave status;')
-        datalist=[]
-        if slave_status <> 0:
-            datalist.append(int(0))
-            datalist.append(int(1))
-        else:
-            datalist.append(int(1))
-            datalist.append(int(0))
-            
-            
-        if slave_status <> 0:
-            gtid_mode = func.get_item(mysql_variables,'gtid_mode')
-            datalist.append(gtid_mode)
-            
-            read_only=func.get_item(mysql_variables,'read_only')
-            datalist.append(read_only)
-            
-            slave_info=cur.execute('show slave status;')
-            result=cur.fetchone()
-            master_server=result[1]
-            master_port=result[3]
-            slave_io_run=result[10]
-            slave_sql_run=result[11]
-            delay=result[32]
-            current_binlog_file=result[9]
-            current_binlog_pos=result[21]
-            master_binlog_file=result[5]
-            master_binlog_pos=result[6]
-
-            datalist.append(master_server)
-            datalist.append(master_port)
-            datalist.append(slave_io_run)
-            datalist.append(slave_sql_run)
-            datalist.append(delay)
-            datalist.append(current_binlog_file)
-            datalist.append(current_binlog_pos)
-            datalist.append(master_binlog_file)
-            datalist.append(master_binlog_pos)
-            datalist.append(0)
-
-        else:
-            gtid_mode = func.get_item(mysql_variables,'gtid_mode')
-            datalist.append(gtid_mode)
-            
-            read_only=func.get_item(mysql_variables,'read_only')
-            datalist.append(read_only)
-            
-            datalist.append('---')
-            datalist.append('---')
-            datalist.append('---')
-            datalist.append('---')
-            datalist.append('---')
-            datalist.append('---')
-            datalist.append('---')
-            
-            master=cur.execute('show master status;')
-            master_result=cur.fetchone()
-            if master_result:
-                datalist.append(master_result[0])
-                datalist.append(master_result[1])
-            else:
-                datalist.append('---')
-                datalist.append('---')
-                
-            if log_bin == 'ON':
-                binlog_file=cur.execute('show master logs;')
-                binlogs=0
-                if binlog_file:
-                    for row in cur.fetchall():
-                        binlogs = binlogs + row[1]
-                datalist.append(binlogs)
-            else:
-                datalist.append(0)
-
-
-        result=datalist
-        if result:
-            sql="insert into mysql_replication(server_id,tags,host,port,is_master,is_slave,gtid_mode,read_only,master_server,master_port,slave_io_run,slave_sql_run,delay,current_binlog_file,current_binlog_pos,master_binlog_file,master_binlog_pos,master_binlog_space) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            param=(server_id,tags,host,port,result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8],result[9],result[10],result[11],result[12],result[13])
-            func.mysql_exec(sql,param)
-
-            # generate mysql replication alert
-            alert.gen_alert_mysql_replcation(server_id)   
-             
-         
         func.mysql_exec("commit;",'')
         
         logger.info("Generate mysql instance information for server: %s port: %s end:" %(host, port))
@@ -383,31 +288,216 @@ def check_mysql(host,port,username,password,server_id,tags,bigtable_monitor,bigt
         cur.close()
 
    
-         
 
+######################################################################################################
+# function get_connect
+######################################################################################################    
+def get_connect(server_id):
+    host = ""
+    port = ""
+    username = ""
+    password = ""
+    tags = ""
+    
+    server=func.mysql_query("select host,port,username,password,tags from db_cfg_mysql where id=%s;" %(server_id))
+    if server:
+        for row in server:
+            host=row[0]
+            port=row[1]
+            username=row[2]
+            passwd=row[3]
+            tags=row[4]
+
+    if host=="":
+        logger.warning("get host failed, exit!")
+        sys.exit(1)
+        
+    url=host+':'+port
+    
+    try:  
+        conn=MySQLdb.connect(host=host,user=username,passwd=passwd,port=int(port),connect_timeout=3,charset='utf8')
+        return conn  
+    except Exception, e:
+        logger_msg="check mysql %s : %s" %(url,str(e).strip('\n'))
+        logger.warning(logger_msg)
+        
+        try:
+            connect=0
+            
+            func.mysql_exec("begin;",'')
+            
+            sql="delete from mysql_status where server_id = %s; " %(server_id)
+            func.mysql_exec(sql,'')
+            
+            sql="insert into mysql_status(server_id,host,port,tags,connect) values(%s,%s,%s,%s,%s)"
+            param=(server_id,host,port,tags,connect)
+            func.mysql_exec(sql,param)
+            
+            # 更新容灾库 mysql_dr_s 表的信息
+            func.mysql_exec("delete from mysql_dr_s where server_id in (%s);" %(server_id),'')
+            
+            logger.info("Generate mysql instance alert for server: %s begin:" %(server_id))
+            alert.gen_alert_mysql_status(server_id)     # generate mysql instance alert
+            logger.info("Generate mysql instance alert for server: %s end." %(server_id))
+            
+            func.mysql_exec("commit;",'')
+        except Exception, e:
+            func.mysql_exec("rollback;",'')
+            logger.error(str(e).strip('\n'))
+        finally:
+            pass
+    finally:
+        func.check_db_status(server_id,host,port,tags,'mysql') 
+        
+                 
+######################################################################################################
+# function check_replication
+######################################################################################################       
+def check_replication(group_id, pri_id, sta_id, is_switch):
+    p_id = ""
+    s_id = ""
+    p_conn = ""
+    s_conn = ""
+    if is_switch == 0:
+        p_id = pri_id
+        s_id = sta_id
+    else:
+        p_id = sta_id
+        s_id = pri_id
+
+    try:
+        p_conn = get_connect(p_id)
+        s_conn = get_connect(s_id)
+
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into mysql_dr_p_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_dr_p where server_id in (%s, %s);" %(pri_id, sta_id),'')
+        func.mysql_exec("delete from mysql_dr_p where server_id in (%s, %s);" %(pri_id, sta_id),'')
+        
+        func.mysql_exec("insert into mysql_dr_s_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from mysql_dr_s where server_id in (%s, %s);" %(pri_id, sta_id),'')
+        func.mysql_exec("delete from mysql_dr_s where server_id in (%s, %s);" %(pri_id, sta_id),'')
+
+
+        logger.info("Generate replication primary info for server: %s begin:" %(p_id))
+        if p_conn:
+            p_cur=p_conn.cursor()
+            
+            # check role
+            slave_status=p_cur.execute('show slave status;')
+            if slave_status <> 0:
+                role='slave'
+                logger.warn("The primary server: %s configured in replication group is NOT match the role!" %(p_id))
+            else:
+                role='master'
+            
+                mysql_variables = func.get_mysql_variables(p_cur)
+            
+                gtid_mode = func.get_item(mysql_variables,'gtid_mode')
+                read_only=func.get_item(mysql_variables,'read_only')
+                log_bin = func.get_item(mysql_variables,'log_bin')
+            
+                master=p_cur.execute('show master status;')
+                master_result=p_cur.fetchone()
+            
+                binlog_file = '---'
+                binlog_pos = '---'
+                if master_result:
+                    binlog_file = master_result[0]
+                    binlog_pos = master_result[1]
+                
+                binlogs=0
+                if log_bin == 'ON':
+                    binlog_file=p_cur.execute('show master logs;')
+                    if binlog_file:
+                        for row in p_cur.fetchall():
+                            binlogs = binlogs + row[1]
+                else:
+                    binlogs=0
+                
+                sql="insert into mysql_dr_p(server_id,gtid_mode,read_only,master_binlog_file,master_binlog_pos,master_binlog_space) values(%s,%s,%s,%s,%s,%s)"
+                param=(p_id,gtid_mode,read_only,binlog_file,binlog_pos,binlogs)
+                func.mysql_exec(sql,param)
+            
+        logger.info("Generate replication primary info for server: %s end:" %(p_id))
+            
+        logger.info("Generate replication standby info for server: %s begin:" %(s_id))
+        if s_conn:
+            s_cur=s_conn.cursor()
+            
+            # check role
+            slave_status=s_cur.execute('show slave status;')
+            if slave_status <> 0:
+                role='slave'
+                
+                mysql_variables = func.get_mysql_variables(s_cur)
+            
+                gtid_mode = func.get_item(mysql_variables,'gtid_mode')
+                read_only = func.get_item(mysql_variables,'read_only')
+            
+                slave_info=s_cur.execute('show slave status;')
+                result=s_cur.fetchone()
+                if result:
+                    master_server=result[1]
+                    master_port=result[3]
+                    slave_io_run=result[10]
+                    slave_sql_run=result[11]
+                    delay=result[32]
+                    current_binlog_file=result[9]
+                    current_binlog_pos=result[21]
+                    master_binlog_file=result[5]
+                    master_binlog_pos=result[6]
+            
+                    sql="insert into mysql_dr_s(server_id,gtid_mode,read_only,master_server,master_port,slave_io_run,slave_sql_run,delay,current_binlog_file,current_binlog_pos,master_binlog_file,master_binlog_pos,master_binlog_space) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                    param=(s_id,gtid_mode,read_only,master_server,master_port,slave_io_run,slave_sql_run,delay,current_binlog_file,current_binlog_pos,master_binlog_file,master_binlog_pos,0)
+                    func.mysql_exec(sql,param)
+            
+                    logger.info("Generate replication standby info for server: %s end:" %(s_id))
+            else:
+                role='master'
+                logger.warn("The standby server: %s configured in replication group is NOT match the role!" %(s_id))
+                
+            # generate mysql replication alert
+            alert.gen_alert_mysql_replcation(s_id)   
+                
+        logger.info("Generate replication standby info for server: %s end:" %(s_id))
+             
+
+             
+        func.mysql_exec("commit;",'')       	
+    except Exception, e:
+        logger.error(e)
+        func.mysql_exec("rollback;",'')
+
+    finally:
+        None
+        
 
 ######################################################################################################
 # function clean_invalid_db_status
 ######################################################################################################   
 def clean_invalid_db_status():
     try:
-        func.mysql_exec("insert into mysql_status_his SELECT *,sysdate() from mysql_status where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
-        func.mysql_exec('delete from mysql_status where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        func.mysql_exec("insert into mysql_status_his SELECT *,sysdate() from mysql_status where server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);",'')
+        func.mysql_exec('delete from mysql_status where server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);','')
         
-        func.mysql_exec("insert into mysql_bigtable_his SELECT *,sysdate() from mysql_bigtable where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
-        func.mysql_exec('delete from mysql_bigtable where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
-        
-        func.mysql_exec("insert into mysql_replication_his SELECT *,sysdate() from mysql_replication where server_id not in(select id from db_cfg_mysql);",'')
-        func.mysql_exec('delete from mysql_replication where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        func.mysql_exec("insert into mysql_bigtable_his SELECT *,sysdate() from mysql_bigtable where server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);",'')
+        func.mysql_exec('delete from mysql_bigtable where server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);','')
+
+        func.mysql_exec("insert into mysql_dr_p_his SELECT *,sysdate() from mysql_dr_p where server_id in(select id from db_cfg_mysql where is_delete = 1 or monitor = 0);",'')
+        func.mysql_exec('delete from mysql_dr_p where server_id in(select id from db_cfg_mysql where is_delete = 1 or monitor = 0);','')
+                
+        func.mysql_exec("insert into mysql_dr_s_his SELECT *,sysdate() from mysql_dr_s where server_id in(select id from db_cfg_mysql where is_delete = 1 or monitor = 0);",'')
+        func.mysql_exec('delete from mysql_dr_s where server_id in(select id from db_cfg_mysql where is_delete = 1 or monitor = 0);','')
         
         #func.mysql_exec("insert into mysql_slow_query_review_his SELECT *,sysdate() from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
         #func.mysql_exec('delete from mysql_slow_query_review where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
         
-        func.mysql_exec('delete from mysql_connected where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        func.mysql_exec('delete from mysql_connected where server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);','')
         
-        func.mysql_exec('delete from mysql_processlist where server_id not in(select id from db_cfg_mysql where is_delete = 0);','')
+        func.mysql_exec('delete from mysql_processlist where server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);','')
                                   
-        func.mysql_exec("delete from db_status where db_type = 'mysql' and server_id not in(select id from db_cfg_mysql where is_delete = 0);",'')
+        func.mysql_exec("delete from db_status where db_type = 'mysql' and server_id not in(select id from db_cfg_mysql where is_delete = 0 and monitor = 1);",'')
+        
+        func.mysql_exec("update db_status t set t.repl = -1, repl_delay = -1 where db_type = 'mysql' and server_id not in(select server_id from mysql_dr_s);",'')
         
     except Exception, e:
         logger.error(e)
@@ -419,8 +509,8 @@ def main():
     #get mysql servers list
     servers = func.mysql_query('select id,host,port,username,password,tags,bigtable_monitor,bigtable_size from db_cfg_mysql where is_delete=0 and monitor=1;')
 
-    logger.info("check mysql controller started.")
 
+    logger.info("check mysql controller started.")
     if servers:
          plist = []
          for row in servers:
@@ -449,6 +539,31 @@ def main():
 
     logger.info("check mysql controller finished.")
 
+
+    #check for mysql_replication group
+    rep_list=func.mysql_query("select id, group_name, primary_db_id, standby_db_id, is_switch from db_cfg_mysql_dr where is_delete=0 and on_process = 0;")
+
+    logger.info("check mysql replication start.")
+    if rep_list:
+        plist_2 = []
+        for row in rep_list:
+            group_id=row[0]
+            group_name=row[1]
+            pri_id=row[2]
+            sta_id=row[3]
+            is_switch=row[4]
+            p2 = Process(target = check_replication, args = (group_id,pri_id,sta_id,is_switch))
+            plist_2.append(p2)
+            p2.start()
+            
+        for p2 in plist_2:
+            p2.join()
+
+    else:
+        logger.warning("check mysql replication: not found any replication group")
+
+    logger.info("check mysql replication finished.")
+    
     # Clean invalid data
     logger.info("Clean invalid mysql status start.")   
     clean_invalid_db_status()

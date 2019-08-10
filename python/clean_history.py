@@ -25,7 +25,8 @@ def clean_history_data():
     try:
         logger.info("Clean mysql history data start.")   
         func.mysql_exec("delete from mysql_status_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
-        func.mysql_exec("delete from mysql_replication_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
+        func.mysql_exec("delete from mysql_dr_p_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
+        func.mysql_exec("delete from mysql_dr_s_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
         func.mysql_exec("delete from mysql_bigtable_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
         #func.mysql_exec("delete from mysql_slow_query_review_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
         logger.info("Clean mysql history data finished.")   

@@ -122,7 +122,7 @@ def get_alarm_mysql_status():
 
 
 def get_alarm_mysql_replcation():
-    sql = "select a.server_id,a.slave_io_run,a.slave_sql_run,a.delay,a.create_time,b.host,b.port,b.alarm_repl_status,b.alarm_repl_delay,b.threshold_warning_repl_delay,b.threshold_critical_repl_delay,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_replication a, db_cfg_mysql b  where a.server_id=b.id and a.is_slave='1';"
+    sql = "select a.server_id,a.slave_io_run,a.slave_sql_run,a.delay,a.create_time,b.host,b.port,b.alarm_repl_status,b.alarm_repl_delay,b.threshold_warning_repl_delay,b.threshold_critical_repl_delay,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_dr_s a, db_cfg_mysql b  where a.server_id=b.id and a.is_slave='1';"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:

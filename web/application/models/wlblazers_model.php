@@ -469,9 +469,8 @@ class Wlblazers_model extends CI_Model{
 									and (t.server_id = d.primary_db_id or t.server_id = d.standby_db_id)
 									and d.is_delete = 0
 									and t.repl_delay in(-1, 3) ";
-		}
-		else{
-				$sql = "select id from db_status t where db_type = '$db_type' and role = 's' and t.repl_delay in(-1, 3) ";
+		}else if($db_type == 'mysql'){
+				$sql = "select id from db_status t where db_type = '$db_type' and role = 's' and repl > -1 and t.repl_delay in(-1, 3) ";
 		}
 		
 		$query = $this->db->query($sql);
@@ -497,13 +496,13 @@ class Wlblazers_model extends CI_Model{
 	}
 	
 	function get_sqlserver_count_critical(){
-    $sql = "select a.num - b.num from 
+    $sql = "select (a.num - b.num) num from 
 						(select count(*) num from db_cfg_sqlserver_mirror t where is_delete = 0) a, 
 						(select count(*) num from sqlserver_mirror_s t where mirroring_role = 2 and mirroring_state in(2,4)) b ";
 		
 		$query = $this->db->query($sql);
 		
-		return $query->num_rows();
+		return $query->row_array()['num'];
 	}
 		
 	

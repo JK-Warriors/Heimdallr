@@ -142,14 +142,20 @@ def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
         
             if int(alert_count) > 0 :
                 sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where host='%s' and alert_item='%s';" %(db_host,alert_item)
-                mysql_exec(sql,'')
+                try:
+                    mysql_exec(sql,'')
+                except Exception,e:
+                    print "Move alert to history: " + str(e)   
         
                 mysql_exec("delete from alerts where host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
         else:
             alert_count=curs.execute("select id from alerts where server_id=%s and db_type='%s' and alert_item='%s';" %(server_id,db_type,alert_item))  
             if int(alert_count) > 0 :
                 sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id=%s and db_type='%s' and alert_item='%s';" %(server_id,db_type,alert_item) 
-                mysql_exec(sql,'')
+                try:
+                    mysql_exec(sql,'')
+                except Exception,e:
+                    print "Move alert to history: " + str(e)   
                           
                 mysql_exec("delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item),'')
 

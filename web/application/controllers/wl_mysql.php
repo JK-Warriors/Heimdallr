@@ -14,11 +14,11 @@ class Wl_mySQL extends Front_Controller {
         $mysql_statistics = array();
         $mysql_statistics["mysql_cfg_up"] = $this->db->query("select count(*) as num from mysql_status where connect=1")->row()->num;
         $mysql_statistics["mysql_cfg_down"] = $this->db->query("select count(*) as num from mysql_status  where connect!=1")->row()->num;
-        $mysql_statistics["master_mysql_instance"] = $this->db->query("select count(*) as num from mysql_replication where is_master=1")->row()->num;
-        $mysql_statistics["slave_mysql_instance"] = $this->db->query("select count(*) as num from mysql_replication where is_slave=1")->row()->num;
+        $mysql_statistics["master_mysql_instance"] = $this->db->query("select count(*) as num from mysql_status where role='master' ")->row()->num;
+        $mysql_statistics["slave_mysql_instance"] = $this->db->query("select count(*) as num from mysql_status where role='slave' ")->row()->num;
         
-        $mysql_statistics["normal_mysql_replication"] = $this->db->query("select count(*) as num from mysql_replication where is_slave=1 and (slave_io_run='Yes' and slave_sql_run='Yes') ")->row()->num;
-        $mysql_statistics["exception_mysql_replication"] = $this->db->query("select count(*) as num from mysql_replication where is_slave=1 and  (slave_io_run!='Yes' or slave_sql_run!='Yes') ")->row()->num;
+        $mysql_statistics["normal_mysql_replication"] = $this->db->query("select count(*) as num from mysql_dr_s where slave_io_run='Yes' and slave_sql_run='Yes' ")->row()->num;
+        $mysql_statistics["exception_mysql_replication"] = $this->db->query("select count(*) as num from mysql_dr_s where slave_io_run!='Yes' or slave_sql_run!='Yes' ")->row()->num;
         
         $data["mysql_statistics"] = $mysql_statistics;
         //print_r($mysql_statistics);

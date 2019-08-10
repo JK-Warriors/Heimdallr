@@ -982,6 +982,95 @@ CREATE TABLE `mysql_replication_his` (
   KEY `idx_ymdhi` (`YmdHi`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for mysql_dr_p
+-- ----------------------------
+DROP TABLE IF EXISTS `mysql_dr_p`;
+CREATE TABLE `mysql_dr_p` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) DEFAULT NULL,
+  `read_only` varchar(10) DEFAULT NULL,
+  `gtid_mode` varchar(10) DEFAULT NULL,
+  `master_binlog_file` varchar(30) DEFAULT NULL,
+  `master_binlog_pos` varchar(30) DEFAULT NULL,
+  `master_binlog_space` bigint(18) NOT NULL DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for mysql_dr_p_his
+-- ----------------------------
+DROP TABLE IF EXISTS `mysql_dr_p_his`;
+CREATE TABLE `mysql_dr_p_his` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL,
+  `read_only` varchar(10) DEFAULT NULL,
+  `gtid_mode` varchar(10) DEFAULT NULL,
+  `master_binlog_file` varchar(30) DEFAULT NULL,
+  `master_binlog_pos` varchar(30) DEFAULT NULL,
+  `master_binlog_space` bigint(18) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `YmdHi` bigint(18) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_create_time` (`create_time`),
+  KEY `idx_union_1` (`server_id`,`YmdHi`) USING BTREE,
+  KEY `idx_ymdhi` (`YmdHi`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for mysql_dr_s
+-- ----------------------------
+DROP TABLE IF EXISTS `mysql_dr_s`;
+CREATE TABLE `mysql_dr_s` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) DEFAULT NULL,
+  `read_only` varchar(10) DEFAULT NULL,
+  `gtid_mode` varchar(10) DEFAULT NULL,
+  `master_server` varchar(30) DEFAULT NULL,
+  `master_port` varchar(20) DEFAULT NULL,
+  `slave_io_run` varchar(20) DEFAULT NULL,
+  `slave_sql_run` varchar(20) DEFAULT NULL,
+  `delay` varchar(20) DEFAULT NULL,
+  `current_binlog_file` varchar(30) DEFAULT NULL,
+  `current_binlog_pos` varchar(30) DEFAULT NULL,
+  `master_binlog_file` varchar(30) DEFAULT NULL,
+  `master_binlog_pos` varchar(30) DEFAULT NULL,
+  `master_binlog_space` bigint(18) NOT NULL DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for mysql_dr_s_his
+-- ----------------------------
+DROP TABLE IF EXISTS `mysql_dr_s_his`;
+CREATE TABLE `mysql_dr_s_his` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` smallint(4) NOT NULL,
+  `read_only` varchar(10) DEFAULT NULL,
+  `gtid_mode` varchar(10) DEFAULT NULL,
+  `master_server` varchar(30) DEFAULT NULL,
+  `master_port` varchar(20) DEFAULT NULL,
+  `slave_io_run` varchar(20) DEFAULT NULL,
+  `slave_sql_run` varchar(20) DEFAULT NULL,
+  `delay` varchar(20) DEFAULT NULL,
+  `current_binlog_file` varchar(30) DEFAULT NULL,
+  `current_binlog_pos` varchar(30) DEFAULT NULL,
+  `master_binlog_file` varchar(30) DEFAULT NULL,
+  `master_binlog_pos` varchar(30) DEFAULT NULL,
+  `master_binlog_space` bigint(18) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `YmdHi` bigint(18) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_create_time` (`create_time`),
+  KEY `idx_union_1` (`server_id`,`YmdHi`) USING BTREE,
+  KEY `idx_ymdhi` (`YmdHi`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ----------------------------
 -- Table structure for mysql_slow_query_review
 -- ----------------------------

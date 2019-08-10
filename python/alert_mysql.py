@@ -173,10 +173,9 @@ def gen_alert_mysql_replcation(server_id):
 										b.send_sms_to_list,
 										b.tags,
 										'mysql' AS db_type
-									FROM mysql_replication a, db_cfg_mysql b
+									FROM mysql_dr_s a, db_cfg_mysql b
 									WHERE a.server_id = b.id
-									and a.server_id = %s
-									AND a.is_slave = '1' """ %(server_id)
+									and a.server_id = %s """ %(server_id)
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
@@ -221,7 +220,7 @@ def gen_alert_mysql_replcation(server_id):
                         else:
                             func.check_if_ok(server_id,tags,host,port,create_time,db_type,'repl_delay',delay,'replication delay ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                             func.update_db_status('repl_delay',1,server_id, host, db_type,create_time,'repl_delay',delay,'ok')
-		else:
+                else:
                     send_mail = func.update_send_mail_status(server_id,db_type,'replication',send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(server_id,db_type,'replication',send_sms,send_sms_max_count) 
                     func.add_alert(server_id,tags,host,port,create_time,db_type,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'critical','replication stop',send_mail,send_mail_to_list,send_sms,send_sms_to_list)

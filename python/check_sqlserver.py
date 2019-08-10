@@ -302,7 +302,7 @@ def main():
 
     logger.info("check sqlserver controller finished.")
 
-    #check for dataguard group
+    #check for mirror group
     mirror_list=func.mysql_query("select id, mirror_name, primary_db_id, standby_db_id, db_name, is_switch from db_cfg_sqlserver_mirror where is_delete=0 and on_process = 0;")
 
     logger.info("check sqlserver mirror start.")

@@ -97,7 +97,7 @@ class MySQL_model extends CI_Model{
     function get_replication_total_record(){
         
         $this->db->select('repl.*,servers.host,servers.port,servers.tags,status.connect');
-        $this->db->from('mysql_replication repl');
+        $this->db->from('mysql_dr_s_his repl');
         $this->db->join('db_cfg_mysql servers', 'repl.server_id=servers.id', 'left');
         $this->db->join('mysql_status status', 'repl.server_id=status.server_id', 'left');
         
@@ -256,7 +256,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
 
     
     function get_replication_chart_record($server_id,$time){
-        $query=$this->db->query("select slave_io_run,slave_sql_run,delay from mysql_replication_his where server_id=$server_id and YmdHi=$time limit 1; ");
+        $query=$this->db->query("select slave_io_run,slave_sql_run,delay from mysql_dr_s_his where server_id=$server_id and YmdHi=$time limit 1; ");
         if ($query->num_rows() > 0)
         {
            return $query->row_array(); 
@@ -308,7 +308,7 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
 		function get_replication_chart_data($server_id, $begin_time){
         $query=$this->db->query("SELECT *
 																	FROM(SELECT DATE_FORMAT(h.ymdhi, '%Y-%m-%d %H:%i') time, h.*
-																					FROM mysql_replication_his h
+																					FROM mysql_dr_s_his h
 																				 WHERE server_id = $server_id
 																					 AND YmdHi >= DATE_ADD(sysdate(), INTERVAL -$begin_time minute)
 																		) t

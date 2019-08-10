@@ -300,7 +300,7 @@ class cfg_mysql extends Front_Controller {
      */
     public function add_dr(){
         #parent::check_privilege();
-        $sql="select * from db_cfg_mysql where is_delete=0 order by id asc";
+        $sql="select * from db_cfg_mysql where is_delete=0 and monitor=1 order by id asc";
         $result=$this->mysql->get_total_record_sql($sql);
         $data["datalist"]=$result['datalist'];
         $data["datacount"]=$result['datacount'];
