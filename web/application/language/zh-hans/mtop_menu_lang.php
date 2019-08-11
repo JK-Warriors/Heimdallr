@@ -31,6 +31,8 @@ $lang['_InnoDB Monitor'] = 'InnoDB监控';
 $lang['_Key Cache Monitor'] = '键缓存监控';
 $lang['_Resource Monitor'] = '资源监控';
 $lang['_Performance Advisor'] = '性能顾问';
+$lang['_DisasterRecovery List'] = '容灾列表';
+$lang['_DisasterRecovery Manage'] = '容灾列表';
 
 $lang['_Oracle Monitor'] = 'Oracle';
 $lang['_DataGuard Monitor'] = '容灾监控';

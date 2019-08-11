@@ -111,11 +111,11 @@ class Wl_sqlserver extends Front_Controller {
 		            		$file_full_name = $base_path . '/application/scripts/mssql_switchover.py';
 		            		$file_exists = file_exists($file_full_name);
 		            		if($file_exists==1){
-		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_switchover.log 2>&1';   
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_switchover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_switchover.log 2>&1';  
 		            		}else{
 		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_switchover.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_switchover.log 2>&1';   
 		            		}
-		                 
+		                    
 		                $result = shell_exec($order);
 		                #$result = "Succes";
 		            }
@@ -123,9 +123,9 @@ class Wl_sqlserver extends Front_Controller {
 		            		$file_full_name = $base_path . '/application/scripts/mssql_failover.py';
 		            		$file_exists = file_exists($file_full_name);
 		            		if($file_exists==1){
-		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_failover.log 2>&1';    
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_failover.py -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_failover.log 2>&1';  
 		            		}else{
-		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_failover.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_failover.log 2>&1'; 
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python mssql_failover.pyc -g ' . $id . ' -p ' . $pri_id . ' -s ' . $sta_id . ' >mssql_failover.log 2>&1';   
 		            		}
 		                  
 		                $result = shell_exec($order);  

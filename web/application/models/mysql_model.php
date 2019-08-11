@@ -95,30 +95,147 @@ class MySQL_model extends CI_Model{
     }
     
     function get_replication_total_record(){
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
         
-        $this->db->select('repl.*,servers.host,servers.port,servers.tags,status.connect');
-        $this->db->from('mysql_dr_s_his repl');
-        $this->db->join('db_cfg_mysql servers', 'repl.server_id=servers.id', 'left');
-        $this->db->join('mysql_status status', 'repl.server_id=status.server_id', 'left');
-        
-        !empty($_GET["host"]) && $this->db->like("repl.host", $_GET["host"]);
-        !empty($_GET["tags"]) && $this->db->like("repl.tags", $_GET["tags"]);
-
-        if(!empty($_GET["role"]) ){
-            $this->db->where($_GET["role"], 1);
-        }
-        !empty($_GET["delay"]) && $this->db->where("delay >", (int)$_GET["delay"]);
-        if(!empty($_GET["order"]) && !empty($_GET["order_type"])){
-            $this->db->order_by($_GET["order"],$_GET["order_type"]);
-        }
-        
-        $query = $this->db->get();
+        $sql = "SELECT t.*, drs.* from(SELECT
+																	dr.id as group_id,
+																	dr.group_name,
+																	sdb.`id`  as s_id,
+																	sdb.`host`  as s_host,
+																	sdb.`port`  as s_port,
+																	sdb.tags   as s_tags
+																FROM db_cfg_mysql_dr dr,
+																	db_cfg_mysql pdb,
+																	db_cfg_mysql sdb
+																WHERE dr.primary_db_id = pdb.id
+																AND dr.standby_db_id = sdb.id
+																AND dr.is_switch = 0
+														union ALL
+															SELECT
+																	dr.id as group_id,
+																	dr.group_name,
+																	sdb.`id`  as s_id,
+																	sdb.`host`  as s_host,
+																	sdb.`port`  as s_port,
+																	sdb.tags   as s_tags
+																FROM db_cfg_mysql_dr dr,
+																	db_cfg_mysql pdb,
+																	db_cfg_mysql sdb
+																WHERE dr.primary_db_id = sdb.id
+																AND dr.standby_db_id = pdb.id
+																AND dr.is_switch = 1) t left join mysql_dr_s drs on t.s_id = drs.server_id
+													where 1=1 ";
+				if($host != ""){
+						$sql = $sql . " AND (t.`p_host` like '%" . $host . "%' or t.`s_host` like '%" . $host . "%')";
+				}
+				if($tags != ""){
+						$sql = $sql . " AND (t.`p_tags` like '%" . $tags . "%' or t.`s_tags` like '%" . $tags . "%')";
+				}
+																
+        $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
-		{
-			return $query->result_array();
-		}
+        {
+           return $query->result_array(); 
+        }
+    }
+
+        
+    function get_standby_total(){
+        $sql = "select * from mysql_dr_s 
+				        where server_id in (select id from db_cfg_mysql)
+				          and (server_id, id) in (select server_id, max(id) from mysql_dr_s t group by server_id)";
+										
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
     }
     
+    function get_pri_id_by_group_id($id){
+        $query=$this->db->query("select CASE is_switch
+                                            WHEN 0 THEN primary_db_id
+                                            ELSE standby_db_id
+                                        END as pri_id
+                                   from db_cfg_mysql_dr
+                                  where id = $id ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->pri_id;
+        }
+    }
+
+
+    function get_sta_id_by_group_id($id){
+        $query=$this->db->query("select CASE is_switch
+                                            WHEN 0 THEN standby_db_id 
+                                            ELSE primary_db_id
+                                        END as sta_id
+                                   from db_cfg_mysql_dr
+                                  where id = $id ");
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->sta_id;
+        }
+    }
+
+
+    function get_primary_info($pri_id, $db_name){
+        $query=$this->db->query("select d.id,
+                                    d.host         as p_host,
+                                    d.port         as p_port,
+                                    s.version      as p_db_version,
+                                    s.connect      as p_connect,
+                                    p.gtid_mode		as p_gtid_mode,
+                                    p.read_only as p_read_only
+                            from (select * from db_cfg_mysql where id = $pri_id) d
+                            left join mysql_status s
+                                on d.id = s.server_id
+                            left join (select *
+                                    from mysql_dr_p
+                                    where server_id = $pri_id) p
+                                on d.id = p.server_id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+
+    function get_standby_info($sta_id, $db_name){
+        $query=$this->db->query("select d.id,
+                                    d.host         as s_host,
+                                    d.port         as s_port,
+                                    s.version      as s_db_version,
+                                    s.connect      as s_connect,
+                                    ds.gtid_mode   as s_gtid_mode,
+                                    ds.read_only	 as s_read_only,
+                                    ds.master_server	 as master_server,
+                                    ds.master_port	 as master_port,
+                                    ds.slave_io_run	 as slave_io_run,
+                                    ds.slave_sql_run	 as slave_sql_run,
+                                    ds.delay	 as delay,
+                                    ds.current_binlog_file	 as s_binlog_file,
+                                    ds.current_binlog_pos	 as s_binlog_pos,
+                                    ds.master_binlog_file	 as m_binlog_file,
+                                    ds.master_binlog_pos	 as m_binlog_pos,
+                                    ds.master_binlog_space	 as m_binlog_space
+                            from (select * from db_cfg_mysql where id = $sta_id) d
+                            left join mysql_status s
+                                on d.id = s.server_id
+                            left join (select *
+                                    from mysql_dr_s
+                                    where server_id = $sta_id) ds
+                                on d.id = ds.server_id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+         
     function get_bigtable_total_record(){
         
         $this->db->select('*');
