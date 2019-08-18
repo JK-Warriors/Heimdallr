@@ -46,7 +46,15 @@ def ConnectMysql():
             logger.error("Connect to wlblazers error: " + str(e))
             sys.exit(2)
 
-
+# 连接数据库
+def ConnectMysql_T(host,port,username,password):
+        # 打开数据库连接
+        try:
+            return pymysql.connect(host=host, user=username, passwd=password, port=int(port), charset='utf8')
+        except Exception as e:
+            logger.error("Connect to mysql error: " + str(e))
+            sys.exit(2)
+            
 def CloseMysql(conn):
     # 关闭数据库连接
     if conn:
@@ -130,16 +138,40 @@ def ExecuteSQL(conn, query_str):
         logger.error(e)
         conn.rollback()
 
+# 是否为从库
+def IsSlave(conn):
+    res = None
+    try:
+        # 使用cursor()方法获取操作游标
+        cur = conn.cursor()
+
+        cur.execute("show slave status;")
+
+        # 使用fetchall获取数据集
+        rows = cur.fetchone()
+        if rows is None:
+            return 0
+        else:
+            return 1
+
+    except Exception as e:
+        logger.error(e)
+        
+
 ###############################################################################
 # main
 ###############################################################################
 '''
 if __name__ == "__main__":
     # 建立mysql连接
-    mysql_conn = ConnectMysql()
-    query_str = "select value from aop_perf_stat where inst_id = 1 and name = 'parse count (total)' order by time desc limit 1;"
-
-    value = GetSingleValue(mysql_conn, query_str)
-    CloseMysql(mysql_conn)
+    host="192.168.239.52"
+    port="3306"
+    username="drm"
+    password="mysql"
+    
+    mysql_conn = ConnectMysql_T(host, port, username, password)
+    #mysql_conn = ConnectMysql()
+    #query_str = "select value from aop_perf_stat where inst_id = 1 and name = 'parse count (total)' order by time desc limit 1;"
+    value = IsSlave(mysql_conn)
     print value
 '''

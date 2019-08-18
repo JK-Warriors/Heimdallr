@@ -273,7 +273,6 @@ on `status`.server_id=`server`.id order by threads_running desc limit 10;")->res
         		$data["dr_group"]=$this->mysql->get_dr_group_by_id($group_id);
 		        $data["op_process"]=$this->mysql->get_dr_process($group_id, $type);
 		        $data["db_opration"]=$this->mysql->get_db_opration($group_id, $type);
-						
         }
 				
 

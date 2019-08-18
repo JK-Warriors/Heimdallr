@@ -1,9 +1,9 @@
 <?php 
 header('Content-type:text/json');
 
-$arr = array('on_process' => $mirror_group[0]['on_process'], 
-						 'on_switchover' => $mirror_group[0]['on_switchover'], 
-						 'on_failover' => $mirror_group[0]['on_failover'], 
+$arr = array('on_process' => $dr_group[0]['on_process'], 
+						 'on_switchover' => $dr_group[0]['on_switchover'], 
+						 'on_failover' => $dr_group[0]['on_failover'], 
 						 
 						 'group_id' => $op_process[0]['group_id'],
 						 'process_type' => $op_process[0]['process_type'],

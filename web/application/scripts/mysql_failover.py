@@ -11,7 +11,7 @@
 ######################################################################
 ##     Date        File            Changes
 ######################################################################
-##  07/13/2019                      Baseline version 1.0.0
+##  08/17/2019                      Baseline version 1.0.0
 ##
 ######################################################################
 
@@ -21,7 +21,6 @@ import sys, getopt
 import traceback
 
 import mysql_handle as mysql
-import sqlserver_handle as sqlserver
 import common
 
 import logging
@@ -32,85 +31,92 @@ logger = logging.getLogger('WLBlazers')
 
 	
 ###############################################################################
-# function failover2primary
+# function switch2master
 ###############################################################################
-def failover2primary(mysql_conn, db_type, group_id, db_name, s_conn, sta_id):
-    logger.info("Failover database to primary in progress...")
+def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
     result=-1
     
+    logger.info("FAILOVER database to master in progress...")
     # get database role
-    str='''select m.mirroring_role
-					  from sys.database_mirroring m, sys.databases d
-					 where M.mirroring_guid is NOT NULL
-					   AND m.database_id = d.database_id
-					   AND d.name = '%s'; ''' %(db_name)
-    role=sqlserver.GetSingleValue(s_conn, str)
-    common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '获取数据库角色成功', 30, 2)
-    logger.info("The current database role is: %s (1:PRIMARY; 2:STANDBY)" %(role))
+    role=mysql.IsSlave(s_conn)
+    common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '获取数据库角色成功', 0, 2)
+    logger.info("The current database role is: %s (0:MASTER; 1:SLAVE)" %(role))
 	
+    # get database version
 	
-
-    if role==2:
-        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色成功', 40, 2)
-        logger.info("Now we are going to failover standby database %s to primary." %(sta_id))
-        
-        #设置自动提交，否则alter database执行报错
-        s_conn.autocommit(True)
-            
-        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '镜像库正在切换成主库...', 60, 2)
-        str='''ALTER DATABASE %s SET PARTNER FORCE_SERVICE_ALLOW_DATA_LOSS; ''' %(db_name)
-        res=sqlserver.ExecuteSQL(s_conn, str)
-        s_conn.autocommit(False)
-            
-            
-				# 重新验证切换后数据库角色
-        str='''select m.mirroring_role
-							  from sys.database_mirroring m, sys.databases d
-							 where M.mirroring_guid is NOT NULL
-							   AND m.database_id = d.database_id
-							   AND d.name = '%s'; ''' %(db_name)
-        new_role=sqlserver.GetSingleValue(s_conn, str)
     
-        if new_role==1:
-            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '镜像库切换成主库成功', 90, 2)
-            logger.info("Failover standby database to primary successfully.")
-            result = 0
+    if role==1:
+        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '验证从库数据库角色成功', 0, 2)
+        
+        # check slave status
+        slave_info=mysql.GetSingleRow(s_conn, 'show slave status;')
+        if slave_info:
+            current_binlog_file=slave_info[9]
+            current_binlog_pos=slave_info[21]
+            master_binlog_file=slave_info[5]
+            master_binlog_pos=slave_info[6]
+            
+            logger.debug("current_binlog_file: %s" %(current_binlog_file))
+            logger.debug("current_binlog_pos: %s" %(current_binlog_pos))
+            logger.debug("master_binlog_file: %s" %(master_binlog_file))
+            logger.debug("master_binlog_pos: %s" %(master_binlog_pos))
+            
+            # can switch now
+            logger.info("Now we are going to switch database %s to master." %(sta_id))
+            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '正在将从库切换成主库...', 0, 0)
+            str='''stop slave io_thread; '''
+            res=mysql.ExecuteSQL(s_conn, str)
+            logger.debug("Stop slave io_thread.")
+        
+            str='''stop slave; '''
+            res=mysql.ExecuteSQL(s_conn, str)
+            logger.debug("Stop slave.")
+        
+            str='''reset master; '''
+            res=mysql.ExecuteSQL(s_conn, str)
+            logger.debug("Reset master.")
+                
+            logger.info("FAILOVER slave to master successfully.")
+            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '从库已经成功切换成主库', 0, 2)
+            result=0
         else:
-            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '镜像库切换成主库失败，请根据相关日志查看原因', 90, 2)
-            logger.info("Failover standby database to primary failed.")
-            result = -1
-
+            logger.info("Check slave status failed.")
+            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '从库切换主库失败', 0, 2)
+            result=-1
+        
     else:
-        common.update_db_op_reason(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是镜像库，无法切换到主库')
-        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是镜像库，无法切换到主库', 40)
-        logger.error("You can not failover primary database to primary!")
+        common.update_db_op_reason(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是从库，不能切换到主库')
+        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是从库，不能切换到主库', 0, 2)
+        logger.error("You can not FAILOVER a master database to master!")
+        result=-1
         
     return result
+
 
 
 ###############################################################################
 # function update_switch_flag
 ###############################################################################
 def update_switch_flag(mysql_conn, group_id):
-    logger.info("Update switch flag in db_cfg_sqlserver_mirror for group %s in progress..." %(group_id))
+    logger.info("Update switch flag in db_cfg_mysql_dr for group %s in progress..." %(group_id))
     # get current switch flag
-    str='select is_switch from db_cfg_sqlserver_mirror where id= %s' %(group_id)
+    str='select is_switch from db_cfg_mysql_dr where id= %s' %(group_id)
     is_switch=mysql.GetSingleValue(mysql_conn, str)
     logger.info("The current switch flag is: %s" %(is_switch))
 	
     if is_switch==0:
-        str="""update db_cfg_sqlserver_mirror set is_switch = 1 where id = %s"""%(group_id)
+        str="""update db_cfg_mysql_dr set is_switch = 1 where id = %s"""%(group_id)
     else:
-        str="""update db_cfg_sqlserver_mirror set is_switch = 0 where id = %s"""%(group_id)
+        str="""update db_cfg_mysql_dr set is_switch = 0 where id = %s"""%(group_id)
 
 		
     is_succ = mysql.ExecuteSQL(mysql_conn, str)
 
     if is_succ==1:
-        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '镜像组更新状态成功', 100, 2)
-        logger.info("Update switch flag in db_cfg_sqlserver_mirror for group %s successfully." %(group_id))
+        common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '容灾组更新状态成功', 100, 2)
+        logger.info("Update switch flag in db_cfg_mysql_dr for group %s successfully." %(group_id))
     else:
-        logger.info("Update switch flag in db_cfg_sqlserver_mirror for group %s failed." %(group_id))
+        logger.info("Update switch flag in db_cfg_mysql_dr for group %s failed." %(group_id))
 	
 
 
@@ -144,20 +150,15 @@ if __name__=="__main__":
     except Exception as e:
         logger.error(e)
         sys.exit(2)
-        
-	# get infomation from mysql
-    db_name = ""
+		
     
+    # get infomation from mysql
     s_host = ""
     s_port = ""
     s_username = ""
     s_password = ""
     
-    
-    name_str = """select db_name from db_cfg_sqlserver_mirror where id=%s; """ %(group_id)
-    db_name = mysql.GetSingleValue(mysql_conn, name_str)
- 
-    s_str = """select host, port, username, password from db_cfg_sqlserver where id=%s; """ %(sta_id)
+    s_str = """select host, port, username, password from db_cfg_mysql where id=%s; """ %(sta_id)
     res2 = mysql.GetSingleRow(mysql_conn, s_str)
     if res2:
         s_host = res2[0]
@@ -166,40 +167,51 @@ if __name__=="__main__":
         s_password = res2[3]
     #print s_host,s_port,s_username,s_password
 
-    s_str = """select concat(host, ':', port) from db_cfg_sqlserver where id=%s; """ %(sta_id)
+	
+    p_str = """select concat(host, ':', port) from db_cfg_mysql where id=%s; """ %(pri_id)
+    p_nopass_str = mysql.GetSingleValue(mysql_conn, p_str)
+    s_str = """select concat(host, ':', port) from db_cfg_mysql where id=%s; """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
-    logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))
-	
-    db_type = "sqlserver"
+    logger.info("The master database is: " + p_nopass_str + ", the id is: " + str(pri_id))
+    logger.info("The slave database is: " + s_nopass_str + ", the id is: " + str(sta_id))
+
+
+
+    db_type = "mysql"
     try:
         common.db_op_lock(mysql_conn, db_type, group_id, 'FAILOVER')			# 加锁
         common.init_db_op_instance(mysql_conn, db_type, group_id, 'FAILOVER')					#初始化切换实例
-        
-        # connect to sqlserver
-        s_conn = sqlserver.ConnectMssql(s_host,s_port,s_username,s_password)
+	
+        # connect to mysql
+        s_conn = mysql.ConnectMysql_T(s_host,s_port,s_username,s_password)
+
         if s_conn is None:
-            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '连接备库失败，请根据相应日志查看原因', 10, 3)
+            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '连接从库失败，请根据相应日志查看原因', 0, 3)
             logger.error("Connect to standby database error, exit!!!")
             
-            common.update_db_op_reason(mysql_conn, db_type, group_id, 'FAILOVER', '连接备库失败')
+            common.update_db_op_reason(mysql_conn, db_type, group_id, 'FAILOVER', '连接从库失败')
             common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', '-1')
-            sys.exit(2)   
-             
+            sys.exit(2)
+        
 
+    
+   
+        # 正式开始切换  
         try:
-            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '准备执行灾难切换', 20, 2)
-            res = failover2primary(mysql_conn, db_type, group_id, db_name, s_conn, sta_id)
-
-            if res ==0:
+            common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '准备执行主从切换', 0, 2)
+            
+            res_2m=switch2master(mysql_conn, db_type, group_id, s_conn, sta_id)
+            if res_2m ==0:
                 update_switch_flag(mysql_conn, group_id)
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', '0')
             else:
-                common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', res)
+                common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', res_2m)
                 
         except Exception,e:
             logger.error(traceback.format_exc())
             pass
+
     except Exception,e:
         logger.error(traceback.format_exc())
         pass

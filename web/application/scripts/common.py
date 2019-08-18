@@ -176,7 +176,8 @@ def log_db_op_process(mysql_conn, db_type, group_id, process_type, process_desc,
     log_status=mysql.ExecuteSQL(mysql_conn, str)
     
     if log_status == 1:
-        logger.info("Log the %s operate process for group: %s; completed %s." %(db_type, group_id, rate))
+        #logger.info("Log the %s operate process for group: %s; completed %s." %(db_type, group_id, rate))
+        logger.info("Log the %s operate process for group: %s." %(db_type, group_id))
     else:
         logger.error("Log the %s operate process for group: %s failed." %(db_type, group_id))
 
@@ -190,6 +191,8 @@ def db_op_lock(mysql_conn, db_type, group_id, process_type):
     tab_name=""
     if db_type == "sqlserver":
         tab_name="db_cfg_sqlserver_mirror"
+    elif db_type == "mysql":
+        tab_name="db_cfg_mysql_dr"
         
     logger.info("Lock the %s process status in %s for group: %s" %(process_type, tab_name, group_id))
     
@@ -225,8 +228,10 @@ def db_op_unlock(mysql_conn, db_type, group_id, process_type):
     tab_name=""
     if db_type == "sqlserver":
         tab_name="db_cfg_sqlserver_mirror"
+    elif db_type == "mysql":
+        tab_name="db_cfg_mysql_dr"
         
-    logger.info("Unlock the %s process status in %s for mirror group: %s" %(process_type, tab_name, group_id))
+    logger.info("Unlock the %s process status in %s for group: %s" %(process_type, tab_name, group_id))
     
     # update process status to 1
     col_name=""

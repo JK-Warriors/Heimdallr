@@ -466,7 +466,32 @@ max(b.Lock_time_max) Lock_time_max, min(b.Lock_time_min) Lock_time_min,sum(b.Loc
            return $query->result_array(); 
         }
     }  
-      
+    
+    function get_dr_group_by_id($id){
+        $query=$this->db->query("select * from db_cfg_mysql_dr where is_delete = 0 and id = $id; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
+    function get_dr_process($group_id,$type){
+        $query=$this->db->query("select * from db_op_process where db_type='mysql' and group_id = $group_id and process_type = '$type' order by id desc limit 1; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+          
+    function get_db_opration($group_id, $type){
+        $query=$this->db->query("select * from db_opration where db_type='mysql' and group_id = $group_id and op_type = '$type' order by id desc limit 1; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    } 
+    
+    
 }
 
 /* End of file mysql_model.php */
