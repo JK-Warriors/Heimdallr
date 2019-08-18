@@ -35,7 +35,7 @@ logger = logging.getLogger('WLBlazers')
 ###############################################################################
 # function switch2master
 ###############################################################################
-def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
+def switch2master(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id):
     result=-1
     
     logger.info("Switchover database to master in progress...")
@@ -49,7 +49,16 @@ def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
     
     if role==1:
         common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '验证从库数据库角色成功', 0, 2)
-        
+        # get master status
+        m_binlog_file=""
+        m_binlog_pos=-1
+        master_info = mysql.GetSingleRow(p_conn, 'show master status;')
+        if master_info:
+            m_binlog_file=master_info[0]
+            m_binlog_pos=master_info[1]
+            logger.debug("Master: master_binlog_file: %s" %(m_binlog_file))
+            logger.debug("Master: master_binlog_pos: %s" %(m_binlog_pos))
+            
         # check slave status
         slave_info=mysql.GetSingleRow(s_conn, 'show slave status;')
         if slave_info:
@@ -58,12 +67,12 @@ def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
             master_binlog_file=slave_info[5]
             master_binlog_pos=slave_info[6]
             
-            logger.debug("current_binlog_file: %s" %(current_binlog_file))
-            logger.debug("current_binlog_pos: %s" %(current_binlog_pos))
-            logger.debug("master_binlog_file: %s" %(master_binlog_file))
-            logger.debug("master_binlog_pos: %s" %(master_binlog_pos))
+            logger.debug("Slave: current_binlog_file: %s" %(current_binlog_file))
+            logger.debug("Slave: current_binlog_pos: %s" %(current_binlog_pos))
+            logger.debug("Slave: master_binlog_file: %s" %(master_binlog_file))
+            logger.debug("Slave: master_binlog_pos: %s" %(master_binlog_pos))
             
-            if (current_binlog_file == master_binlog_file and current_binlog_pos==master_binlog_pos):
+            if (current_binlog_file == master_binlog_file and m_binlog_file==master_binlog_file and current_binlog_pos==master_binlog_pos and master_binlog_pos==m_binlog_pos):
                 # can switch now
                 logger.info("Now we are going to switch database %s to master." %(sta_id))
                 common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '正在将从库切换成主库...', 0, 0)
@@ -75,9 +84,9 @@ def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
                 res=mysql.ExecuteSQL(s_conn, str)
                 logger.debug("Stop slave.")
         
-                str='''reset master; '''
+                str='''reset slave all; '''
                 res=mysql.ExecuteSQL(s_conn, str)
-                logger.debug("Reset master.")
+                logger.debug("Reset slave all.")
                 
                 logger.info("Switchover slave to master successfully.")
                 common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '从库已经成功切换成主库', 0, 2)
@@ -131,8 +140,9 @@ def rebuild_replication(mysql_conn, db_type, group_id, p_conn, pri_id, s_conn, s
     str='''start slave; '''
     res=mysql.ExecuteSQL(p_conn, str)
     logger.debug("Start slave")
-    
-    if res==0:
+
+    slave_info=mysql.GetSingleRow(p_conn, 'show slave status;')
+    if slave_info:
         logger.info("Rebuild replication successfully !")
         common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '重建复制关系成功', 0, 2)
         result=0
@@ -321,11 +331,11 @@ if __name__=="__main__":
         
             lock_tables(p_conn, pri_id)
             
-            res_2m=switch2master(mysql_conn, db_type, group_id, s_conn, sta_id)
+            res_2m=switch2master(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id)
             if res_2m ==0:
                 res_2s=rebuild_replication(mysql_conn, db_type, group_id, p_conn, pri_id, s_conn, sta_id, s_host, s_port, s_username, s_password)
                 
-                if res_2s == 1:
+                if res_2s == 0:
                     update_switch_flag(mysql_conn, group_id)
                     common.update_db_op_result(mysql_conn, db_type, group_id, 'SWITCHOVER', '0')
                 else:

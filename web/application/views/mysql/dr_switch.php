@@ -58,7 +58,7 @@
         <label name="pri_version" class="control-label" for=""><?php echo $this->lang->line('db_version'); ?>：<?php echo $primary_db[0]['p_db_version'] ?></label>
         <label name="pri_binlog_file" class="control-label" for=""><?php echo $this->lang->line('binary_logs'); ?>：<?php echo $standby_db[0]['m_binlog_file'] ?></label>
         <label name="pri_binlog_pos" class="control-label" for=""><?php echo $this->lang->line('postion'); ?>：<?php echo $standby_db[0]['m_binlog_pos'] ?></label>
-        <label name="pri_binlog_space" class="control-label" for=""><?php echo $this->lang->line('binlog_space'); ?>：<?php echo $standby_db[0]['m_binlog_space'] ?></label>
+        <label name="pri_binlog_space" class="control-label" for=""><?php echo $this->lang->line('binlog_space'); ?>：<?php echo $primary_db[0]['p_binlog_space'] ?></label>
         </div>
         <div style='float:right; height:200px; width:280px;'>
         <label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>

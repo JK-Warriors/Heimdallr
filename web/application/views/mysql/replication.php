@@ -74,7 +74,7 @@
         <td><?php echo $item['current_binlog_pos'] ?></td>
         <td><?php echo $item['master_binlog_file'] ?></td>
         <td><?php echo $item['master_binlog_pos'] ?></td>
-        <td><?php echo check_binlog_space($item['master_binlog_space']) ?></td>
+        <td><?php echo check_binlog_space($item['m_binlog_space']) ?></td>
 				<td><center><a href="<?php echo site_url('wl_mysql/dr_switch?group_id='.$item['group_id']) ?>"><?php echo $this->lang->line('manage'); ?></a></td>
 	</tr>
  <?php endforeach;?>

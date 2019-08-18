@@ -98,9 +98,10 @@ class MySQL_model extends CI_Model{
         $host=isset($_GET["host"]) ? $_GET["host"] : "";
         $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
         
-        $sql = "SELECT t.*, drs.* from(SELECT
+        $sql = "SELECT t.*, drp.master_binlog_space as m_binlog_space, drs.* from(SELECT
 																	dr.id as group_id,
 																	dr.group_name,
+																	pdb.`id`  as p_id,
 																	sdb.`id`  as s_id,
 																	sdb.`host`  as s_host,
 																	sdb.`port`  as s_port,
@@ -115,6 +116,7 @@ class MySQL_model extends CI_Model{
 															SELECT
 																	dr.id as group_id,
 																	dr.group_name,
+																	pdb.`id`  as p_id,
 																	sdb.`id`  as s_id,
 																	sdb.`host`  as s_host,
 																	sdb.`port`  as s_port,
@@ -124,7 +126,7 @@ class MySQL_model extends CI_Model{
 																	db_cfg_mysql sdb
 																WHERE dr.primary_db_id = sdb.id
 																AND dr.standby_db_id = pdb.id
-																AND dr.is_switch = 1) t left join mysql_dr_s drs on t.s_id = drs.server_id
+																AND dr.is_switch = 1) t left join mysql_dr_p drp on  t.p_id = drp.server_id left join mysql_dr_s drs on t.s_id = drs.server_id
 													where 1=1 ";
 				if($host != ""){
 						$sql = $sql . " AND (t.`p_host` like '%" . $host . "%' or t.`s_host` like '%" . $host . "%')";
@@ -190,7 +192,8 @@ class MySQL_model extends CI_Model{
                                     s.version      as p_db_version,
                                     s.connect      as p_connect,
                                     p.gtid_mode		as p_gtid_mode,
-                                    p.read_only as p_read_only
+                                    p.read_only as p_read_only,
+                                    p.master_binlog_space as p_binlog_space
                             from (select * from db_cfg_mysql where id = $pri_id) d
                             left join mysql_status s
                                 on d.id = s.server_id

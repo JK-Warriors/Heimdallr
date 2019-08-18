@@ -72,9 +72,9 @@ def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
             res=mysql.ExecuteSQL(s_conn, str)
             logger.debug("Stop slave.")
         
-            str='''reset master; '''
+            str='''reset slave all; '''
             res=mysql.ExecuteSQL(s_conn, str)
-            logger.debug("Reset master.")
+            logger.debug("Reset slave all.")
                 
             logger.info("FAILOVER slave to master successfully.")
             common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '从库已经成功切换成主库', 0, 2)
