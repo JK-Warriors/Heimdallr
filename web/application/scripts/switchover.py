@@ -163,10 +163,10 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             str="select count(1) from gv$session where program like '%(MRP0)' "
             mrp_status=oracle.GetSingleValue(s_conn, str)
             if mrp_status > 0:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库MRP进程成功', 72, 0)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库同步进程成功', 72, 0)
                 logger.info("Restart the MRP process successfully.")
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库MRP进程失败', 72, 0)
+                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '重启数据库同步进程失败', 72, 0)
                 logger.info("Restart the MRP process failed.")
 
 
@@ -211,7 +211,7 @@ def standby2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             result = -1
         	
     else:
-        common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，无法切换到Primary')
+        common.update_op_reason(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库无法切换到主库')
         logger.error("You can not switchover primary database to primary!")
 
     return result

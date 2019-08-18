@@ -85,14 +85,14 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             logger.info("Convert to physical standby successfully.")
             result=0
             
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '正在开启MRP进程...', 90, 0)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '正在开启同步进程...', 90, 0)
         sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
         sqlplus.stdin.write(bytes("shutdown immediate;"+os.linesep))
         sqlplus.stdin.write(bytes("startup mount;"+os.linesep))
         sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
         sqlplus.stdin.write(bytes("alter database recover managed standby database using current logfile disconnect from session;"+os.linesep))
         out, err = sqlplus.communicate()
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '开启MRP进程成功', 90, 0)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '开启同步进程成功', 90, 0)
     else:
         common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止快照')
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是SNAPSHOT STANDBY，不能停止快照', 90)

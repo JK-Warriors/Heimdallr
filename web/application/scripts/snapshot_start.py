@@ -57,7 +57,7 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get mrp process status
     str="""select count(1) from gv$session where program like '%(MRP0)' """
     mrp_process=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取MRP进程状态成功', 30, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取同步进程状态成功', 30, 2)
     
     if version <=10:
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '开启快照模式失败，当前数据库版本不支持', 90, 2)
@@ -73,17 +73,17 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '验证数据库角色成功', 40, 2)
         if(mrp_process > 0):
             logger.info("The mrp process is already active, need stop first... ")
-            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '检测到MRP进程正在运行，需要先停止MRP', 50, 2)
-            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '正在停止MRP进程...', 50, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '检测到同步进程正在运行，需要先停止同步进程', 50, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '正在停止同步进程...', 50, 2)
             
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("alter database recover managed standby database cancel;"+os.linesep))
             out, err = sqlplus.communicate()
             logger.info(out)
             if 'ORA-' in out:
-                common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '停止MRP进程失败', 70, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '停止同步进程失败', 70, 2)
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '停止MRP进程成功', 70, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '停止同步进程成功', 70, 2)
             
                 common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '正在激活数据库快照...', 75, 2)
                 sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)

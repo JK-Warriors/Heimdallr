@@ -55,7 +55,7 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get mrp process status
     str="""select count(1) from gv$session where program like '%(MRP0)' """
     mrp_process=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取MRP进程状态成功', 30, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '获取同步进程状态成功', 30, 2)
     
     # get standby redo log
     str='select count(1) from v$standby_log'
@@ -72,7 +72,7 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色成功', 50, 2)
         if(mrp_process > 0):
             logger.info("The mrp process is already active... ")
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证MRP进程，已经是激活状态', 70, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证同步进程，已经是激活状态', 70, 2)
         else:
             if version> 10 and inst_status=="MOUNTED":
                 common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '检测到当前实例处于MOUNTED状态，正在启动到OPEN...', 70, 2)
@@ -88,7 +88,7 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             	
             
             logger.info("Now we are going to start the mrp process... ")
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '正在开启MRP进程...', 70, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '正在开启同步进程...', 70, 2)
             sqlplus = Popen(["sqlplus", "-S", s_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes(recover_str + os.linesep))
             out, err = sqlplus.communicate()
@@ -99,12 +99,12 @@ def start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             str="""select count(1) from gv$session where program like '%(MRP0)' """
             mrp_process_a=oracle.GetSingleValue(s_conn, str)
             if mrp_process_a > 0:
-                common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', 'MRP进程开启成功', 90, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '同步进程开启成功', 90, 2)
                 logger.info("Start the MRP process successfully.")
                 result=0
     else:
-        common.update_op_reason(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP')
-        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启MRP', 90)
+        common.update_op_reason(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启同步进程')
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能开启同步进程', 90)
 	
     return result;
 
@@ -210,7 +210,7 @@ if __name__=="__main__":
             common.update_op_result(mysql_conn, group_id, 'MRP_START', '-1')
             sys.exit(2)
         
-        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '准备开始启动MRP进程', 10, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_START', '准备开始启动同步进程', 10, 2)
         res = start_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
         if res ==0:
             update_mrp_status(mysql_conn, sta_id)

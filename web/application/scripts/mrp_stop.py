@@ -51,7 +51,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get mrp process status
     str="""select count(1) from gv$session where program like '%(MRP0)' """
     mrp_process=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '获取MRP进程状态成功', 30, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '获取同步进程状态成功', 30, 2)
 	
     if role=="PHYSICAL STANDBY":
         common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色成功', 50, 2)
@@ -68,19 +68,19 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             mrp_process_a=oracle.GetSingleValue(s_conn, str)
             logger.info("Current MRP process: %s" %(mrp_process_a))
             if(mrp_process_a > 0):
-                common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', 'MRP进程停止失败', 90, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '同步进程停止失败', 90, 2)
                 logger.info("Stop the MRP process failed.")
                 result=-1
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', 'MRP进程停止成功', 90, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '同步进程停止成功', 90, 2)
                 logger.info("Stop the MRP process successfully.")
                 result=0
         else:
-            common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证MRP进程，已经是停止状态', 70, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证同步进程，已经是停止状态', 70, 2)
             logger.info("The MRP process is already stopped!!! ")
     else:
-        common.update_op_reason(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止MRP')
-        common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止MRP', 90)
+        common.update_op_reason(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止同步进程')
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止同步进程', 90)
 	 
     return result;
 
@@ -163,7 +163,7 @@ if __name__=="__main__":
             common.update_op_result(mysql_conn, group_id, 'MRP_STOP', '-1')
             sys.exit(2)
         
-        common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '准备开始停止MRP进程', 10, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'MRP_STOP', '准备开始停止同步进程', 10, 2)
         res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
         if res ==0:
             update_mrp_status(mysql_conn, sta_id)

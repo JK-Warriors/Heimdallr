@@ -71,11 +71,11 @@ def failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             str="select count(1) from gv$session where program like '%(MRP0)' "
             mrp_status=oracle.GetSingleValue(s_conn, str)
             if mrp_status > 0:
-                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '重启数据库MRP进程成功', 60, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '重启数据库同步进程成功', 60, 2)
                 logger.info("Restart the MRP process successfully.")
                 
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '重启数据库MRP进程失败', 60, 2)
+                common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '重启数据库同步进程失败', 60, 2)
                 logger.info("Restart the MRP process failed.")
 
 
