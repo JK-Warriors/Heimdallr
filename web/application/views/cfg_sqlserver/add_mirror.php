@@ -170,8 +170,8 @@
  function checkLicense(e){
  
    	
- 		var mirror_count = "<?php echo $mirror_count ?>";
- 		var mirror_license_quota = "<?php echo $mirror_quota ?>";
+ 		var mirror_count = parseInt("<?php echo $mirror_count ?>");
+ 		var mirror_license_quota = parseInt("<?php echo $mirror_quota ?>");
  		
  		if($("#mirror_name").val() == ""){
 				bootbox.alert({

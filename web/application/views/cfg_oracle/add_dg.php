@@ -235,8 +235,8 @@
  var submit="<?php if($group_id==""){echo 'add_dg';}else{echo 'edit_dg';} ?>";
  
  function checkLicense(e){
- 		var dg_count = "<?php echo $dg_count ?>";
- 		var dg_license_quota = "<?php echo $dg_quota ?>";
+ 		var dg_count = parseInt("<?php echo $dg_count ?>");
+ 		var dg_license_quota = parseInt("<?php echo $dg_quota ?>");
  		var shift_vip = 0;
  		if($("#shift_vip").is(':checked') == true){
  				shift_vip = 1;

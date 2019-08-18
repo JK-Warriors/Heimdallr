@@ -159,8 +159,8 @@
  function checkLicense(e){
  
    	
- 		var dr_count = "<?php echo $dr_count ?>";
- 		var dr_license_quota = "<?php echo $dr_quota ?>";
+ 		var dr_count = parseInt("<?php echo $dr_count ?>");
+ 		var dr_license_quota = parseInt("<?php echo $dr_quota ?>");
  		
  		if($("#group_name").val() == ""){
 				bootbox.alert({
@@ -195,7 +195,7 @@
 							    }
 		        	});
 				        	
-		}else if(group_id=="" && dr_count >= dr_license_quota){
+		}else if(group_id=="" &&  dr_count >= dr_license_quota){
 			bootbox.alert({
 	        		message: "您已经超出了容灾组授权限制，请删除后再添加!",
 	        		buttons: {
