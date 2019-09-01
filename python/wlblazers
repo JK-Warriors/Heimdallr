@@ -1,12 +1,10 @@
 #!/bin/bash
 
-basedir="/wlblazers/master/python"
-
 #check basedir
 #############################################################################
 if test -z "$basedir"
 then
-  basedir=/usr/local/wlblazers
+  basedir=/usr/local/wlb
 else
   basedir="$basedir"
 fi
