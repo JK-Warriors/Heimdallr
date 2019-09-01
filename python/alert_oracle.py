@@ -126,18 +126,7 @@ def gen_alert_oracle_status(server_id):
                 if database_role=="PRIMARY":
                     func.update_db_status('repl','-1',server_id, host, db_type,'','','','')
                     func.update_db_status('repl_delay','-1',server_id, host, db_type,'','','','')
-                	
-                	
-                # 数据库角色变化告警
-                sql= "select database_role from oracle_status_his s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)
-                last_role=func.mysql_single_query(sql)
-                if last_role:
-                    if last_role != database_role:
-                        msg = "database role changed from %s to %s" %(last_role, database_role)
-                        send_mail = func.update_send_mail_status(server_id,db_type,'role_changed',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'role_changed',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'role_changed',session_total,'warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    
+                
 
                 # 数据库重启告警
                 sql= "select startup_time from oracle_status_his s where s.server_id = %s and connect = 1 order by id desc limit 1;" %(server_id)

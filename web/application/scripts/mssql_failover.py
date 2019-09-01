@@ -193,6 +193,7 @@ if __name__=="__main__":
 
             if res ==0:
                 update_switch_flag(mysql_conn, group_id)
+                common.gen_alert_sqlserver(sta_id, 1, db_name)     # generate alert
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', '0')
             else:
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', res)

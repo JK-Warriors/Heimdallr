@@ -20,6 +20,7 @@ import os
 import string
 import time
 import sys, getopt
+import traceback
 import paramiko
 
 import mysql_handle as mysql
@@ -31,6 +32,32 @@ import logging.config
 logging.config.fileConfig('./logging.conf')
 logger = logging.getLogger('WLBlazers')
 
+
+
+def get_option(key):
+    try:
+        mysql_conn = mysql.ConnectMysql()
+        sql="select value from options where name='%s'; " %(key)
+        option_value = mysql.GetSingleValue(mysql_conn, sql)
+        
+        return option_value
+        
+    except Exception, e:
+        print 'traceback.print_exc():'; traceback.print_exc()
+    finally:
+        pass
+
+send_mail_max_count = get_option('send_mail_max_count')
+send_mail_sleep_time = get_option('send_mail_sleep_time')
+mail_to_list_common = get_option('send_mail_to_list')
+
+send_sms_max_count = get_option('send_sms_max_count')
+send_sms_sleep_time = get_option('send_sms_sleep_time')
+sms_to_list_common = get_option('send_sms_to_list')
+
+g_alert = str(get_option('alert'))
+    
+    
 ###############################################################################
 # function log_dg_op_process
 ###############################################################################
@@ -427,4 +454,256 @@ def kill_sessions(mysql_conn, ora_conn, server_id):
             pass
     elif host_type==4:		#host type: 4:Windows
         logger.info("The database host type is Windows, Exit!")
-     
+        
+        
+################################################################################################################################
+# function 
+# 邮件相关功能
+################################################################################################################################
+def gen_alert_oracle(server_id, role_switch):
+    if g_alert != "1":
+        return -1
+        
+    mysql_conn = ''
+    try:
+        mysql_conn = mysql.ConnectMysql()
+    except Exception as e:
+        logger.error(e)
+        
+    sql = """SELECT a.server_id,
+										b.tags,
+										b.HOST,
+										b.PORT,
+										a.database_role,
+										b.send_mail,
+										b.send_mail_to_list,
+										b.send_sms,
+										b.send_sms_to_list,
+										'oracle' AS db_type
+									FROM oracle_status a, db_cfg_oracle b
+									WHERE a.server_id = b.id
+									  and a.server_id = %s """ %(server_id)
+    result=mysql.GetMultiValue(mysql_conn, sql)
+    if result <> 0:
+        for line in result:
+            server_id=line[0]
+            tags=line[1]
+            host=line[2]
+            port=line[3]
+            database_role=line[4]
+            send_mail=line[5]
+            send_mail_to_list=line[6]
+            send_sms=line[7]
+            send_sms_to_list=line[8]
+            db_type=line[9]
+        
+            if send_mail_to_list is None or  send_mail_to_list.strip()=='':
+                send_mail_to_list = mail_to_list_common
+            if send_sms_to_list is None or  send_sms_to_list.strip()=='':
+                send_sms_to_list = sms_to_list_common
+                
+            create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) 
+            if role_switch==1:
+                msg = "database role has been switched"
+                send_mail = update_send_mail_status(server_id,db_type,'role_switch',send_mail,send_mail_max_count)
+                send_sms  = update_send_sms_status(server_id,db_type,'role_switch',send_sms,send_sms_max_count)
+                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Primary','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+    else:
+       pass   
+                
+def gen_alert_mysql(server_id, role_switch):
+    if g_alert != "1":
+        return -1
+        
+    mysql_conn = ''
+    try:
+        mysql_conn = mysql.ConnectMysql()
+    except Exception as e:
+        logger.error(e)
+        
+    sql = """SELECT a.server_id,
+										b.tags,
+										b.host,
+										b.port,
+										b.send_mail,
+										b.send_mail_to_list,
+										b.send_sms,
+										b.send_sms_to_list,
+										'mysql' AS db_type
+									FROM mysql_status a, db_cfg_mysql b
+									WHERE a.server_id = b.id
+									and a.server_id = %s """ %(server_id)
+    result=mysql.GetMultiValue(mysql_conn, sql)
+    if result <> 0:
+        for line in result:
+            server_id=line[0]
+            tags=line[1]
+            host=line[2]
+            port=line[3]
+            send_mail=line[4]
+            send_mail_to_list=line[5]
+            send_sms=line[6]
+            send_sms_to_list=line[7]
+            db_type=line[8]
+            
+            if send_mail_to_list is None or  send_mail_to_list.strip()=='':
+                send_mail_to_list = mail_to_list_common
+            if send_sms_to_list is None or  send_sms_to_list.strip()=='':
+                send_sms_to_list = sms_to_list_common
+                
+            create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) 
+            if role_switch==1:
+                msg = "database role has been switched"
+                send_mail = update_send_mail_status(server_id,db_type,'role_switch',send_mail,send_mail_max_count)
+                send_sms  = update_send_sms_status(server_id,db_type,'role_switch',send_sms,send_sms_max_count)
+                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Master','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+    else:
+       pass
+       
+       
+def gen_alert_sqlserver(server_id, role_switch, db_name):
+    if g_alert != "1":
+        return -1
+        
+    mysql_conn = ''
+    try:
+        mysql_conn = mysql.ConnectMysql()
+    except Exception as e:
+        logger.error(e)
+
+        
+    sql = """SELECT a.server_id,
+									b.tags,
+									a.host,
+									a.port,
+									b.send_mail,
+									b.send_mail_to_list,
+									b.send_sms,
+									b.send_sms_to_list,
+									'sqlserver' AS db_type
+								FROM sqlserver_status a, db_cfg_sqlserver b
+								WHERE a.server_id = b.id 
+									and a.server_id = %s """ %(server_id)
+    result=mysql.GetMultiValue(mysql_conn, sql)
+    if result <> 0:
+        for line in result:
+            server_id=line[0]
+            tags=line[1]
+            host=line[2]
+            port=line[3]
+            send_mail=line[4]
+            send_mail_to_list=line[5]
+            send_sms=line[6]
+            send_sms_to_list=line[7]
+            db_type=line[8]
+        
+            if send_mail_to_list is None or  send_mail_to_list.strip()=='':
+                send_mail_to_list = mail_to_list_common
+            if send_sms_to_list is None or  send_sms_to_list.strip()=='':
+                send_sms_to_list = sms_to_list_common
+                
+            create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) 
+            if role_switch==1:
+                msg = "database mirror of %s has been switched" %(db_name)
+                send_mail = update_send_mail_status(server_id,db_type,'role_switch',send_mail,send_mail_max_count)
+                send_sms  = update_send_sms_status(server_id,db_type,'role_switch',send_sms,send_sms_max_count)
+                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Principal','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+
+    else:
+       pass
+
+
+def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+    try:
+        mysql_conn = mysql.ConnectMysql()
+        if db_type=='os':
+            count_str = "select id from alerts where host='%s' and alert_item='%s';" %(db_host,alert_item)
+            alert_count = mysql.GetSingleValue(mysql_conn, count_str)
+        
+            if int(alert_count) > 0 :
+                sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where host='%s' and alert_item='%s';" %(db_host,alert_item)
+                try:
+                    mysql.ExecuteSQL(mysql_conn, sql)
+                except Exception,e:
+                    print "Move alert to history: " + str(e)  
+                    
+                sql="delete from alerts where host='%s'  and alert_item='%s' ;" %(db_host,alert_item)
+                mysql.ExecuteSQL(mysql_conn, sql)
+        else:
+            count_str = "select count(1) from alerts where server_id=%s and db_type='%s' and alert_item='%s';" %(server_id,db_type,alert_item)
+            alert_count = mysql.GetSingleValue(mysql_conn, count_str)
+            
+            if int(alert_count) > 0 :
+                sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id=%s and db_type='%s' and alert_item='%s';" %(server_id,db_type,alert_item) 
+                try:
+                    mysql.ExecuteSQL(mysql_conn, sql)
+                except Exception,e:
+                    print "Move alert to history: " + str(e)   
+                          
+                sql="delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item)
+                mysql.ExecuteSQL(mysql_conn, sql)
+
+       	
+        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" %(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+        mysql.ExecuteSQL(mysql_conn, sql)
+
+        if send_mail == 1:
+            sql="delete from alerts_temp where server_id='%s' and ip='%s' and db_type='%s' and alert_item='%s' and alert_type='mail';" %(server_id,db_host,db_type,alert_item)
+            mysql.ExecuteSQL(mysql_conn, sql)
+            temp_sql = "insert into alerts_temp(server_id,ip,db_type,alert_item,alert_type) values(%s,'%s','%s','%s','%s');" %(server_id,db_host,db_type,alert_item,'mail')
+            mysql.ExecuteSQL(mysql_conn, temp_sql)
+        if send_sms == 1:
+            sql="delete from alerts_temp where server_id='%s' and ip='%s' and db_type='%s' and alert_item='%s' and alert_type='sms';" %(server_id,db_host,db_type,alert_item)
+            mysql.ExecuteSQL(mysql_conn, sql)
+            temp_sql = "insert into alerts_temp(server_id,ip,db_type,alert_item,alert_type) values(%s,%s,%s,%s,%s);" %(server_id,db_host,db_type,alert_item,'sms')
+            mysql.ExecuteSQL(mysql_conn, temp_sql)
+            
+           
+    except Exception,e:
+        print "Add alert: " + str(e)   
+    finally:
+        pass
+        
+        
+def update_send_mail_status(server,db_type,alert_item,send_mail,send_mail_max_count):
+    try:
+        mysql_conn = mysql.ConnectMysql()
+        sql=""
+        if db_type == "os":
+            sql="select count(1) from alerts_temp where ip='%s' and db_type='%s' and alert_item='%s' and alert_type='mail' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_mail_sleep_time)
+        else:
+            sql="select count(1) from alerts_temp where server_id=%s and db_type='%s' and alert_item='%s' and alert_type='mail' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_mail_sleep_time)
+        
+        #print sql
+        alert_count=mysql.GetSingleValue(mysql_conn, sql)
+        #print alert_count
+        if int(alert_count) > 0 :
+            send_mail = 0
+        else:
+            send_mail = send_mail
+        return send_mail
+    except Exception, e:
+        print 'traceback.print_exc():'; traceback.print_exc()
+    finally:
+        pass
+
+def update_send_sms_status(server,db_type,alert_item,send_sms,send_sms_max_count):
+    try:
+        mysql_conn = mysql.ConnectMysql()
+        sql=""
+        if db_type == "os":
+            sql="select count(1) from alerts_temp where ip='%s' and db_type='%s' and alert_item='%s' and alert_type='sms' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_sms_sleep_time)
+        else:
+            sql="select count(1) from alerts_temp where server_id=%s and db_type='%s' and alert_item='%s' and alert_type='sms' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_sms_sleep_time)
+
+        alert_count=mysql.GetSingleValue(mysql_conn, sql)
+        if int(alert_count) > 0 :
+            send_sms = 0
+        else:
+            send_sms = send_sms
+        return send_sms
+
+    except Exception, e:
+        print 'traceback.print_exc():'; traceback.print_exc()
+    finally:
+        pass

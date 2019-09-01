@@ -757,6 +757,7 @@ if __name__=="__main__":
                     
                     
                     update_switch_flag(mysql_conn, group_id)
+                    common.gen_alert_oracle(sta_id, 1)     # generate alert
                     common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', '0')
                 else:
                     common.update_op_result(mysql_conn, group_id, 'SWITCHOVER', res_2p)

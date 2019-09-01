@@ -260,6 +260,7 @@ if __name__=="__main__":
             res_2s=switch_mirror(mysql_conn, db_type, group_id, db_name, p_conn, s_conn, pri_id)
             if res_2s ==0:
                 update_switch_flag(mysql_conn, group_id)
+                common.gen_alert_sqlserver(sta_id, 1, db_name)     # generate alert
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'SWITCHOVER', '0')
             else:
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'SWITCHOVER', res_2s)

@@ -257,6 +257,7 @@ if __name__=="__main__":
             res = failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
             if res ==0:
                 update_switch_flag(mysql_conn, group_id)
+                common.gen_alert_oracle(sta_id, 1)     # generate alert
                 common.update_op_result(mysql_conn, group_id, 'FAILOVER', '0')
         except Exception,e:
             pass

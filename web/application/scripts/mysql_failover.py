@@ -11,7 +11,7 @@
 ######################################################################
 ##     Date        File            Changes
 ######################################################################
-##  08/17/2019                      Baseline version 1.0.0
+##  07/13/2019                      Baseline version 1.0.0
 ##
 ######################################################################
 
@@ -204,6 +204,7 @@ if __name__=="__main__":
             res_2m=switch2master(mysql_conn, db_type, group_id, s_conn, sta_id)
             if res_2m ==0:
                 update_switch_flag(mysql_conn, group_id)
+                common.gen_alert_mysql(sta_id, 1)     # generate alert
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', '0')
             else:
                 common.update_db_op_result(mysql_conn, db_type, group_id, 'FAILOVER', res_2m)

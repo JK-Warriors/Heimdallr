@@ -229,17 +229,8 @@ def check_mirror(mirror_id, pri_id, sta_id, db_name,is_switch):
             ms_info = sqlserver.get_mirror_info(s_conn, db_name)
             if ms_info:
                 if ms_info[4] == 1:
-                    # generate mirror alert
-                    logger.info("Generate mirror alert for server: %s begin:" %(s_id))
-                    alert.gen_alert_sqlserver_mirror(s_id, ms_info[4])    
-                    logger.info("Generate mirror alert for server: %s end." %(s_id))
                     logger.warn("The standby server: %s configured in mirror group is NOT match the mirroring_role!" %(s_id))
                 else:
-                    # generate mirror alert
-                    logger.info("Generate mirror alert for server: %s begin:" %(s_id))
-                    alert.gen_alert_sqlserver_mirror(s_id, ms_info[4])    
-                    logger.info("Generate mirror alert for server: %s end." %(s_id))
-                    
                     sql="insert into sqlserver_mirror_s(mirror_id,server_id,db_id,db_name,master_server,master_port,mirroring_role,mirroring_state,mirroring_state_desc,mirroring_safety_level,mirroring_partner_name,mirroring_partner_instance,mirroring_failover_lsn,mirroring_connection_timeout,mirroring_redo_queue,mirroring_end_of_log_lsn,mirroring_replication_lsn) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
                     param=(mirror_id,s_id,ms_info[0],ms_info[1],ms_info[2],ms_info[3],ms_info[4],ms_info[5],ms_info[6],ms_info[7],ms_info[8],ms_info[9],ms_info[10],ms_info[11],ms_info[12],ms_info[13],ms_info[14])
                     func.mysql_exec(sql,param)
