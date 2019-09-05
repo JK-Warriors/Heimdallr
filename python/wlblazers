@@ -4,7 +4,7 @@
 #############################################################################
 if test -z "$basedir"
 then
-  basedir=/usr/local/wlb
+  basedir=/usr/local/wlb/python
 else
   basedir="$basedir"
 fi
@@ -26,8 +26,16 @@ case "$arg" in
     if [ $wlblazers_process -ge "2" ];then
        echo " wlblazers server is already run!"
     else
-       cd $basedir && nohup  python wlblazers.py &> logs/wlblazers.log& 
+       cd $basedir 
+       if [ -f "wlblazers.py" ]; then
+          nohup python wlblazers.py &> logs/wlblazers.log & 
+       else
+          nohup python wlblazers.pyc &> logs/wlblazers.log & 
+       fi
+
+
        sleep 5
+       
        wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
        if [ $wlblazers_process -ge "2" ];then
           echo "wlblazers server start success!"

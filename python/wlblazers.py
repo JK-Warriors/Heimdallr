@@ -18,8 +18,12 @@ from multiprocessing import Process;
 
 def job_run(script_name,times):
     while True:
-        os.system("python "+script_name+".py")
-        time.sleep(int(times))
+        if os.path.exists(script_name+".py"):
+            os.system("python "+script_name+".py")
+            time.sleep(int(times))
+        else:
+            os.system("python "+script_name+".pyc")
+            time.sleep(int(times))
 
 
 def main():
