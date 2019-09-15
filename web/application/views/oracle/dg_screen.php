@@ -49,7 +49,7 @@
                 <div class="item-4"></div>
                 <div class="item-5"></div>
               </div>
-              <p><span class="spancolor">日志应用:</span> SEQ: <?php echo $standby_db[0]['s_sequence'] ?> BLOCK# <?php echo $standby_db[0]['s_block'] ?></p>
+              <p><span class="spancolor">日志应用:</span> 序列: <?php echo $standby_db[0]['s_sequence'] ?> 块号: <?php echo $standby_db[0]['s_block'] ?></p>
               <p><span class="spancolor">传输模式:</span> <?php if($primary_db[0]['transmit_mode']='ASYNCHRONOUS'){echo "异步模式";} else{echo "同步模式";} ?></p>
               
             </div>
@@ -57,7 +57,7 @@
               <p>生产系统</p>
               <img src="<?php if($primary_db[0]['open_mode']==-1){echo "lib/bootstrap/img/database_error.png";} else{echo "lib/bootstrap/img/database.png";} ?>" alt="" />
               <div class="mtext">
-                <li><span>SCN时间:</span> <?php echo $primary_db[0]['p_db_time'] ?></li>
+                <li><span>数据库时间:</span> <?php echo $primary_db[0]['p_db_time'] ?></li>
                 <li><span>实例名:</span> <?php echo $primary_db[0]['db_name'] ?></li>
                 <li><span>IP地址:</span> <?php  echo $primary_db[0]['p_host'] ?></li>
                 <li><span>数据库版本:</span> <?php  echo $primary_db[0]['db_version'] ?></li>
@@ -67,7 +67,7 @@
               <p>灾备系统</p>
               <img src="<?php if($standby_db[0]['open_mode']==-1){echo "lib/bootstrap/img/database_error.png";} else{echo "lib/bootstrap/img/database.png";} ?>" alt="" />
               <div class="mtext">
-                <li><span>SCN时间:</span> <?php echo $standby_db[0]['s_db_time'] ?></li>
+                <li><span>数据库时间:</span> <?php echo $standby_db[0]['s_db_time'] ?></li>
                 <li><span>实例名:</span> <?php echo $standby_db[0]['db_name'] ?></li>
                 <li><span>IP地址:</span> <?php  echo $standby_db[0]['s_host'] ?></li>
                 <li><span>数据库版本:</span> <?php  echo $standby_db[0]['db_version'] ?></li>
@@ -77,15 +77,15 @@
               <div class="mtext">
                 <li><span>当前SCN:</span><?php echo $primary_db[0]['p_scn'] ?></li>
             		<?php foreach ($primary_db as $item):?>
-                    <li><span>Thread:</span><?php echo $item['p_thread'] ?>
-                    <p class="sp2"><span>Sequence:</span> <?php echo $item['p_sequence'] ?></p>
+                    <li><span>线程:</span><?php echo $item['p_thread'] ?>
+                    <p class="sp2"><span>序列:</span> <?php echo $item['p_sequence'] ?></p>
                     </li>
             		<?php endforeach;?>
             		
                 <li><span>状态:</span><?php echo check_open_mode($primary_db[0]['open_mode']) ?></li>
-                <li style="<?php if($primary_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>"><span>生产库闪回状态:</span>未启动</li>
-                <li style="<?php if($primary_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>"><span>最早闪回时间:</span>
-                <li><span>闪回空间使用率:</span><?php echo $primary_db[0]['flashback_space_used'] ?>%</li>
+                <li style="<?php if($primary_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>"><span>生产库快照状态:</span>未启动</li>
+                <li style="<?php if($primary_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>"><span>最早快照时间:</span>
+                <li><span>快照空间使用率:</span><?php echo $primary_db[0]['flashback_space_used'] ?>%</li>
               </div>
             </div>
             <div class="m3 mr">
@@ -94,14 +94,14 @@
                 
                 <li><span>恢复速度:</span><?php echo $standby_db[0]['avg_apply_rate'] ?> KB/sec</p>
                 </li>
-      					<li><span>当前恢复:</span>thread#: <?php echo $standby_db[0]['s_thread'] ?>
-      						<p class="sp2">sequence: <?php echo $standby_db[0]['s_sequence']?></p>
+      					<li><span>当前恢复:</span>线程: <?php echo $standby_db[0]['s_thread'] ?>
+      						<p class="sp2">序列: <?php echo $standby_db[0]['s_sequence']?></p>
       					</li>
       
                 <li><span>状态:</span><?php echo check_open_mode($standby_db[0]['open_mode']) ?></li>
-                <li style="<?php if($standby_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>"><span>容灾库闪回状态:</span>未启动</li>
-                <li style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>"><span>最早闪回时间:</span><?php echo $standby_db[0]['flashback_e_time'] ?></li>
-                <li><span>闪回空间使用率:</span><?php echo $standby_db[0]['flashback_space_used'] ?>%</li>
+                <li style="<?php if($standby_db[0]['flashback_on']=='YES'){echo "display: none;";} ?>"><span>容灾库快照状态:</span>未启动</li>
+                <li style="<?php if($standby_db[0]['flashback_on']=='NO'){echo "display: none;";} ?>"><span>最早快照时间:</span><?php echo $standby_db[0]['flashback_e_time'] ?></li>
+                <li><span>快照空间使用率:</span><?php echo $standby_db[0]['flashback_space_used'] ?>%</li>
               </div>
             </div>
           </div>
@@ -161,12 +161,12 @@
         				?>
               	</b>
             </li>
-            <li><span>日志传输延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?><span style="display:inline-block;width:3.5em;"></span><?php echo $primary_db[1]['p_thread'] ?></b></li>
+            <li><span>日志传输延时线程:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?><span style="display:inline-block;width:3.5em;"></span><?php echo $primary_db[1]['p_thread'] ?></b></li>
             <li>
-              <span>日志传输延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['archived_delay'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['archived_delay'] ?></b>
+              <span>日志传输延时序列差异:</span><b class="orange"><?php echo $primary_db[0]['archived_delay'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['archived_delay'] ?></b>
             </li>
-            <li><span>日志应用延时thread:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['p_thread'] ?></b></li>
-            <li><span>日志应用延时sequence差异:</span><b class="orange"><?php echo $primary_db[0]['applied_delay'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['applied_delay'] ?></b></li>
+            <li><span>日志应用延时线程:</span><b class="orange"><?php echo $primary_db[0]['p_thread'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['p_thread'] ?></b></li>
+            <li><span>日志应用延时序列差异:</span><b class="orange"><?php echo $primary_db[0]['applied_delay'] ?><span style="display:inline-block;width: 3.5em;"></span><?php echo $primary_db[1]['applied_delay'] ?></b></li>
           </div>
         </div>
       </div>

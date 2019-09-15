@@ -41,7 +41,7 @@ $lang['_DataGuard Detail'] = '容灾详细';
 $lang['_DataGuard Manage'] = '容灾管理';
 $lang['_Tablespace Monitor'] = '表空间监控';
 $lang['_DiskGroup Monitor'] = '磁盘组监控';
-$lang['_Flashback'] = '闪回';
+$lang['_Flashback'] = '快照';
 
 $lang['_SQLServer Monitor'] = 'SQLServer';
 $lang['_Mirror List'] = '镜像列表';

@@ -53,12 +53,12 @@
 
 <div  style="padding:19px;height:200px; <?php if($setval['id']==""){echo "display:none;";} ?>">
     <div id="div_fb" class="controls">
-  		<label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回类型: </label>
+  		<label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*快照级别: </label>
   		
   		<div class="controls" style="display:inline-block;height:50px;">
-  		<label class="control-label" style="display:inline-block;padding-left:0px; width:80px">数据库闪回</label>
+  		<label class="control-label" style="display:inline-block;padding-left:0px; width:80px">数据库快照</label>
       <select id="flashback_type" onchange="fb_type_change(this)" class="input-large" style="display:none;">
-		  <option value="1"> 数据库闪回</option>
+		  <option value="1"> 数据库快照</option>
 		  <!-- <option value="2"> 表空间闪回</option> -->
 		  <!-- <option value="3"> 表格闪回</option> -->
       </select>
@@ -95,17 +95,17 @@
 
     <div>
 		    <div class="controls" style="display:inline-block;">
-				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回方式</label>
+				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*快照方式</label>
 				    <div class="controls" style="display:inline-block;height:50px;" >
 				      <select id="fb_method" onchange="fb_method_change(this)" class="input-large">
-								  <option value="1"> 按闪回点</option>
-								  <option value="2"> 按时间</option>
+								  <option value="1"> 按快照点</option>
+								  <option value="2"> 按颗粒时间</option>
 				      </select>
 				    </div>
 		    </div>
 		    
 		    <div id="div_point" class="controls">
-				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回点名称</label>
+				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*快照点名称</label>
 				    <div  class="controls" style="display:inline-block;height:50px;" >
 				      <select id="fb_point" class="input-large">
 				        <?php foreach ($restore_point as $item):?>
@@ -117,7 +117,7 @@
 		    
 		    
 		    <div id="div_time" class="controls">
-				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*闪回时间</label>
+				    <label class="control-label" style="display:inline-block;padding-left:15px; width:80px">*快照时间</label>
 				    <input id="fb_time" type="datetime-local" style="width:195px"/>
 		    </div>
     </div>
@@ -125,7 +125,7 @@
         
     <p>
     <div class="controls" style="padding-left:15px;">
-    <button type="submit" class="btn btn-success" onclick="checkUser(this)" > 开始闪回</button>
+    <button type="submit" class="btn btn-success" onclick="checkUser(this)" > 开始恢复</button>
   	</div>
 </div>
 

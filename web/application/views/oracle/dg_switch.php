@@ -62,13 +62,13 @@
         <div style='float:left; height:100px; width:280px;'>
         <label name="pri_host" class="control-label" for="">IP：<?php  echo $primary_db[0]['p_host'] ?></label>
         <label name="pri_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $primary_db[0]['db_name'] ?></label>
-        <label name="pri_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $primary_db[0]['open_mode'] ?></label>
+        <label name="pri_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo check_open_mode($primary_db[0]['open_mode']) ?></label>
         <label name="pri_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $primary_db[0]['p_port'] ?></label>
         </div>
         <div style='float:right; height:100px; width:280px;'>
         <label name="sta_host" class="control-label" for="">IP：<?php  echo $standby_db[0]['s_host'] ?></label>
         <label name="sta_dbname" class="control-label" for=""><?php echo $this->lang->line('db_name'); ?>：<?php echo $standby_db[0]['db_name'] ?></label>
-        <label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo $standby_db[0]['open_mode'] ?></label>
+        <label name="sta_dbstatus" class="control-label" for=""><?php echo $this->lang->line('db_status'); ?>：<?php echo check_open_mode($standby_db[0]['open_mode']) ?></label>
         <label name="sta_port" class="control-label" for=""><?php echo $this->lang->line('db_port'); ?>：<?php echo $standby_db[0]['s_port'] ?></label>
         </div>
     </div>
@@ -78,7 +78,7 @@
     <div style="float:left;"><img src="<?php if($primary_db[0]['open_mode']==-1){echo "./images/connect_error.png";} else{echo "./images/primary_db.png";}  ?> "/></div> 
 
         <div style="float:left;">
-        <label style='padding: 0px 0px 0px 120px;' class="control-label" for="">Seq：<?php echo $standby_db[0]['s_sequence'] ?> block# <?php echo $standby_db[0]['s_block'] ?></label>
+        <label style='padding: 0px 0px 0px 120px;' class="control-label" for="">序列：<?php echo $standby_db[0]['s_sequence'] ?> 块号: <?php echo $standby_db[0]['s_block'] ?></label>
         <img src="
         <?php
         $second_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))%86400%60);
@@ -148,10 +148,10 @@ function checkUser(e){
 			_message = "确认要开始灾难切换吗？";
 		}
 		else if(e.value == "SnapshotStart"){
-			_message = "确认要进入快照状态吗？";
+			_message = "确认要进入演练状态吗？";
 		}
 		else if(e.value == "SnapshotStop"){
-			_message = "确认要退出快照状态吗？";
+			_message = "确认要退出演练状态吗？";
 		}
 		else{
 			_message = "";
@@ -181,7 +181,7 @@ function checkUser(e){
 		  
 		  if(sta_db_role=="SNAPSHOT STANDBY" && e.value == "SnapshotStart"){
 					bootbox.alert({
-			        		message: "数据库已经处于快照模式！",
+			        		message: "数据库已经处于演练模式！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -195,7 +195,7 @@ function checkUser(e){
 		  
 		  if(fb_status=="NO" && e.value == "SnapshotStart"){
 					bootbox.alert({
-			        		message: "数据库没有开启闪回，无法进入快照模式！",
+			        		message: "数据库没有开启闪回，无法进入演练模式！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -209,7 +209,7 @@ function checkUser(e){
 		  
 		  if(sta_db_role=="PHYSICAL STANDBY" && e.value == "SnapshotStop"){
 					bootbox.alert({
-			        		message: "数据库不在快照模式中，无法退出！",
+			        		message: "数据库不在演练模式中，无法退出！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -224,7 +224,7 @@ function checkUser(e){
 		else{
 			if(sta_db_role=="SNAPSHOT STANDBY"){
 					bootbox.alert({
-			        		message: "数据库已经处于快照模式，无法进行主备切换及MRP起停等操作！",
+			        		message: "数据库已经处于演练模式，无法进行主备切换及同步起停等操作！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -241,7 +241,7 @@ function checkUser(e){
 		if((e.value == "MRPStart" || e.value == "MRPStop")){
 		  if(mrp_status=="1" && e.value == "MRPStart"){
 					bootbox.alert({
-			        		message: "MRP进程已经是开启状态！",
+			        		message: "同步进程已经是开启状态！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -255,7 +255,7 @@ function checkUser(e){
 		  
 		  if(mrp_status=="0" && e.value == "MRPStop"){
 					bootbox.alert({
-			        		message: "MRP进程已经是停止状态！",
+			        		message: "同步进程已经是停止状态！",
 			        		buttons: {
 								        ok: {
 								            label: '确定',
@@ -352,7 +352,7 @@ jQuery(document).ready(function(){
 			warningDiv.style.display="block";
 		}
 		else if(mrp_status=="0"){
-			$("#lb_warning").html("Warning: The MRP process is not running!!!");
+			$("#lb_warning").html("Warning: The synchronization process is not running!!!");
 			warningDiv.style.display="block";
 		}
 		
@@ -372,7 +372,7 @@ function queryHandle(url){
 							$("#lb_warning").html("The standby database is in Snapshot status.");
 						}
 						else{
-							$("#lb_warning").html("Warning: The MRP process is not running!!!");
+							$("#lb_warning").html("Warning: The synchronization process is not running!!!");
 						}
 						warningDiv.style.display="block";
         }
@@ -403,36 +403,36 @@ function queryHandle(url){
 		    						ok_message = "灾难切换成功";
 		        		}else if(json.op_type == "MRP_START"){
 		    						if(l_reason == 'null'){
-		    								error_message = "开启MRP失败，详细原因请查看相关日志";
+		    								error_message = "开启同步失败，详细原因请查看相关日志";
 		    						}else{
-		    								error_message = "开启MRP失败，原因是：" + json.op_reason;
+		    								error_message = "开启同步失败，原因是：" + json.op_reason;
 		    						}
 		    						
-		    						ok_message = "开启MRP成功";
+		    						ok_message = "开启同步成功";
 		        		}else if(json.op_type == "MRP_STOP"){
 		    						if(l_reason == 'null'){
-		    								error_message = "停止MRP失败，详细原因请查看相关日志";
+		    								error_message = "停止同步失败，详细原因请查看相关日志";
 		    						}else{
-		    								error_message = "停止MRP失败，原因是：" + json.op_reason;
+		    								error_message = "停止同步失败，原因是：" + json.op_reason;
 		    						}
 		    						
-		    						ok_message = "停止MRP成功";
+		    						ok_message = "停止同步成功";
 		        		}else if(json.op_type == "SNAPSHOT_START"){
 		    						if(l_reason == 'null'){
-		    								error_message = "进入快照模式失败，详细原因请查看相关日志";
+		    								error_message = "进入演练模式失败，详细原因请查看相关日志";
 		    						}else{
-		    								error_message = "进入快照模式失败，原因是：" + json.op_reason;
+		    								error_message = "进入演练模式失败，原因是：" + json.op_reason;
 		    						}
 		    						
-		    						ok_message = "进入快照模式成功";
+		    						ok_message = "进入演练模式成功";
 		        		}else if(json.op_type == "SNAPSHOT_STOP"){
 		    						if(l_reason == 'null'){
-		    								error_message = "退出快照模式失败，详细原因请查看相关日志";
+		    								error_message = "退出演练模式失败，详细原因请查看相关日志";
 		    						}else{
-		    								error_message = "退出快照模式失败，原因是：" + json.op_reason;
+		    								error_message = "退出演练模式失败，原因是：" + json.op_reason;
 		    						}
 		    						
-		    						ok_message = "退出快照模式成功";
+		    						ok_message = "退出演练模式成功";
 		        		}
         		
         				if(json.op_result == '-1'){
