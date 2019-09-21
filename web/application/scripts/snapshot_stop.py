@@ -56,7 +56,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     logger.info("The current instance status is: " + status)
 
     if version <=10:
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '停止快照状态失败，当前数据库版本不支持', 90, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '退出演练状态失败，当前数据库版本不支持', 90, 2)
         return result;
     	
     	
@@ -81,7 +81,7 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
             common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', rea_str, 90, 2)
             logger.info("Convert to physical standby failed!!! ")
         else:
-            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '停止快照模式成功', 90, 2)
+            common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '退出演练模式成功', 90, 2)
             logger.info("Convert to physical standby successfully.")
             result=0
             
@@ -94,8 +94,8 @@ def stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
         out, err = sqlplus.communicate()
         common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '开启同步进程成功', 90, 0)
     else:
-        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能停止快照')
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是SNAPSHOT STANDBY，不能停止快照', 90)
+        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是容灾库，不能退出演练')
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '验证数据库角色失败，当前数据库不是容灾库，不能退出演练', 90)
 	 
     return result;
 
@@ -177,7 +177,7 @@ if __name__=="__main__":
             common.update_op_result(mysql_conn, group_id, 'SNAPSHOT_STOP', '-1')
             sys.exit(2)
         
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '准备停止快照模式', 10, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_STOP', '准备退出演练模式', 10, 2)
         res = stop_mrp(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
         if res ==0:
             update_mrp_status(mysql_conn, sta_id)

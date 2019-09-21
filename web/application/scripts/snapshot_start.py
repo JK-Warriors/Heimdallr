@@ -47,7 +47,7 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     # get flashback status
     str='select flashback_on from v$database'
     fb_status=oracle.GetSingleValue(s_conn, str)
-    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取数据库闪回状态成功', 20, 2)
+    common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取数据库快照状态成功', 20, 2)
     logger.info("The current flashback status is: " + fb_status)
 	
     # get database version
@@ -60,13 +60,13 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
     common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '获取同步进程状态成功', 30, 2)
     
     if version <=10:
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '开启快照模式失败，当前数据库版本不支持', 90, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '进入演练模式失败，当前数据库版本不支持', 90, 2)
         common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_START', '当前数据库版本不支持')
         return result;
         
     if fb_status == "NO":
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '开启快照模式失败，当前数据库没有开启闪回', 90, 2)
-        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_START', '当前数据库没有开启闪回')
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '进入演练模式失败，当前数据库没有开启快照', 90, 2)
+        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_START', '当前数据库没有开启快照')
         return result;
         
     if role=="PHYSICAL STANDBY":
@@ -108,8 +108,8 @@ def start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id):
                 common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '数据库快照激活成功', 90, 2)
                 result=0
     else:
-        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能激活快照')
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '验证数据库角色失败，当前数据库不是PHYSICAL STANDBY，不能激活快照', 90)
+        common.update_op_reason(mysql_conn, group_id, 'SNAPSHOT_START', '验证数据库角色失败，当前数据库不是容灾库，不能激活快照')
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '验证数据库角色失败，当前数据库不是容灾库，不能激活快照', 90)
 	
     return result;
 
@@ -191,7 +191,7 @@ if __name__=="__main__":
             common.update_op_result(mysql_conn, group_id, 'SNAPSHOT_START', '-1')
             sys.exit(2)
         
-        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '准备进入快照状态', 10, 2)
+        common.log_dg_op_process(mysql_conn, group_id, 'SNAPSHOT_START', '准备进入演练模式', 10, 2)
         res = start_snapshot(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
         if res ==0:
             update_mrp_status(mysql_conn, sta_id)

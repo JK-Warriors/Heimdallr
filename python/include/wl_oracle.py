@@ -447,7 +447,21 @@ def get_dg_s_mrp(conn):
 
     finally:
         curs.close()
+
+def get_standby_redo_count(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""select count(1) from v$standby_log """);
+        result = curs.fetchone()[0]
         
+        return result
+    except Exception,e:
+        return 0
+        print e
+
+    finally:
+        curs.close()
+                
 
 def get_time_by_scn(conn, scn):
     try:

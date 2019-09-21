@@ -348,11 +348,11 @@ function checkUser(e){
   
 jQuery(document).ready(function(){
 		if(sta_db_role=="SNAPSHOT STANDBY"){
-			$("#lb_warning").html("The standby database is in Snapshot status.");
+			$("#lb_warning").html("容灾数据库处于快照状态.");
 			warningDiv.style.display="block";
 		}
 		else if(mrp_status=="0"){
-			$("#lb_warning").html("Warning: The synchronization process is not running!!!");
+			$("#lb_warning").html("警告: 同步进程没有启动!!!");
 			warningDiv.style.display="block";
 		}
 		
@@ -369,10 +369,10 @@ function queryHandle(url){
         
         if(json.mrp_status!='1' || json.sta_role=='SNAPSHOT STANDBY'){
 						if(json.sta_role=='SNAPSHOT STANDBY'){
-							$("#lb_warning").html("The standby database is in Snapshot status.");
+							$("#lb_warning").html("容灾数据库处于快照状态.");
 						}
 						else{
-							$("#lb_warning").html("Warning: The synchronization process is not running!!!");
+							$("#lb_warning").html("警告: 同步进程没有启动!!!");
 						}
 						warningDiv.style.display="block";
         }

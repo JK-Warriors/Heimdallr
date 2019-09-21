@@ -59,8 +59,8 @@
   		<label class="control-label" style="display:inline-block;padding-left:0px; width:80px">数据库快照</label>
       <select id="flashback_type" onchange="fb_type_change(this)" class="input-large" style="display:none;">
 		  <option value="1"> 数据库快照</option>
-		  <!-- <option value="2"> 表空间闪回</option> -->
-		  <!-- <option value="3"> 表格闪回</option> -->
+		  <!-- <option value="2"> 表空间快照</option> -->
+		  <!-- <option value="3"> 表格快照</option> -->
       </select>
     	</div>
     </div>
@@ -220,7 +220,7 @@ function checkUser(e){
 		//空值检查
 		if(fb_method == "1" && typeof(fb_point) == "undefined"){
 				bootbox.alert({
-		        		message: "闪回点名称不能为空!",
+		        		message: "快照点名称不能为空!",
 		        		buttons: {
 							        ok: {
 							            label: '确定',
@@ -235,7 +235,7 @@ function checkUser(e){
 		//flashback 状态检查
 		if(fb_status != "YES"){
 				bootbox.alert({
-		        		message: "该数据库没有开启闪回!",
+		        		message: "该数据库没有打开快照功能!",
 		        		buttons: {
 							        ok: {
 							            label: '确定',
@@ -256,7 +256,7 @@ function checkUser(e){
 		        if (md5(result) == user_pwd)
 		        { 
 							bootbox.dialog({
-							    message: "确定需要闪回吗？",
+							    message: "确定需要恢复到快照点吗？",
 							    buttons: {
 							        ok: {
 							            label: '确定',
@@ -275,7 +275,7 @@ function checkUser(e){
 											                        }
 											                    }
 		                										});
-		                						$("#inner_frame").busyLoad("show", {background: "rgba(52, 52, 52, 0.5)", text: "闪回中 ...", color: "blue", fontawesome: "fa fa-spinner fa-pulse fa-5x fa-fw " });
+		                						$("#inner_frame").busyLoad("show", {background: "rgba(52, 52, 52, 0.5)", text: "恢复中 ...", color: "blue", fontawesome: "fa fa-spinner fa-pulse fa-5x fa-fw " });
 		                						
 		                						oTimer = setInterval("get_fb_process(process_url)",2000);
 		                        }
@@ -316,7 +316,7 @@ function get_fb_process(url){
         		$("#inner_frame").busyLoad("hide");
         		
         		if(json.fb_result=='1'){
-        				fb_message = "闪回成功。";
+        				fb_message = "恢复成功。";
         		
 		        		bootbox.alert({
 				        		message: fb_message,
@@ -329,7 +329,7 @@ function get_fb_process(url){
 				        	});
         		}
         		else{
-        				fb_message = "闪回失败。原因是：" + json.fb_reason + "<p>MRP进程已经停止，是否跳转到管理页面重新开启MRP？";
+        				fb_message = "恢复到指定快照失败。原因是：" + json.fb_reason + "<p>同步进程已经停止，是否跳转到管理页面重新开启同步？";
         				
 								bootbox.dialog({
 								    message: fb_message,
@@ -356,7 +356,7 @@ function get_fb_process(url){
         		clearInterval(oTimer); 
         		$("#inner_frame").busyLoad("hide");
         		
-        		fb_message = "闪回失败，另外一个闪回进程正在运行中。闪回对象是：" + json.fb_object;
+        		fb_message = "恢复失败，另外一个恢复进程正在运行中。恢复对象是：" + json.fb_object;
         		
         		bootbox.alert({
 		        		message: fb_message,
@@ -404,9 +404,9 @@ Date.prototype.Format = function (fmt) {
 
 
 <script type="text/javascript">
-		//$("#inner_frame").busyLoad("show", {background: "rgba(52, 52, 52, 0.5)", text: "闪回中 ...", color: "blue", fontawesome: "fa fa-spinner fa-pulse fa-5x fa-fw " });
+		//$("#inner_frame").busyLoad("show", {background: "rgba(52, 52, 52, 0.5)", text: "恢复中 ...", color: "blue", fontawesome: "fa fa-spinner fa-pulse fa-5x fa-fw " });
 		//$("#inner_frame").busyLoad("hide");
-		//$("#inner_frame").busyLoad("show", {background: "rgba(52, 52, 52, 0.5)", text: "闪回中 ...", color: "blue", fontawesome: "fa fa-spinner fa-pulse fa-5x fa-fw " });
+		//$("#inner_frame").busyLoad("show", {background: "rgba(52, 52, 52, 0.5)", text: "恢复中 ...", color: "blue", fontawesome: "fa fa-spinner fa-pulse fa-5x fa-fw " });
 		
 </script>
 
