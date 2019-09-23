@@ -262,7 +262,7 @@ if __name__=="__main__":
                 if fb_method == "1":									#按闪回点闪回
                     restore_str = "flashback database to restore point %s;" %(fb_value)
                 elif fb_method == "2":								#按时间戳闪回
-                    new_value = fb_value.replace("T", " ") + ":00"
+                    new_value = fb_value.replace("T", " ")
                     restore_str = "flashback database to timestamp to_timestamp('%s','yy-mm-dd hh24:mi:ss');" %(new_value)
                     
                 logger.info("The flashback command is: %s" %(restore_str))

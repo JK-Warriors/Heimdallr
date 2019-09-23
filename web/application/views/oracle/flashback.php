@@ -380,7 +380,7 @@ $(document).ready(function(){
 	$("#div_point").show();
 	$("#div_time").hide();
   
-  var now_time=new Date().Format("yyyy-MM-ddTHH:mm"); 
+  var now_time=new Date().Format("yyyy-MM-ddTHH:mm:ss"); 
   $("#fb_time").val(now_time);
 });
 

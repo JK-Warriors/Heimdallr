@@ -94,7 +94,7 @@
     </div>
 
 
-		<div style="float:left; width:265px; height:30px; border:0px solid red;">
+		<div style="float:left; width:340px; height:30px; border:0px solid red;">
 		</div>
 		<div id="mrp_warning" style="float:left; width:400px; height:30px; border:0px solid red; color:red; <?php if($standby_db[0]['s_mrp_status']==1){echo "display: none;";} ?>">
 			<label id="lb_warning" class="control-label" style="font-size:18px;color:red; padding: 5px 0px 0px 20px;"></label>

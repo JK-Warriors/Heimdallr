@@ -553,7 +553,7 @@ def get_earliest_fbscn(conn):
 def get_earliest_fbtime(conn,flashback_retention):
     try:
         curs=conn.cursor()
-        curs.execute("""select to_char(min(time), 'yyyy-mm-dd hh24:mi:ss') mintime from v$restore_point where time > sysdate -%s/24/60 """ %(flashback_retention));
+        curs.execute("""select to_char(min(time) + 1/48, 'yyyy-mm-dd hh24:mi:ss') mintime from v$restore_point where time > sysdate -%s/24/60 """ %(flashback_retention));
         mintime = curs.fetchone()
         
         result = 'null'

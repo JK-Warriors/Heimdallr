@@ -5,6 +5,7 @@ import sys
 import string
 import time
 import datetime
+from subprocess import Popen, PIPE
 import MySQLdb
 import cx_Oracle
 import logging
@@ -513,6 +514,12 @@ def create_restore_point(conn, flashback_retention):
 
             cur = conn.cursor()
 
+            #生成闪回点
+            restore_name = db_unique_name + db_time
+            str = 'create restore point %s' %(restore_name)
+            cur.execute(str)
+            
+            '''
             try:
                 # 关闭MRP进程
                 stb_redo_count = oracle.get_standby_redo_count(conn)
@@ -522,23 +529,6 @@ def create_restore_point(conn, flashback_retention):
                 if mrp_status == 1:
                     str = 'alter database recover managed standby database cancel'
                     cur.execute(str)
-
-                # 删除过期的闪回点
-                inst_status = oracle.get_instance(conn,'status')
-                if inst_status == "MOUNTED":
-                    r_name_list = oracle.get_expire_restore_list(conn, flashback_retention)
-                    if r_name_list:
-                        for r_name in r_name_list:
-                            str = 'drop restore point %s' %(r_name[0])
-                            cur.execute(str)
-                            logger.info('drop expire restore point: %s' %(r_name[0]))
-                #
-            
-                #生成闪回点
-                restore_name = db_unique_name + db_time
-                str = 'create restore point %s' %(restore_name)
-                cur.execute(str)
-                
             finally: 
                 # 如果一开始MRP进程是开启状态，则创建完成后，再次开启MRP进程
                 if mrp_status == 1:
@@ -547,6 +537,8 @@ def create_restore_point(conn, flashback_retention):
                     else:
                         str = 'alter database recover managed standby database using current logfile disconnect from session'
                     cur.execute(str)
+            '''
+                  
 		
     except Exception, e:
         logger.error(e)
@@ -555,6 +547,73 @@ def create_restore_point(conn, flashback_retention):
             cur.close()
 
 
+######################################################################################################
+# function drop_expire_restore_point
+######################################################################################################           
+def drop_expire_restore_point(host,port,dsn,username,password,server_id,tags):
+    try:
+        conn = get_connect(server_id)
+        cur = conn.cursor()
+        
+        db_time = oracle.get_sysdate(conn)
+        open_mode = oracle.get_database(conn,'open_mode')
+        stb_redo_count = oracle.get_standby_redo_count(conn)
+        
+        parameters = oracle.get_parameters(conn)
+        flashback_retention = parameters['db_flashback_retention_target']
+        
+        p_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(server_id)
+        p_conn_str = func.mysql_single_query(p_str)
+
+        recover_str = ""
+        if stb_redo_count > 0:
+            recover_str = "alter database recover managed standby database using current logfile disconnect from session;"
+        else:
+            recover_str = "alter database recover managed standby database disconnect from session;"
+        
+        # 每天0点，删除过期的闪回点
+        if db_time[8:10] == "00":
+            r_name_list = oracle.get_expire_restore_list(conn, flashback_retention)
+            if r_name_list:
+                logger.info("begin drop expire restore point for server: %s" %(server_id))
+                if open_mode == "MOUNTED" or open_mode == "READ WRITE":
+                    for r_name in r_name_list:
+                        str = 'drop restore point %s' %(r_name[0])
+                        cur.execute(str)
+                        logger.info('drop expire restore point: %s for %s' %(r_name[0], server_id))
+                elif open_mode == "READ ONLY" or open_mode == "READ ONLY WITH APPLY":
+                    sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+                    sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
+                    sqlplus.stdin.write(bytes("startup mount"+os.linesep))
+                    out, err = sqlplus.communicate()
+                    logger.info(out)
+                    logger.error(err)
+                
+                    
+                    try:
+                        conn = get_connect(server_id)
+                        cur = conn.cursor()
+                        for r_name in r_name_list:
+                            str = 'drop restore point %s' %(r_name[0])
+                            cur.execute(str)
+                            logger.info('drop expire restore point: %s for %s' %(r_name[0], server_id))
+                    except Exception, e:
+                        logger.error(e)
+                    finally:
+                        sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
+                        sqlplus.stdin.write(bytes("alter database open;"+os.linesep))
+                        sqlplus.stdin.write(bytes(recover_str+os.linesep))
+                        out, err = sqlplus.communicate()
+                        logger.info(out)
+                        logger.error(err)
+    
+                logger.info("end drop expire restore point for server: %s" %(server_id))
+		
+    except Exception, e:
+        logger.error(e)
+    finally:
+        if cur:
+            cur.close()
 ######################################################################################################
 # function update_fb_retention
 ######################################################################################################   
@@ -669,6 +728,31 @@ def main():
         logger.warning("check oracle dataguard: not found any dataguard group")
 
     logger.info("check oracle dataguard finished.")
+    
+    
+    # drop expire restore point
+    logger.info("drop expire restore point start.")
+    if servers:
+        plist_3 = []
+        for row in servers:
+            server_id=row[0]
+            host=row[1]
+            port=row[2]
+            dsn=row[3]
+            username=row[4]
+            password=row[5]
+            tags=row[6]
+            p3 = Process(target = drop_expire_restore_point, args = (host,port,dsn,username,password,server_id,tags))
+            plist_3.append(p3)
+            p3.start()
+            
+        for p3 in plist_3:
+            p3.join()
+
+    else:
+        logger.warning("drop expire restore point: not found any dataguard group")
+
+    logger.info("drop expire restore point finished.")
 
 if __name__=='__main__':
     main()
