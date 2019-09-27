@@ -797,7 +797,7 @@ function check_open_mode($data){
     else if($data =="READ ONLY"){
         return "只读";
     }
-    else if($data =="MOUNT"){
+    else if($data =="MOUNTED"){
         return "日志应用";
     }
     else{

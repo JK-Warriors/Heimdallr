@@ -393,8 +393,16 @@ class Wl_oracle extends Front_Controller {
         				else{
         						$value = $fb_time;
         				}
-        				$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python fb_database.py -d ' . $id . ' -t ' . $fb_type . ' -m ' . $fb_method . ' -v ' . $value . ' -n ' . $restore_table . ' >fb_database.log 2>&1'; 
-		            $result = shell_exec($order);
+        				
+		            $file_full_name = $base_path . '/application/scripts/fb_database.py';
+		            $file_exists = file_exists($file_full_name);
+		            if($file_exists==1){
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python fb_database.py -d ' . $id . ' -t ' . $fb_type . ' -m ' . $fb_method . ' -v ' . $value . ' -n ' . $restore_table . ' >fb_database.log 2>&1';  
+		            }else{
+		                	$order = 'cd ' . $base_path . '/application/scripts/ && ' . 'python fb_database.pyc -d ' . $id . ' -t ' . $fb_type . ' -m ' . $fb_method . ' -v ' . $value . ' -n ' . $restore_table . ' >fb_database.log 2>&1';  
+		            }	
+		            errorLog($order);
+        				$result = shell_exec($order);
 		              
 		        }
 		        

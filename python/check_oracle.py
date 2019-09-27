@@ -514,12 +514,8 @@ def create_restore_point(conn, flashback_retention):
 
             cur = conn.cursor()
 
-            #生成闪回点
-            restore_name = db_unique_name + db_time
-            str = 'create restore point %s' %(restore_name)
-            cur.execute(str)
             
-            '''
+            
             try:
                 # 关闭MRP进程
                 stb_redo_count = oracle.get_standby_redo_count(conn)
@@ -529,6 +525,11 @@ def create_restore_point(conn, flashback_retention):
                 if mrp_status == 1:
                     str = 'alter database recover managed standby database cancel'
                     cur.execute(str)
+                    
+                #生成闪回点
+                restore_name = db_unique_name + db_time
+                str = 'create restore point %s' %(restore_name)
+                cur.execute(str)
             finally: 
                 # 如果一开始MRP进程是开启状态，则创建完成后，再次开启MRP进程
                 if mrp_status == 1:
@@ -537,7 +538,7 @@ def create_restore_point(conn, flashback_retention):
                     else:
                         str = 'alter database recover managed standby database using current logfile disconnect from session'
                     cur.execute(str)
-            '''
+            
                   
 		
     except Exception, e:

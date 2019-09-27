@@ -591,7 +591,7 @@ def get_last_fbtime(conn):
 def get_flashback_space_used(conn):
     try:
         curs=conn.cursor()
-        curs.execute("""select percent_space_used from v$flash_recovery_area_usage where file_type='FLASHBACK LOG' """);
+        curs.execute("""select sum(percent_space_used) from v$flash_recovery_area_usage """);
         fb_space = curs.fetchone()
         
         result = 0

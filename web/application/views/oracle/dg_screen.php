@@ -121,19 +121,19 @@
               <table border="0">
                 <tr>
                   <td>CPU空闲率</td>
-                  <td><?php echo $standby_os['cpu_idle_time'] ?>%</td>
+                  <td><?php if($standby_os['cpu_idle_time']==''){echo "";}else{echo $standby_os['cpu_idle_time'].'%';} ?></td>
                   <td>内存空闲率</td>
-                  <td><?php echo 100-$standby_os['mem_usage_rate'] ?>%</td>
+                  <td><?php if($standby_os['mem_usage_rate']==''){echo "";}else{echo 100-$standby_os['mem_usage_rate'].'%';} ?></td>
                 </tr>
                 <tr>
                   <td>Swap空闲率</td>
-                  <td><?php echo floor(($standby_os['swap_avail']/$standby_os['swap_total'])*100) ?>%</td>
+                  <td><?php if($standby_os['swap_avail']==''){echo "";}else{echo floor(($standby_os['swap_avail']/$standby_os['swap_total'])*100).'%';} ?></td>
                   <td>磁盘空闲率</td>
-                  <td><?php echo 100-$standby_os_disk['max_used'] ?>%</td>
+                  <td><?php if($standby_os_disk['max_used']==''){echo "";}else{echo 100-$standby_os_disk['max_used'].'%';} ?></td>
                 </tr>
                 <tr>
                   <td>Inode空闲率</td>
-                  <td>80%</td>
+                  <td></td>
                   <td>进程数</td>
                   <td><?php echo $standby_os['process'] ?></td>
                 </tr>
@@ -264,9 +264,9 @@
             {
               value: [<?php echo $standby_os['cpu_idle_time'] ?>, 
               <?php echo floor(($standby_os['swap_avail']/$standby_os['swap_total'])*100) ?>, 
-              <?php echo 100-$standby_os['mem_usage_rate'] ?>, 
-              <?php echo 100-$standby_os_disk['max_used'] ?>, 
-              80, 
+              <?php if($standby_os['mem_usage_rate']==''){echo 0;}else{echo 100-$standby_os['mem_usage_rate'];} ?>, 
+              <?php if($standby_os_disk['max_used']==''){echo 0;}else{echo 100-$standby_os_disk['max_used'];} ?>, 
+              <?php if($standby_os['cpu_idle_time']==''){echo 0;}else{echo 80;} ?>, 
               <?php echo floor(($standby_os['process']/$standby_os_cfg['threshold_critical_os_process'])*100) ?>]
             }
           ]
