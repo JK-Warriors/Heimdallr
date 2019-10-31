@@ -78,7 +78,9 @@ $lang['_Privilege'] = '权限节点';
 $lang['_Authorization'] = '授权管理';
 
 
-$lang['_Lock List'] = '锁列表';
+$lang['_DB List'] = '库列表';
+$lang['_Lock List'] = '锁查杀';
+$lang['_Session List'] = '会话跟踪';
 
 
 

@@ -33,7 +33,7 @@ INSERT INTO `admin_menu` VALUES ('13', 'SQLServer Monitor', '1', '0', 'wl_sqlser
 INSERT INTO `admin_menu` VALUES ('20', 'OS Monitor', '1', '0', 'wl_os', 'iconfont icon-zhuji', '0', '1', '8', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('21', 'Alarm Panel', '1', '0', 'alarm', 'iconfont icon-jinggao', '0', '1', '9', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('22', 'Permission System', '1', '0', 'rabc', 'iconfont icon-icon-quanxianxg', '0', '1', '10', CURRENT_TIMESTAMP);
-INSERT INTO `admin_menu` VALUES ('23', 'Tool Box', '1', '0', 'wl_lock', 'iconfont icon-icon-quanxianxg', '0', '1', '11', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('23', 'Tool Box', '1', '0', 'wl_tool', 'iconfont icon-icon-quanxianxg', '0', '1', '11', CURRENT_TIMESTAMP);
 
 -- ------------------Configure--------------------
 INSERT INTO `admin_menu` VALUES ('1001', 'Settings', '2', '10', 'settings/index', 'icon-list', '0', '1', '1', CURRENT_TIMESTAMP);
@@ -99,7 +99,8 @@ INSERT INTO `admin_menu` VALUES ('2205', 'Authorization', '2', '22', 'auth/index
 
 
 -- ------------------Tool Box--------------------
---INSERT INTO `admin_menu` VALUES ('2301', 'Lock List', '2', '23', 'wl_lock/index', '', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2301', 'Lock List', '2', '23', 'wl_tool/lock', '', '0', '1', '1', CURRENT_TIMESTAMP);
+INSERT INTO `admin_menu` VALUES ('2302', 'Session List', '2', '23', 'wl_tool/session', '', '0', '1', '2', CURRENT_TIMESTAMP);
 
 -- ----------------------------
 -- Table for admin_privilege
@@ -224,8 +225,11 @@ INSERT INTO `admin_privilege` VALUES ('1455', 'SQLServer Mirror Switch', '1302',
 
 
 -- --------------------------------------------------- Tool Box ------------------------------------------------------------
-INSERT INTO `admin_privilege` VALUES ('1501', 'Tool Box View', '2301', 'wl_lock/index', '501');
-INSERT INTO `admin_privilege` VALUES ('1502', 'Lock View', '2301', 'wl_lock/view_lock', '502');
+INSERT INTO `admin_privilege` VALUES ('1501', 'Lock View', '2301', 'wl_tool/lock', '501');
+INSERT INTO `admin_privilege` VALUES ('1502', 'Lock Detail View', '2301', 'wl_tool/lock_view', '502');
+INSERT INTO `admin_privilege` VALUES ('1503', 'Lock Detail View', '2301', 'wl_tool/kill_session', '503');
+INSERT INTO `admin_privilege` VALUES ('1504', 'Session View', '2302', 'wl_tool/session', '504');
+INSERT INTO `admin_privilege` VALUES ('1505', 'Session Trace', '2302', 'wl_tool/session_trace', '505');
 
 
 -- ---------------------------------------------------- MongoDB -----------------------------------------------------------
@@ -366,6 +370,9 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1454');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1455');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1501');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1502');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1503');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1504');
+INSERT INTO `admin_role_privilege` VALUES ('1', '1505');
 
 
 -- ----------------------------
