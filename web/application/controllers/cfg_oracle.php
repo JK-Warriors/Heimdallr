@@ -489,7 +489,9 @@ class cfg_oracle extends Front_Controller {
 										$data = array(
 											'group_name'=>$this->input->post('group_name'),
 											'primary_db_id'=>$this->input->post('primary_db'),
+											'primary_db_dest'=>$this->input->post('primary_dest'),
 											'standby_db_id'=>$this->input->post('standby_db'),
+											'standby_db_dest'=>$this->input->post('standby_dest'),
 											'fb_retention'=>$this->input->post('fb_retention'),
 											'shift_vip'=>$this->input->post('shift_vip'),
 											'node_vips'=>$this->input->post('node_vips'),
@@ -550,7 +552,9 @@ class cfg_oracle extends Front_Controller {
 								$data = array(
 									'group_name'=>$this->input->post('group_name'),
 									'primary_db_id'=>$this->input->post('primary_db'),
+									'primary_db_dest'=>$this->input->post('primary_dest'),
 									'standby_db_id'=>$this->input->post('standby_db'),
+									'standby_db_dest'=>$this->input->post('standby_dest'),
 									'fb_retention'=>$this->input->post('fb_retention'),
 									'shift_vip'=>$this->input->post('shift_vip'),
 									'node_vips'=>$this->input->post('node_vips'),

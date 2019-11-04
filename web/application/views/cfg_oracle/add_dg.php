@@ -49,6 +49,18 @@
   </div>
   
   <div class="control-group">
+   <label class="control-label" for="">*<?php echo $this->lang->line('primary_dest'); ?></label>
+   <div class="controls">
+     <select name="primary_dest" id="primary_dest" class="input-large"  >
+       <?php for($x=1; $x<=31; $x++){?>
+       <option value="<?php echo $x; ?>" ><?php echo $x; ?></option>
+       <?php } ?>
+       </select>
+       <span class="help-inline"></span>
+   </div>
+  </div>
+  
+  <div class="control-group">
    <label class="control-label" for="">*<?php echo $this->lang->line('standby_db'); ?></label>
    <div class="controls">
      <select name="standby_db" id="standby_db" class="input-large"  >
@@ -60,7 +72,17 @@
        <span class="help-inline"></span>
    </div>
   </div>
-
+  <div class="control-group">
+   <label class="control-label" for="">*<?php echo $this->lang->line('standby_dest'); ?></label>
+   <div class="controls">
+     <select name="standby_dest" id="standby_dest" class="input-large"  >
+       <?php for($x=1; $x<=31; $x++){?>
+       <option value="<?php echo $x; ?>" ><?php echo $x; ?></option>
+       <?php } ?>
+       </select>
+       <span class="help-inline"></span>
+   </div>
+  </div>
    <div class="control-group">
    <label class="control-label" for="">备库闪回保留天数：</label>
    <div class="controls">
@@ -165,7 +187,9 @@
  var group_id = "<?php echo $group_id ?>";
  var group_name = "<?php echo $dg[0]['group_name'] ?>";
  var primary_db = "<?php echo $dg[0]['primary_db_id'] ?>";
+ var primary_dest = "<?php echo $dg[0]['primary_db_dest'] ?>";
  var standby_db = "<?php echo $dg[0]['standby_db_id'] ?>";
+ var standby_dest = "<?php echo $dg[0]['standby_db_dest'] ?>";
  var fb_retention = "<?php echo $dg[0]['fb_retention'] ?>";
  var shift_vip = "<?php echo $dg[0]['shift_vip'] ?>";
  var node_vips = "<?php echo $dg[0]['node_vips'] ?>";
@@ -191,7 +215,9 @@
    if(group_id != ""){
      $("#group_name").val(group_name);
      $("#primary_db").val(primary_db);
+     $("#primary_dest").val(primary_dest);
      $("#standby_db").val(standby_db);
+     $("#standby_dest").val(standby_dest);
      $("#fb_retention").val(fb_retention);
      
      if(shift_vip == 1){
@@ -211,6 +237,8 @@
      $("#fb_retention").val("5");
 		 $("#div_node_vips").hide();
 		 $("#div_network_card").hide();
+     $("#primary_dest").val(2);
+     $("#standby_dest").val(2);
    }
    
 
@@ -291,7 +319,7 @@
 	    $.ajax({
 			        url: target_url,
 			        data: $("#form").serializeArray(),
-			        data: {"submit":submit,"group_id":group_id,"group_name":$("#group_name").val(),"primary_db":$("#primary_db").val(),"standby_db":$("#standby_db").val(),"fb_retention":$("#fb_retention").val(),"shift_vip":shift_vip,"node_vips":$("#node_vips").val(),"network_card":$("#network_card").val()},
+			        data: {"submit":submit,"group_id":group_id,"group_name":$("#group_name").val(),"primary_db":$("#primary_db").val(),"primary_dest":$("#primary_dest").val(),"standby_db":$("#standby_db").val(),"standby_dest":$("#standby_dest").val(),"fb_retention":$("#fb_retention").val(),"shift_vip":shift_vip,"node_vips":$("#node_vips").val(),"network_card":$("#network_card").val()},
 			        type: "POST",
 			        success: function (data) {
 			  			//回调函数，判断提交返回的数据执行相应逻辑

@@ -363,7 +363,10 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
         if p_conn:
             # collect primary information
             # dg_p_info = oracle.get_dg_p_info(p_conn, 1)
-            dg_p_info = oracle.get_dg_p_info_2(p_conn, 2)
+            p_dest=func.mysql_single_query("select case when t.primary_db_id = %s then t.primary_db_dest else t.standby_db_dest end from db_cfg_oracle_dg t where t.id = %s;" %(p_id, dg_id))
+            if p_dest is None:
+                p_dest = 2
+            dg_p_info = oracle.get_dg_p_info_2(p_conn, p_dest)
             
             dest_id = -1
             transmit_mode = "null"
