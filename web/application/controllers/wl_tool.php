@@ -46,20 +46,17 @@ class Wl_tool extends Front_Controller {
         
         if($db_type=='oracle'){
         	#step 1: get config
-	 				$conn_str = $this->tool->get_ora_conn_str_by_id($server_id);
-	 				$username = $this->tool->get_ora_username_by_id($server_id);
-	 				$password = $this->tool->get_ora_passwd_by_id($server_id);
+	 				$conn_str = $this->tool->get_conn_str_by_id($server_id, $db_type);
+	 				$username = $this->tool->get_username_by_id($server_id, $db_type);
+	 				$password = $this->tool->get_passwd_by_id($server_id, $db_type);
 	 				
 					try{
-	 					#errorLog($conn_str);
-	 					#errorLog($username);
-	 					#errorLog($password);
 						$conn = oci_connect($username,$password,$conn_str);
 						
 	  				if (!$conn) {
-	    				errorLog('wl_tool -> session -> Error: Unable to connect to Oracle.' . oci_error());
+	    				errorLog('wl_tool -> lock_view -> Error: Unable to connect to Oracle.' . oci_error());
 						}else{
-							#errorLog('wl_tool -> session -> Connect Succ'); 
+							#errorLog('wl_tool -> lock_view -> Connect Succ'); 
 	        		$sql="select s.sid, s.serial#, s.status, s.username, s.machine, s.program, s.client_info, o.object_name, l.type, l.lmode, l.ctime, s.sql_id, to_char(a.sql_fulltext) sql_text
 											from v\$session s, v\$lock l, v\$locked_object lo, dba_objects o, v\$sqlarea a
 											where s.type != 'BACKGROUND' 
@@ -88,7 +85,7 @@ class Wl_tool extends Front_Controller {
 	        		
 	        		$stmt = oci_parse($conn, $sql);
 	        		$result = oci_execute($stmt, OCI_DEFAULT);
-	        		#errorLog($result);
+	        		errorLog($result);
 							#$rows =oci_fetch_all($stmt, $session_data);
 							while (( $row  =  oci_fetch_array ( $stmt ,  OCI_NUM )) !=  false ) {
 								$nrow['sid'] = $row[0];
@@ -116,9 +113,61 @@ class Wl_tool extends Front_Controller {
 						if($stmt){oci_free_statement($stmt);};
 						if($conn){oci_close($conn);};
 					}
+					
+        	$this->layout->view("tool/lock_oracle", $data);
+        }
+        elseif($db_type=='mysql'){
+        	
+        	$this->layout->view("tool/lock_mysql", $data);
+        }
+        elseif($db_type=='sqlserver'){
+	 				$conn_str = $this->tool->get_conn_str_by_id($server_id, $db_type);
+	 				# example: dblib:host=192.168.100.10:1433
+	 				$username = $this->tool->get_username_by_id($server_id, $db_type);
+	 				$password = $this->tool->get_passwd_by_id($server_id, $db_type);
+	 				
+        	try{
+						$conn = new PDO($conn_str,$username,$password);
+						
+	  				if (!$conn) {
+	    				errorLog('Error: Unable to connect to SQLServer.');
+						}else{
+							#errorLog('Succ'); 
+	        		$sql="SELECT  [sid] = er.session_id ,
+								            ecid ,
+								            [dbname] = DB_NAME(sp.dbid) ,
+								            [username] = sp.login_time ,
+								            [status] = er.status ,
+								            [wait] = wait_type ,
+								            program = sp.program_name ,
+								            hostname ,
+								            sp.nt_domain ,
+								            start_time
+								    FROM    sys.dm_exec_requests er
+								            INNER JOIN sys.[dm_exec_sessions] es ON er.session_id = es.session_id
+								            INNER JOIN sys.sysprocesses sp ON er.session_id = sp.spid
+								    WHERE   es.is_user_process = 1  -- Ignore system spids.
+								      AND   er.session_id NOT IN ( @@SPID ) -- Ignore this current statement.
+									";
+								
+							foreach ($conn->query($sql) as $row) {
+								$session_data[]=$row;
+					    }
+							$data["session_data"]=$session_data;
+	        		
+						}
+						
+	        	
+					}
+					catch(PDOException $e){
+	 					errorLog($e->getMessage());
+					}finally {
+						$conn=null;			#关闭连接
+					}
+					
+        	$this->layout->view("tool/lock_sqlserver", $data);
         }
         
-        $this->layout->view("tool/lock_detail", $data);
 	}
 	
 
@@ -136,9 +185,9 @@ class Wl_tool extends Front_Controller {
         	$serial=isset($_POST["serial"]) ? $_POST["serial"] : "";
         	
         	#step 1: get config
-	 				$conn_str = $this->tool->get_ora_conn_str_by_id($server_id);
-	 				$username = $this->tool->get_ora_username_by_id($server_id);
-	 				$password = $this->tool->get_ora_passwd_by_id($server_id);
+	 				$conn_str = $this->tool->get_conn_str_by_id($server_id, $db_type);
+	 				$username = $this->tool->get_username_by_id($server_id, $db_type);
+	 				$password = $this->tool->get_passwd_by_id($server_id, $db_type);
 	 				
 					try{
 						$conn = oci_connect($username,$password,$conn_str);
@@ -151,7 +200,7 @@ class Wl_tool extends Front_Controller {
 							#errorLog($sql);
 	        		$stmt = oci_parse($conn, $sql);
 	        		$result = oci_execute($stmt, OCI_DEFAULT);
-	        		errorLog($result);
+	        		#errorLog($result);
 	        		if($result == 1){
 	        			$data["result"] = 1;
 	        		}
@@ -210,14 +259,11 @@ class Wl_tool extends Front_Controller {
         
         if($db_type=='oracle'){
         	#step 1: get config
-	 				$conn_str = $this->tool->get_ora_conn_str_by_id($server_id);
-	 				$username = $this->tool->get_ora_username_by_id($server_id);
-	 				$password = $this->tool->get_ora_passwd_by_id($server_id);
+	 				$conn_str = $this->tool->get_conn_str_by_id($server_id, $db_type);
+	 				$username = $this->tool->get_username_by_id($server_id, $db_type);
+	 				$password = $this->tool->get_passwd_by_id($server_id, $db_type);
 	 				
 					try{
-	 					#errorLog($conn_str);
-	 					#errorLog($username);
-	 					#errorLog($password);
 						$conn = oci_connect($username,$password,$conn_str);
 						
 	  				if (!$conn) {
@@ -270,10 +316,72 @@ class Wl_tool extends Front_Controller {
 						if($stmt){oci_free_statement($stmt);};
 						if($conn){oci_close($conn);};
 					}
+					
+        	$this->layout->view("tool/session_oracle", $data);
+        }
+        elseif($db_type=='mysql'){
+        	
+        	$this->layout->view("tool/session_mysql", $data);
+        }elseif($db_type=='sqlserver'){
+	 				$conn_str = $this->tool->get_conn_str_by_id($server_id, $db_type);
+	 				# example: dblib:host=192.168.100.10:1433
+	 				$username = $this->tool->get_username_by_id($server_id, $db_type);
+	 				$password = $this->tool->get_passwd_by_id($server_id, $db_type);
+	 				
+        	try{
+						$conn = new PDO($conn_str,$username,$password);
+						
+	  				if (!$conn) {
+	    				errorLog('Error: Unable to connect to SQLServer.');
+						}else{
+							#errorLog('Succ'); 
+	        		$sql="SELECT  [sid] = er.session_id ,
+								            ecid ,
+								            [dbname] = DB_NAME(sp.dbid) ,
+								            [username] = sp.login_time ,
+								            [status] = er.status ,
+								            [wait] = wait_type ,
+								            er.sql_handle,
+								            [sql_text] = SUBSTRING(qt.text,
+								                                           er.statement_start_offset / 2,
+								                                           ( CASE WHEN er.statement_end_offset = -1
+								                                                  THEN LEN(CONVERT(NVARCHAR(MAX), qt.text))
+								                                                       * 2
+								                                                  ELSE er.statement_end_offset
+								                                             END - er.statement_start_offset )
+								                                           / 2) ,
+								            [parent_sql_text] = qt.text ,
+								            program = sp.program_name ,
+								            hostname ,
+								            sp.nt_domain ,
+								            start_time
+								    FROM    sys.dm_exec_requests er
+								            INNER JOIN sys.[dm_exec_sessions] es ON er.session_id = es.session_id
+								            INNER JOIN sys.sysprocesses sp ON er.session_id = sp.spid
+								            CROSS APPLY sys.dm_exec_sql_text(er.sql_handle) AS qt
+								    WHERE   es.is_user_process = 1  -- Ignore system spids.
+								      AND   er.session_id NOT IN ( @@SPID ) -- Ignore this current statement.
+									";
+								
+							foreach ($conn->query($sql) as $row) {
+								$session_data[]=$row;
+					    }
+							$data["session_data"]=$session_data;
+	        		
+						}
+						
+	        	
+					}
+					catch(PDOException $e){
+	 					errorLog($e->getMessage());
+					}finally {
+						$conn=null;			#关闭连接
+					}
+					
+        	$this->layout->view("tool/session_sqlserver", $data);
         }
         
 				
-        $this->layout->view("tool/session_detail", $data);
 	}
 }	
 

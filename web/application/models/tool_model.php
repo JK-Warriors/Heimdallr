@@ -32,8 +32,14 @@ class Tool_model extends CI_Model{
         
 	}
 
-	function get_ora_conn_str_by_id($id){
-        $sql = "select concat(host, ':', port, '/', dsn) as conn_str from db_cfg_oracle where id = ". $id . "; ";
+	function get_conn_str_by_id($id, $db_type){
+				if($db_type == 'oracle'){
+        	$sql = "select concat(host, ':', port, '/', dsn) as conn_str from db_cfg_oracle where id = ". $id . "; ";
+				}
+				elseif($db_type == 'mysql'){
+				}elseif($db_type == 'sqlserver'){
+					$sql = "select concat('dblib:host=', host, ':', port) as conn_str from db_cfg_sqlserver where id = ". $id . "; ";
+				}
 																
         $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
@@ -43,8 +49,15 @@ class Tool_model extends CI_Model{
         }
 	}
 	
-	function get_ora_username_by_id($id){
-        $sql = "select username from db_cfg_oracle where id = ". $id . "; ";
+	function get_username_by_id($id, $db_type){
+				if($db_type == 'oracle'){
+        	$sql = "select username from db_cfg_oracle where id = ". $id . "; ";
+				}
+				elseif($db_type == 'mysql'){
+        	$sql = "select username from db_cfg_mysql where id = ". $id . "; ";
+				}elseif($db_type == 'sqlserver'){
+        	$sql = "select username from db_cfg_sqlserver where id = ". $id . "; ";
+				}
 																
         $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
@@ -54,8 +67,15 @@ class Tool_model extends CI_Model{
         }
 	}
 
-	function get_ora_passwd_by_id($id){
-        $sql = "select password from db_cfg_oracle where id = ". $id . "; ";
+	function get_passwd_by_id($id, $db_type){
+				if($db_type == 'oracle'){
+        	$sql = "select password from db_cfg_oracle where id = ". $id . "; ";
+				}
+				elseif($db_type == 'mysql'){
+        	$sql = "select password from db_cfg_mysql where id = ". $id . "; ";
+				}elseif($db_type == 'sqlserver'){
+        	$sql = "select password from db_cfg_sqlserver where id = ". $id . "; ";
+				}
 																
         $query=$this->db->query($sql);
         if ($query->num_rows() > 0)

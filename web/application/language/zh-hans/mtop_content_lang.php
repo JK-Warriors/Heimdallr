@@ -352,7 +352,27 @@ $lang['type'] = '类型';
 $lang['free_size'] = '空闲空间';
 
 $lang['opration'] = '操作'; 
-$lang['view_lock'] = '查看锁'; 
+$lang['lock_view'] = '查杀锁'; 
+$lang['lock_list'] = '锁列表'; 
+$lang['session_trace'] = '跟踪会话'; 
+$lang['session_list'] = '会话列表'; 
+$lang['sid'] = '会话ID'; 
+$lang['serial#'] = 'SERIAL#'; 
+$lang['machine'] = '机器名'; 
+$lang['program'] = '程序名'; 
+$lang['client_info'] = '客户端IP'; 
+$lang['object_name'] = '对象名'; 
+$lang['lock_type'] = '锁类型'; 
+$lang['lock_mode'] = '持有模式'; 
+$lang['hold_time'] = '持有时间'; 
+$lang['event'] = '等待事件'; 
+$lang['sql_id'] = 'SQL_ID'; 
+$lang['kill_session'] = '杀会话'; 
+$lang['please_input_username'] = '请输入用户名';
+$lang['please_input_machine'] = '请输入机器名';
+$lang['please_input_program'] = '请输入程序名';
+$lang['please_input_client_ip'] = '请输入客户端IP';
+$lang['please_input_object_name'] = '请输入对象名';
 
 #sqlsrver
 $lang['processes'] = '进程数';
