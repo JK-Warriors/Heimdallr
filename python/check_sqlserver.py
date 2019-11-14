@@ -62,6 +62,8 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         func.mysql_exec("insert into sqlserver_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_status where server_id = %s;" %(server_id),'')
         func.mysql_exec('delete from sqlserver_status where server_id = %s;' %(server_id),'')
 
+        #func.mysql_exec("insert into sqlserver_space_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from sqlserver_space where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from sqlserver_space where server_id = %s;' %(server_id),'')
 
         connect = 1
         role = -1
@@ -100,6 +102,54 @@ def check_sqlserver(host,port,username,passwd,server_id,tags):
         # generate sqlserver status alert
         alert.gen_alert_sqlserver_status(server_id)   
         
+        #check logspace
+        logspace = sqlserver.get_logspace(conn)
+        if logspace:
+           for line in logspace:
+              sql="insert into sqlserver_space(server_id,host,port,tags,db_name,total_size,max_rate,status) values(%s,%s,%s,%s,%s,%s,%s,%s)"
+              param=(server_id,host,port,tags,line[0],line[1],line[2],line[3])
+              func.mysql_exec(sql,param)
+              
+           #logger.info("Generate logspace alert for server: %s begin:" %(server_id))
+           #alert.gen_alert_sqlserver_logspace(server_id)    # generate logspace alert
+           #logger.info("Generate logspace alert for server: %s end." %(server_id))
+           
+        curr_time = sqlserver.get_curr_time(conn)
+        snap_id = sqlserver.get_snap_id(conn)
+        
+        # get total session, active session into table "sqlserver_session" for big view
+        sql = "select count(1) from sqlserver_session where server_id='%s' and snap_id=%s " %(server_id,snap_id)
+        li_count = func.mysql_single_query(sql)  
+        if li_count == 0:
+           sql = "insert into sqlserver_session(server_id, snap_id, end_time, total_session, active_session) values(%s,%s,%s,%s,%s);"
+           param = (server_id, snap_id, curr_time, processes, processes_running)
+           func.mysql_exec(sql,param)  
+                               
+        ##### get Buffer cache hit ratio
+        buf_cache_hit = sqlserver.get_buffer_cache_hit_rate(conn)
+        sql = "select count(1) from sqlserver_hit where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
+        li_count = func.mysql_single_query(sql)
+        if li_count == 0:
+           sql = "insert into sqlserver_hit(server_id, snap_id, end_time, type, rate) values(%s,%s,%s,%s,%s);"
+           param = (server_id, snap_id, curr_time, 'buffer cache hit ratio', buf_cache_hit)
+           func.mysql_exec(sql,param)                              
+                    
+        ##### get Buffer cache hit ratio
+        incr_logMbyte = 0
+        logMegabyte = sqlserver.get_logMegabyte(conn)
+        sql = "select count(1) from sqlserver_log where server_id='%s' and snap_id='%s'; " %(server_id,snap_id)
+        li_count = func.mysql_single_query(sql)
+        if li_count == 0:
+           sql = "select cntr_value from sqlserver_log where server_id='%s' and snap_id=(select max(snap_id) from sqlserver_log where server_id = '%s');; " %(server_id,server_id)
+           last_logMbyte = func.mysql_single_query(sql)
+           if last_logMbyte:
+              incr_logMbyte = logMegabyte - last_logMbyte
+           
+           sql = "insert into sqlserver_log(server_id, snap_id, end_time, cntr_value, incr_value) values(%s,%s,%s,%s,%s);"
+           param = (server_id, snap_id, curr_time, logMegabyte, incr_logMbyte)
+           func.mysql_exec(sql,param)  
+        
+                              
         func.mysql_exec("commit;",'')
         
         #send mail

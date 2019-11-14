@@ -13,7 +13,10 @@ class cfg_bigview_model extends CI_Model{
     
     
 	function get_total_db(){
-		$sql="select id, 'oracle' as db_type, host, port, dsn, tags from db_cfg_oracle where is_delete=0 order by id asc";
+		$sql="select id, 'oracle' as db_type, host, port, dsn, tags from db_cfg_oracle where is_delete=0
+					union
+					select id, 'sqlserver' as db_type, host, port, '', tags from db_cfg_sqlserver where is_delete=0
+					order by db_type, id asc";
     $query = $this->db->query($sql);
     
     if($query->num_rows() > 0)
@@ -36,7 +39,11 @@ class cfg_bigview_model extends CI_Model{
 		$sql="select o.id, 'oracle' as db_type, o.host, o.port, o.tags 
 						from db_cfg_oracle o
 						where o.is_delete=0 and o.id not in(select server_id from db_cfg_bigview where type='oracle' and metrix_name like 'center%')
-						order by id;";
+					union
+					select s.id, 'sqlserver' as db_type, s.host, s.port, s.tags 
+						from db_cfg_sqlserver s
+						where s.is_delete=0 and s.id not in(select server_id from db_cfg_bigview where type='sqlserver' and metrix_name like 'center%')
+					order by db_type, id;";
     $query = $this->db->query($sql);
     
     if($query->num_rows() > 0)
@@ -93,11 +100,13 @@ class cfg_bigview_model extends CI_Model{
 			$sql="update db_cfg_bigview b, db_cfg_mysql o
 						set b.server_id = o.id, b.host = o.host, b.port = o.port, b.type = 'mysql', b.tags = o.tags
 						where o.id = $id and b.metrix_name = '$metrix_name';";
+	    $this->db->query($sql);
 		}
 		elseif($db_type == 'sqlserver'){
 			$sql="update db_cfg_bigview b, db_cfg_sqlserver o
 						set b.server_id = o.id, b.host = o.host, b.port = o.port, b.type = 'sqlserver', b.tags = o.tags
 						where o.id = $id and b.metrix_name = '$metrix_name';";
+	    $this->db->query($sql);
 		}
 	}
 

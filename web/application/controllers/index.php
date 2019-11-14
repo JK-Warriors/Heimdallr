@@ -92,9 +92,17 @@ class Index extends Front_Controller {
         $center_db1 = $this->wlblazers->get_center_db('center_db1');
         $center_db2 = $this->wlblazers->get_center_db('center_db2');
         $center_db3 = $this->wlblazers->get_center_db('center_db3');
+        $center_db1_type = $this->wlblazers->get_center_dbtype('center_db1');
+        $center_db2_type = $this->wlblazers->get_center_dbtype('center_db2');
+        $center_db3_type = $this->wlblazers->get_center_dbtype('center_db3');
+        
+        $data["db1_type"] = $center_db1_type;
+        $data["db2_type"] = $center_db2_type;
+        $data["db3_type"] = $center_db3_type;
+      
         $core_db_id = $this->wlblazers->get_core_db();
         $core_os_host = $this->wlblazers->get_core_os();
-       
+        
         $data["center_db_count"] = $this->wlblazers->get_center_db_count();
         
         //get db name|tags
@@ -103,9 +111,9 @@ class Index extends Front_Controller {
         $data["db_tag_3"] = $this->wlblazers->get_db_tag('center_db3');
         
         //get db_time
-        $data["db_time_1"] = $this->wlblazers->get_db_time($center_db1);
-        $data["db_time_2"] = $this->wlblazers->get_db_time($center_db2);
-        $data["db_time_3"] = $this->wlblazers->get_db_time($center_db3);
+        $data["db_time_1"] = $this->wlblazers->get_db_time($center_db1,$center_db1_type);
+        $data["db_time_2"] = $this->wlblazers->get_db_time($center_db2,$center_db2_type);
+        $data["db_time_3"] = $this->wlblazers->get_db_time($center_db3,$center_db3_type);
         
         //get db time per day
         $data["db_time_per_day"] = $this->wlblazers->get_db_time_per_day($core_db_id);
@@ -115,19 +123,19 @@ class Index extends Front_Controller {
         $data["core_os_disk"] = $this->os->get_os_disk_info($core_os_host);
         		
         //get total session, active session
-        $data["db_session_1"] = $this->wlblazers->get_db_session($center_db1);
-        $data["db_session_2"] = $this->wlblazers->get_db_session($center_db2);
-        $data["db_session_3"] = $this->wlblazers->get_db_session($center_db3);
+        $data["db_session_1"] = $this->wlblazers->get_db_session($center_db1,$center_db1_type);
+        $data["db_session_2"] = $this->wlblazers->get_db_session($center_db2,$center_db2_type);
+        $data["db_session_3"] = $this->wlblazers->get_db_session($center_db3,$center_db3_type);
         
         //get top 5 tablespace
-        $data["space_1"] = $this->wlblazers->get_tablespace_top5($center_db1);
-        $data["space_2"] = $this->wlblazers->get_tablespace_top5($center_db2);
-        $data["space_3"] = $this->wlblazers->get_tablespace_top5($center_db3);
+        $data["space_1"] = $this->wlblazers->get_tablespace_top5($center_db1,$center_db1_type);
+        $data["space_2"] = $this->wlblazers->get_tablespace_top5($center_db2,$center_db2_type);
+        $data["space_3"] = $this->wlblazers->get_tablespace_top5($center_db3,$center_db3_type);
         
         //get first redo    
-        $data["redo_1"] = $this->oracle->get_oracle_redo($center_db1);
-        $data["redo_2"] = $this->oracle->get_oracle_redo($center_db2);
-        $data["redo_3"] = $this->oracle->get_oracle_redo($center_db3);
+        $data["redo_1"] = $this->wlblazers->get_log_per_hour($center_db1,$center_db1_type);
+        $data["redo_2"] = $this->wlblazers->get_log_per_hour($center_db2,$center_db2_type);
+        $data["redo_3"] = $this->wlblazers->get_log_per_hour($center_db3,$center_db3_type);
 
 
         //for os

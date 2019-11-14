@@ -50,9 +50,9 @@ def get_version(conn):
 def get_uptime(conn):
     try:
         curs=conn.cursor()
-        data=curs.execute("SELECT crdate time_restart,GETDATE() AS time_now,DATEDIFF(mi,crdate,GETDATE()) AS minutes_since_restart,@@cpu_busy/15000.0 AS minutes_cpu_busy,@@io_busy/15000.0 AS minutes_io_busy,@@idle/15000.0 AS minutes_idle,(@@cpu_busy+@@io_busy+@@idle)/15000.0 AS minutes_since_restart2,@@connections AS connections FROM master..sysdatabases WHERE name = 'tempdb'");
+        data=curs.execute("SELECT sqlserver_start_time as time_restart,GETDATE() AS time_now,DATEDIFF(mi,sqlserver_start_time,GETDATE()) AS days_since_restart FROM sys.dm_os_sys_info");
         data=curs.fetchone()
-        result  = int(data[2]*3600)
+        result  = int(data[2]*60)
     except Exception,e:
         print e
 
@@ -62,6 +62,81 @@ def get_uptime(conn):
     return result
 
 
+def get_curr_time(conn):
+    try:
+        curs=conn.cursor()
+        data=curs.execute("SELECT CONVERT(varchar(100), GETDATE(), 120 ) AS time_now");
+        result=curs.fetchone()
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+    return result
+    
+def get_snap_id(conn):
+    try:
+        curs=conn.cursor()
+        data=curs.execute("select CONVERT(varchar(100), GETDATE(), 112) + left(CONVERT(varchar(100), GETDATE(), 14),2) ");
+        result=curs.fetchone()[0]
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+    return result  
+    
+
+def get_buffer_cache_hit_rate(conn):
+    try:
+        curs=conn.cursor()
+        data=curs.execute("""SELECT CAST(CAST((a.cntr_value * 1.0 / b.cntr_value)*100 as int) AS VARCHAR(20)) as BufferCacheHitRatio
+															FROM (
+															        SELECT * FROM sys.dm_os_performance_counters
+															        WHERE counter_name = 'Buffer cache hit ratio'
+															        AND object_name = CASE WHEN @@SERVICENAME = 'MSSQLSERVER'
+															        THEN 'SQLServer:Buffer Manager'
+															        ELSE 'MSSQL$' + rtrim(@@SERVICENAME) +
+															        ':Buffer Manager' END 
+															    ) a
+															CROSS JOIN
+															(
+															    SELECT * from sys.dm_os_performance_counters
+															    WHERE counter_name = 'Buffer cache hit ratio base'
+															    and object_name = CASE WHEN @@SERVICENAME = 'MSSQLSERVER'
+															    THEN 'SQLServer:Buffer Manager'
+															    ELSE 'MSSQL$' + rtrim(@@SERVICENAME) +
+															    ':Buffer Manager' END 
+															) b """);
+        result=curs.fetchone()[0]
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+    return result  
+    
+
+def get_logMegabyte(conn):
+    try:
+        curs=conn.cursor()
+        data=curs.execute("""select cntr_value/1024
+															from  sys.dm_os_performance_counters
+															where counter_name  =  'Log File(s) Size (KB)'
+															and instance_name = '_Total' """);
+        result=curs.fetchone()[0]
+    except Exception,e:
+        print e
+
+    finally:
+        curs.close()
+
+    return result  
+    
+        
 def get_database(conn,field):
     try:
         curs=conn.cursor()
@@ -150,6 +225,21 @@ def get_mirror_info(conn, db_name):
     except Exception,e:
         print e
         return None
+
+    finally:
+        curs.close()
+        
+        
+def get_logspace(conn):
+    try:
+        curs=conn.cursor()
+        curs.execute("""DBCC SQLPERF(LOGSPACE) """);
+        list = curs.fetchall()
+        return list
+
+    except Exception,e:
+        return None
+        print e
 
     finally:
         curs.close()

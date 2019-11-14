@@ -117,7 +117,7 @@ $(this).appendTo($(this).parent()).show();
             <h1><?php echo $db_tag_1[tags] ?></h1>
           </div>
           <div class="d2">
-            <h2>负载（DB Time/Elapsed Time）</h2>
+            <h2>性能指数</h2>
             <div id="left2" style="width: 100%;height:100%;"></div>
           </div>
           <div class="d3">
@@ -125,13 +125,13 @@ $(this).appendTo($(this).parent()).show();
             <div id="left3" style="width: 100%;height:100%;"></div>
           </div>
           <div class="d4">
-            <h2>表空间使用率</h2>
+            <h2>空间使用率</h2>
             <ul>
             	<?php if(!empty($space_1)) {?>
 		        	<?php foreach ($space_1 as $item): ?>
 		          <li>
                 <div class="progress">
-                  <div class="progress-value"><?php echo $item['tablespace_name'] ?>:<span class="pdata"><?php echo $item['max_rate'] ?>%</span></div>
+                  <div class="progress-value"><?php echo $item['name'] ?>:<span class="pdata"><?php echo $item['max_rate'] ?>%</span></div>
                   <div class="progress-bar">
                     <div class="progress-data"></div>
                   </div>
@@ -165,7 +165,7 @@ $(this).appendTo($(this).parent()).show();
 		        	<?php foreach ($space_2 as $item): ?>
 		          <li>
                 <div class="progress">
-                  <div class="progress-value"><?php echo $item['tablespace_name'] ?>:<span class="pdata"><?php echo $item['max_rate'] ?>%</span></div>
+                  <div class="progress-value"><?php echo $item['name'] ?>:<span class="pdata"><?php echo $item['max_rate'] ?>%</span></div>
                   <div class="progress-bar">
                     <div class="progress-data"></div>
                   </div>
@@ -197,7 +197,7 @@ $(this).appendTo($(this).parent()).show();
 		        	<?php foreach ($space_3 as $item): ?>
 		          <li>
                 <div class="progress">
-                  <div class="progress-value"><?php echo $item['tablespace_name'] ?>:<span class="pdata"><?php echo $item['max_rate'] ?>%</span></div>
+                  <div class="progress-value"><?php echo $item['name'] ?>:<span class="pdata"><?php echo $item['max_rate'] ?>%</span></div>
                   <div class="progress-bar">
                     <div class="progress-data"></div>
                   </div>
@@ -464,7 +464,7 @@ var option = {
         axisPointer: {
             label: {
                 formatter: function(params) {
-                    return params.value + ' 负载';
+                    return params.value + ' <?php if($db1_type=="oracle"){echo "DB Time/Elapsed Time";}else if($db1_type=="sqlserver"){echo "Buffer Cache hit ratio";} ?>';
                 }
             }
         },
@@ -568,7 +568,7 @@ var option = {
         axisPointer: {
             label: {
                 formatter: function(params) {
-                    return params.value + ' 负载';
+                    return params.value + ' 会话';
                 }
             }
         },
@@ -784,7 +784,7 @@ var option = {
         axisPointer: {
             label: {
                 formatter: function(params) {
-                    return params.value + ' 负载';
+                    return params.value + ' <?php if($db2_type=="oracle"){echo "DB Time/Elapsed Time";}else if($db2_type=="sqlserver"){echo "Buffer Cache hit ratio";} ?>';
                 }
             }
         },
@@ -888,7 +888,7 @@ var option = {
         axisPointer: {
             label: {
                 formatter: function(params) {
-                    return params.value + ' 负载';
+                    return params.value + ' 会话';
                 }
             }
         },
@@ -1104,7 +1104,7 @@ var option = {
         axisPointer: {
             label: {
                 formatter: function(params) {
-                    return params.value + ' 负载';
+                    return params.value + ' <?php if($db3_type=="oracle"){echo "DB Time/Elapsed Time";}else if($db3_type=="sqlserver"){echo "Buffer Cache hit ratio";} ?>';
                 }
             }
         },
@@ -1208,7 +1208,7 @@ var option = {
         axisPointer: {
             label: {
                 formatter: function(params) {
-                    return params.value + ' 负载';
+                    return params.value + ' 会话';
                 }
             }
         },

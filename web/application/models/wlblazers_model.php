@@ -213,10 +213,18 @@ class Wlblazers_model extends CI_Model{
    /*
 	 * 获取 空间 相关统计信息
 	 */
-    function get_tablespace_top5($server_id){
-        $sql = "SELECT t.* FROM oracle_tablespace t WHERE t.server_id = $server_id order by max_rate desc limit 5";
+    function get_tablespace_top5($server_id, $db_type){
+    	if($db_type == 'oracle'){
+    		$sql = "SELECT tablespace_name as name, total_size, max_rate FROM oracle_tablespace t WHERE t.server_id = $server_id order by max_rate desc limit 5 ";
+    	}else if($db_type == 'mysql'){
+    		$sql = "";
+    	}else if($db_type == 'sqlserver'){
+    		$sql = "SELECT db_name as name, total_size, max_rate FROM sqlserver_space t WHERE t.server_id = $server_id order by max_rate desc limit 5 ";
+    	}else{
+    		$sql = "select 1";
+    	}
         
-        $query=$this->db->query($sql);
+      $query=$this->db->query($sql);
         
 				if ($query->num_rows() > 0)
 				{
@@ -234,7 +242,15 @@ class Wlblazers_model extends CI_Model{
            return $query->row_array()['server_id']; 
         }
     }
-    
+
+    function get_center_dbtype($metrix_name){
+        $query=$this->db->query("select type from db_cfg_bigview t where metrix_name = '$metrix_name'; ");
+        if ($query->num_rows() > 0)
+        {
+           return $query->row_array()['type']; 
+        }
+    }
+        
     function get_center_db_count(){
         $query=$this->db->query("select * from db_cfg_bigview t where metrix_name like 'center_db%' and server_id > 0; ");
         if ($query->num_rows() > 0)
@@ -276,13 +292,42 @@ class Wlblazers_model extends CI_Model{
    /*
 	 * 获取 db time
 	 */
-    function get_db_time($server_id){
-        $query=$this->db->query("select * from (select id, server_id, snap_id, end_time, db_time, elapsed, rate from oracle_db_time where server_id = $server_id order by snap_id desc limit 10) a order by snap_id  ");
+    function get_db_time($server_id, $db_type){
+    	if($db_type == 'oracle'){
+    		$sql = "select * from (select id, server_id, snap_id, end_time, db_time, elapsed, rate from oracle_db_time where server_id = $server_id order by snap_id desc limit 10) a order by snap_id ";
+    	}else if($db_type == 'mysql'){
+    		$sql = "";
+    	}else if($db_type == 'sqlserver'){
+    		$sql = "select * from (select id, server_id, snap_id, end_time, type, rate from sqlserver_hit where server_id = $server_id order by snap_id desc limit 10) a order by snap_id ";
+    	}else{
+    		$sql = "select 1";
+    	}
+    	
+      $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 
         }
     }
+    
+    function get_log_per_hour($server_id, $db_type){
+    	if($db_type == 'oracle'){
+    		$sql = "select * from (select * from oracle_redo where server_id = $server_id order by id desc limit 24) a order by id; ";
+    	}else if($db_type == 'mysql'){
+    		$sql = "";
+    	}else if($db_type == 'sqlserver'){
+    		$sql = "select * from (select id, end_time as key_time, incr_value as redo_log from sqlserver_log where server_id = $server_id order by id desc limit 24) a order by id; ";
+    	}else{
+    		$sql = "select 1";
+    	}
+      
+      $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+    }
+    
 
    /*
 	 * 按天获取 核心库 db time
@@ -306,8 +351,18 @@ class Wlblazers_model extends CI_Model{
    /*
 	 * 获取 db session
 	 */
-    function get_db_session($server_id){
-        $query=$this->db->query("select * from (select id, server_id, snap_id, end_time, total_session, active_session from oracle_session where server_id = $server_id order by snap_id desc limit 10) a order by snap_id ");
+    function get_db_session($server_id, $db_type){
+    	if($db_type == 'oracle'){
+    		$sql = "select * from (select id, server_id, snap_id, end_time, total_session, active_session from oracle_session where server_id = $server_id order by snap_id desc limit 10) a order by snap_id ";
+    	}else if($db_type == 'mysql'){
+    		$sql = "";
+    	}else if($db_type == 'sqlserver'){
+    		$sql = "select * from (select id, server_id, snap_id, end_time, total_session, active_session from sqlserver_session where server_id = $server_id order by snap_id desc limit 10) a order by snap_id ";
+    	}else{
+    		$sql = "select 1";
+    	}
+      
+      $query=$this->db->query($sql);
         if ($query->num_rows() > 0)
         {
            return $query->result_array(); 

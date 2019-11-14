@@ -122,7 +122,7 @@ def gen_alert_sqlserver_status(server_id):
                     if int(processes_running)>=int(threshold_critical_processes_running):
                         send_mail = func.update_send_mail_status(server_id,db_type,'processes_running',send_mail,send_mail_max_count)
                         send_sms = func.update_send_sms_status(server_id,db_type,'processes_running',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'processes_running',processes_runnging,'critical','too many processes running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        func.add_alert(server_id,tags,host,port,create_time,db_type,'processes_running',processes_running,'critical','too many processes running',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('actives',3,server_id, host, db_type,create_time,'processes_running',processes_running,'critical')
                     elif int(processes_running)>=int(threshold_warning_processes_running):
                         send_mail = func.update_send_mail_status(server_id,db_type,'processes_running',send_mail,send_mail_max_count)

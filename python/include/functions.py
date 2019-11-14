@@ -93,7 +93,6 @@ def mysql_single_query(sql):
         conn.select_db(dbname)
         curs = conn.cursor()
         count=curs.execute(sql)
-        
         if count:
             result=curs.fetchone()[0]
         

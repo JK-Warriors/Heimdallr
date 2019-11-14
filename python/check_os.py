@@ -509,12 +509,12 @@ def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
         outstr = str(r.std_out).replace("\r","")
         list_nic = outstr.split("\n")
         for i in list_nic:
-            if i.find("Name=")>=0 and i.find("Ethernet") > 0:
+            if i.find("Name=")>=0 and (i.find("Ethernet") > 0 or i.find("Gigabit") > 0):
                 func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
                 func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
             	
         for i in list_nic:
-            if i.find("Name=")>=0 and i.find("Ethernet") > 0:
+            if i.find("Name=")>=0 and (i.find("Ethernet") > 0 or i.find("Gigabit") > 0):
                 nic = i.replace("Name=","")
                 print nic
                 	
