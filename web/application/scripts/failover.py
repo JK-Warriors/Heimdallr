@@ -166,6 +166,142 @@ def update_switch_flag(mysql_conn, group_id):
 	
 
 
+################################################################################################################################
+# function bind_ip
+# 函数功能：绑定或者解绑IP
+################################################################################################################################
+def bind_ip(mysql_conn, group_id, server_id, dg_pid, op_type):
+    result=0
+    
+    host_ip=""
+    host_type=""
+    host_user=""
+    host_pwd=""
+    host_protocol=""
+    shift_vip=""
+    node_vips=""
+    network_card=""
+    network_card_p=""
+    network_card_s=""
+    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card_p, d.network_card_s
+										from db_cfg_oracle t, db_cfg_oracle_dg d
+										where d.is_delete = 0
+										and t.is_delete = 0
+										and d.id = %s
+										and t.id = %s """ %(group_id, server_id)
+    res = mysql.GetMultiValue(mysql_conn, query_str)
+    for row in res:
+        host_ip = row[0]
+        host_type = row[1]
+        host_user = row[2]
+        host_pwd = row[3]
+        host_protocol = row[4]
+        shift_vip = row[5]
+        node_vips = row[6]
+        network_card_p = row[7]
+        network_card_s = row[8]
+        
+    logger.info("The database host type is %s" %(host_type))
+
+
+    if server_id == dg_pid:
+        network_card = network_card_p
+    else:
+        network_card = network_card_s
+        
+
+    
+		# check host username
+    if host_user is None or host_user == "":
+        logger.info("The host user name is None, connect failed.")
+        return -1
+
+		# check shift vip
+    if shift_vip is None or shift_vip == 0:
+        logger.info("This DG Group have no request for shift vip, no need to unbind ip.")
+        return -1
+        
+    paramiko.util.log_to_file("paramiko.log")  
+    if host_type==0:                                    			#host type: 0:Linux; 1:AIX; 2:HP-UX; 3:Solaris
+        if host_protocol ==0:			#protocol is ssh2
+            try:
+                ssh = paramiko.SSHClient()  
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  
+      
+                ssh.connect(hostname=host_ip, port=22, username=host_user, password=host_pwd) 
+                stdin, stdout, stderr = ssh.exec_command("hostname")   
+                stdin.write("Y")  # Generally speaking, the first connection, need a simple interaction. 
+                print stdout.read()
+                
+                ip_list = node_vips.split(',')
+                i = 100
+                print ip_list
+                for ip in ip_list:
+                    ip_cmd = ""
+                    if op_type == "bind":
+                        #get network mask
+                        mask_cmd = "ifconfig -a %s | grep 'Mask' | awk -F ':' '{print $NF}'" %(network_card)
+                        stdin, stdout, stderr = ssh.exec_command(mask_cmd + "\n")  
+                        mask=stdout.read()
+                        
+                        #get network gateway
+                        gateway_cmd = "route -n | grep %s | awk '{print $2}' | grep -v '0.0.0.0'" %(network_card)
+                        stdin, stdout, stderr = ssh.exec_command(gateway_cmd + "\n")  
+                        gateway=stdout.read()
+
+
+                        ip_cmd = "ifconfig %s:%s %s netmask %s" %(network_card, i, ip, mask)
+                        ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
+                        print ip_cmd
+                        stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
+                        out_str=stdout.read()
+
+                        #arp
+                        arp_cmd = "arping -U -c 1 -I %s -s %s %s" %(network_card, ip, gateway)
+                        #arping -U -c 1 -I $nic -s $scanip $net_gateway
+                        print arp_cmd
+                        stdin, stdout, stderr = ssh.exec_command(arp_cmd + "\n")  
+                        out_str=stdout.read()
+
+                    elif op_type == "unbind":
+                        ip_cmd = "ifconfig %s:%s down" %(network_card, i)
+                        ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
+                        
+                        print ip_cmd
+                        stdin, stdout, stderr = ssh.exec_command(ip_cmd + "\n")  
+                        out_str=stdout.read()
+                    
+
+                    ck_cmd = "ifconfig | grep %s:%s | wc -l" %(network_card, i)
+                    stdin, stdout, stderr = ssh.exec_command(ck_cmd + "\n")  
+                    out_str=stdout.read().strip("\n")
+                    if out_str.isdigit():
+                        if op_type == "bind" and out_str == "0":
+                            result = -1
+                        if op_type == "unbind" and out_str == "1":
+                            result = -1
+                    else:
+                        result = -1
+                        
+                    
+                    
+                    
+                    i = i + 1
+            		
+            except:
+            		pass
+            finally:
+            		ssh.close() 
+            		pass
+        elif host_protocol ==1:   				#protocol is telnet
+            result = -1
+            pass
+    elif host_type==4:		#host type: 4:Windows
+        result = -1
+        logger.info("The database host type is Windows, Exit!")   
+              
+    return result
+
     
 ###############################################################################
 # main function
@@ -207,6 +343,10 @@ if __name__=="__main__":
 	
     logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 	
+    dg_pid_str = """select t.primary_db_id from db_cfg_oracle_dg t where id = %s """ %(group_id)
+    dg_pid = mysql.GetSingleValue(mysql_conn, dg_pid_str)
+
+
     try:
         common.operation_lock(mysql_conn, group_id, 'FAILOVER')
         
@@ -256,6 +396,17 @@ if __name__=="__main__":
             common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '准备执行灾难切换', 10, 2)
             res = failover2primary(mysql_conn, group_id, s_conn, s_conn_str, sta_id)
             if res ==0:
+                #shift vip
+                if is_shift == 1:
+                    common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '开始绑定VIP...', 92, 2)
+                    logger.info("开始绑定VIP...")   
+                    res = bind_ip(mysql_conn, group_id, sta_id, dg_pid, "bind")
+                    if res == -1:
+                        common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '绑定VIP失败', 95, 2)
+                    else:
+                        common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', '绑定VIP成功', 95, 2)
+                    common.log_dg_op_process(mysql_conn, group_id, 'FAILOVER', 'VIP绑定结束', 95, 2)
+
                 update_switch_flag(mysql_conn, group_id)
                 common.gen_alert_oracle(sta_id, 1)     # generate alert
                 common.update_op_result(mysql_conn, group_id, 'FAILOVER', '0')

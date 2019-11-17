@@ -429,7 +429,7 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
 # function bind_ip
 # 函数功能：绑定或者解绑IP
 ################################################################################################################################
-def bind_ip(mysql_conn, group_id, server_id, op_type):
+def bind_ip(mysql_conn, group_id, server_id, dg_pid, op_type):
     result=0
     
     host_ip=""
@@ -440,7 +440,9 @@ def bind_ip(mysql_conn, group_id, server_id, op_type):
     shift_vip=""
     node_vips=""
     network_card=""
-    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card
+    network_card_p=""
+    network_card_s=""
+    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card_p, d.network_card_s
 										from db_cfg_oracle t, db_cfg_oracle_dg d
 										where d.is_delete = 0
 										and t.is_delete = 0
@@ -455,9 +457,18 @@ def bind_ip(mysql_conn, group_id, server_id, op_type):
         host_protocol = row[4]
         shift_vip = row[5]
         node_vips = row[6]
-        network_card = row[7]
+        network_card_p = row[7]
+        network_card_s = row[8]
         
     logger.info("The database host type is %s" %(host_type))
+
+
+    if server_id == dg_pid:
+        network_card = network_card_p
+    else:
+        network_card = network_card_s
+        
+
     
 		# check host username
     if host_user is None or host_user == "":
@@ -560,16 +571,25 @@ def shift_vip(mysql_conn, group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, 
         #切换
         logger.info("group_id: %s, is_p_rac: %s, is_s_rac: %s, pri_id: %s, sta_id: %s, dg_pid: %s, dg_sid: %s" %(group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, dg_sid))   
         #logger.info("%s, %s, %s, %s" %(type(pri_id),type(sta_id),type(dg_pid),type(dg_sid)))  
-        if is_p_rac == "TRUE" and int(pri_id) == int(dg_pid):
-            logger.info("stop vip on %s..." %(pri_id))   
-            res = disable_vip(mysql_conn, group_id, pri_id, "stop")
-            if res == -1:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '停止VIP失败', 95, 2)
+        if int(dg_pid) == int(pri_id):
+            if is_p_rac == "TRUE":
+                logger.info("stop vip on %s..." %(pri_id))   
+                res = disable_vip(mysql_conn, group_id, pri_id, "stop")
+                if res == -1:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '停止VIP失败', 95, 2)
+                else:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '停止VIP成功', 95, 2)
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '停止VIP成功', 95, 2)
+                logger.info("unbind ip from %s..." %(pri_id))   
+                res = bind_ip(mysql_conn, group_id, pri_id, dg_pid, "unbind")
+                if res == -1:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '解除IP绑定失败', 95, 2)
+                else:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '解除IP绑定成功', 95, 2)
+
         if int(dg_sid) == int(sta_id):										#配置表里面的备库正是现在的备库
             logger.info("bind ip on %s..." %(sta_id))   
-            res = bind_ip(mysql_conn, group_id, sta_id, "bind")
+            res = bind_ip(mysql_conn, group_id, sta_id, dg_pid, "bind")
             if res == -1:
                 common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '绑定IP失败', 95, 2)
             else:
@@ -578,19 +598,27 @@ def shift_vip(mysql_conn, group_id, is_p_rac, is_s_rac, pri_id, sta_id, dg_pid, 
         #回切
         if int(dg_sid) == int(pri_id):									#配置表里面的备库已然是现在的主库，切换实际上是回切
             logger.info("unbind ip from %s..." %(pri_id))   
-            res = bind_ip(mysql_conn, group_id, pri_id, "unbind")
+            res = bind_ip(mysql_conn, group_id, pri_id, dg_pid, "unbind")
             if res == -1:
                 common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '解除IP绑定失败', 95, 2)
             else:
                 common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '解除IP绑定成功', 95, 2)
             
-        if is_s_rac == "TRUE" and int(sta_id) == int(dg_pid):
-            logger.info("start vip on %s..." %(sta_id))   
-            res = disable_vip(mysql_conn, group_id, sta_id, "start")
-            if res == -1:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '启动VIP失败', 95, 2)
+        if int(sta_id) == int(dg_pid):
+            if is_s_rac == "TRUE":
+                logger.info("start vip on %s..." %(sta_id))   
+                res = disable_vip(mysql_conn, group_id, sta_id, "start")
+                if res == -1:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '启动VIP失败', 95, 2)
+                else:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '启动VIP成功', 95, 2)
             else:
-                common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '启动VIP成功', 95, 2)
+                logger.info("bind ip on %s..." %(sta_id))   
+                res = bind_ip(mysql_conn, group_id, sta_id, dg_pid, "bind")
+                if res == -1:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '绑定IP失败', 95, 2)
+                else:
+                    common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '绑定IP成功', 95, 2)
         
     except Exception,e:
         print e.message

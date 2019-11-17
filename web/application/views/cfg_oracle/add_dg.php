@@ -106,10 +106,16 @@
    	<label>注：多个IP请使用逗号分割</label>
   	</div>
   </div>
-  <div id="div_network_card" class="control-group">
+  <div id="div_network_card_p" class="control-group">
+   <label class="control-label" for="">主库网卡名称：</label>
+   <div class="controls">
+     <input type="text" id="network_card_p"  name="network_card_p" style="width: 300px;">
+   </div>
+  </div>
+  <div id="div_network_card_s" class="control-group">
    <label class="control-label" for="">备库网卡名称：</label>
    <div class="controls">
-     <input type="text" id="network_card"  name="network_card" style="width: 300px;">
+     <input type="text" id="network_card_s"  name="network_card_s" style="width: 300px;">
    </div>
   </div>
 
@@ -193,7 +199,8 @@
  var fb_retention = "<?php echo $dg[0]['fb_retention'] ?>";
  var shift_vip = "<?php echo $dg[0]['shift_vip'] ?>";
  var node_vips = "<?php echo $dg[0]['node_vips'] ?>";
- var network_card = "<?php echo $dg[0]['network_card'] ?>";
+ var network_card_p = "<?php echo $dg[0]['network_card_p'] ?>";
+ var network_card_s = "<?php echo $dg[0]['network_card_s'] ?>";
  var error_code = "<?php echo $error_code ?>";
  
  $(' .confirm_delete').click(function(){
@@ -224,19 +231,23 @@
      		$("#shift_vip").attr("checked","checked");
      		
 				$("#div_node_vips").show();
-				$("#div_network_card").show();
+				$("#div_network_card_p").show();
+				$("#div_network_card_s").show();
      		$("#node_vips").val(node_vips);
-     		$("#network_card").val(network_card);
+     		$("#network_card_p").val(network_card_p);
+     		$("#network_card_s").val(network_card_s);
      }else{
 				$("#div_node_vips").hide();
-				$("#div_network_card").hide();
+				$("#div_network_card_p").hide();
+				$("#div_network_card_s").hide();
      }
      
    }
    else{
      $("#fb_retention").val("5");
 		 $("#div_node_vips").hide();
-		 $("#div_network_card").hide();
+		 $("#div_network_card_p").hide();
+		 $("#div_network_card_s").hide();
      $("#primary_dest").val(2);
      $("#standby_dest").val(2);
    }
@@ -248,12 +259,15 @@
 		//alert($("#is_vip_shift").is(':checked'));
 		if($("#shift_vip").is(':checked') == true){
 				$("#div_node_vips").show();
-				$("#div_network_card").show();
+				$("#div_network_card_p").show();
+				$("#div_network_card_s").show();
 		}else{
 				$("#div_node_vips").hide();
-				$("#div_network_card").hide();
+				$("#div_network_card_p").hide();
+				$("#div_network_card_s").hide();
 				$("#node_vips").val("");
-				$("#network_card").val("");
+				$("#network_card_p").val("");
+				$("#network_card_s").val("");
 		}
 		
  });
@@ -319,7 +333,7 @@
 	    $.ajax({
 			        url: target_url,
 			        data: $("#form").serializeArray(),
-			        data: {"submit":submit,"group_id":group_id,"group_name":$("#group_name").val(),"primary_db":$("#primary_db").val(),"primary_dest":$("#primary_dest").val(),"standby_db":$("#standby_db").val(),"standby_dest":$("#standby_dest").val(),"fb_retention":$("#fb_retention").val(),"shift_vip":shift_vip,"node_vips":$("#node_vips").val(),"network_card":$("#network_card").val()},
+			        data: {"submit":submit,"group_id":group_id,"group_name":$("#group_name").val(),"primary_db":$("#primary_db").val(),"primary_dest":$("#primary_dest").val(),"standby_db":$("#standby_db").val(),"standby_dest":$("#standby_dest").val(),"fb_retention":$("#fb_retention").val(),"shift_vip":shift_vip,"node_vips":$("#node_vips").val(),"network_card_p":$("#network_card_p").val(),"network_card_s":$("#network_card_s").val()},
 			        type: "POST",
 			        success: function (data) {
 			  			//回调函数，判断提交返回的数据执行相应逻辑
