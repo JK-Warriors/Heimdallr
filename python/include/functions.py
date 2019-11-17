@@ -10,6 +10,10 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 import ConfigParser
 import smtplib
+import logging
+import logging.config
+logging.config.fileConfig("etc/logger.ini")
+logger = logging.getLogger("wlblazers")
 from email.mime.text import MIMEText
 from email.message import Message
 from email.header import Header
@@ -66,11 +70,12 @@ def mysql_exec(sql,param):
         else:
             curs.execute(sql)
         conn.commit()
-        curs.close()
-        conn.close()
     except Exception,e:
-       print "mysql execute: " + str(e) 
-       print "sql: " + sql
+       logger.error("mysql execute: %s" %(str(e)))
+       logger.error("sql: %s" %(sql))
+    finally:
+        curs.close()
+        conn.close()  
 
 
 def mysql_query(sql):

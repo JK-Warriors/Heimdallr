@@ -596,7 +596,9 @@ def get_flashback_space_used(conn):
         
         result = 0
         if fb_space:
-           result = fb_space[0]
+            result = fb_space[0]
+            if result == '' or result is None:
+                result = 0
 
         return result
     except Exception,e:
