@@ -494,7 +494,7 @@ def bind_ip(mysql_conn, group_id, server_id, dg_pid, op_type):
                 
                 ip_list = node_vips.split(',')
                 i = 100
-                print ip_list
+                
                 for ip in ip_list:
                     ip_cmd = ""
                     if op_type == "bind":

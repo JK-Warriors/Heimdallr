@@ -60,7 +60,7 @@
         <td><?php echo $item['username'] ?></td>
         <td><?php echo $item['hostname'] ?></td>
         <td><?php echo $item['program'] ?></td>
-        <td><?php echo $item['client_info'] ?></td>
+        <td><?php echo $item['client_ip'] ?></td>
         <td><?php echo $item['wait'] ?></td>
         <td><a href="javascript:void(0);" sql_text="<?php echo $item['parent_sql_text'] ?>" onclick="show_sql_detail(this)">SQL文本</a></td>
 				<td></td>

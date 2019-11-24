@@ -23,8 +23,6 @@
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form" class="form-inline" >
 	<input type="text" id="username"  name="username" value="<?php echo $username; ?>" placeholder="<?php echo $this->lang->line('please_input_username'); ?>" class="input-medium" >
-  <input type="text" id="machine"  name="machine" value="<?php echo $machine; ?>" placeholder="<?php echo $this->lang->line('please_input_machine'); ?>" class="input-medium" >
-  <input type="text" id="program"  name="program" value="<?php echo $program; ?>" placeholder="<?php echo $this->lang->line('please_input_program'); ?>" class="input-medium" >
   <input type="text" id="client_ip"  name="client_ip" value="<?php echo $client_ip; ?>" placeholder="<?php echo $this->lang->line('please_input_client_ip'); ?>" class="input-medium" >
   
   <button type="button" id="search" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
@@ -40,14 +38,13 @@
         
         <tr style="font-size: 12px;">
         <th><?php echo $this->lang->line('sid'); ?></th> 
-        <th><?php echo $this->lang->line('serial#');?></th> 
-				<th><?php echo $this->lang->line('status'); ?></th>
         <th><?php echo $this->lang->line('username'); ?></th>
-        <th><?php echo $this->lang->line('machine'); ?></th>
-        <th><?php echo $this->lang->line('program'); ?></th>
         <th><?php echo $this->lang->line('client_info'); ?></th>
-        <th><?php echo $this->lang->line('event'); ?></th>
-				<th><?php echo $this->lang->line('sql_id'); ?></th>
+        <th><?php echo $this->lang->line('db_name'); ?></th>
+        <th><?php echo $this->lang->line('command'); ?></th>
+				<th style="width:200px"><?php echo $this->lang->line('status'); ?></th>
+				<th style="width:280px"><?php echo $this->lang->line('sql_text'); ?></th>
+				<th><?php echo $this->lang->line('exec_time'); ?></th>
 	    </tr>
       </thead>
       <tbody>
@@ -55,14 +52,13 @@
  <?php foreach ($session_data  as $item):?>
     <tr style="font-size: 12px;">
         <td><?php echo $item['sid'] ?></td>
-        <td><?php echo $item['serial#'] ?></td>
-        <td><?php echo $item['status'] ?></td>
-        <td><?php echo $item['username'] ?></td>
-        <td><?php echo $item['machine'] ?></td>
-        <td><?php echo $item['program'] ?></td>
-        <td><?php echo $item['client_info'] ?></td>
-        <td><?php echo $item['event'] ?></td>
-        <td><a href="javascript:void(0);" sql_text="<?php echo $item['sql_text'] ?>" onclick="show_sql_detail(this)"><?php echo $item['sql_id']; ?></a></td>
+        <td><?php echo $item['user'] ?></td>
+        <td><?php echo $item['host'] ?></td>
+        <td><?php echo $item['db'] ?></td>
+        <td><?php echo $item['command'] ?></td>
+        <td><?php echo $item['state'] ?></td>
+        <td><?php echo $item['info'] ?></td>
+        <td><?php echo $item['time'] ?></td>
 				<td></td>
 	</tr>
  <?php endforeach;?>
@@ -84,10 +80,8 @@ var base_url="<?php echo site_url('wl_tool/session_trace') ?>";
 
 $('#search').click(function(){
 		var username = $('#username').val();
-		var machine = $('#machine').val();
-		var program = $('#program').val();
 		var client_ip = $('#client_ip').val();
-		var target_url = "<?php echo site_url('wl_tool/session_trace') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString();
+		var target_url = "<?php echo site_url('wl_tool/session_trace') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&client_ip=" + client_ip.toString();
 		
 		window.location.href=target_url;				
 })
@@ -99,27 +93,14 @@ $('#reset').click(function(){
 
 $('#refresh').click(function(){
 		var username = $('#username').val();
-		var machine = $('#machine').val();
-		var program = $('#program').val();
 		var client_ip = $('#client_ip').val();
 
-		var target_url = "<?php echo site_url('wl_tool/session_trace') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString();
+		var target_url = "<?php echo site_url('wl_tool/session_trace') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&client_ip=" + client_ip.toString();
 
 		window.location.href=target_url;				
 })
     
-	function show_sql_detail(e){
-		bootbox.alert({
-        		title: "SQL文本",
-        		message: $(e).attr("sql_text"),
-        		buttons: {
-					        ok: {
-					            label: '确定',
-					            className: 'btn-success'
-					        }
-					    }
-        	});
-	}
+
 
  </script>
  

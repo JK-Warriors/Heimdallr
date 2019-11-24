@@ -37,6 +37,7 @@ class Tool_model extends CI_Model{
         	$sql = "select concat(host, ':', port, '/', dsn) as conn_str from db_cfg_oracle where id = ". $id . "; ";
 				}
 				elseif($db_type == 'mysql'){
+					$sql = "select host as conn_str from db_cfg_mysql where id = ". $id . "; ";
 				}elseif($db_type == 'sqlserver'){
 					$sql = "select concat('dblib:host=', host, ':', port) as conn_str from db_cfg_sqlserver where id = ". $id . "; ";
 				}
@@ -82,6 +83,23 @@ class Tool_model extends CI_Model{
         {
             $result=$query->row();
             return $result->password;
+        }
+	}	
+	
+	function get_port_by_id($id, $db_type){
+				if($db_type == 'oracle'){
+        	$sql = "select port from db_cfg_oracle where id = ". $id . "; ";
+				}elseif($db_type == 'mysql'){
+        	$sql = "select port from db_cfg_mysql where id = ". $id . "; ";
+				}elseif($db_type == 'sqlserver'){
+        	$sql = "select port from db_cfg_sqlserver where id = ". $id . "; ";
+				}
+																
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+            $result=$query->row();
+            return $result->port;
         }
 	}
 	

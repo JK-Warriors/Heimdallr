@@ -25,7 +25,6 @@
   <input type="text" id="machine"  name="machine" value="<?php echo $machine; ?>" placeholder="<?php echo $this->lang->line('please_input_machine'); ?>" class="input-medium" >
   <input type="text" id="program"  name="program" value="<?php echo $program; ?>" placeholder="<?php echo $this->lang->line('please_input_program'); ?>" class="input-medium" >
   <input type="text" id="client_ip"  name="client_ip" value="<?php echo $client_ip; ?>" placeholder="<?php echo $this->lang->line('please_input_client_ip'); ?>" class="input-medium" >
-  <input type="text" id="object_name"  name="object_name" value="<?php echo $object_name; ?>" placeholder="<?php echo $this->lang->line('please_input_object_name'); ?>" class="input-medium" >
   
   <button type="button" id="search" class="btn btn-success"><i class="icon-search"></i> <?php echo $this->lang->line('search'); ?></button>
   <button type="button" id="reset" class="btn btn-warning"><i class="icon-repeat"></i> <?php echo $this->lang->line('reset'); ?></button>
@@ -46,11 +45,8 @@
         <th><?php echo $this->lang->line('machine'); ?></th>
         <th><?php echo $this->lang->line('program'); ?></th>
         <th><?php echo $this->lang->line('client_info'); ?></th>
-        <th><?php echo $this->lang->line('object_name'); ?></th>
-        <th><?php echo $this->lang->line('lock_type'); ?></th>
-        <!--<th><center><?php echo $this->lang->line('lock_mode'); ?></th> -->
+        <th><?php echo $this->lang->line('block_sid'); ?></th>
         <th><?php echo $this->lang->line('hold_time'); ?></th>
-				<th><?php echo $this->lang->line('sql_id'); ?></th>
 				<th><?php echo $this->lang->line('opration'); ?></th>
 	    </tr>
       </thead>
@@ -61,15 +57,12 @@
         <td><?php echo $item['sid'] ?></td>
         <td><?php echo $item['status'] ?></td>
         <td><?php echo $item['username'] ?></td>
-        <td><?php echo $item['machine'] ?></td>
+        <td><?php echo $item['hostname'] ?></td>
         <td><?php echo $item['program'] ?></td>
-        <td><?php echo $item['client_info'] ?></td>
-        <td><?php echo $item['object_name'] ?></td>
-        <td><?php echo $item['type'] ?></td>
-        <!--<td><center><?php echo $item[8] ?></td> -->
-        <td><?php echo $item['ctime'] ?></td>
-        <td><?php echo $item['sql_id'] ?></td>
-        <td><a href="javascript:void(0);" sid="<?php echo $item['sid'] ?>" serial="<?php echo $item['serial#'] ?>" onclick="kill_session(this)"><?php echo $this->lang->line('kill_session'); ?></a></td>
+        <td><?php echo $item['client_ip'] ?></td>
+        <td><?php echo $item['blocked'] ?></td>
+        <td><?php echo $item['waittime'] ?></td>
+        <td><a href="javascript:void(0);" sid="<?php echo $item['blocked']?>" onclick="kill_session(this)"><?php echo $this->lang->line('kill_session'); ?></a></td>
 				<td></td>
 	</tr>
  <?php endforeach;?>
@@ -94,8 +87,7 @@ $('#search').click(function(){
 		var machine = $('#machine').val();
 		var program = $('#program').val();
 		var client_ip = $('#client_ip').val();
-		var object_name = $('#object_name').val();
-		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString() + "&object_name=" + object_name.toString();
+		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString();
 
 		window.location.href=target_url;				
 })
@@ -110,9 +102,8 @@ $('#refresh').click(function(){
 		var machine = $('#machine').val();
 		var program = $('#program').val();
 		var client_ip = $('#client_ip').val();
-		var object_name = $('#object_name').val();
 
-		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString() + "&object_name=" + object_name.toString();
+		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString();
 
 		window.location.href=target_url;				
 })
@@ -122,8 +113,20 @@ $('#refresh').click(function(){
 function kill_session(e){
 		var target_url = "<?php echo site_url('wl_tool/kill_session') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString();
 		var sid = $(e).attr("sid");
-		var serial = $(e).attr("serial");
 		
+		if(sid < 51){
+			bootbox.alert({
+	        		title: "",
+	        		message: "阻塞会话为系统会话，无法清除！",
+	        		buttons: {
+						        ok: {
+						            label: '确定',
+						            className: 'btn-success'
+						        }
+						    }
+	        	});
+			
+		}else{
 		bootbox.dialog({
 							    message: "确定要杀掉这个会话吗？",
 							    buttons: {
@@ -134,7 +137,7 @@ function kill_session(e){
 		                            $.ajax({
 											                    url: target_url,
 											                    data: $("#form").serializeArray(),
-											                    data: {"sid":sid,"serial":serial},
+											                    data: {"sid":sid},
 											                    type: "POST",
 											                    success: function (data) {
 											              			//回调函数，判断提交返回的数据执行相应逻辑
@@ -180,6 +183,7 @@ function kill_session(e){
 							    }
 							});
 	}
+}
 	
 	
 	

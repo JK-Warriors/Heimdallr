@@ -136,12 +136,12 @@ def update_mrp_status(mysql_conn, sta_id):
 ###############################################################################
 # function enable_rfs
 ###############################################################################
-def enable_rfs(mysql_conn, p_conn):
+def enable_rfs(mysql_conn, p_conn, p_dest_id):
     logger.info("Enable RFS process in primary...")
-    str="alter system set log_archive_dest_state_2=defer sid='*' "
+    str="alter system set log_archive_dest_state_%s=defer sid='*' " %(p_dest_id)
     rfs_status=oracle.ExecuteSQL(p_conn, str)
 
-    str="alter system set log_archive_dest_state_2=enable sid='*' "
+    str="alter system set log_archive_dest_state_%s=enable sid='*' " %(p_dest_id)
     rfs_status=oracle.ExecuteSQL(p_conn, str)
     
     str="alter system archive log current "
@@ -191,6 +191,9 @@ if __name__=="__main__":
     s_str = """select concat(username, '/', password, '@', host, ':', port, '/', dsn) from db_cfg_oracle where id=%s """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
+    p_dest_str = """select (case when t.primary_db_id = %s then t.primary_db_dest else t.standby_db_dest end) as dest_id from db_cfg_oracle_dg t where t.id = %s """ %(pri_id, group_id)
+    p_dest_id = mysql.GetSingleValue(mysql_conn, p_dest_str)
+
     logger.info("The primary database is: " + p_nopass_str + ", the id is: " + str(pri_id))
     logger.info("The standby database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 	
@@ -216,7 +219,7 @@ if __name__=="__main__":
             update_mrp_status(mysql_conn, sta_id)
             common.update_op_result(mysql_conn, group_id, 'MRP_START', '0')
             
-        enable_rfs(mysql_conn, p_conn)    
+        enable_rfs(mysql_conn, p_conn, p_dest_id)
     finally:
         common.operation_unlock(mysql_conn, group_id, 'MRP_START')
         None

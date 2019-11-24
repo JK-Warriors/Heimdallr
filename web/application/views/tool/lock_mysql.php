@@ -22,8 +22,6 @@
 <p><span style="float: left; margin-right: .3em;" class="ui-icon ui-icon-search"></span>                 
 <form name="form" class="form-inline">	
 	<input type="text" id="username"  name="username" value="<?php echo $username; ?>" placeholder="<?php echo $this->lang->line('please_input_username'); ?>" class="input-medium" >
-  <input type="text" id="machine"  name="machine" value="<?php echo $machine; ?>" placeholder="<?php echo $this->lang->line('please_input_machine'); ?>" class="input-medium" >
-  <input type="text" id="program"  name="program" value="<?php echo $program; ?>" placeholder="<?php echo $this->lang->line('please_input_program'); ?>" class="input-medium" >
   <input type="text" id="client_ip"  name="client_ip" value="<?php echo $client_ip; ?>" placeholder="<?php echo $this->lang->line('please_input_client_ip'); ?>" class="input-medium" >
   <input type="text" id="object_name"  name="object_name" value="<?php echo $object_name; ?>" placeholder="<?php echo $this->lang->line('please_input_object_name'); ?>" class="input-medium" >
   
@@ -41,16 +39,14 @@
         
         <tr style="font-size: 12px;">
         <th><?php echo $this->lang->line('sid'); ?></th> 
-				<th><?php echo $this->lang->line('status'); ?></th>
         <th><?php echo $this->lang->line('username'); ?></th>
-        <th><?php echo $this->lang->line('machine'); ?></th>
-        <th><?php echo $this->lang->line('program'); ?></th>
         <th><?php echo $this->lang->line('client_info'); ?></th>
+        <th><?php echo $this->lang->line('db_name'); ?></th>
+        <th><?php echo $this->lang->line('command'); ?></th>
+        <th><?php echo $this->lang->line('block_sid'); ?></th>
         <th><?php echo $this->lang->line('object_name'); ?></th>
-        <th><?php echo $this->lang->line('lock_type'); ?></th>
-        <!--<th><center><?php echo $this->lang->line('lock_mode'); ?></th> -->
+				<th style="width:280px"><?php echo $this->lang->line('sql_text'); ?></th>
         <th><?php echo $this->lang->line('hold_time'); ?></th>
-				<th><?php echo $this->lang->line('sql_id'); ?></th>
 				<th><?php echo $this->lang->line('opration'); ?></th>
 	    </tr>
       </thead>
@@ -59,23 +55,21 @@
  <?php foreach ($lock_list  as $item):?>
     <tr style="font-size: 12px;">
         <td><?php echo $item['sid'] ?></td>
-        <td><?php echo $item['status'] ?></td>
-        <td><?php echo $item['username'] ?></td>
-        <td><?php echo $item['machine'] ?></td>
-        <td><?php echo $item['program'] ?></td>
-        <td><?php echo $item['client_info'] ?></td>
-        <td><?php echo $item['object_name'] ?></td>
-        <td><?php echo $item['type'] ?></td>
-        <!--<td><center><?php echo $item[8] ?></td> -->
-        <td><?php echo $item['ctime'] ?></td>
-        <td><?php echo $item['sql_id'] ?></td>
-        <td><a href="javascript:void(0);" sid="<?php echo $item['sid'] ?>" serial="<?php echo $item['serial#'] ?>" onclick="kill_session(this)"><?php echo $this->lang->line('kill_session'); ?></a></td>
+        <td><?php echo $item['user'] ?></td>
+        <td><?php echo $item['host'] ?></td>
+        <td><?php echo $item['db'] ?></td>
+        <td><?php echo $item['command'] ?></td>
+        <td><?php echo $item['blocked'] ?></td>
+        <td><?php echo $item['lock_table'] ?></td>
+        <td><?php echo $item['info'] ?></td>
+        <td><?php echo $item['time'] ?></td>
+        <td><a href="javascript:void(0);" sid="<?php echo $item['blocked'] ?>" onclick="kill_session(this)"><?php echo $this->lang->line('kill_session'); ?></a></td>
 				<td></td>
 	</tr>
  <?php endforeach;?>
  <?php }else{  ?>
 <tr>
-<td colspan="5">
+<td colspan="12">
 <font color="red"><?php echo $this->lang->line('no_record'); ?></font>
 </td>
 </tr>
@@ -91,11 +85,9 @@ var base_url="<?php echo site_url('wl_tool/lock_view') ?>";
 
 $('#search').click(function(){
 		var username = $('#username').val();
-		var machine = $('#machine').val();
-		var program = $('#program').val();
 		var client_ip = $('#client_ip').val();
 		var object_name = $('#object_name').val();
-		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString() + "&object_name=" + object_name.toString();
+		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&client_ip=" + client_ip.toString() + "&object_name=" + object_name.toString();
 
 		window.location.href=target_url;				
 })
@@ -107,12 +99,10 @@ $('#reset').click(function(){
 
 $('#refresh').click(function(){
 		var username = $('#username').val();
-		var machine = $('#machine').val();
-		var program = $('#program').val();
 		var client_ip = $('#client_ip').val();
 		var object_name = $('#object_name').val();
 
-		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&machine=" + machine.toString() + "&program=" + program.toString() + "&client_ip=" + client_ip.toString() + "&object_name=" + object_name.toString();
+		var target_url = "<?php echo site_url('wl_tool/lock_view') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString() + "&username=" + username.toString() + "&client_ip=" + client_ip.toString() + "&object_name=" + object_name.toString();
 
 		window.location.href=target_url;				
 })
@@ -122,7 +112,6 @@ $('#refresh').click(function(){
 function kill_session(e){
 		var target_url = "<?php echo site_url('wl_tool/kill_session') ?>" + "?server_id=" + server_id.toString() + "&db_type=" + db_type.toString();
 		var sid = $(e).attr("sid");
-		var serial = $(e).attr("serial");
 		
 		bootbox.dialog({
 							    message: "确定要杀掉这个会话吗？",
@@ -134,7 +123,7 @@ function kill_session(e){
 		                            $.ajax({
 											                    url: target_url,
 											                    data: $("#form").serializeArray(),
-											                    data: {"sid":sid,"serial":serial},
+											                    data: {"sid":sid},
 											                    type: "POST",
 											                    success: function (data) {
 											              			//回调函数，判断提交返回的数据执行相应逻辑
