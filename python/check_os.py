@@ -25,7 +25,7 @@ dbuser = func.get_config('monitor_server','user')
 dbpasswd = func.get_config('monitor_server','passwd')
 dbname = func.get_config('monitor_server','dbname')
 
-def check_os_snmp(ip,filter_os_disk,tags):
+def check_os_snmp_linux(ip,port,filter_os_disk,tags):
     try :
         community="public"
         
@@ -348,6 +348,255 @@ def check_os_snmp(ip,filter_os_disk,tags):
         pass
 
 
+def check_os_snmp_aix(ip,port,filter_os_disk,tags):
+    try :
+        community="public"
+        
+        # get hostname
+        command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.2.1.1.5.0 | awk '{print $NF}' """ %(community, ip)
+        res_file=os.popen(command)
+        hostname=res_file.read()
+        
+        if hostname != "":
+            # get kernel
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.2.1.1.1.0 | grep "AIX version" | awk '{print $7}' """ %(community, ip)
+            res_file=os.popen(command)
+            kernel=res_file.read().replace('\n','')
+            
+            # get system_date
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.4.1.2.6.191.1.3.1.0 | awk -F '"' '{print $2}' """ %(community, ip)
+            date_file=os.popen(command)
+            system_date=date_file.read()
+
+            # get system_uptime  
+            #command="""/usr/bin/snmpwalk -v1 -c %s %s SNMPv2-MIB::sysUpTime.0 | awk -F ')' '{print $2}' | awk '$1=$1' """ %(community, ip)
+            command="""/usr/bin/snmpwalk -v1 -c %s %s HOST-RESOURCES-MIB::hrSystemUptime | awk '{print $NF}' """ %(community, ip)
+            uptime_file=os.popen(command)
+            ticks=uptime_file.read()
+            if ticks !="":
+                system_uptime=datetime.timedelta(microseconds = int(ticks) * 10000)
+            
+            # get process
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.4.1.2.6.191.7.1.0 | awk '{print $4}' """ %(community, ip)
+            uptime_file=os.popen(command)
+            process=uptime_file.read()
+            if process !="":
+                process=int(process)
+            
+            # get load_1
+            load_1=-1
+            
+            # get load_5
+            load_5=-1
+            
+            # get load_15
+            load_15=-1
+            
+        
+            # get cpu_user_time
+            cpu_user_time=-1
+            
+            # get cpu_system_time
+            cpu_system_time=-1
+            
+            # get cpu_usage
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.4.1.2.6.191.1.2.1.0 | awk '{print $4}' """ %(community, ip)
+            cpu_usage_file=os.popen(command)
+            cpu_usage=cpu_usage_file.read()
+            if cpu_usage !="":
+                cpu_usage=int(cpu_usage)
+                
+            # get cpu_idle_time
+            if cpu_usage !="":
+                cpu_idle_time= 100 - cpu_usage
+            
+            # get page usage
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.4.1.2.6.191.2.4.2.1.5.1 | awk '{print $4}' """ %(community, ip)
+            page_file=os.popen(command)
+            page_usage_rate=page_file.read()
+            if page_usage_rate !="":
+                page_usage_rate=int(page_usage_rate)
+            
+            
+            # get page total
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.4.1.2.6.191.2.4.2.1.4.1 | awk '{print $4}' """ %(community, ip)
+            page_total_file=os.popen(command)
+            swap_total=page_total_file.read()
+            if swap_total !="":
+                swap_total=int(swap_total)
+            
+            # get swap_avail
+            swap_avail = -1
+            if page_usage_rate !="" and swap_total !="":
+                swap_avail=swap_total * (100 - page_usage_rate) / 100
+            
+            
+            # get mem_total
+            command="""/usr/bin/snmpwalk -v1 -c %s %s 1.3.6.1.4.1.2.6.191.9.4.1.1.4.1 | awk '{print $4}' """ %(community, ip)
+            mem_total_file=os.popen(command)
+            mem_total=mem_total_file.read()
+            if mem_total !="":
+                mem_total=int(mem_total)*1024
+            
+            # get mem_avail
+            mem_avail= -1
+            
+            # get mem_free
+            mem_free=-1
+            
+            # get mem_shared
+            mem_shared=-1
+            
+            # get mem_buffered
+            mem_buffered =-1
+            
+            # get mem_cached
+            mem_cached = -1
+            
+            # calculate mem_available
+            mem_available = -1
+            
+
+            # get mem_usage_rate
+            command="""/usr/bin/snmpdf -v1 -c %s %s |grep "Real Memory"|awk '{print $6}' | awk -F '%%' '{print $1}' """ %(community, ip)
+            mem_file=os.popen(command)
+            mem_usage_rate=mem_file.read()
+            #print mem_usage_rate
+        
+            #print hostname
+            #print kernel
+            #print system_date
+            #print system_uptime
+            #print process
+            #print load_1
+            #print load_5
+            #print load_15
+        
+        
+            # disk usage
+            command=""
+            if filter_os_disk=="":
+                command="""/usr/bin/snmpdf -v1 -c %s %s |grep -E "/"|grep -vE "/boot"|grep -vE "DVD" """ %(community, ip)
+            else:
+                command="""/usr/bin/snmpdf -v1 -c %s %s |grep -E "/"|grep -vE "/boot"|grep -vE "DVD" |grep -vE "%s" """ %(community, ip, filter_os_disk)
+            #print command
+            disk_all=os.popen(command)
+            result=disk_all.readlines()
+            if result:
+                func.mysql_exec("begin;",'')
+                func.mysql_exec("insert into os_disk_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_disk where ip = '%s';" %(ip),'')
+                func.mysql_exec("delete from os_disk where ip = '%s';" %(ip),'')
+                for i in range(len(result)):
+                    line=result[i].split()
+                    mounted=line[0]
+                    total_size=line[1]
+                    used_size=line[2]
+                    avail_size=line[3]
+                    used_rate=line[4][:-1]
+                    print mounted, total_size, used_size, avail_size, used_rate
+                
+                    ##################### insert data to mysql server#############################
+                    sql = "insert into os_disk(ip,tags,mounted,total_size,used_size,avail_size,used_rate) values(%s,%s,%s,%s,%s,%s,%s);"
+                    param = (ip, tags, mounted, total_size, used_size, avail_size, used_rate)
+                    func.mysql_exec(sql,param) 
+                func.mysql_exec("commit;",'')
+         
+         
+            #disk io begin
+            
+            #disk io end 
+
+         
+            #net begin
+            net_in_bytes_total=0
+            net_out_bytes_total=0
+            print "get network begin:"
+            command="""/usr/bin/snmpwalk -v1 -c %s %s IF-MIB::ifDescr | grep -ivE "lo|ent" | awk -F ';' '{print $1}' """ %(community, ip)
+            res_net_file=os.popen(command)
+            net_str=res_net_file.readlines()
+            if net_str:
+                func.mysql_exec("begin;",'')
+                func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
+                func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
+                for i in range(len(net_str)):
+                    line_2=net_str[i].split()
+                    net_desc_id=line_2[0].split('.')[1]
+                    net_desc=line_2[3]
+                    #print net_desc_id
+                    command="""/usr/bin/snmpwalk -v1 -c %s %s IF-MIB::ifInOctets.%s | awk '{print $NF}' """ %(community, ip, net_desc_id)
+                    net_in_file_1=os.popen(command)
+                
+                    net_in_bytes_1 = net_in_file_1.readlines()[0]
+                    #print net_in_bytes_1
+                
+                    command="""/usr/bin/snmpwalk -v1 -c %s %s IF-MIB::ifOutOctets.%s | awk '{print $NF}' """ %(community, ip, net_desc_id)
+                    net_out_file_1=os.popen(command)
+                    net_out_bytes_1 = net_out_file_1.readlines()[0]
+                    #print net_out_bytes_1
+
+                    time.sleep(1)
+                    command="""/usr/bin/snmpwalk -v1 -c %s %s IF-MIB::ifInOctets.%s | awk '{print $NF}' """ %(community, ip, net_desc_id)
+                    net_in_file_2=os.popen(command)
+                
+                    net_in_bytes_2 = net_in_file_2.readlines()[0]
+                    #print net_in_bytes_2
+                
+                    command="""/usr/bin/snmpwalk -v1 -c %s %s IF-MIB::ifOutOctets.%s | awk '{print $NF}' """ %(community, ip, net_desc_id)
+                    net_out_file_2=os.popen(command)
+                    net_out_bytes_2 = net_out_file_2.readlines()[0]
+                    #print net_out_bytes_2
+                
+                
+                    net_in_bytes=int(net_in_bytes_2) - int(net_in_bytes_1)
+                    net_out_bytes=int(net_out_bytes_2) - int(net_out_bytes_1)
+                    print net_desc, net_in_bytes, net_out_bytes
+                
+                    net_in_bytes_total = net_in_bytes_total + net_in_bytes
+                    net_out_bytes_total = net_out_bytes_total + net_out_bytes
+
+                    ##################### insert data to mysql server#############################
+                    sql = "insert into os_net(ip,tags,if_descr,in_bytes,out_bytes) values(%s,%s,%s,%s,%s);"
+                    param = (ip, tags, net_desc, net_in_bytes, net_out_bytes)
+                    func.mysql_exec(sql,param) 
+                func.mysql_exec("commit;",'')
+            #net end 
+        
+        
+            ##################### insert data to mysql server#############################
+            disk_io_reads_total = -1
+            disk_io_writes_total = -1
+            func.mysql_exec("begin;",'')
+            func.mysql_exec("insert into os_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
+            func.mysql_exec("delete from os_status where ip = '%s';" %(ip),'')
+            sql = "insert into os_status(ip,connect,tags,hostname,kernel,system_date,system_uptime,process,load_1,load_5,load_15,cpu_user_time,cpu_system_time,cpu_idle_time,swap_total,swap_avail,mem_total,mem_avail,mem_free,mem_shared,mem_buffered,mem_cached,mem_usage_rate,mem_available,disk_io_reads_total,disk_io_writes_total,net_in_bytes_total,net_out_bytes_total) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            param = (ip,1,tags, hostname, kernel, system_date,system_uptime,process,load_1,load_5,load_15,cpu_user_time,cpu_system_time,cpu_idle_time,swap_total,swap_avail,mem_total,mem_avail,mem_free,mem_shared,mem_buffered,mem_cached,mem_usage_rate,mem_available,disk_io_reads_total,disk_io_writes_total,net_in_bytes_total,net_out_bytes_total)
+            func.mysql_exec(sql,param) 
+            func.mysql_exec("commit;",'')
+        
+        
+        else:
+            func.mysql_exec("begin;",'')
+            func.mysql_exec("insert into os_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_status where ip = '%s';" %(ip),'')
+            func.mysql_exec("delete from os_status where ip = '%s';" %(ip),'')
+        
+            sql = "insert into os_status(ip,connect,tags) values(%s,%s,%s)"
+            param = (ip,0,tags)
+            func.mysql_exec(sql,param) 
+            func.mysql_exec("commit;",'')
+            
+        
+        # generate OS alert
+        alert.gen_alert_os_status(ip)    
+        alert.gen_alert_os_disk(ip)    
+        alert.gen_alert_os_network(ip)   
+        
+        mail.send_alert_mail(0, ip)    
+    except Exception, e:
+        print e.message
+        logger.error("%s:%s statspack error: %s"%(ip,port,e))
+        func.mysql_exec("rollback;",'')
+    finally:
+        pass
 
 def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
     try :
@@ -509,12 +758,12 @@ def check_os_winrm(ip, port, username, password, filter_os_disk, tags):
         outstr = str(r.std_out).replace("\r","")
         list_nic = outstr.split("\n")
         for i in list_nic:
-            if i.find("Name=")>=0 and (i.find("Ethernet") > 0 or i.find("Gigabit") > 0):
+            if i.find("Name=")>=0 and i.find("Ethernet") > 0:
                 func.mysql_exec("insert into os_net_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from os_net where ip = '%s';" %(ip),'')
                 func.mysql_exec("delete from os_net where ip = '%s';" %(ip),'')
             	
         for i in list_nic:
-            if i.find("Name=")>=0 and (i.find("Ethernet") > 0 or i.find("Gigabit") > 0):
+            if i.find("Name=")>=0 and i.find("Ethernet") > 0:
                 nic = i.replace("Name=","")
                 print nic
                 	
@@ -604,28 +853,34 @@ def clean_invalid_os_status():
                
 def main():
     #get os servers list
-    servers=func.mysql_query("select host,protocol,port,username,password,filter_os_disk,tags from db_cfg_os where is_delete=0 and monitor=1;")
+    servers=func.mysql_query("select host,host_type,protocol,port,username,password,filter_os_disk,tags from db_cfg_os where is_delete=0 and monitor=1 ;")
     
     logger.info("check os controller started.")
     if servers:
          plist = []
          for row in servers:
              host=row[0]
-             protocol=row[1]
-             port=row[2]
-             username=row[3]
-             password=row[4]
-             filter_os_disk=row[5]
-             tags=row[6]
+             host_type=row[1]
+             protocol=row[2]
+             port=row[3]
+             username=row[4]
+             password=row[5]
+             filter_os_disk=row[6]
+             tags=row[7]
              if host <> '' :
                  #thread.start_new_thread(check_os, (host,community,filter_os_disk,tags))
                  #time.sleep(1)
                  if protocol == 'snmp':
-                     p = Process(target = check_os_snmp, args=(host,filter_os_disk,tags))
-                     plist.append(p)
-                     p.start()
+                     if host_type == 0:
+                         p = Process(target = check_os_snmp_linux, args=(host,port,filter_os_disk,tags))
+                         plist.append(p)
+                         p.start()
+                     elif host_type == 1:
+                         p = Process(target = check_os_snmp_aix, args=(host,port,filter_os_disk,tags))
+                         plist.append(p)
+                         p.start()
                  elif protocol == 'winrm':
-                     p = Process(target = check_os_winrm, args=(host,port, username,password,filter_os_disk,tags))
+                     p = Process(target = check_os_winrm, args=(host,port,username,password,filter_os_disk,tags))
                      plist.append(p)
                      p.start()
 

@@ -64,16 +64,6 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
 
     try:
-        func.mysql_exec("begin;",'')
-        func.mysql_exec("insert into oracle_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_status where server_id = %s;" %(server_id),'')
-        func.mysql_exec('delete from oracle_status where server_id = %s;' %(server_id),'')
-        
-        func.mysql_exec("insert into oracle_tablespace_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_tablespace where server_id = %s;" %(server_id),'')
-        func.mysql_exec('delete from oracle_tablespace where server_id = %s;' %(server_id),'')
-
-        func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_diskgroup where server_id = %s;" %(server_id),'')
-        func.mysql_exec('delete from oracle_diskgroup where server_id = %s;' %(server_id),'')
-        
         ##func.mysql_exec('delete from oracle_redo where server_id = %s;' %(server_id),'')
         
         #get info by v$instance
@@ -157,16 +147,23 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
 
 
         ##################### insert data to mysql server#############################
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into oracle_status_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_status where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from oracle_status where server_id = %s;' %(server_id),'')
         sql = "insert into oracle_status(server_id,host,port,tags,connect,db_name, instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond,flashback_on,flashback_earliest_time,flashback_space_used) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
         param = (server_id,host,port,tags,connect,db_name,instance_name,instance_role,instance_status,database_role,open_mode,protection_mode,host_name,database_status,startup_time,uptime,version,archiver,session_total,session_actives,session_waits,dg_stats,dg_delay,processes,session_logical_reads_persecond,physical_reads_persecond,physical_writes_persecond,physical_read_io_requests_persecond,physical_write_io_requests_persecond,db_block_changes_persecond,os_cpu_wait_time,logons_persecond,logons_current,opened_cursors_persecond,opened_cursors_current,user_commits_persecond,user_rollbacks_persecond,user_calls_persecond,db_block_gets_persecond,flashback_on,flashback_earliest_time,flashback_space_used)
         func.mysql_exec(sql,param) 
         func.update_db_status_init(server_id,'oracle',database_role_new,version,tags)
+        func.mysql_exec("commit;",'')
         
         logger.info("Generate oracle instance alert for server: %s begin:" %(server_id))
         alert.gen_alert_oracle_status(server_id)     # generate oracle instance alert
         logger.info("Generate oracle instance alert for server: %s end." %(server_id))
 
         #check tablespace
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into oracle_tablespace_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_tablespace where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from oracle_tablespace where server_id = %s;' %(server_id),'')
         tablespace = oracle.get_tablespace(conn)
         if tablespace:
            for line in tablespace:
@@ -177,9 +174,13 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
            logger.info("Generate tablespace alert for server: %s begin:" %(server_id))
            alert.gen_alert_oracle_tablespace(server_id)    # generate tablespace alert
            logger.info("Generate tablespace alert for server: %s end." %(server_id))
+        func.mysql_exec("commit;",'')
               
               
         #check diskgroup 
+        func.mysql_exec("begin;",'')
+        func.mysql_exec("insert into oracle_diskgroup_his SELECT *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from oracle_diskgroup where server_id = %s;" %(server_id),'')
+        func.mysql_exec('delete from oracle_diskgroup where server_id = %s;' %(server_id),'')
         diskgroup = oracle.get_diskgroup(conn)
         if diskgroup:
            for line in diskgroup:
@@ -190,6 +191,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
            logger.info("Generate diskgroup alert for server: %s begin:" %(server_id))
            alert.gen_alert_oracle_diskgroup(server_id)    # generate diskgroup alert
            logger.info("Generate diskgroup alert for server: %s end." %(server_id))
+        func.mysql_exec("commit;",'')
               
         ##### get redo per hour
         ora_redo = oracle.get_redo_per_hour(conn)
@@ -246,11 +248,13 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         #check restore point
         restore_point = oracle.get_restorepoint(conn, flashback_retention)
         if restore_point:
+           func.mysql_exec("begin;",'')
            func.mysql_exec('delete from oracle_flashback where server_id = %s;'%(server_id),'')
            for line in restore_point:
               sql="insert into oracle_flashback(server_id,host,port,tags,name) values(%s,%s,%s,%s,%s)"
               param=(server_id,host,port,tags,line[0])
               func.mysql_exec(sql,param)
+           func.mysql_exec("commit;",'')
 
 
         # auto create restore point for standby database  
@@ -264,7 +268,6 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
         mail.send_alert_mail(server_id, host)     
         
         
-        func.mysql_exec("commit;",'')
     except Exception, e:
         logger.error(e)
         func.mysql_exec("rollback;",'')

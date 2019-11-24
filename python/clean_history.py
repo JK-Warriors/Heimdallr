@@ -38,6 +38,10 @@ def clean_history_data():
         func.mysql_exec("delete from oracle_dg_p_status_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
         func.mysql_exec("delete from oracle_dg_s_status_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
         func.mysql_exec("delete from oracle_dg_process_his where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
+        func.mysql_exec("delete from oracle_redo where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
+        func.mysql_exec("delete from oracle_db_time where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
+        func.mysql_exec("delete from oracle_session where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
+        func.mysql_exec("delete from oracle_flashback where create_time < date_add(now(), interval -%s day);" %(his_retention),'')
         logger.info("Clean oracle history data finished.")   
         
         logger.info("Clean sqlserver history data start.")     
