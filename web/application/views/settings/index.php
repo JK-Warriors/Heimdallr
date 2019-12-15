@@ -126,9 +126,9 @@
  <div class="control-group error">
   <label class="control-label" for="">*<?php echo $this->lang->line('alarm'); ?></label>
   <div class="controls">
-      <select name="alarm" id="alarm" class="input-small">
-       <option value="1" <?php echo set_selected(1,$settings['alarm']) ?> ><?php echo $this->lang->line('on'); ?></option>
-       <option value="0" <?php echo set_selected(0,$settings['alarm']) ?> ><?php echo $this->lang->line('off'); ?></option>
+      <select name="alert" id="alert" class="input-small">
+       <option value="1" <?php echo set_selected(1,$settings['alert']) ?> ><?php echo $this->lang->line('on'); ?></option>
+       <option value="0" <?php echo set_selected(0,$settings['alert']) ?> ><?php echo $this->lang->line('off'); ?></option>
       </select>
       <span class="help-inline"></span>
   </div>

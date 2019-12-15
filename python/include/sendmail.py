@@ -9,7 +9,7 @@ import ConfigParser
 import logging
 import logging.config
 logging.config.fileConfig("etc/logger.ini")
-logger = logging.getLogger("wlblazers")
+logger = logging.getLogger("alert_main")
 import smtplib
 from email.mime.text import MIMEText
 from email.message import Message
@@ -31,9 +31,9 @@ def send_mail(to_list,sub,content):
     content:内容
     send_mail("aaa@126.com","sub","content")
     '''
-    #logger.info("to_list: %s" %(to_list))
-    #logger.info("sub: %s" %(sub))
-    #logger.info("content: %s" %(content))
+    logger.info("to_list: %s" %(to_list))
+    logger.info("sub: %s" %(sub))
+    logger.info("content: %s" %(content))
     #me=mail_user+"<</span>"+mail_user+"@"+mail_postfix+">"
     me=mail_send_from
     msg = MIMEText(content, _subtype='html', _charset='utf8')
@@ -46,7 +46,8 @@ def send_mail(to_list,sub,content):
         smtp.login(mail_user,mail_pass)
         smtp.sendmail(me,to_list, msg.as_string())
         smtp.close()
+        logger.info("content: %s send to %s success" %(content,to_list))
         return True
     except Exception, e:
-        print str(e)
+        logger.error("Subject %s send to %s error: %s" %(sub,to_list, e))
         return False

@@ -1,18 +1,61 @@
-#!/usr/bin/env python
-# -*- coding: utf8 -*-
-from datetime import *
-import sys
-path='./include'
-sys.path.insert(0,path)
-import functions as func
+#!/bin/env python
+#-*-coding:utf-8-*-
 
-send_mail_to_list = func.get_option('send_mail_to_list')
-mailto_list=send_mail_to_list.split(';')
+import string
+import sys 
+reload(sys) 
+sys.setdefaultencoding('utf8')
+import ConfigParser
+import logging
+import logging.config
+import smtplib
+from email.mime.text import MIMEText
+from email.message import Message
+from email.header import Header
 
-result = func.send_mail(mailto_list," I hope you can learn","Beautiful Day")
-print result
-if result:
-    send_mail_status = "success"
-else:
-    send_mail_status = "fail"
-print "send_mail_status:"+send_mail_status
+
+mail_host = "smtp.exmail.qq.com"
+mail_port = 465
+mail_user = "service@hzywy.cn"
+mail_pass = "ywykj321#HZ"
+mail_send_from = "service@hzywy.cn"
+
+
+def send_mail(to_list,sub,content):
+    '''
+    to_list:发给谁
+    sub:主题
+    content:内容
+    send_mail("aaa@126.com","sub","content")
+    '''
+    #me=mail_user+"<</span>"+mail_user+"@"+mail_postfix+">"
+    me=mail_send_from
+    msg = MIMEText(content, _subtype='html', _charset='utf8')
+    msg['Subject'] = Header(sub,'utf8')
+    msg['From'] = Header(me,'utf8')
+    msg['To'] = ";".join(to_list)
+    try:
+        #smtp = smtplib.SMTP()
+        #smtp.connect(mail_host,mail_port)
+        smtp = smtplib.SMTP_SSL(mail_host, mail_port)
+        smtp.login(mail_user,mail_pass)
+        smtp.sendmail(me,to_list, msg.as_string())
+        smtp.close()
+        print "content: %s send to %s success" %(content,to_list)
+        return True
+    except Exception, e:
+        print "Subject %s send to %s error: %s" %(sub,to_list, e)
+        return False
+
+##############################################################################
+# function main  
+##############################################################################
+def main():
+    # send mail and sms
+    to_list = '29036548@qq.com'
+    sub = 'kevin test title'
+    content = 'kevin test content'
+    send_mail(to_list, sub, content)
+
+if __name__ == '__main__':
+    main()

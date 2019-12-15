@@ -174,7 +174,9 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
            logger.info("Generate tablespace alert for server: %s begin:" %(server_id))
            alert.gen_alert_oracle_tablespace(server_id)    # generate tablespace alert
            logger.info("Generate tablespace alert for server: %s end." %(server_id))
-        func.mysql_exec("commit;",'')
+           func.mysql_exec("commit;",'')
+        else:
+           func.mysql_exec("rollback;",'')
               
               
         #check diskgroup 
@@ -191,7 +193,9 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
            logger.info("Generate diskgroup alert for server: %s begin:" %(server_id))
            alert.gen_alert_oracle_diskgroup(server_id)    # generate diskgroup alert
            logger.info("Generate diskgroup alert for server: %s end." %(server_id))
-        func.mysql_exec("commit;",'')
+           func.mysql_exec("commit;",'')
+        else:
+           func.mysql_exec("rollback;",'')
               
         ##### get redo per hour
         ora_redo = oracle.get_redo_per_hour(conn)

@@ -98,7 +98,9 @@ def send_alert_media():
                        Message: %s\n<br/> 
                          
                     """ %(db_type,tags,host,port,level,alert_item,alert_value,message)
+                    logger.info("begin mail_subject: %s" %(mail_subject))
                     result = sendmail.send_mail(mail_to_list,mail_subject,mail_content)
+                    logger.info("end mail_subject: %s" %(mail_subject))
                     if result:
                         send_mail_status=1
                     else:
