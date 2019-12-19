@@ -141,14 +141,14 @@ def gen_alert_oracle_status(server_id):
                         
                 if int(alarm_session_total)==1:
                     if int(session_total) >= int(threshold_critical_session_total):
-                        send_mail = func.update_send_mail_status(server_id,db_type,'session_total',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_total',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'critical','too many sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        #send_mail = func.update_send_mail_status(server_id,db_type,'session_total',send_mail,send_mail_max_count)
+                        #send_sms  = func.update_send_sms_status(server_id,db_type,'session_total',send_sms,send_sms_max_count)
+                        #func.add_alert(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'critical','too many sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('sessions',3,server_id, host, db_type,create_time,'session_total',session_total,'critical')
                     elif int(session_total) >= int(threshold_warning_session_total):
-                        send_mail = func.update_send_mail_status(server_id,db_type,'session_total',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_total',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'warning','too many sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        #send_mail = func.update_send_mail_status(server_id,db_type,'session_total',send_mail,send_mail_max_count)
+                        #send_sms  = func.update_send_sms_status(server_id,db_type,'session_total',send_sms,send_sms_max_count)
+                        #func.add_alert(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'warning','too many sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('sessions',2,server_id, host, db_type,create_time,'session_total',session_total,'warning')
                     else:
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'session_total',session_total,'sessions ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
@@ -156,14 +156,14 @@ def gen_alert_oracle_status(server_id):
         
                 if int(alarm_session_actives)==1:
                     if int(session_actives) >= int(threshold_critical_session_actives):
-                        send_mail = func.update_send_mail_status(server_id,db_type,'session_actives',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_actives',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'critical','too many active sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        #send_mail = func.update_send_mail_status(server_id,db_type,'session_actives',send_mail,send_mail_max_count)
+                        #send_sms  = func.update_send_sms_status(server_id,db_type,'session_actives',send_sms,send_sms_max_count)
+                        #func.add_alert(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'critical','too many active sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('actives',3,server_id, host, db_type,create_time,'session_actives',session_actives,'critical')
                     elif int(session_actives) >= int(threshold_warning_session_actives): 
-                        send_mail = func.update_send_mail_status(server_id,db_type,'session_actives',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_actives',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'warning','too many active sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        #send_mail = func.update_send_mail_status(server_id,db_type,'session_actives',send_mail,send_mail_max_count)
+                        #send_sms  = func.update_send_sms_status(server_id,db_type,'session_actives',send_sms,send_sms_max_count)
+                        #func.add_alert(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'warning','too many active sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('actives',2,server_id, host, db_type,create_time,'session_actives',session_actives,'warning')
                     else:
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'session_actives',session_actives,'active sessions ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
@@ -171,14 +171,14 @@ def gen_alert_oracle_status(server_id):
 
                 if int(alarm_session_waits)==1:
                     if int(session_waits) >= int(threshold_critical_session_waits):
-                        send_mail = func.update_send_mail_status(server_id,db_type,'session_waits',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_waits',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'critical','too many waits sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        #send_mail = func.update_send_mail_status(server_id,db_type,'session_waits',send_mail,send_mail_max_count)
+                        #send_sms  = func.update_send_sms_status(server_id,db_type,'session_waits',send_sms,send_sms_max_count)
+                        #func.add_alert(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'critical','too many waits sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('waits',3,server_id, host, db_type,create_time,'session_waits',session_waits,'critical')
                     elif int(session_waits) >= int(threshold_warning_session_waits):
-                        send_mail = func.update_send_mail_status(server_id,db_type,'session_waits',send_mail,send_mail_max_count)
-                        send_sms  = func.update_send_sms_status(server_id,db_type,'session_waits',send_sms,send_sms_max_count)
-                        func.add_alert(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'warning','too many waits sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                        #send_mail = func.update_send_mail_status(server_id,db_type,'session_waits',send_mail,send_mail_max_count)
+                        #send_sms  = func.update_send_sms_status(server_id,db_type,'session_waits',send_sms,send_sms_max_count)
+                        #func.add_alert(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'warning','too many waits sessions',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
                         func.update_db_status('waits',2,server_id, host, db_type,create_time,'session_waits',session_waits,'warning')
                     else:                        
                         func.check_if_ok(server_id,tags,host,port,create_time,db_type,'session_waits',session_waits,'waits sessions ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
