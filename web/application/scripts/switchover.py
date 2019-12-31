@@ -51,6 +51,11 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
     str='select switchover_status from v$database'
     switch_status=oracle.GetSingleValue(p_conn, str)
     logger.info("The current database switchover status is: " + switch_status)
+    
+    # get gap count
+    str='select count(1) from v$archive_gap'
+    gap_count=oracle.GetSingleValue(p_conn, str)
+    logger.info("The current database gap_count is: %s" %(gap_count))
 	
     # get database version
     str="""select substr(version, 0, instr(version, '.')-1) from v$instance"""
@@ -71,7 +76,7 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
     if role=="PRIMARY":
         common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '验证数据库角色成功', 20, 2)
         logger.info("Now we are going to switch database %s to physical standby." %(pri_id))
-        if switch_status=="TO STANDBY" or switch_status=="SESSIONS ACTIVE" or switch_status=="FAILED DESTINATION":
+        if switch_status=="TO STANDBY" or switch_status=="SESSIONS ACTIVE" or switch_status=="FAILED DESTINATION" or (switch_status=="RESOLVABLE GAP" and gap_count==0):
             logger.info("Switchover to physical standby... ")
             common.log_dg_op_process(mysql_conn, group_id, 'SWITCHOVER', '正在将主库切换成备库，可能会花费几分钟时间，请耐心等待...', 25, 0)
             sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
@@ -277,7 +282,7 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
     shift_vip=""
     node_vips=""
     network_card=""
-    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card
+    query_str = """select host, host_type, host_user, host_pwd, host_protocol, d.shift_vip, d.node_vips, d.network_card_p
 										from db_cfg_oracle t, db_cfg_oracle_dg d
 										where d.is_delete = 0
 										and t.is_delete = 0
@@ -347,20 +352,24 @@ def disable_vip(mysql_conn, group_id, server_id, op_type):
                 for node in host_list:
                     if node != "":
                         if op_type == "start":
-                            print srvctl_cmd
-                            print "%s enable vip -i %s " %(srvctl_cmd, node) 
-                            stdin, stdout, stderr = ssh.exec_command("%s enable vip -i %s' " %(srvctl_cmd, node))  
+                            logger.info("su - root -c '%s enable vip -i %s' " %(srvctl_cmd, node))   
+                            stdin, stdout, stderr = ssh.exec_command("su - root -c '%s enable vip -i %s' " %(srvctl_cmd, node))  
                             out_str=stdout.read()
+                            logger.info("su - grid -c 'srvctl start vip -i %s' " %(node))   
                             stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl start vip -i %s' " %(node))  
                             out_str=stdout.read()
+                            logger.info("su - grid -c 'srvctl start listener -n %s' " %(node))   
                             stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl start listener -n %s' " %(node))  
                             out_str=stdout.read()
                         elif op_type == "stop":
+                            logger.info("su - grid -c 'srvctl stop listener -n %s' " %(node))   
                             stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl stop listener -n %s' " %(node)) 
                             out_str=stdout.read() 
+                            logger.info("su - grid -c 'srvctl stop vip -i %s' " %(node))   
                             stdin, stdout, stderr = ssh.exec_command("su - grid -c 'srvctl stop vip -i %s' " %(node))  
                             out_str=stdout.read()
-                            stdin, stdout, stderr = ssh.exec_command("%s disable vip -i %s' " %(srvctl_cmd, node))  
+                            logger.info("su - root -c '%s disable vip -i %s' " %(srvctl_cmd, node))   
+                            stdin, stdout, stderr = ssh.exec_command("su - root -c '%s disable vip -i %s' " %(srvctl_cmd, node))  
                             out_str=stdout.read()
                         
             		
@@ -726,6 +735,7 @@ if __name__=="__main__":
     	  		
             common.kill_sessions(mysql_conn, p_conn, pri_id)
             common.kill_sessions(mysql_conn, s_conn, sta_id)
+
         except Exception,e:
             logger.error("kill sessions error!!!")
             logger.error("traceback.format_exc(): \n%s" %(traceback.format_exc()))
