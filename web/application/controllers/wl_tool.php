@@ -584,6 +584,22 @@ class Wl_tool extends Front_Controller {
         
 				
 	}
+	
+	
+	public function healthcheck()
+	{
+        parent::check_privilege();
+        $setval["host"]=isset($_GET["host"]) ? $_GET["host"] : "";
+        $setval["tags"]=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        $setval["db_type"]=isset($_GET["db_type"]) ? $_GET["db_type"] : "";
+        
+        $data["datalist"]=$this->tool->get_healthcheck_list();
+        
+        
+        $data["setval"]=$setval;
+        
+        $this->layout->view("tool/dblist", $data);
+	}
 }	
 
 /* End of file tool.php */

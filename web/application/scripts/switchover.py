@@ -82,6 +82,12 @@ def switch2standby(mysql_conn, group_id, p_conn, p_conn_str, pri_id):
             sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("alter database commit to switchover to physical standby with session shutdown;"+os.linesep))
             sqlplus.stdin.write(bytes("shutdown immediate"+os.linesep))
+            out, err = sqlplus.communicate()
+            logger.info(out)
+            logger.error(err)
+
+
+            sqlplus = Popen(["sqlplus", "-S", p_conn_str, "as", "sysdba"], stdout=PIPE, stdin=PIPE)
             sqlplus.stdin.write(bytes("startup mount"+os.linesep))
             sqlplus.stdin.write(bytes(recover_str + os.linesep))
             out, err = sqlplus.communicate()

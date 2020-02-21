@@ -31,6 +31,32 @@ class Tool_model extends CI_Model{
         }
         
 	}
+	
+	function get_healthcheck_list(){
+        $host=isset($_GET["host"]) ? $_GET["host"] : "";
+        $tags=isset($_GET["tags"]) ? $_GET["tags"] : "";
+        $db_type=isset($_GET["db_type"]) ? $_GET["db_type"] : "";
+        
+        $db_type = 'oracle';
+        
+        $sql = "SELECT * from db_status t where 1=1 ";
+				if($host != ""){
+						$sql = $sql . " AND (t.`host` like '%" . $host . "%')";
+				}
+				if($tags != ""){
+						$sql = $sql . " AND (t.`tags` like '%" . $tags . "%')";
+				}
+				if($db_type != ""){
+						$sql = $sql . " AND (t.`db_type` like '%" . $db_type . "%')";
+				}
+																
+        $query=$this->db->query($sql);
+        if ($query->num_rows() > 0)
+        {
+           return $query->result_array(); 
+        }
+        
+	}
 
 	function get_conn_str_by_id($id, $db_type){
 				if($db_type == 'oracle'){

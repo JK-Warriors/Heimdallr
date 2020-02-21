@@ -216,7 +216,7 @@ def get_mirror_info(conn, db_name):
 															m.mirroring_end_of_log_lsn,
 															m.mirroring_replication_lsn
 												 from sys.database_mirroring m, sys.databases d
-											  where M.mirroring_guid is NOT NULL
+											  where m.mirroring_guid is NOT NULL
 												  AND m.database_id = d.database_id
 												  and d.name = '%s'; """ %(db_name));
 												  

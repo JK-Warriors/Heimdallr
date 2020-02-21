@@ -358,6 +358,7 @@ $lang['lock_view'] = '查杀锁';
 $lang['lock_list'] = '锁列表'; 
 $lang['session_trace'] = '跟踪会话'; 
 $lang['session_list'] = '会话列表'; 
+$lang['healthcheck'] = '健康检查'; 
 $lang['sid'] = '会话ID'; 
 $lang['serial#'] = 'SERIAL#'; 
 $lang['machine'] = '机器名'; 

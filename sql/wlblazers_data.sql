@@ -101,6 +101,7 @@ INSERT INTO `admin_menu` VALUES ('2205', 'Authorization', '2', '22', 'auth/index
 -- ------------------Tool Box--------------------
 INSERT INTO `admin_menu` VALUES ('2301', 'Lock List', '2', '23', 'wl_tool/lock', '', '0', '1', '1', CURRENT_TIMESTAMP);
 INSERT INTO `admin_menu` VALUES ('2302', 'Session List', '2', '23', 'wl_tool/session', '', '0', '1', '2', CURRENT_TIMESTAMP);
+-- INSERT INTO `admin_menu` VALUES ('2303', 'Health Check', '2', '23', 'wl_tool/healthcheck', '', '0', '1', '3', CURRENT_TIMESTAMP);
 
 -- ----------------------------
 -- Table for admin_privilege
@@ -230,6 +231,8 @@ INSERT INTO `admin_privilege` VALUES ('1502', 'Lock Detail View', '2301', 'wl_to
 INSERT INTO `admin_privilege` VALUES ('1503', 'Lock Detail View', '2301', 'wl_tool/kill_session', '503');
 INSERT INTO `admin_privilege` VALUES ('1504', 'Session View', '2302', 'wl_tool/session', '504');
 INSERT INTO `admin_privilege` VALUES ('1505', 'Session Trace', '2302', 'wl_tool/session_trace', '505');
+-- INSERT INTO `admin_privilege` VALUES ('1506', 'Health Check', '2303', 'wl_tool/healthcheck', '506');
+-- INSERT INTO `admin_privilege` VALUES ('1507', 'Health Check List', '2303', 'wl_tool/dblist', '507');
 
 
 -- ---------------------------------------------------- MongoDB -----------------------------------------------------------
@@ -373,6 +376,8 @@ INSERT INTO `admin_role_privilege` VALUES ('1', '1502');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1503');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1504');
 INSERT INTO `admin_role_privilege` VALUES ('1', '1505');
+-- INSERT INTO `admin_role_privilege` VALUES ('1', '1506');
+-- INSERT INTO `admin_role_privilege` VALUES ('1', '1507');
 
 
 -- ----------------------------
