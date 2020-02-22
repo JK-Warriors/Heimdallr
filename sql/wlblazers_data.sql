@@ -413,6 +413,10 @@ DELETE FROM `wlblazers_status`;
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_running', '1');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_version', '1.0.0');
 INSERT INTO `wlblazers_status` VALUES ('wlblazers_checktime', '2017-05-01 09:56:10');
+INSERT INTO `wlblazers_status` VALUES ('oracle_checktime', '2017-05-01 09:56:10');
+INSERT INTO `wlblazers_status` VALUES ('mysql_checktime', '2017-05-01 09:56:10');
+INSERT INTO `wlblazers_status` VALUES ('mssql_checktime', '2017-05-01 09:56:10');
+INSERT INTO `wlblazers_status` VALUES ('os_checktime', '2017-05-01 09:56:10');
 
 
 -- ----------------------------

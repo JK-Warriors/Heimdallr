@@ -322,6 +322,8 @@ def main():
     logger.info("check sqlserver controller started.")
 
     if servers:
+         func.update_check_time('sqlserver')
+
          plist = []
 
          for row in servers:

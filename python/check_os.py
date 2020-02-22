@@ -857,6 +857,8 @@ def main():
     
     logger.info("check os controller started.")
     if servers:
+         func.update_check_time('os')
+
          plist = []
          for row in servers:
              host=row[0]

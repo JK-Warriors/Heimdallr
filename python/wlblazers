@@ -50,8 +50,14 @@ case "$arg" in
     if [ $wlblazers_process -le "2" ];then
        echo "wlblazers server is not running!"
     else
-       ps -ef |grep -i -E "wlblazers.py"|grep -v -E "vi|grep"|awk '{print $2}' |while read line; do kill $line; echo "wlblazers processes id $line been stop"; done 
        #killall python wlblazers.py*
+       ps -ef | grep "check_mysql.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "check_oracle.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "check_sqlserver.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "check_os.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "alert_main.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "clean_history.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "wlblazers.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
     fi
   ;;
 

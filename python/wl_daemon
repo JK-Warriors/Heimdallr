@@ -1,0 +1,159 @@
+﻿#! /bin/bash
+#
+# daemon       restart wlblazers
+#
+# description: restart wlblazers when process hang
+#
+#
+mysql_client="/opt/lampp/bin/mysql"
+
+filePath=$(dirname $(readlink -f "$0"))
+configFile="${filePath}/etc/config.ini"
+logfile="${filePath}/logs/daemon.log"
+
+# set delay_threshold, default 30 minutes
+delay_threshold=30
+
+host=`cat ${configFile} | grep "host" | awk -F '"' '{print $2}'`
+port=`cat ${configFile} | grep "port" | awk -F '=' '{print $2}'`
+user=`cat ${configFile} | grep "user" | awk -F '"' '{print $2}'`
+passwd=`cat ${configFile} | grep "passwd" | awk -F '"' '{print $2}'`
+dbname=`cat ${configFile} | grep "dbname" | awk -F '"' '{print $2}'`
+
+
+restart_wlb(){
+    cd $filePath
+    
+    #stop wlblazers
+    wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
+    if [ $wlblazers_process -le "2" ];then
+       echo "wlblazers server is not running!" | tee -a ${logfile}
+    else
+       #killall python defunct process
+       #for pid in `ps -ef | grep "python"| grep "defunct" | grep -v "grep" | awk '{print $3}'`;
+       #do
+       		#echo $pid
+       #done
+       
+       #killall python wlblazers.py*
+       ps -ef | grep "check_mysql.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "check_oracle.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "check_sqlserver.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "check_os.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "alert_main.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "clean_history.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+       ps -ef | grep "wlblazers.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
+    fi
+    
+    sleep 5
+    
+    #start wlblazers
+    wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
+    if [ $wlblazers_process -ge "2" ];then
+       echo " wlblazers server has not been completely cleared!" | tee -a ${logfile}
+    else
+       if [ -f "wlblazers.py" ]; then
+          nohup python wlblazers.py >> logs/wlblazers.log 2>&1 & 
+       else
+          nohup python wlblazers.pyc >> logs/wlblazers.log 2>&1 & 
+       fi
+
+
+       sleep 5
+       
+       wlblazers_process=`ps -ef|grep wlblazers.py |grep -v grep|wc -l`
+       if [ $wlblazers_process -ge "2" ];then
+          echo "wlblazers server start success!" | tee -a ${logfile}
+       else
+          echo "wlblazers server start fail!" | tee -a ${logfile}
+       fi
+    fi
+}
+
+
+
+
+
+################################################# main #######################################################
+while true
+do
+		need_restart=0
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] need_restart: $need_restart" | tee -a ${logfile}
+		
+		# check mysql monitor status
+		mysql_count=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select count(1) from db_cfg_mysql t where t.monitor = 1 and is_delete = 0;"`
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] mysql monitor check start..." | tee -a ${logfile}
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] found mysql instance count: $mysql_count" | tee -a ${logfile}
+		if [[ -n "$mysql_count" && "$mysql_count" -gt 0 ]]; then
+				time_delay=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select TIMESTAMPDIFF(minute, wl_value, now()) from wlblazers_status where wl_variables = 'mysql_checktime';"`
+				echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] mysql check time delay: $time_delay" | tee -a ${logfile}
+				if [[ -n "$time_delay" && "$time_delay" -gt "$delay_threshold" ]]; then
+						# need restart wlblazers
+						echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] set need_restart to 1" | tee -a ${logfile}
+						need_restart=1
+				fi
+		fi
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] mysql monitor check end." | tee -a ${logfile}
+		
+		
+		
+		# check sqlserver monitor status
+		mssql_count=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select count(1) from db_cfg_sqlserver t where t.monitor = 1 and is_delete = 0;"`
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] sqlserver monitor check start..." | tee -a ${logfile}
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] found sqlserver instance count: $mssql_count" | tee -a ${logfile}
+		if [[ -n "$mssql_count" && $mssql_count -gt 0 ]]; then
+				time_delay=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select TIMESTAMPDIFF(minute, wl_value, now()) from wlblazers_status where wl_variables = 'mssql_checktime';"`
+				echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] sqlserver check time delay: $time_delay" | tee -a ${logfile}
+				if [[ -n "$time_delay" && "$time_delay" -gt "$delay_threshold" ]]; then
+						# need restart wlblazers
+						echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] set need_restart to 1" | tee -a ${logfile}
+						need_restart=1
+				fi
+		fi
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] sqlserver monitor check end." | tee -a ${logfile}
+		
+		# check oracle monitor status
+		ora_count=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select count(1) from db_cfg_oracle t where t.monitor = 1 and is_delete = 0;"`
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] oracle monitor check start..." | tee -a ${logfile}
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] found oracle instance count: $ora_count" | tee -a ${logfile}
+		if [[ -n "$ora_count" && $ora_count -gt 0 ]]; then
+				time_delay=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select TIMESTAMPDIFF(minute, wl_value, now()) from wlblazers_status where wl_variables = 'oracle_checktime';"`
+				echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] oracle check time delay: $time_delay" | tee -a ${logfile}
+				if [[ -n "$time_delay" && "$time_delay" -gt "$delay_threshold" ]]; then
+						# need restart wlblazers
+						echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] set need_restart to 1" | tee -a ${logfile}
+						need_restart=1
+				fi
+		fi
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] oracle monitor check end." | tee -a ${logfile}
+		
+		# check os monitor status
+		os_count=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select count(1) from db_cfg_os t where t.monitor = 1 and is_delete = 0;"`
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] os monitor check start..." | tee -a ${logfile}
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] found os instance count: $os_count" | tee -a ${logfile}
+		if [[ -n "$os_count" && $os_count -gt 0 ]]; then
+				time_delay=`$mysql_client -h${host} -u${user} -p${passwd} -P3306 ${dbname} -sNe "select TIMESTAMPDIFF(minute, wl_value, now()) from wlblazers_status where wl_variables = 'os_checktime';"`
+				echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] os check time delay: $time_delay" | tee -a ${logfile}
+				if [[ -n "$time_delay"  && "$time_delay" -gt "$delay_threshold" ]]; then
+						# need restart wlblazers
+						echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] set need_restart to 1" | tee -a ${logfile}
+						need_restart=1
+				fi
+		fi
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] os monitor check end." | tee -a ${logfile}
+		
+		# check need restart
+		echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] need_restart: $need_restart" | tee -a ${logfile}
+
+		if [ $need_restart -eq 1 ]; then
+				echo `date "+%Y-%m-%d %H:%M:%S"`" [INFO:] restart wlblazers now" | tee -a ${logfile}
+				restart_wlb
+		fi
+		
+		echo ""
+		echo ""
+		echo ""
+		sleep 5m
+		# sleep 10m
+
+done

@@ -687,6 +687,8 @@ def main():
 
     logger.info("check oracle controller start.")
     if servers:
+        func.update_check_time('oracle')
+
         plist = []
         for row in servers:
             server_id=row[0]

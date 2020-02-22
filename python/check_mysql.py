@@ -512,6 +512,8 @@ def main():
 
     logger.info("check mysql controller started.")
     if servers:
+         func.update_check_time('mysql')
+
          plist = []
          for row in servers:
              server_id=row[0]

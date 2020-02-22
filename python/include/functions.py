@@ -311,7 +311,7 @@ def check_db_status(server_id,db_host,db_port,tags,db_type):
              param=(server_id,db_host,db_port,tags,db_type,sort)
              curs.execute(sql,param)
              conn.commit()
-             
+
     except Exception,e:
         print "Check db status table: " + str(e) 
     finally:
@@ -361,13 +361,27 @@ def update_db_status(field,value,server_id, db_host, db_tpye, alert_time,alert_i
       conn.close()
 
 
-def update_check_time():
+def update_check_time(check_type=''):
     try:
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)
         curs = conn.cursor()
         localtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        curs.execute("update wlblazers_status set wl_value='%s'  where wl_variables='wlblazers_checktime';" %(localtime))
+
+        # update check time    
+        sql='select 1'
+        if check_type=='mysql':
+             sql="update wlblazers_status set wl_value = '%s' where wl_variables = 'mysql_checktime';" %(localtime)
+        elif check_type=='oracle':
+             sql="update wlblazers_status set wl_value = '%s' where wl_variables = 'oracle_checktime';" %(localtime)
+        elif check_type=='sqlserver':
+             sql="update wlblazers_status set wl_value = '%s' where wl_variables = 'mssql_checktime';" %(localtime)
+        elif check_type=='os':
+             sql="update wlblazers_status set wl_value = '%s' where wl_variables = 'os_checktime';" %(localtime)
+        else:
+             sql="update wlblazers_status set wl_value='%s'  where wl_variables='wlblazers_checktime';" %(localtime)
+
+        curs.execute(sql)
         conn.commit()
     except Exception, e:
         print "update check time: " + str(e)
