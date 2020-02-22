@@ -4,7 +4,7 @@
 #############################################################################
 if test -z "$basedir"
 then
-  basedir=/usr/local/wlb/python
+  basedir=$(dirname $(readlink -f "$0"))
 else
   basedir="$basedir"
 fi
@@ -26,12 +26,17 @@ case "$arg" in
     if [ $wlblazers_process -ge "2" ];then
        echo " wlblazers server is already run!"
     else
-       cd $basedir 
+       cd $basedir
+       echo "Current Path: "$basedir
        if [ -f "wlblazers.py" ]; then
-          nohup python wlblazers.py &> logs/wlblazers.log & 
+          nohup python wlblazers.py > logs/wlblazers.log 2>&1 & 
        else
-          nohup python wlblazers.pyc &> logs/wlblazers.log & 
+          nohup python wlblazers.pyc > logs/wlblazers.log 2>&1 & 
        fi
+
+
+       nohup ./wl_daemon &
+       echo "daemon process start."
 
 
        sleep 5
@@ -50,6 +55,9 @@ case "$arg" in
     if [ $wlblazers_process -le "2" ];then
        echo "wlblazers server is not running!"
     else
+       #kill daemon
+       ps -ef | grep "wl_daemon" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "daemon processes id $line been stop"; done 
+       
        #killall python wlblazers.py*
        ps -ef | grep "check_mysql.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
        ps -ef | grep "check_oracle.py" | grep -v -E "vi|grep" | awk '{print $2}' |while read line; do kill -9 $line; echo "wlblazers processes id $line been stop"; done 
@@ -77,7 +85,3 @@ case "$arg" in
 esac
 
 exit 0  
-  
-
-
-
