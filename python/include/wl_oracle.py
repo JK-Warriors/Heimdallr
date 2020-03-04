@@ -349,7 +349,7 @@ def get_db_time(conn, snap_id, inst_id):
 												select n.stat_name as name,
 												e.snap_id,
 												to_char(te.end_interval_time,'yyyy-mm-dd hh24:mi:ss') as end_time,
-												       round((e.value - b.value) / 1000 / 1000, 2) as dbtime,
+												       round((case when (e.value - b.value) > 0 then e.value - b.value else e.value end) / 1000 / 1000, 2) as dbtime,
 												       (to_date(to_char(te.end_interval_time,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss') - 
 												       to_date(to_char(tb.end_interval_time,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss'))*86400 as elapsed
 												  from wrh$_sys_time_model e, wrh$_sys_time_model b, wrh$_stat_name n, wrm$_snapshot tb, wrm$_snapshot te

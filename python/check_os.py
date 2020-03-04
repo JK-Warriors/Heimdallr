@@ -94,11 +94,12 @@ def check_os_snmp_linux(ip,port,filter_os_disk,tags):
                 cpu_system_time=int(cpu_system_time)
             
             # get cpu_idle_time
-            command="""/usr/bin/snmpwalk -v1 -c %s %s UCD-SNMP-MIB::ssCpuIdle.0 |awk '{print $NF}' """ %(community, ip)
-            uptime_file=os.popen(command)
-            cpu_idle_time=uptime_file.read()
-            if cpu_idle_time !="":
-                cpu_idle_time=int(cpu_idle_time)
+            # command="""/usr/bin/snmpwalk -v1 -c %s %s UCD-SNMP-MIB::ssCpuIdle.0 |awk '{print $NF}' """ %(community, ip)
+            # uptime_file=os.popen(command)
+            # cpu_idle_time=uptime_file.read()
+            cpu_idle_time = -1
+            if cpu_user_time !="" and cpu_system_time != "":
+                cpu_idle_time=100 - int(cpu_user_time) - int(cpu_system_time)
             
             
             # get swap_total
@@ -159,14 +160,15 @@ def check_os_snmp_linux(ip,port,filter_os_disk,tags):
             
             # calculate mem_available
             mem_available = -1
-            if mem_avail != "" and mem_avail != "" and mem_avail != "":
-                mem_available=int(mem_avail) + int(mem_buffered) + int(mem_cached)
+            if mem_total != "" and mem_free != "" and swap_avail != "":
+                mem_available=int(mem_total) - (int(mem_free) - int(swap_avail))
             
 
             # get mem_usage_rate
-            command="""/usr/bin/snmpdf -v1 -c %s %s |grep "Real Memory"|awk '{print $6}' | awk -F '%%' '{print $1}' """ %(community, ip)
-            mem_file=os.popen(command)
-            mem_usage_rate=mem_file.read()
+            mem_usage_rate = ""
+            if mem_total !="" and mem_total !="0":
+                mem_usage_rate = int(mem_available)*100/int(mem_total)
+            #logger.error("mem_usage_rate: %s"%(mem_usage_rate))
             #print mem_usage_rate
         
             #print hostname
@@ -458,9 +460,9 @@ def check_os_snmp_aix(ip,port,filter_os_disk,tags):
             
 
             # get mem_usage_rate
-            command="""/usr/bin/snmpdf -v1 -c %s %s |grep "Real Memory"|awk '{print $6}' | awk -F '%%' '{print $1}' """ %(community, ip)
-            mem_file=os.popen(command)
-            mem_usage_rate=mem_file.read()
+            mem_usage_rate = ""
+            if mem_total !="" and mem_total !="0":
+                mem_usage_rate = int(mem_available)*100/int(mem_total)
             #print mem_usage_rate
         
             #print hostname
