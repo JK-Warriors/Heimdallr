@@ -458,6 +458,8 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
                 #logger.info("dg_delay_days: %s" %(dg_delay_days))
                 #logger.info("dg_delay_seconds: %s" %(dg_delay_seconds))
                 #logger.info("dg_delay: %s" %(dg_delay))
+                if dg_delay < 0:
+                    dg_delay = 0
                 
             avg_apply_rate = -1
             if dg_s_mrp==0:
