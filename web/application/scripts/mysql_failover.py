@@ -31,14 +31,14 @@ logger = logging.getLogger('WLBlazers')
 
 	
 ###############################################################################
-# function switch2master
+# function switch2main
 ###############################################################################
-def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
+def switch2main(mysql_conn, db_type, group_id, s_conn, sta_id):
     result=-1
     
-    logger.info("FAILOVER database to master in progress...")
+    logger.info("FAILOVER database to main in progress...")
     # get database role
-    role=mysql.IsSlave(s_conn)
+    role=mysql.IsSubordinate(s_conn)
     common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '获取数据库角色成功', 0, 2)
     logger.info("The current database role is: %s (0:MASTER; 1:SLAVE)" %(role))
 	
@@ -48,46 +48,46 @@ def switch2master(mysql_conn, db_type, group_id, s_conn, sta_id):
     if role==1:
         common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '验证从库数据库角色成功', 0, 2)
         
-        # check slave status
-        slave_info=mysql.GetSingleRow(s_conn, 'show slave status;')
-        if slave_info:
-            current_binlog_file=slave_info[9]
-            current_binlog_pos=slave_info[21]
-            master_binlog_file=slave_info[5]
-            master_binlog_pos=slave_info[6]
+        # check subordinate status
+        subordinate_info=mysql.GetSingleRow(s_conn, 'show subordinate status;')
+        if subordinate_info:
+            current_binlog_file=subordinate_info[9]
+            current_binlog_pos=subordinate_info[21]
+            main_binlog_file=subordinate_info[5]
+            main_binlog_pos=subordinate_info[6]
             
             logger.debug("current_binlog_file: %s" %(current_binlog_file))
             logger.debug("current_binlog_pos: %s" %(current_binlog_pos))
-            logger.debug("master_binlog_file: %s" %(master_binlog_file))
-            logger.debug("master_binlog_pos: %s" %(master_binlog_pos))
+            logger.debug("main_binlog_file: %s" %(main_binlog_file))
+            logger.debug("main_binlog_pos: %s" %(main_binlog_pos))
             
             # can switch now
-            logger.info("Now we are going to switch database %s to master." %(sta_id))
+            logger.info("Now we are going to switch database %s to main." %(sta_id))
             common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '正在将从库切换成主库...', 0, 0)
-            str='''stop slave io_thread; '''
+            str='''stop subordinate io_thread; '''
             res=mysql.ExecuteSQL(s_conn, str)
-            logger.debug("Stop slave io_thread.")
+            logger.debug("Stop subordinate io_thread.")
         
-            str='''stop slave; '''
+            str='''stop subordinate; '''
             res=mysql.ExecuteSQL(s_conn, str)
-            logger.debug("Stop slave.")
+            logger.debug("Stop subordinate.")
         
-            str='''reset slave all; '''
+            str='''reset subordinate all; '''
             res=mysql.ExecuteSQL(s_conn, str)
-            logger.debug("Reset slave all.")
+            logger.debug("Reset subordinate all.")
                 
-            logger.info("FAILOVER slave to master successfully.")
+            logger.info("FAILOVER subordinate to main successfully.")
             common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '从库已经成功切换成主库', 0, 2)
             result=0
         else:
-            logger.info("Check slave status failed.")
+            logger.info("Check subordinate status failed.")
             common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '从库切换主库失败', 0, 2)
             result=-1
         
     else:
         common.update_db_op_reason(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是从库，不能切换到主库')
         common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '验证数据库角色失败，当前数据库不是从库，不能切换到主库', 0, 2)
-        logger.error("You can not FAILOVER a master database to master!")
+        logger.error("You can not FAILOVER a main database to main!")
         result=-1
         
     return result
@@ -173,8 +173,8 @@ if __name__=="__main__":
     s_str = """select concat(host, ':', port) from db_cfg_mysql where id=%s; """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
-    logger.info("The master database is: " + p_nopass_str + ", the id is: " + str(pri_id))
-    logger.info("The slave database is: " + s_nopass_str + ", the id is: " + str(sta_id))
+    logger.info("The main database is: " + p_nopass_str + ", the id is: " + str(pri_id))
+    logger.info("The subordinate database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 
 
 
@@ -201,7 +201,7 @@ if __name__=="__main__":
         try:
             common.log_db_op_process(mysql_conn, db_type, group_id, 'FAILOVER', '准备执行主从切换', 0, 2)
             
-            res_2m=switch2master(mysql_conn, db_type, group_id, s_conn, sta_id)
+            res_2m=switch2main(mysql_conn, db_type, group_id, s_conn, sta_id)
             if res_2m ==0:
                 update_switch_flag(mysql_conn, group_id)
                 common.gen_alert_mysql(sta_id, 1)     # generate alert

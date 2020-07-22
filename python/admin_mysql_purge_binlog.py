@@ -18,9 +18,9 @@ def admin_mysql_purge_binlog(host,port,user,passwd,binlog_store_days):
         connect=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=2,charset='utf8')
         cur=connect.cursor()
         connect.select_db('information_schema')
-        master_thread=cur.execute("select * from information_schema.processlist where COMMAND = 'Binlog Dump';")
+        main_thread=cur.execute("select * from information_schema.processlist where COMMAND = 'Binlog Dump';")
         datalist=[]
-        if master_thread >= 1:
+        if main_thread >= 1:
             now=datetime.datetime.now()
             delta=datetime.timedelta(days=binlog_store_days)
             n_days=now-delta

@@ -33,14 +33,14 @@ logger = logging.getLogger('WLBlazers')
 
 
 ###############################################################################
-# function switch2master
+# function switch2main
 ###############################################################################
-def switch2master(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id):
+def switch2main(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id):
     result=-1
     
-    logger.info("Switchover database to master in progress...")
+    logger.info("Switchover database to main in progress...")
     # get database role
-    role=mysql.IsSlave(s_conn)
+    role=mysql.IsSubordinate(s_conn)
     common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '获取数据库角色成功', 0, 2)
     logger.info("The current database role is: %s (0:MASTER; 1:SLAVE)" %(role))
 	
@@ -49,46 +49,46 @@ def switch2master(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id):
     
     if role==1:
         common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '验证从库数据库角色成功', 0, 2)
-        # get master status
+        # get main status
         m_binlog_file=""
         m_binlog_pos=-1
-        master_info = mysql.GetSingleRow(p_conn, 'show master status;')
-        if master_info:
-            m_binlog_file=master_info[0]
-            m_binlog_pos=master_info[1]
-            logger.debug("Master: master_binlog_file: %s" %(m_binlog_file))
-            logger.debug("Master: master_binlog_pos: %s" %(m_binlog_pos))
+        main_info = mysql.GetSingleRow(p_conn, 'show main status;')
+        if main_info:
+            m_binlog_file=main_info[0]
+            m_binlog_pos=main_info[1]
+            logger.debug("Main: main_binlog_file: %s" %(m_binlog_file))
+            logger.debug("Main: main_binlog_pos: %s" %(m_binlog_pos))
             
-        # check slave status
-        slave_info=mysql.GetSingleRow(s_conn, 'show slave status;')
-        if slave_info:
-            current_binlog_file=slave_info[9]
-            current_binlog_pos=slave_info[21]
-            master_binlog_file=slave_info[5]
-            master_binlog_pos=slave_info[6]
+        # check subordinate status
+        subordinate_info=mysql.GetSingleRow(s_conn, 'show subordinate status;')
+        if subordinate_info:
+            current_binlog_file=subordinate_info[9]
+            current_binlog_pos=subordinate_info[21]
+            main_binlog_file=subordinate_info[5]
+            main_binlog_pos=subordinate_info[6]
             
-            logger.debug("Slave: current_binlog_file: %s" %(current_binlog_file))
-            logger.debug("Slave: current_binlog_pos: %s" %(current_binlog_pos))
-            logger.debug("Slave: master_binlog_file: %s" %(master_binlog_file))
-            logger.debug("Slave: master_binlog_pos: %s" %(master_binlog_pos))
+            logger.debug("Subordinate: current_binlog_file: %s" %(current_binlog_file))
+            logger.debug("Subordinate: current_binlog_pos: %s" %(current_binlog_pos))
+            logger.debug("Subordinate: main_binlog_file: %s" %(main_binlog_file))
+            logger.debug("Subordinate: main_binlog_pos: %s" %(main_binlog_pos))
             
-            if (current_binlog_file == master_binlog_file and m_binlog_file==master_binlog_file and current_binlog_pos==master_binlog_pos and master_binlog_pos==m_binlog_pos):
+            if (current_binlog_file == main_binlog_file and m_binlog_file==main_binlog_file and current_binlog_pos==main_binlog_pos and main_binlog_pos==m_binlog_pos):
                 # can switch now
-                logger.info("Now we are going to switch database %s to master." %(sta_id))
+                logger.info("Now we are going to switch database %s to main." %(sta_id))
                 common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '正在将从库切换成主库...', 0, 0)
-                str='''stop slave io_thread; '''
+                str='''stop subordinate io_thread; '''
                 res=mysql.ExecuteSQL(s_conn, str)
-                logger.debug("Stop slave io_thread.")
+                logger.debug("Stop subordinate io_thread.")
         
-                str='''stop slave; '''
+                str='''stop subordinate; '''
                 res=mysql.ExecuteSQL(s_conn, str)
-                logger.debug("Stop slave.")
+                logger.debug("Stop subordinate.")
         
-                str='''reset slave all; '''
+                str='''reset subordinate all; '''
                 res=mysql.ExecuteSQL(s_conn, str)
-                logger.debug("Reset slave all.")
+                logger.debug("Reset subordinate all.")
                 
-                logger.info("Switchover slave to master successfully.")
+                logger.info("Switchover subordinate to main successfully.")
                 common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '从库已经成功切换成主库', 0, 2)
                 result=0
             else:
@@ -96,14 +96,14 @@ def switch2master(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id):
                 common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '验证数据库binlog复制位置失败', 0, 2)
                 result=-1
         else:
-            logger.info("Check slave status failed.")
+            logger.info("Check subordinate status failed.")
             common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '从库切换主库失败', 0, 2)
             result=-1
         
     else:
         common.update_db_op_reason(mysql_conn, db_type, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是从库，不能切换到主库')
         common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '验证数据库角色失败，当前数据库不是从库，不能切换到主库', 0, 2)
-        logger.error("You can not switchover a master database to master!")
+        logger.error("You can not switchover a main database to main!")
         result=-1
         
     return result
@@ -123,26 +123,26 @@ def rebuild_replication(mysql_conn, db_type, group_id, p_conn, pri_id, s_conn, s
     unlock_tables(p_conn, pri_id)
     
     
-    # get master status
-    master_info=mysql.GetSingleRow(s_conn, 'show master status;')
-    if master_info:
-        master_binlog_file=master_info[0]
-        master_binlog_pos=master_info[1]
+    # get main status
+    main_info=mysql.GetSingleRow(s_conn, 'show main status;')
+    if main_info:
+        main_binlog_file=main_info[0]
+        main_binlog_pos=main_info[1]
 	
-    str='''stop slave; '''
+    str='''stop subordinate; '''
     res=mysql.ExecuteSQL(p_conn, str)
-    logger.debug("Stop slave")
+    logger.debug("Stop subordinate")
     
-    str='''change master to master_host='%s',master_port=%s,master_user='%s',master_password='%s',master_log_file='%s',master_log_pos=%s; '''%(s_host, s_port, s_username, s_password, master_binlog_file, master_binlog_pos)
-    logger.debug("Change master command: %s" %(str))
+    str='''change main to main_host='%s',main_port=%s,main_user='%s',main_password='%s',main_log_file='%s',main_log_pos=%s; '''%(s_host, s_port, s_username, s_password, main_binlog_file, main_binlog_pos)
+    logger.debug("Change main command: %s" %(str))
     res=mysql.ExecuteSQL(p_conn, str)
         
-    str='''start slave; '''
+    str='''start subordinate; '''
     res=mysql.ExecuteSQL(p_conn, str)
-    logger.debug("Start slave")
+    logger.debug("Start subordinate")
 
-    slave_info=mysql.GetSingleRow(p_conn, 'show slave status;')
-    if slave_info:
+    subordinate_info=mysql.GetSingleRow(p_conn, 'show subordinate status;')
+    if subordinate_info:
         logger.info("Rebuild replication successfully !")
         common.log_db_op_process(mysql_conn, db_type, group_id, 'SWITCHOVER', '重建复制关系成功', 0, 2)
         result=0
@@ -294,8 +294,8 @@ if __name__=="__main__":
     s_str = """select concat(host, ':', port) from db_cfg_mysql where id=%s; """ %(sta_id)
     s_nopass_str = mysql.GetSingleValue(mysql_conn, s_str)
 	
-    logger.info("The master database is: " + p_nopass_str + ", the id is: " + str(pri_id))
-    logger.info("The slave database is: " + s_nopass_str + ", the id is: " + str(sta_id))
+    logger.info("The main database is: " + p_nopass_str + ", the id is: " + str(pri_id))
+    logger.info("The subordinate database is: " + s_nopass_str + ", the id is: " + str(sta_id))
 
 
 
@@ -331,7 +331,7 @@ if __name__=="__main__":
         
             lock_tables(p_conn, pri_id)
             
-            res_2m=switch2master(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id)
+            res_2m=switch2main(mysql_conn, db_type, group_id, p_conn, s_conn, sta_id)
             if res_2m ==0:
                 res_2s=rebuild_replication(mysql_conn, db_type, group_id, p_conn, pri_id, s_conn, sta_id, s_host, s_port, s_username, s_password)
                 
