@@ -100,7 +100,7 @@ def check_redis(host,port,passwd,server_id,tags):
         latest_fork_usec = info['latest_fork_usec']
         # Replication
         role = info['role']
-        connected_slaves = info['connected_slaves']
+        connected_subordinates = info['connected_subordinates']
         
         # CPU
         used_cpu_sys = info['used_cpu_sys']
@@ -109,29 +109,29 @@ def check_redis(host,port,passwd,server_id,tags):
         used_cpu_user_children = info['used_cpu_user_children']
 
         # replication
-        if role == 'slave':
+        if role == 'subordinate':
            #print info
-           master_host = info['master_host']
-           master_port = info['master_port']
-           master_link_status = info['master_link_status']
-           master_last_io_seconds_ago = info['master_last_io_seconds_ago']
-           master_sync_in_progress = info['master_sync_in_progress']
-           #slave_repl_offset = info['slave_repl_offset']
-           slave_priority = check_value(info,'slave_priority')
-           slave_read_only = check_value(info,'slave_read_only')
-           master_server_id = func.mysql_query("SELECT id FROM db_cfg_redis WHERE host='%s' AND port='%s' limit 1;" %(master_host,master_port))
-           master_server_id = master_server_id[0][0]
+           main_host = info['main_host']
+           main_port = info['main_port']
+           main_link_status = info['main_link_status']
+           main_last_io_seconds_ago = info['main_last_io_seconds_ago']
+           main_sync_in_progress = info['main_sync_in_progress']
+           #subordinate_repl_offset = info['subordinate_repl_offset']
+           subordinate_priority = check_value(info,'subordinate_priority')
+           subordinate_read_only = check_value(info,'subordinate_read_only')
+           main_server_id = func.mysql_query("SELECT id FROM db_cfg_redis WHERE host='%s' AND port='%s' limit 1;" %(main_host,main_port))
+           main_server_id = main_server_id[0][0]
            role_new='s'
         else:
-           master_host = '-1'
-           master_port = '-1'
-           master_link_status= '-1'
-           master_last_io_seconds_ago = '-1'
-           master_sync_in_progress = '-1'
-           #slave_repl_offset = '---'
-           slave_priority = '-1'
-           slave_read_only = '-1'
-           master_server_id = '-1'
+           main_host = '-1'
+           main_port = '-1'
+           main_link_status= '-1'
+           main_last_io_seconds_ago = '-1'
+           main_sync_in_progress = '-1'
+           #subordinate_repl_offset = '---'
+           subordinate_priority = '-1'
+           subordinate_read_only = '-1'
+           main_server_id = '-1'
            role_new='m'
 
         #add redis_status
@@ -141,8 +141,8 @@ def check_redis(host,port,passwd,server_id,tags):
         func.mysql_exec(sql,param)
 
         #add redis_replication
-        sql_1 = "insert into redis_replication(server_id,tags,host,port,role,master_server_id,master_host,master_port,master_link_status,master_last_io_seconds_ago,master_sync_in_progress,slave_priority,slave_read_only,connected_slaves) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        param_1 = (server_id,tags,host,port,role,master_server_id,master_host,master_port,master_link_status,master_last_io_seconds_ago,master_sync_in_progress,slave_priority,slave_read_only,connected_slaves)
+        sql_1 = "insert into redis_replication(server_id,tags,host,port,role,main_server_id,main_host,main_port,main_link_status,main_last_io_seconds_ago,main_sync_in_progress,subordinate_priority,subordinate_read_only,connected_subordinates) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        param_1 = (server_id,tags,host,port,role,main_server_id,main_host,main_port,main_link_status,main_last_io_seconds_ago,main_sync_in_progress,subordinate_priority,subordinate_read_only,connected_subordinates)
         func.mysql_exec(sql_1,param_1)
         func.update_db_status_init(role_new,redis_version,host,port,tags)
 

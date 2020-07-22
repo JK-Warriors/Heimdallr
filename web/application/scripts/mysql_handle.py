@@ -139,13 +139,13 @@ def ExecuteSQL(conn, query_str):
         conn.rollback()
 
 # 是否为从库
-def IsSlave(conn):
+def IsSubordinate(conn):
     res = None
     try:
         # 使用cursor()方法获取操作游标
         cur = conn.cursor()
 
-        cur.execute("show slave status;")
+        cur.execute("show subordinate status;")
 
         # 使用fetchall获取数据集
         rows = cur.fetchone()
@@ -172,6 +172,6 @@ if __name__ == "__main__":
     mysql_conn = ConnectMysql_T(host, port, username, password)
     #mysql_conn = ConnectMysql()
     #query_str = "select value from aop_perf_stat where inst_id = 1 and name = 'parse count (total)' order by time desc limit 1;"
-    value = IsSlave(mysql_conn)
+    value = IsSubordinate(mysql_conn)
     print value
 '''

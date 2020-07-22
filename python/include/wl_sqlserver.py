@@ -156,7 +156,7 @@ def get_database(conn,field):
 def ger_processes(conn):
     try:
         curs=conn.cursor()
-        curs.execute("SELECT COUNT(*) FROM [master].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [master].[dbo].[sysdatabases])");
+        curs.execute("SELECT COUNT(*) FROM [main].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [main].[dbo].[sysdatabases])");
         result = curs.fetchone()[0]
         return result
 
@@ -171,7 +171,7 @@ def ger_processes(conn):
 def ger_processes_running(conn):
     try:
         curs=conn.cursor()
-        curs.execute("SELECT COUNT(*) FROM [master].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [master].[dbo].[sysdatabases])  AND  status !='SLEEPING' AND status !='BACKGROUND'");
+        curs.execute("SELECT COUNT(*) FROM [main].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [main].[dbo].[sysdatabases])  AND  status !='SLEEPING' AND status !='BACKGROUND'");
         result = curs.fetchone()[0]
         return result
 
@@ -185,7 +185,7 @@ def ger_processes_running(conn):
 def ger_processes_waits(conn):
     try:
         curs=conn.cursor()
-        curs.execute("SELECT COUNT(*) FROM [master].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [master].[dbo].[sysdatabases])  AND  status ='SUSPENDED' AND waittime >2 ");
+        curs.execute("SELECT COUNT(*) FROM [main].[dbo].[sysprocesses] WHERE [DBID] IN ( SELECT  [dbid] FROM [main].[dbo].[sysdatabases])  AND  status ='SUSPENDED' AND waittime >2 ");
         result = curs.fetchone()[0]
         return result
 
@@ -202,8 +202,8 @@ def get_mirror_info(conn, db_name):
         curs=conn.cursor()
         curs.execute("""select m.database_id,
 															d.name,
-															substring(mirroring_partner_name, 7, charindex(':',mirroring_partner_name,7)-7) as master_server,
-															right(mirroring_partner_name, len(mirroring_partner_name) - charindex(':',mirroring_partner_name,7)) as master_port,
+															substring(mirroring_partner_name, 7, charindex(':',mirroring_partner_name,7)-7) as main_server,
+															right(mirroring_partner_name, len(mirroring_partner_name) - charindex(':',mirroring_partner_name,7)) as main_port,
 															m.mirroring_role,
 															m.mirroring_state,
 															m.mirroring_state_desc,

@@ -224,12 +224,12 @@ def check_mysql(host,port,username,password,server_id,tags,bigtable_monitor,bigt
             open_tables_usage_rate = 0
   
         #repl
-        slave_status=cur.execute('show slave status;')
-        if slave_status <> 0:
-            role='slave'
+        subordinate_status=cur.execute('show subordinate status;')
+        if subordinate_status <> 0:
+            role='subordinate'
             role_new='s'
         else:
-            role='master'
+            role='main'
             role_new='m'
 
         ############################# INSERT INTO SERVER ##################################################
@@ -382,12 +382,12 @@ def check_replication(group_id, pri_id, sta_id, is_switch):
             p_cur=p_conn.cursor()
             
             # check role
-            slave_status=p_cur.execute('show slave status;')
-            if slave_status <> 0:
-                role='slave'
+            subordinate_status=p_cur.execute('show subordinate status;')
+            if subordinate_status <> 0:
+                role='subordinate'
                 logger.warn("The primary server: %s configured in replication group is NOT match the role!" %(p_id))
             else:
-                role='master'
+                role='main'
             
                 mysql_variables = func.get_mysql_variables(p_cur)
             
@@ -395,25 +395,25 @@ def check_replication(group_id, pri_id, sta_id, is_switch):
                 read_only=func.get_item(mysql_variables,'read_only')
                 log_bin = func.get_item(mysql_variables,'log_bin')
             
-                master=p_cur.execute('show master status;')
-                master_result=p_cur.fetchone()
+                main=p_cur.execute('show main status;')
+                main_result=p_cur.fetchone()
             
                 binlog_file = '---'
                 binlog_pos = '---'
-                if master_result:
-                    binlog_file = master_result[0]
-                    binlog_pos = master_result[1]
+                if main_result:
+                    binlog_file = main_result[0]
+                    binlog_pos = main_result[1]
                 
                 binlogs=0
                 if log_bin == 'ON':
-                    binlog_file=p_cur.execute('show master logs;')
+                    binlog_file=p_cur.execute('show main logs;')
                     if binlog_file:
                         for row in p_cur.fetchall():
                             binlogs = binlogs + row[1]
                 else:
                     binlogs=0
                 
-                sql="insert into mysql_dr_p(server_id,gtid_mode,read_only,master_binlog_file,master_binlog_pos,master_binlog_space) values(%s,%s,%s,%s,%s,%s)"
+                sql="insert into mysql_dr_p(server_id,gtid_mode,read_only,main_binlog_file,main_binlog_pos,main_binlog_space) values(%s,%s,%s,%s,%s,%s)"
                 param=(p_id,gtid_mode,read_only,binlog_file,binlog_pos,binlogs)
                 func.mysql_exec(sql,param)
             
@@ -424,35 +424,35 @@ def check_replication(group_id, pri_id, sta_id, is_switch):
             s_cur=s_conn.cursor()
             
             # check role
-            slave_status=s_cur.execute('show slave status;')
-            if slave_status <> 0:
-                role='slave'
+            subordinate_status=s_cur.execute('show subordinate status;')
+            if subordinate_status <> 0:
+                role='subordinate'
                 
                 mysql_variables = func.get_mysql_variables(s_cur)
             
                 gtid_mode = func.get_item(mysql_variables,'gtid_mode')
                 read_only = func.get_item(mysql_variables,'read_only')
             
-                slave_info=s_cur.execute('show slave status;')
+                subordinate_info=s_cur.execute('show subordinate status;')
                 result=s_cur.fetchone()
                 if result:
-                    master_server=result[1]
-                    master_port=result[3]
-                    slave_io_run=result[10]
-                    slave_sql_run=result[11]
+                    main_server=result[1]
+                    main_port=result[3]
+                    subordinate_io_run=result[10]
+                    subordinate_sql_run=result[11]
                     delay=result[32]
                     current_binlog_file=result[9]
                     current_binlog_pos=result[21]
-                    master_binlog_file=result[5]
-                    master_binlog_pos=result[6]
+                    main_binlog_file=result[5]
+                    main_binlog_pos=result[6]
             
-                    sql="insert into mysql_dr_s(server_id,gtid_mode,read_only,master_server,master_port,slave_io_run,slave_sql_run,delay,current_binlog_file,current_binlog_pos,master_binlog_file,master_binlog_pos,master_binlog_space) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                    param=(s_id,gtid_mode,read_only,master_server,master_port,slave_io_run,slave_sql_run,delay,current_binlog_file,current_binlog_pos,master_binlog_file,master_binlog_pos,0)
+                    sql="insert into mysql_dr_s(server_id,gtid_mode,read_only,main_server,main_port,subordinate_io_run,subordinate_sql_run,delay,current_binlog_file,current_binlog_pos,main_binlog_file,main_binlog_pos,main_binlog_space) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                    param=(s_id,gtid_mode,read_only,main_server,main_port,subordinate_io_run,subordinate_sql_run,delay,current_binlog_file,current_binlog_pos,main_binlog_file,main_binlog_pos,0)
                     func.mysql_exec(sql,param)
             
                     logger.info("Generate replication standby info for server: %s end:" %(s_id))
             else:
-                role='master'
+                role='main'
                 logger.warn("The standby server: %s configured in replication group is NOT match the role!" %(s_id))
                 
             # generate mysql replication alert

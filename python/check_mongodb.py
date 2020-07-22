@@ -62,11 +62,11 @@ def check_mongodb(host,port,user,passwd,server_id,tags):
                 repl_role='secondary'
                 repl_role_new='s'
             else:
-                repl_role='master'
+                repl_role='main'
                 repl_role_new='m' 
         except:
             replset=0
-            repl_role='master'
+            repl_role='main'
             repl_role_new='m'
             pass
 

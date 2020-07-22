@@ -122,13 +122,13 @@ def get_alarm_mysql_status():
 
 
 def get_alarm_mysql_replcation():
-    sql = "select a.server_id,a.slave_io_run,a.slave_sql_run,a.delay,a.create_time,b.host,b.port,b.alarm_repl_status,b.alarm_repl_delay,b.threshold_warning_repl_delay,b.threshold_critical_repl_delay,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_dr_s a, db_cfg_mysql b  where a.server_id=b.id and a.is_slave='1';"
+    sql = "select a.server_id,a.subordinate_io_run,a.subordinate_sql_run,a.delay,a.create_time,b.host,b.port,b.alarm_repl_status,b.alarm_repl_delay,b.threshold_warning_repl_delay,b.threshold_critical_repl_delay,b.send_mail,b.send_mail_to_list,b.send_sms,b.send_sms_to_list,b.tags,'mysql' as db_type from mysql_dr_s a, db_cfg_mysql b  where a.server_id=b.id and a.is_subordinate='1';"
     result=func.mysql_query(sql)
     if result <> 0:
         for line in result:
             server_id=line[0]
-            slave_io_run=line[1]
-            slave_sql_run=line[2]
+            subordinate_io_run=line[1]
+            subordinate_sql_run=line[2]
             delay=line[3]
             create_time=line[4]
             host=line[5]
@@ -150,9 +150,9 @@ def get_alarm_mysql_replcation():
                 send_sms_to_list = sms_to_list_common
                 
             if int(alarm_repl_status)==1:
-                if (slave_io_run== "Yes") and (slave_sql_run== "Yes"):
-                    func.check_if_ok(server_id,tags,host,port,create_time,db_type,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'replication ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('repl',1,host,port,create_time,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'ok')
+                if (subordinate_io_run== "Yes") and (subordinate_sql_run== "Yes"):
+                    func.check_if_ok(server_id,tags,host,port,create_time,db_type,'replication','IO:'+subordinate_io_run+',SQL:'+subordinate_sql_run,'replication ok',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                    func.update_db_status('repl',1,host,port,create_time,'replication','IO:'+subordinate_io_run+',SQL:'+subordinate_sql_run,'ok')
                     if int(alarm_repl_delay)==1:
                         if int(delay)>=int(threshold_critical_repl_delay):
                             send_mail = func.update_send_mail_status(server_id,db_type,'repl_delay',send_mail,send_mail_max_count) 
@@ -170,8 +170,8 @@ def get_alarm_mysql_replcation():
 		else:
                     send_mail = func.update_send_mail_status(server_id,db_type,'replication',send_mail,send_mail_max_count)
                     send_sms = func.update_send_sms_status(server_id,db_type,'replication',send_sms,send_sms_max_count) 
-                    func.add_alarm(server_id,tags,host,port,create_time,db_type,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'critical','replication stop',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
-                    func.update_db_status('repl',3,host,port,create_time,'replication','IO:'+slave_io_run+',SQL:'+slave_sql_run,'critical')
+                    func.add_alarm(server_id,tags,host,port,create_time,db_type,'replication','IO:'+subordinate_io_run+',SQL:'+subordinate_sql_run,'critical','replication stop',send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                    func.update_db_status('repl',3,host,port,create_time,'replication','IO:'+subordinate_io_run+',SQL:'+subordinate_sql_run,'critical')
                     func.update_db_status('repl_delay','-1',host,port,'','','','')
     else:
        pass
