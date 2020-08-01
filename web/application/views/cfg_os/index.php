@@ -33,7 +33,7 @@
       <thead>
         <tr>
 		<th colspan="2"><center><?php echo $this->lang->line('servers'); ?></center></th>
-        <th colspan="3"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
+        <th colspan="4"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
 		<th colspan="6"><center><?php echo $this->lang->line('alarm_items'); ?></center></th>
         <th colspan="1"></th>
 	    </tr>
@@ -43,6 +43,7 @@
 		<th><?php echo $this->lang->line('monitor'); ?></th>
 		<th><?php echo $this->lang->line('send_mail'); ?></th>
         <th><?php echo $this->lang->line('send_sms'); ?></th>
+        <th><?php echo $this->lang->line('send_wx'); ?></th>
         <th><?php echo $this->lang->line('process'); ?></th>
 		<th><?php echo $this->lang->line('load'); ?></th>
 		<th><?php echo $this->lang->line('cpu'); ?></th>
@@ -61,6 +62,7 @@
         <td><?php echo check_on_off($item['monitor']) ?></td>
         <td><?php echo check_on_off($item['send_mail']) ?></td>
         <td><?php echo check_on_off($item['send_sms']) ?></td>
+        <td><?php echo check_on_off($item['send_wx']) ?></td>
         <td><?php echo check_on_off($item['alarm_os_process']) ?></td>
 		<td><?php echo check_on_off($item['alarm_os_load']) ?></td>
 		<td><?php echo check_on_off($item['alarm_os_cpu']) ?></td>

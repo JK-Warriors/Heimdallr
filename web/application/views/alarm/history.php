@@ -54,6 +54,7 @@
         <th><?php echo $this->lang->line('value'); ?></th>
         <th><?php echo $this->lang->line('monitor_time'); ?></th>
         <th><?php echo $this->lang->line('mail'); ?></th>
+        <th><?php echo $this->lang->line('wx'); ?></th>
         <th><?php echo $this->lang->line('sms'); ?></th>
       </thead>
       <tbody>
@@ -69,6 +70,7 @@
         <td><span class="label label-info"><?php echo $item['alert_value']  ?></span></td>
         <td><?php echo $item['create_time'] ?></td>
         <td><?php echo check_mail($item['send_mail']) ?></td>
+        <td><?php echo check_mail($item['send_wx']) ?></td>
         <td><?php echo check_mail($item['send_sms']) ?></td>
  
 	</tr>

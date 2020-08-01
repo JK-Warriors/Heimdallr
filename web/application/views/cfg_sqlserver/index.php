@@ -35,7 +35,7 @@
       <thead>
         <tr>
 		<th colspan="4"><center><?php echo $this->lang->line('servers'); ?></center></th>
-        <th colspan="3"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
+        <th colspan="4"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
 		<th colspan="3"><center><?php echo $this->lang->line('alarm_items'); ?></center></th>
         <th colspan="1"></th>
 	    </tr>
@@ -47,6 +47,7 @@
 		<th><?php echo $this->lang->line('monitor'); ?></th>
 		<th><?php echo $this->lang->line('send_mail'); ?></th>
         <th><?php echo $this->lang->line('send_sms'); ?></th>
+        <th><?php echo $this->lang->line('send_wx'); ?></th>
         <th><?php echo $this->lang->line('processes'); ?></th>
 		<th><?php echo $this->lang->line('processes_running'); ?></th>
         <th><?php echo $this->lang->line('processes_waits'); ?></th>
@@ -65,6 +66,7 @@
         <td><?php echo check_on_off($item['monitor']) ?></td>
         <td><?php echo check_on_off($item['send_mail']) ?></td>
         <td><?php echo check_on_off($item['send_sms']) ?></td>
+        <td><?php echo check_on_off($item['send_wx']) ?></td>
 		<td><?php echo check_on_off($item['processes']) ?></td>
 		<td><?php echo check_on_off($item['processes_running']) ?></td>
 		<td><?php echo check_on_off($item['processes_waits']) ?></td>

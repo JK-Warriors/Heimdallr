@@ -453,7 +453,7 @@ INSERT INTO `options` VALUES ('smtp_timeout', '10', '邮件发送配置:超时�
 INSERT INTO `options` VALUES ('mailfrom', 'wlblazers@163.com', '邮件发送配置:发件人');
 INSERT INTO `options` VALUES ('monitor_redis', '1', '是否监控Redis');
 INSERT INTO `options` VALUES ('monitor_oracle', '1', '是否监控Oracle');
-INSERT INTO `options` VALUES ('send_alarm_sms', '0', '是否发生短信');
+INSERT INTO `options` VALUES ('send_alarm_sms', '0', '是否发送短信');
 INSERT INTO `options` VALUES ('send_sms_to_list', '', '短信收件人列表');
 INSERT INTO `options` VALUES ('send_sms_max_count', '3', '发送短信最大次数');
 INSERT INTO `options` VALUES ('send_sms_sleep_time', '300', '发送短信休眠时间(分钟)');
@@ -461,6 +461,7 @@ INSERT INTO `options` VALUES ('sms_fetion_user', '', '飞信发送短信账号')
 INSERT INTO `options` VALUES ('sms_fetion_pass', '', '飞信发送短信密码');
 INSERT INTO `options` VALUES ('smstype', 'fetion', '发送短信方式：fetion/api');
 INSERT INTO `options` VALUES ('monitor_sqlserver', '0', '是否开启SQLServer监控');
+INSERT INTO `options` VALUES ('send_alarm_wx', '0', '是否发送微信');
 
 
 -- ----------------------------

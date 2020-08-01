@@ -130,8 +130,12 @@ CREATE TABLE `alerts` (
   `send_sms` tinyint(2) DEFAULT NULL,
   `send_sms_to_list` varchar(255) DEFAULT NULL,
   `send_sms_status` tinyint(2) NOT NULL DEFAULT '0',
+  `send_wx` tinyint(2) DEFAULT NULL,
+  `send_wx_status` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `alerts` ADD INDEX `idx_create_time`(`create_time`) USING BTREE;
 
 -- ----------------------------
 -- Table structure for alerts_his
@@ -155,6 +159,8 @@ CREATE TABLE `alerts_his` (
   `send_sms` tinyint(2) DEFAULT NULL,
   `send_sms_to_list` varchar(255) DEFAULT NULL,
   `send_sms_status` tinyint(2) NOT NULL DEFAULT '0',
+  `send_wx` tinyint(2) DEFAULT NULL,
+  `send_wx_status` tinyint(2) NOT NULL DEFAULT '0',
   `current_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_server_id` (`server_id`),
@@ -180,7 +186,19 @@ CREATE TABLE `alerts_temp` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-
+-- ----------------------------
+-- Table structure for media_status
+-- ----------------------------
+DROP TABLE IF EXISTS `media_status`;
+CREATE TABLE `media_status` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `date` varchar(50) NOT NULL,
+  `send_wx` tinyint(2) NOT NULL DEFAULT '0',
+  `send_wx_status` tinyint(2) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_date` (`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 
@@ -236,6 +254,7 @@ CREATE TABLE `db_cfg_mysql` (
   `send_mail_to_list` varchar(255)  DEFAULT NULL,
   `send_sms` tinyint(2) DEFAULT '0',
   `send_sms_to_list` varchar(255)  DEFAULT NULL,
+  `send_wx` tinyint(2) DEFAULT '0',
   `send_slowquery_to_list` varchar(255)  DEFAULT NULL,
   `alarm_threads_connected` tinyint(2) DEFAULT '1',
   `alarm_threads_running` tinyint(2) DEFAULT '1',
@@ -312,6 +331,7 @@ CREATE TABLE `db_cfg_oracle` (
   `send_mail_to_list` varchar(255)  DEFAULT NULL,
   `send_sms` tinyint(2) DEFAULT '0',
   `send_sms_to_list` varchar(255)  DEFAULT NULL,
+  `send_wx` tinyint(2) DEFAULT '0',
   `alarm_session_total` tinyint(2) NOT NULL DEFAULT '1',
   `alarm_session_actives` tinyint(2) NOT NULL DEFAULT '1',
   `alarm_session_waits` tinyint(2) NOT NULL DEFAULT '1',
@@ -399,6 +419,7 @@ CREATE TABLE `db_cfg_os` (
   `send_mail_to_list` varchar(255) DEFAULT NULL,
   `send_sms` tinyint(2) DEFAULT '0',
   `send_sms_to_list` varchar(255) DEFAULT NULL,
+  `send_wx` tinyint(2) DEFAULT '0',
   `alarm_os_process` tinyint(1) NOT NULL DEFAULT '1',
   `alarm_os_load` tinyint(1) NOT NULL DEFAULT '1',
   `alarm_os_cpu` tinyint(1) NOT NULL DEFAULT '1',
@@ -441,6 +462,7 @@ CREATE TABLE `db_cfg_redis` (
   `send_mail_to_list` varchar(255)  DEFAULT NULL,
   `send_sms` tinyint(2) DEFAULT '0',
   `send_sms_to_list` varchar(255)  DEFAULT NULL,
+  `send_wx` tinyint(2) DEFAULT '0',
   `alarm_connected_clients` tinyint(2) NOT NULL DEFAULT '1',
   `alarm_command_processed` tinyint(2) NOT NULL DEFAULT '1',
   `alarm_blocked_clients` tinyint(2) NOT NULL DEFAULT '1',
@@ -473,6 +495,7 @@ CREATE TABLE `db_cfg_sqlserver` (
   `send_mail_to_list` varchar(255)  DEFAULT NULL,
   `send_sms` tinyint(2) DEFAULT '0',
   `send_sms_to_list` varchar(255)  DEFAULT NULL,
+  `send_wx` tinyint(2) DEFAULT '0',
   `alarm_processes` tinyint(2) NOT NULL DEFAULT '1',
   `alarm_processes_running` tinyint(2) NOT NULL DEFAULT '1',
   `alarm_processes_waits` tinyint(2) NOT NULL DEFAULT '1',

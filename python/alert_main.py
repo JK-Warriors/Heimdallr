@@ -16,6 +16,7 @@ import functions as func
 import sendmail
 import sendsms_fx
 import sendsms_api
+import sendwx
 
 send_mail_max_count = func.get_option('send_mail_max_count')
 send_mail_sleep_time = func.get_option('send_mail_sleep_time')
@@ -43,14 +44,38 @@ def send_alert_media():
 										send_mail_status,
 										send_sms,
 										send_sms_to_list,
-										send_sms_status
+										send_sms_status,
+										send_wx,
+										send_wx_status
 									FROM alerts 
 									where (send_mail = 1 and send_mail_status = 0)
-									  or (send_sms = 1 and send_sms_status = 0) """
+									  or (send_sms = 1 and send_sms_status = 0)
+									  or (send_wx = 1 and send_wx_status = 0) """
     result=func.mysql_query(sql)
     if result:
         send_alarm_mail = func.get_option('send_alarm_mail')
         send_alarm_sms = func.get_option('send_alarm_sms')
+        send_alarm_wx = func.get_option('send_alarm_wx')
+
+        if int(send_alarm_wx)==1:
+            l_time = time.strftime("%H", time.localtime())
+            if l_time== "12":
+                send_wx_status=0
+                wx_status = func.check_wx_status(send_alarm_wx)
+                if wx_status:
+                    wx_msg = '[Normal]WeChat send status is OK!'
+                    send_res = sendwx.send_wx(wx_msg)
+                    print "send_res: %s" %(send_res)
+                    if send_res:
+                        send_wx_status=1
+
+                    try:
+                        sql="update media_status set send_wx_status = %s, create_time=NOW() where date = DATE_FORMAT(NOW(),'%%Y-%%m-%%d');" %(send_wx_status)
+                        print sql
+                        func.mysql_exec(sql,'')
+                    except Exception, e:
+                        print e 
+
         for line in result:
             alert_id=line[0]
             tags=line[1]
@@ -68,6 +93,8 @@ def send_alert_media():
             send_sms=line[13]
             send_sms_to_list=line[14]
             send_sms_status=line[15]
+            send_wx=line[16]
+            send_wx_status=line[17]
 
             if port:
                server = host+':'+port
@@ -86,7 +113,7 @@ def send_alert_media():
 
             #logger.info("alert_id: %s" %(alert_id))
             if int(send_alarm_mail)==1:
-                if int(send_mail)==1:
+                if send_mail==1 and send_mail_status==0:
                     mail_subject='['+level+'] '+db_type+'-'+tags+'-'+server+' '+message+' Time:'+create_time.strftime('%Y-%m-%d %H:%M:%S')
                     mail_content="""
                          Type: %s\n<br/>
@@ -103,6 +130,7 @@ def send_alert_media():
                     logger.info("end mail_subject: %s" %(mail_subject))
                     if result:
                         send_mail_status=1
+                        func.mysql_exec("update alerts set send_mail_status = 1 where id=%s" %(alert_id),"")
                     else:
                         send_mail_status=0
                 else:
@@ -111,31 +139,40 @@ def send_alert_media():
                 send_mail_status=0
  
             if int(send_alarm_sms)==1:
-                if send_sms==1:
-                   sms_msg='['+level+'] '+db_type+'-'+tags+'-'+server+' '+message+' Time:'+create_time.strftime('%Y-%m-%d %H:%M:%S')
-                   send_sms_type = func.get_option('smstype')
-                   if send_sms_type == 'fetion':
-                      result = sendsms_fx.send_sms(sms_to_list,sms_msg,db_type,tags,host,port,level,alert_item,alert_value,message)
-                   else:
-                      result = sendsms_api.send_sms(sms_to_list,sms_msg,db_type,tags,host,port,level,alert_item,alert_value,message)
+                if send_sms==1 and send_sms_status==0:
+                    sms_msg='['+level+'] '+db_type+'-'+tags+'-'+server+' '+message+' Time:'+create_time.strftime('%Y-%m-%d %H:%M:%S')
+                    send_sms_type = func.get_option('smstype')
+                    if send_sms_type == 'fetion':
+                        result = sendsms_fx.send_sms(sms_to_list,sms_msg,db_type,tags,host,port,level,alert_item,alert_value,message)
+                    else:
+                        result = sendsms_api.send_sms(sms_to_list,sms_msg,db_type,tags,host,port,level,alert_item,alert_value,message)
 
-                   if result:
-                      send_sms_status=1
-                   else:
-                      send_sms_status=0
+                    if result:
+                        send_sms_status=1
+                        func.mysql_exec("update alerts set send_sms_status = 1 where id=%s" %(alert_id),"")
+                    else:
+                        send_sms_status=0
                 else:
-                   send_sms_status=0  
+                    send_sms_status=0  
             else:
                 send_sms_status=0
 
-            try:
-                sql="update alerts set send_mail_status = %s, send_sms_status = %s where id = %s; "
-                param=(send_mail_status,send_sms_status,alert_id)
-                func.mysql_exec(sql,param)
-            except Exception, e:
-                print e 
 
+            if int(send_alarm_wx)==1:
+                if send_wx==1 and send_wx_status==0:
+                    wx_msg='['+level+'] '+db_type+'-'+tags+'-'+server+' '+message+' Time:'+create_time.strftime('%Y-%m-%d %H:%M:%S')
 
+                    result = sendwx.send_wx(wx_msg)
+
+                    if result:
+                        send_wx_status=1
+                        func.mysql_exec("update alerts set send_wx_status = 1 where id=%s" %(alert_id),"")
+                    else:
+                        send_wx_status=0
+                else:
+                    send_wx_status=0  
+            else:
+                send_wx_status=0
     else:
         pass
 
@@ -247,7 +284,7 @@ def alert_to_history():
         func.mysql_exec(sql,'')
     
     
-        sql="delete from alerts where id in(select id from alerts_his);"
+        sql="delete from alerts where id in(select id from alerts_his where create_time < date_add(sysdate(), interval -5 day));"
         func.mysql_exec(sql,'')
     except Exception, e:
         logger_msg="alert_to_history: %s" %(str(e).strip('\n'))
@@ -268,10 +305,10 @@ def main():
     alert_to_history()
     logger.info("Move alert to history 3 days before end.")
     
-    # send mail and sms
-    logger.info("Send email started.")
+    # send mail, sms and wx
+    logger.info("Send email, sms, wx started.")
     send_alert_media()
-    logger.info("Send email end.")
+    logger.info("Send email, sms, wx  end.")
     
     logger.info("Update check time started.")
     func.update_check_time() 
@@ -279,13 +316,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-

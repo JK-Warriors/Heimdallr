@@ -37,7 +37,7 @@
         <tr>
 		<th colspan="4"><center><?php echo $this->lang->line('servers'); ?></center></th>
         <th colspan="4"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
-		<th colspan="5"><center><?php echo $this->lang->line('alarm_items'); ?></center></th>
+		<th colspan="6"><center><?php echo $this->lang->line('alarm_items'); ?></center></th>
         <th colspan="1"></th>
 	    </tr>
         <tr style="font-size:12px;">
@@ -48,6 +48,7 @@
 		<th><?php echo $this->lang->line('monitor'); ?></th>
 		<th><?php echo $this->lang->line('send_mail'); ?></th>
         <th><?php echo $this->lang->line('send_sms'); ?></th>
+        <th><?php echo $this->lang->line('send_wx'); ?></th>
         <th><?php echo $this->lang->line('slowquery'); ?></th>
         <th><?php echo $this->lang->line('threads_connected'); ?></th>
 		<th><?php echo $this->lang->line('threads_running'); ?></th>
@@ -68,6 +69,7 @@
         <td><?php echo check_on_off($item['monitor']) ?></td>
         <td><?php echo check_on_off($item['send_mail']) ?></td>
         <td><?php echo check_on_off($item['send_sms']) ?></td>
+        <td><?php echo check_on_off($item['send_wx']) ?></td>
         <td><?php echo check_on_off($item['slow_query']) ?></td>
         <td><?php echo check_on_off($item['alarm_threads_connected']) ?></td>
         <td><?php echo check_on_off($item['alarm_threads_running']) ?></td>

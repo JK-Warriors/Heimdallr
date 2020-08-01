@@ -214,7 +214,7 @@ def check_oracle(host,port,dsn,username,password,server_id,tags):
            param = (server_id, key_time, redo_p_h)
            func.mysql_exec(sql,param)  
         else:
-           sql = "update oracle_redo set redo_log = '%s', create_time = DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') where server_id = '%s' and key_time='%s'; " %(redo_p_h,server_id,key_time)
+           sql = "update oracle_redo set redo_log = %s, create_time = DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') where server_id = '%s' and key_time='%s'; " %(redo_p_h,server_id,key_time)
            func.mysql_exec(sql,'')  
 
               
@@ -458,6 +458,8 @@ def check_dataguard(dg_id, pri_id, sta_id, is_switch):
                 #logger.info("dg_delay_days: %s" %(dg_delay_days))
                 #logger.info("dg_delay_seconds: %s" %(dg_delay_seconds))
                 #logger.info("dg_delay: %s" %(dg_delay))
+                if dg_delay < 0:
+                    dg_delay = 0
                 
             avg_apply_rate = -1
             if dg_s_mrp==0:

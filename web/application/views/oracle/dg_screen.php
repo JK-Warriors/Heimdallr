@@ -39,9 +39,12 @@
         				$days_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']))/86400);
         				$hours_dif=floor((strtotime($primary_db[0]['p_db_time'])-strtotime($standby_db[0]['s_db_time']) - ($days_dif*24*3600))/3600);
         				#echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";
-              	if($days_dif > 1 ){echo "item-red";}   #时间差超过1天，红色告警
-        				elseif($hours_dif > 1){echo "item-yellow";} #时间差超过1小时，黄色告警
-        				else{echo "";}
+                if(strtotime($standby_db[0]['s_db_time']) > strtotime($primary_db[0]['p_db_time'])) {echo "";}
+                else{
+                    if($days_dif > 1 ){echo "item-red";}   #时间差超过1天，红色告警
+                    elseif($hours_dif > 1){echo "item-yellow";} #时间差超过1小时，黄色告警
+                    else{echo "";}
+                }
               	?>">
                 <div class="item-1"></div>
                 <div class="item-2"></div>
@@ -156,8 +159,10 @@
         				$hours_dif=floor((strtotime($date1)-strtotime($date2) - ($days_dif*24*3600))/3600);
         				$min_dif=floor((strtotime($date1)-strtotime($date2) - ($days_dif*24*3600) -($hours_dif * 3600))/60);
         				$sec_dif=floor(strtotime($date1)-strtotime($date2) - ($days_dif*24*3600) -($hours_dif * 3600) - ($min_dif * 60));
-        				#echo strtotime($testdate1)-strtotime($testdate2);
-        				echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";
+                #echo strtotime($testdate1)-strtotime($testdate2);
+                if($date2 > $date1 ){echo "0天0小时0分0秒";}   
+        				else{echo $days_dif . "天" . $hours_dif . "小时" . $min_dif . "分" . $sec_dif . "秒";}
+        				
         				?>
               	</b>
             </li>

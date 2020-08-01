@@ -82,11 +82,12 @@ class cfg_redis extends Front_Controller {
 						'host'=>$this->input->post('host'),
 						'port'=>$this->input->post('port'),
 						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+					  'tags'=>$this->input->post('tags'),
+            'monitor'=>$this->input->post('monitor'),
+            'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
-                        'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
+            'send_wx'=>$this->input->post('send_wx'),
+            'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
 						'alarm_connected_clients'=>$this->input->post('alarm_connected_clients'),
 						'alarm_command_processed'=>$this->input->post('alarm_command_processed'),
@@ -140,11 +141,12 @@ class cfg_redis extends Front_Controller {
 						'host'=>$this->input->post('host'),
 						'port'=>$this->input->post('port'),
 						'password'=>$this->input->post('password'),
-					    'tags'=>$this->input->post('tags'),
-                        'monitor'=>$this->input->post('monitor'),
-                        'send_mail'=>$this->input->post('send_mail'),
+					  'tags'=>$this->input->post('tags'),
+            'monitor'=>$this->input->post('monitor'),
+            'send_mail'=>$this->input->post('send_mail'),
 						'send_sms'=>$this->input->post('send_sms'),
-                        'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
+            'send_wx'=>$this->input->post('send_wx'),
+            'send_mail_to_list'=>$this->input->post('send_mail_to_list'),
 						'send_sms_to_list'=>$this->input->post('send_sms_to_list'),
 						'alarm_connected_clients'=>$this->input->post('alarm_connected_clients'),
 						'alarm_command_processed'=>$this->input->post('alarm_command_processed'),
@@ -236,21 +238,22 @@ class cfg_redis extends Front_Controller {
 		if(isset($_POST['submit']) && $_POST['submit']=='batch_add')
         {
             for($n=1;$n<=10;$n++){
-			  $host = $this->input->post('host_'.$n);
+			  			$host = $this->input->post('host_'.$n);
               $port = $this->input->post('port_'.$n);
-			  $password = $this->input->post('password_'.$n);
+			  			$password = $this->input->post('password_'.$n);
               $tags = $this->input->post('tags_'.$n);
               if(!empty($host) && !empty($port) &&  !empty($tags)){
                  
                  $data['error_code']=0;
-					$data = array(
+								$data = array(
                         'host'=>$host,
-						'port'=>$port,
-						'password'=>$password,
-						'tags'=>$tags,
+												'port'=>$port,
+												'password'=>$password,
+												'tags'=>$tags,
                         'monitor'=>$this->input->post('monitor_'.$n),
                         'send_mail'=>$this->input->post('send_mail_'.$n),
-						'send_sms'=>$this->input->post('send_sms_'.$n),
+												'send_sms'=>$this->input->post('send_sms_'.$n),
+												'send_wx'=>$this->input->post('send_wx_'.$n),
                         'alarm_connected_clients'=>$this->input->post('alarm_connected_clients_'.$n),
                         'alarm_command_processed'=>$this->input->post('alarm_command_processed_'.$n),
 						'alarm_blocked_clients'=>$this->input->post('alarm_blocked_clients_'.$n),

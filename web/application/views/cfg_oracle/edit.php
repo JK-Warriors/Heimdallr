@@ -160,6 +160,15 @@
         </div>
     </div>
    </div>
+   <div class="control-group">
+    <label class="control-label" for=""><?php echo $this->lang->line('send_wx'); ?></label>
+    <div class="controls">
+        <select name="send_wx" id="send_wx" class="input-small">
+         <option value="1"  <?php echo set_selected(1,$record['send_wx']) ?>><?php echo $this->lang->line('on'); ?></option>
+         <option value="0"  <?php echo set_selected(0,$record['send_wx']) ?>><?php echo $this->lang->line('off'); ?></option>
+        </select>
+    </div>
+   </div>
    
    
    <div class="control-group">

@@ -134,6 +134,18 @@
   </div>
  </div>
  
+ <div class="control-group error">
+  <label class="control-label" for="">*<?php echo $this->lang->line('send_mail_sleep_time'); ?></label>
+  <div class="controls">
+      <select name="send_mail_sleep_time" id="send_mail_sleep_time" class="input-medium">
+       <option value="300" <?php echo set_selected(300,$settings['send_mail_sleep_time']) ?>>5 <?php echo $this->lang->line('date_minutes'); ?></option>
+       <option value="600" <?php echo set_selected(600,$settings['send_mail_sleep_time']) ?>>10 <?php echo $this->lang->line('date_minutes'); ?></option>
+       <option value="900" <?php echo set_selected(900,$settings['send_mail_sleep_time']) ?>>15 <?php echo $this->lang->line('date_minutes'); ?></option>
+       <option value="1800" <?php echo set_selected(1800,$settings['send_mail_sleep_time']) ?>>30 <?php echo $this->lang->line('date_minutes'); ?></option>
+      </select>
+  </div>
+ </div>
+ 
   <div class="control-group error">
   <label class="control-label" for="">*<?php echo $this->lang->line('send_alarm_mail'); ?></label>
   <div class="controls">
@@ -159,17 +171,6 @@
   </div>
  </div>
  
- <div class="control-group error">
-  <label class="control-label" for="">*<?php echo $this->lang->line('send_mail_sleep_time'); ?></label>
-  <div class="controls">
-      <select name="send_mail_sleep_time" id="send_mail_sleep_time" class="input-medium">
-       <option value="300" <?php echo set_selected(300,$settings['send_mail_sleep_time']) ?>>5 <?php echo $this->lang->line('date_minutes'); ?></option>
-       <option value="600" <?php echo set_selected(600,$settings['send_mail_sleep_time']) ?>>10 <?php echo $this->lang->line('date_minutes'); ?></option>
-       <option value="900" <?php echo set_selected(900,$settings['send_mail_sleep_time']) ?>>15 <?php echo $this->lang->line('date_minutes'); ?></option>
-       <option value="1800" <?php echo set_selected(1800,$settings['send_mail_sleep_time']) ?>>30 <?php echo $this->lang->line('date_minutes'); ?></option>
-      </select>
-  </div>
- </div>
 
  <div class="control-group error">
   <label class="control-label" for="">*<?php echo $this->lang->line('alarm_mail_to_list'); ?></label>
@@ -221,12 +222,24 @@
       </select>
   </div>
  </div>
+ 
 
  <div class="control-group error">
   <label class="control-label" for=""><?php echo $this->lang->line('alarm_sms_to_list'); ?></label>
   <div class="controls">
     <input type="text" id="send_sms_to_list"  name="send_sms_to_list" value="<?php echo $settings['send_sms_to_list'] ?>" class="input-xxlarge">
     <span class="help-inline"><?php echo $this->lang->line('many_people_separation'); ?></span>
+  </div>
+ </div>
+ 
+ <div class="control-group error" >
+  <label class="control-label" for="">*<?php echo $this->lang->line('send_alarm_wx'); ?></label>
+  <div class="controls">
+      <select name="send_alarm_wx" id="send_alarm_wx" class="input-small">
+       <option value="1" <?php echo set_selected(1,$settings['send_alarm_wx']) ?> ><?php echo $this->lang->line('on'); ?></option>
+       <option value="0" <?php echo set_selected(0,$settings['send_alarm_wx']) ?> ><?php echo $this->lang->line('off'); ?></option>
+      </select>
+      <span class="help-inline"></span>
   </div>
  </div>
  

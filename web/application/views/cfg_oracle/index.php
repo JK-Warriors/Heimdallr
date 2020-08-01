@@ -34,7 +34,7 @@
     <table class="table table-hover table-bordered">
       <thead>
         <th colspan="5"><center><?php echo $this->lang->line('servers'); ?></center></th>
-        <th colspan="3"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
+        <th colspan="4"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
 		<th colspan="4"><center><?php echo $this->lang->line('alarm_items'); ?></center></th>
         <th colspan="1"></th>
         <tr style="font-size: 12px;">
@@ -46,6 +46,7 @@
 		<th><?php echo $this->lang->line('monitor'); ?></th>
 		<th><?php echo $this->lang->line('send_mail'); ?></th>
         <th><?php echo $this->lang->line('send_sms'); ?></th>
+        <th><?php echo $this->lang->line('send_wx'); ?></th>
         <th><?php echo $this->lang->line('session_total'); ?></th>
         <th><?php echo $this->lang->line('session_actives'); ?></th>
         <th><?php echo $this->lang->line('session_waits'); ?></th>
@@ -65,6 +66,7 @@
         <td><?php echo check_on_off($item['monitor']) ?></td>
         <td><?php echo check_on_off($item['send_mail']) ?></td>
         <td><?php echo check_on_off($item['send_sms']) ?></td>
+        <td><?php echo check_on_off($item['send_wx']) ?></td>
         <td><?php echo check_on_off($item['alarm_session_total']) ?></td>
         <td><?php echo check_on_off($item['alarm_session_actives']) ?></td>
         <td><?php echo check_on_off($item['alarm_session_waits']) ?></td>

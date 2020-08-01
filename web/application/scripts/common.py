@@ -479,6 +479,7 @@ def gen_alert_oracle(server_id, role_switch):
 										b.send_mail_to_list,
 										b.send_sms,
 										b.send_sms_to_list,
+										b.send_wx,
 										'oracle' AS db_type
 									FROM oracle_status a, db_cfg_oracle b
 									WHERE a.server_id = b.id
@@ -495,7 +496,8 @@ def gen_alert_oracle(server_id, role_switch):
             send_mail_to_list=line[6]
             send_sms=line[7]
             send_sms_to_list=line[8]
-            db_type=line[9]
+            send_wx=line[9]
+            db_type=line[10]
         
             if send_mail_to_list is None or  send_mail_to_list.strip()=='':
                 send_mail_to_list = mail_to_list_common
@@ -507,7 +509,8 @@ def gen_alert_oracle(server_id, role_switch):
                 msg = "database role has been switched"
                 send_mail = update_send_mail_status(server_id,db_type,'role_switch',send_mail,send_mail_max_count)
                 send_sms  = update_send_sms_status(server_id,db_type,'role_switch',send_sms,send_sms_max_count)
-                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Primary','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                send_wx  = func.update_send_wx_status(server_id,db_type,'role_switch',send_wx)
+                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Primary','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx)
     else:
        pass   
                 
@@ -529,6 +532,7 @@ def gen_alert_mysql(server_id, role_switch):
 										b.send_mail_to_list,
 										b.send_sms,
 										b.send_sms_to_list,
+										b.send_wx,
 										'mysql' AS db_type
 									FROM mysql_status a, db_cfg_mysql b
 									WHERE a.server_id = b.id
@@ -544,7 +548,8 @@ def gen_alert_mysql(server_id, role_switch):
             send_mail_to_list=line[5]
             send_sms=line[6]
             send_sms_to_list=line[7]
-            db_type=line[8]
+            send_wx=line[8]
+            db_type=line[9]
             
             if send_mail_to_list is None or  send_mail_to_list.strip()=='':
                 send_mail_to_list = mail_to_list_common
@@ -556,7 +561,8 @@ def gen_alert_mysql(server_id, role_switch):
                 msg = "database role has been switched"
                 send_mail = update_send_mail_status(server_id,db_type,'role_switch',send_mail,send_mail_max_count)
                 send_sms  = update_send_sms_status(server_id,db_type,'role_switch',send_sms,send_sms_max_count)
-                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Master','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                send_wx  = update_send_wx_status(server_id,db_type,'role_switch',send_wx)
+                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Master','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx)
     else:
        pass
        
@@ -580,6 +586,7 @@ def gen_alert_sqlserver(server_id, role_switch, db_name):
 									b.send_mail_to_list,
 									b.send_sms,
 									b.send_sms_to_list,
+									b.send_wx,
 									'sqlserver' AS db_type
 								FROM sqlserver_status a, db_cfg_sqlserver b
 								WHERE a.server_id = b.id 
@@ -595,7 +602,8 @@ def gen_alert_sqlserver(server_id, role_switch, db_name):
             send_mail_to_list=line[5]
             send_sms=line[6]
             send_sms_to_list=line[7]
-            db_type=line[8]
+            send_wx=line[8]
+            db_type=line[9]
         
             if send_mail_to_list is None or  send_mail_to_list.strip()=='':
                 send_mail_to_list = mail_to_list_common
@@ -607,13 +615,14 @@ def gen_alert_sqlserver(server_id, role_switch, db_name):
                 msg = "database mirror of %s has been switched" %(db_name)
                 send_mail = update_send_mail_status(server_id,db_type,'role_switch',send_mail,send_mail_max_count)
                 send_sms  = update_send_sms_status(server_id,db_type,'role_switch',send_sms,send_sms_max_count)
-                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Principal','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+                send_wx  = update_send_wx_status(server_id,db_type,'role_switch',send_wx)
+                add_alert(server_id,tags,host,port,create_time,db_type,'role_switch','Principal','warning',msg,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx)
 
     else:
        pass
 
 
-def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx):
     try:
         mysql_conn = mysql.ConnectMysql()
         if db_type=='os':
@@ -644,7 +653,7 @@ def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
                 mysql.ExecuteSQL(mysql_conn, sql)
 
        	
-        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" %(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx) values(%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" %(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx)
         mysql.ExecuteSQL(mysql_conn, sql)
 
         if send_mail == 1:
@@ -656,6 +665,11 @@ def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
             sql="delete from alerts_temp where server_id='%s' and ip='%s' and db_type='%s' and alert_item='%s' and alert_type='sms';" %(server_id,db_host,db_type,alert_item)
             mysql.ExecuteSQL(mysql_conn, sql)
             temp_sql = "insert into alerts_temp(server_id,ip,db_type,alert_item,alert_type) values(%s,%s,%s,%s,%s);" %(server_id,db_host,db_type,alert_item,'sms')
+            mysql.ExecuteSQL(mysql_conn, temp_sql)
+        if send_wx == 1:
+            sql="delete from alerts_temp where server_id='%s' and ip='%s' and db_type='%s' and alert_item='%s' and alert_type='wx';" %(server_id,db_host,db_type,alert_item)
+            mysql.ExecuteSQL(mysql_conn, sql)
+            temp_sql = "insert into alerts_temp(server_id,ip,db_type,alert_item,alert_type) values(%s,%s,%s,%s,%s);" %(server_id,db_host,db_type,alert_item,'wx')
             mysql.ExecuteSQL(mysql_conn, temp_sql)
             
            
@@ -707,3 +721,20 @@ def update_send_sms_status(server,db_type,alert_item,send_sms,send_sms_max_count
         print 'traceback.print_exc():'; traceback.print_exc()
     finally:
         pass
+
+def update_send_wx_status(server,db_type,alert_item,send_wx):
+    conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
+    conn.select_db(dbname)
+    curs = conn.cursor()
+    if db_type == "os":
+        alert_count=curs.execute("select id from alerts_temp where ip='%s' and db_type='%s' and alert_item='%s' and alert_type='wx' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_sms_sleep_time))
+    else:
+        alert_count=curs.execute("select id from alerts_temp where server_id=%s and db_type='%s' and alert_item='%s' and alert_type='wx' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_sms_sleep_time))
+
+    if int(alert_count) > 0 :
+        send_wx = 0
+    else:
+        send_wx = send_wx
+    return send_wx
+    curs.close()
+    conn.close()

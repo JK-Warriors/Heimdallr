@@ -38,7 +38,7 @@
       <thead>
         <tr>
 		<th colspan="4"><center><?php echo $this->lang->line('servers'); ?></center></th>
-        <th colspan="3"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
+        <th colspan="4"><center><?php echo $this->lang->line('monitoring_switch'); ?></center></th>
 		<th colspan="3"><center><?php echo $this->lang->line('alarm_items'); ?></center></th>
         <th colspan="1"></th>
 	    </tr>
@@ -50,6 +50,7 @@
 		<th><?php echo $this->lang->line('monitor'); ?></th>
 		<th><?php echo $this->lang->line('send_mail'); ?></th>
         <th><?php echo $this->lang->line('send_sms'); ?></th>
+        <th><?php echo $this->lang->line('send_wx'); ?></th>
         <th><?php echo $this->lang->line('connected_clients'); ?></th>
 		<th><?php echo $this->lang->line('command_processed'); ?></th>
         <th><?php echo $this->lang->line('blocked_clients'); ?></th>
@@ -68,6 +69,7 @@
         <td><?php echo check_on_off($item['monitor']) ?></td>
         <td><?php echo check_on_off($item['send_mail']) ?></td>
         <td><?php echo check_on_off($item['send_sms']) ?></td>
+        <td><?php echo check_on_off($item['send_wx']) ?></td>
 		<td><?php echo check_on_off($item['alarm_connected_clients']) ?></td>
 		<td><?php echo check_on_off($item['alarm_command_processed']) ?></td>
 		<td><?php echo check_on_off($item['alarm_blocked_clients']) ?></td>

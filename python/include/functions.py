@@ -136,7 +136,7 @@ def add_alarm(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
        print "Add alarm: " + str(e)     
 
 
-def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx):
     try: 
         conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
         conn.select_db(dbname)
@@ -164,8 +164,8 @@ def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
                 mysql_exec("delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item),'')
 
        	
-        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx)
         curs.execute(sql,param)
 
         if send_mail == 1:
@@ -178,6 +178,11 @@ def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
             temp_sql = "insert into alerts_temp(server_id,ip,db_type,alert_item,alert_type) values(%s,%s,%s,%s,%s);"
             temp_param = (server_id,db_host,db_type,alert_item,'sms')
             curs.execute(temp_sql,temp_param)
+        if send_wx == 1:
+            mysql_exec("delete from alerts_temp where server_id='%s' and ip='%s' and db_type='%s' and alert_item='%s' and alert_type='wx';" %(server_id,db_host,db_type,alert_item),'')
+            temp_sql = "insert into alerts_temp(server_id,ip,db_type,alert_item,alert_type) values(%s,%s,%s,%s,%s);"
+            temp_param = (server_id,db_host,db_type,alert_item,'wx')
+            curs.execute(temp_sql,temp_param)
             
            
         conn.commit()
@@ -187,31 +192,38 @@ def add_alert(server_id,tags,db_host,db_port,create_time,db_type,alert_item,aler
         print "Add alert: " + str(e)   
        
        
-def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list):
+def check_if_ok(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx):
     conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
     conn.select_db(dbname)
     curs = conn.cursor()
+    alert_count=0
+
     if db_type=='os':
-        alert_count=curs.execute("select id from alerts where server_id = 0 and host='%s' and alert_item='%s' and level !='ok';" %(db_host,alert_item))
+        result=curs.execute("select count(1) from alerts where server_id = 0 and host='%s' and alert_item='%s' and level !='ok';" %(db_host,alert_item))
+        result=curs.fetchone()
+        if result:
+            alert_count=curs.fetchone()[0]  
+            if int(alert_count) > 0 :
+                sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id = 0 and host='%s' and alert_item='%s' ;" %(db_host,alert_item)
+                mysql_exec(sql,'')
         
-        if int(alert_count) > 0 :
-            sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id = 0 and host='%s' and alert_item='%s' ;" %(db_host,alert_item)
-            mysql_exec(sql,'')
-        
-            mysql_exec("delete from alerts where server_id = 0 and host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
+                mysql_exec("delete from alerts where server_id = 0 and host='%s'  and alert_item='%s' ;" %(db_host,alert_item),'')
     else:
-        sql="select id from alerts where server_id=%s and db_type='%s' and alert_item='%s' and level !='ok';" %(server_id,db_type,alert_item)
+        sql="select count(1) from alerts where server_id=%s and db_type='%s' and alert_item='%s' and level !='ok';" %(server_id,db_type,alert_item)
         #print sql
-        alert_count=curs.execute(sql)  
-        if int(alert_count) > 0 :
-            sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item) 
-            mysql_exec(sql,'')
+        result=curs.execute(sql)
+        result=curs.fetchone()
+        if result:
+            alert_count=curs.fetchone()[0]  
+            if int(alert_count) > 0 :
+                sql="insert into alerts_his select *,DATE_FORMAT(sysdate(),'%%Y%%m%%d%%H%%i%%s') from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item) 
+                mysql_exec(sql,'')
                           
-            mysql_exec("delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item),'')
+                mysql_exec("delete from alerts where server_id=%s and db_type='%s' and alert_item='%s' ;" %(server_id,db_type,alert_item),'')
     #print alert_count
     if int(alert_count) > 0 :
-        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,'ok',message,send_mail,send_mail_to_list,send_sms,send_sms_to_list)
+        sql="insert into alerts(server_id,tags,host,port,create_time,db_type,alert_item,alert_value,level,message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        param=(server_id,tags,db_host,db_port,create_time,db_type,alert_item,alert_value,'ok',message,send_mail,send_mail_to_list,send_sms,send_sms_to_list,send_wx)
         mysql_exec(sql,param)
 
     curs.close()
@@ -255,7 +267,54 @@ def update_send_sms_status(server,db_type,alert_item,send_sms,send_sms_max_count
     return send_sms
     curs.close()
     conn.close()
-    
+
+def update_send_wx_status(server,db_type,alert_item,send_wx):
+    conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
+    conn.select_db(dbname)
+    curs = conn.cursor()
+    if db_type == "os":
+        alert_count=curs.execute("select id from alerts_temp where ip='%s' and db_type='%s' and alert_item='%s' and alert_type='wx' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_sms_sleep_time))
+    else:
+        alert_count=curs.execute("select id from alerts_temp where server_id=%s and db_type='%s' and alert_item='%s' and alert_type='wx' and create_time > date_add(sysdate(), interval -%s second);" %(server,db_type,alert_item,send_sms_sleep_time))
+
+    if int(alert_count) > 0 :
+        send_wx = 0
+    else:
+        send_wx = send_wx
+    return send_wx
+    curs.close()
+    conn.close()
+
+def check_wx_status(send_wx):
+    try:
+        conn=MySQLdb.connect(host=host,user=user,passwd=passwd,port=int(port),connect_timeout=5,charset='utf8')
+        conn.select_db(dbname)
+        curs = conn.cursor()
+        result=curs.execute("select count(1) from media_status where date = DATE_FORMAT(NOW(),'%Y-%m-%d');")
+        wx_count=curs.fetchone()[0]
+        #print wx_count
+        if wx_count == 0:
+            sql = "insert into media_status(`date`, `send_wx`) values(DATE_FORMAT(NOW(),'%%Y-%%m-%%d'), %s);" %(send_wx)
+            #print sql
+            curs.execute(sql)
+            conn.commit()
+
+        result=curs.execute("select count(1) from media_status where date = DATE_FORMAT(NOW(),'%Y-%m-%d') and send_wx_status = 0;")
+        wx_status_count=curs.fetchone()[0]
+        #print wx_status_count
+        if int(wx_status_count) > 0 :
+            send_wx = 1
+        else:
+            send_wx = 0
+        
+        #print send_wx
+        return send_wx
+    except Exception,e:
+        print "Check wx status: " + str(e) 
+    finally:
+        curs.close()
+        conn.close()          
+
     
 def check_db_status(server_id,db_host,db_port,tags,db_type):
     try:
